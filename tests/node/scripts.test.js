@@ -74,3 +74,60 @@ test('tema oscuro de los reportes de cucumber: fuerza dark y se aplica una sola 
   assert.match(una, /id="k0lmena-theme"/);
   assert.equal(temaEnHtml(una), una);
 });
+
+const explorador = require(path.join(RAIZ, 'herramientas/k0lmena/tools/explorador/explorar.js'));
+
+test('explorador: normaliza URLs, valida resoluciones y clasifica links', () => {
+  assert.equal(explorador.normalizar('https://x.com/a/#seccion'), 'https://x.com/a');
+  assert.equal(explorador.normalizar('https://x.com/'), 'https://x.com/');
+  assert.equal(explorador.slug('https://x.com/'), 'inicio');
+  assert.equal(explorador.slug('https://x.com/Blog/Post?id=3'), 'blog-post-id-3');
+  assert.deepEqual(explorador.parsearResoluciones('360x740, 1366x768').map((r) => r.nombre), ['Mobile', 'Desktop']);
+  assert.throws(() => explorador.parsearResoluciones('grande'), /Resolución inválida/);
+  assert.equal(explorador.clasificarLink({ status: 200 }), 'ok');
+  assert.equal(explorador.clasificarLink({ status: 404 }), 'roto');
+  assert.equal(explorador.clasificarLink({ status: 403 }), 'no_verificable');
+  assert.equal(explorador.clasificarLink({ status: 0, error: 'timeout' }), 'no_verificable');
+  assert.equal(explorador.clasificarLink({ status: 0, error: 'ENOTFOUND', caido: true }), 'roto');
+});
+
+test('explorador: arma hallazgos con severidad y agrupa el responsive por página', () => {
+  const pagina = { url: 'https://x.com/', status: 200, meta_viewport: 'width=device-width', errores_js: ['boom'], errores_consola: [],
+    recursos_fallidos: [{ url: 'https://x.com/a.js', status: 404, tipo: 'script' }], imagenes_rotas: [{ src: 'https://x.com/a.png' }], imagenes_sin_alt: 0 };
+  const links = [{ url: 'https://x.com/no', interno: true, status: 404, resultado: 'roto', origenes: ['https://x.com/'] }];
+  const fila = (res, ancho) => ({ url: 'https://x.com/', resolucion: res, nombre: 'Mobile', ancho, desborde_horizontal: true, ancho_documento: 500,
+    ancho_ventana: ancho, elementos_desbordados: [{ elemento: 'div.tabla', ancho: 500 }], texto_chico: 0, objetivos_tactiles_chicos: 0 });
+  const h = explorador.armarHallazgos([pagina], links, [fila('360x740', 360), fila('390x844', 390)]);
+  assert.deepEqual(h.map((x) => x.id), h.map((_, i) => `H-${String(i + 1).padStart(2, '0')}`));
+  assert.ok(h.every((x, i) => i === 0 || ['Crítica', 'Alta', 'Media', 'Baja'].indexOf(h[i - 1].severidad) <= ['Crítica', 'Alta', 'Media', 'Baja'].indexOf(x.severidad)));
+  const resp = h.filter((x) => x.categoria === 'Responsive');
+  assert.equal(resp.length, 1);
+  assert.deepEqual(resp[0].resoluciones, ['360x740', '390x844']);
+  assert.equal(resp[0].severidad, 'Alta');
+  for (const cat of ['Error de JavaScript', 'Recurso que falla', 'Imagen rota', 'Link roto']) assert.ok(h.some((x) => x.categoria === cat), cat);
+});
+
+test('explorador: cada corrida borra solo lo que generó la anterior', () => {
+  const dir = tmp();
+  for (const f of ['exploracion.json', 'analisis.json', 'informe-exploratorio.html', 'notas.txt']) fs.writeFileSync(path.join(dir, f), 'x');
+  fs.mkdirSync(path.join(dir, 'capturas', 'manual'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'capturas', 'manual', 'ex-01.png'), 'x');
+  fs.mkdirSync(path.join(dir, 'videos'));
+  explorador.limpiarCarpeta(dir);
+  assert.deepEqual(fs.readdirSync(dir), ['notas.txt']);
+  explorador.limpiarCarpeta(path.join(dir, 'no-existe')); // sin corrida anterior no falla
+});
+
+test('explorador: un problema repetido en varias páginas es un solo hallazgo, con su evidencia', () => {
+  const pag = (url) => ({ url, status: 200, meta_viewport: 'x', errores_js: [], errores_consola: [], imagenes_rotas: [], imagenes_sin_alt: 0,
+    recursos_fallidos: [{ url: 'https://x.com/estilos.css', status: 404, tipo: 'stylesheet' }], captura: `capturas/paginas/${url.length}.jpg`, tiempo_ms: 500 });
+  const h = explorador.armarHallazgos([pag('https://x.com/'), pag('https://x.com/otra')], [], []);
+  assert.equal(h.length, 1);
+  assert.deepEqual(h[0].paginas, ['https://x.com/', 'https://x.com/otra']);
+  assert.ok(h[0].evidencia.startsWith('capturas/paginas/'));
+  const lenta = explorador.armarHallazgos([{ ...pag('https://x.com/'), recursos_fallidos: [], tiempo_ms: 7000 }], [], [], { lentaMs: 3000 });
+  assert.equal(lenta[0].categoria, 'Rendimiento');
+  assert.equal(lenta[0].severidad, 'Media');
+  assert.deepEqual(explorador.tiempos([{ tiempo_ms: 1000 }, { tiempo_ms: 3000 }, { error: 'x' }]),
+    { carga_promedio_ms: 2000, carga_max_ms: 3000, carga_p90_ms: 3000 });
+});

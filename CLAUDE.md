@@ -133,6 +133,14 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | HTML con métricas, gráficos y            |                                       |
 |                            | recomendaciones                          |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `explorador-web`           | Pruebas exploratorias: recorre la web    | `output/exploratorias/`               |
+|                            | (APP_URL del `.env` o la URL pedida) en  |                                       |
+|                            | busca de links e imágenes rotas, errores |                                       |
+|                            | de JavaScript y de consola, revisa el    |                                       |
+|                            | responsive en varias resoluciones y      |                                       |
+|                            | explora a mano con Playwright MCP; arma  |                                       |
+|                            | el informe HTML con hallazgos y capturas |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-seguridad`       | Revisa la seguridad de una web propia o  | `output/seguridad/`                   |
 |                            | autorizada con un escaneo pasivo de      |                                       |
 |                            | OWASP ZAP (Docker), analiza los          |                                       |
@@ -204,6 +212,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/correr_newman.py` → corre una colección de Postman con el token y la URL del `.env` y genera su reporte (`ejecutor-api`).
 - `scripts/recolectar_resultados.py` → junta los resultados de una historia (ejecuciones en vivo, `npm test`, bugs, performance y seguridad) para el informe de cierre.
 - `scripts/doctor.py` → revisa el entorno y la configuración.
+- `scripts/generar_informe_exploratorio.py` → arma el informe HTML de pruebas exploratorias desde el `exploracion.json` de `npm run explorar` (`explorador-web`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
 
 ---
@@ -216,6 +225,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Casos BDD: `HU-001-registro.feature` + `HU-001-cobertura.md`
 - Reporte de bug: `BUG-001.md`
 - Seguridad web: `output/seguridad/<HU o host>/<fecha>/` con `zap.json`, `analisis.json` e `informe-seguridad.html`
+- Pruebas exploratorias: `output/exploratorias/<HU o host>/` con `exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`
 - Mapeo a automatización: `herramientas/k0lmena/<web|api|mobile>/features/HU-001-<slug>.feature` + `steps/HU-001.steps.ts` + `locators/HU-001.locators.ts`, y el reporte `output/mapeos/mapeo-HU-001-<web|api|mobile>.md`.

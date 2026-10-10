@@ -208,6 +208,10 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 +-----------------------+------------------------------------------+
 | npm run link-tester   | Busca enlaces e imágenes rotas (BASEURL) |
 +-----------------------+------------------------------------------+
+| npm run explorar      | Recorrido exploratorio con navegador:    |
+|                       | links, imágenes, errores y responsive    |
+|                       | (agente explorador-web)                  |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

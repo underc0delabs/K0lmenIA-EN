@@ -3,6 +3,7 @@ import json
 
 import formatear_tablas
 import generar_informe_cierre
+import generar_informe_exploratorio
 import generar_informe_seguridad
 import generar_plan
 import generar_reporte
@@ -33,6 +34,39 @@ def test_seguridad():
         {"pluginid": "10027", "name": "Comentarios", "riskcode": "0", "confidence": "1", "instances": [], "count": "1"}]}]}
     html = generar_informe_seguridad.build_html(zap, {"falsos_positivos": [{"pluginid": "10027", "motivo": "tercero"}]}, "https://x", "HU-001")
     assert "CSP Header Not Set" in html and "Descartados como falsos positivos" in html
+
+
+def test_exploratorio():
+    datos = {"url": "https://x.com/", "host": "x.com", "config": {"resoluciones": ["360x740", "1366x768"], "max_paginas": 5},
+             "resumen": {"paginas": 2, "links": 3, "links_no_verificables": 1},
+             "hallazgos": [{"id": "H-01", "categoria": "Link roto", "severidad": "Alta", "pagina": "https://x.com/", "titulo": "Link interno roto (404)", "detalle": "https://x.com/no"},
+                           {"id": "H-02", "categoria": "Error de consola", "severidad": "Media", "pagina": "https://x.com/", "titulo": "Error en consola", "detalle": "tercero"}],
+             "links": [{"url": "https://x.com/no", "interno": True, "status": 404, "resultado": "roto", "origenes": ["https://x.com/"]},
+                       {"url": "https://y.com/", "interno": False, "status": 403, "resultado": "no_verificable", "origenes": ["https://x.com/"]}],
+             "responsive": [{"url": "https://x.com/", "resolucion": "360x740", "nombre": "Mobile", "desborde_horizontal": True, "captura": "capturas/inicio-360x740.png"},
+                            {"url": "https://x.com/", "resolucion": "1366x768", "nombre": "Desktop", "desborde_horizontal": False}],
+             "paginas": [{"url": "https://x.com/", "status": 200, "titulo": "Inicio"}]}
+    analisis = {"descartados": [{"id": "H-02", "motivo": "script de terceros"}], "severidades": {"H-01": "Crítica"},
+                "exploratorios": [{"id": "EX-01", "titulo": "El menú no cierra", "severidad": "Media", "pasos": ["Abrir menú"]}]}
+    html = generar_informe_exploratorio.build_html(datos, analisis)
+    assert "Link interno roto (404)" in html and "EX-01" in html and "capturas/inicio-360x740.png" in html
+    assert "Descartados" in html and "script de terceros" in html and "Links que no se pudieron verificar" in html
+    assert "problemas críticos" in html  # la severidad ajustada a Crítica cambia el veredicto
+
+
+def test_exploratorio_completo():
+    datos = {"url": "https://x.com/", "host": "x.com", "config": {"resoluciones": ["360x740"], "lenta_ms": 3000},
+             "resumen": {"paginas": 1, "carga_promedio_ms": 4200, "carga_max_ms": 4200, "carga_p90_ms": 4200},
+             "hallazgos": [{"id": "H-01", "categoria": "Recurso que falla", "severidad": "Alta", "pagina": "https://x.com/",
+                            "paginas": ["https://x.com/", "https://x.com/b"], "titulo": "stylesheet que no carga (404)",
+                            "detalle": "https://x.com/e.css", "evidencia": "capturas/paginas/01-inicio.jpg"}],
+             "paginas": [{"url": "https://x.com/", "status": 200, "tiempo_ms": 4200, "captura": "capturas/paginas/01-inicio.jpg",
+                          "errores_js": ["boom is not defined"], "metricas": {"ttfb_ms": 120, "dom_ms": 900, "requests": 14, "peso_kb": 512}}],
+             "videos": [{"titulo": "Recorrido", "archivo": "videos/recorrido.webm"}]}
+    html = generar_informe_exploratorio.build_html(datos, {})
+    assert 'src="videos/recorrido.webm#t=1"' in html and 'class="lb thumb' in html  # video embebido y captura ampliable
+    assert "y 1 página(s) más" in html and "boom is not defined" in html and "512 KB" in html
+    assert "Tiempo de carga por página" in html and "4.2 s" in html
 
 
 def test_formatear_tablas_es_idempotente(tmp_path):

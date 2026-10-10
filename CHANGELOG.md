@@ -2,6 +2,12 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-10 (2) — Pruebas exploratorias
+- Nuevo agente `explorador-web`: recorre el sitio (`APP_URL` del `.env` o la URL pedida) buscando links e imágenes rotas, errores de JavaScript y de consola y recursos que fallan; revisa el responsive en mobile, tablet y desktop (scroll horizontal, texto chico, objetivos táctiles chicos según WCAG 2.5.8, meta viewport) con capturas; y explora a mano con Playwright MCP.
+- `npm run explorar` (`herramientas/k0lmena/tools/explorador/explorar.js`): el recorrido automático, sin tokens por página. Solo GET: no envía formularios ni sigue links de cierre de sesión. Separa los links rotos de los no verificables (403, 429, timeouts).
+- `scripts/generar_informe_exploratorio.py`: informe HTML en modo oscuro con indicadores, gráficos, cada hallazgo con su captura (clic para ampliar), tiempos de carga, matriz de responsive, videos, galerías, links rotos, detalle por página y la exploración manual. `npm run explorar` lo genera solo al terminar.
+- Evidencia completa: captura de cada página y de cada resolución con los problemas marcados en rojo, y video del recorrido y de cada resolución. Cada corrida reemplaza a la anterior en `output/exploratorias/<HU o host>/`.
+
 ## 2026-10-10 — Inicio directo, conectores a pedido
 - Claude Code arranca sin pedir aprobar conectores: `.mcp.json` trae solo los que vienen activos para todos (Playwright y Atlassian).
 - Los opcionales (Azure DevOps, Figma, QMetry, QTM4J, AIO Tests, k0lmenaTMT, Appium) pasan a `scripts/mcp/catalogo.json` y cada persona activa los suyos con `npm run conector -- activar <nombre>` (alcance local de Claude Code: solo para esa persona, sin tocar archivos versionados).

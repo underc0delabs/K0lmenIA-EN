@@ -119,9 +119,10 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
-<tr><td rowspan="4"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="5"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
+<tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
 <tr><td rowspan="6"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
@@ -355,6 +356,23 @@ Por ahora el conector no registra resultados de ejecución: **publicador-resulta
 
 ---
 
+## 🔎 Pruebas exploratorias
+
+El **explorador-web** recorre tu sitio (el `APP_URL` del `.env` o la URL que le digas) y busca lo que se rompe sin que nadie lo note: **links rotos** (internos y externos), **imágenes que no cargan**, **errores de JavaScript y de consola**, recursos que fallan y problemas de **responsive** en mobile, tablet y desktop (scroll horizontal, texto chico, botones muy chicos y juntos), con capturas de cada resolución. Después explora a mano con Playwright MCP (menús, formularios sin enviar, búsquedas, la página 404) y arma el **informe exploratorio** en HTML.
+
+- *"Hacé pruebas exploratorias del sitio del .env"*
+- *"Buscá links rotos y problemas de responsive en https://staging.mi-app.com, hasta 50 páginas"*
+
+El recorrido de páginas lo hace un script, sin gastar tokens por página; también lo podés correr solo:
+
+```bash
+npm run explorar -- --url https://staging.mi-app.com --max-paginas 50 --resoluciones 360x740,768x1024,1366x768
+```
+
+Queda en `output/exploratorias/<HU o sitio>/`: el **informe HTML** (indicadores, gráficos, cada hallazgo con su captura, tiempos de carga, responsive por resolución, videos del recorrido y de cada resolución, links rotos y el detalle de cada página), las capturas con los problemas marcados en rojo y los videos. Cada corrida **reemplaza** a la anterior. Solo navega con GET: no envía formularios ni sigue links de cierre de sesión.
+
+---
+
 ## 🛡️ Seguridad web
 
 El **analista-seguridad** revisa la seguridad de tu aplicación con **OWASP ZAP** (libre y gratuito) en modo **pasivo**: recorre el sitio y analiza las respuestas sin enviar ataques ni modificar datos. Encuentra encabezados de seguridad faltantes, cookies inseguras, información expuesta, contenido mixto y otras configuraciones débiles.
@@ -475,7 +493,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 19 agentes
+│   ├── agents/             Los 20 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

@@ -1,6 +1,6 @@
 # Catálogo de agentes
 
-Los 19 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
+Los 20 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
 
 **Leyenda**
 - **Tokens**: *en cada uso* = trabaja con el modelo cada vez que lo pedís; *una vez* = genera algo que después corre solo, sin agentes ni tokens (`npm test`, `npm run perf`).
@@ -21,6 +21,7 @@ Los 19 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | ejecutor-e2e             | Ejecución en vivo        | Corre casos en el navegador con evidencia             | ejecucion-e2e                                                      | Playwright MCP, generar_reporte.py                            | playwright, playwright-headless      | output/ejecuciones/                                     |
 | ejecutor-api             | Ejecución en vivo        | Corre una colección de Postman                        | ejecucion-api                                                      | Newman, correr_newman.py                                      | —                                    | output/ejecuciones/                                     |
 | analista-seguridad       | Ejecución en vivo        | Escaneo de seguridad web pasivo e informe             | —                                                                  | OWASP ZAP (Docker), escanear.py, generar_informe_seguridad.py | —                                    | output/seguridad/                                       |
+| explorador-web           | Ejecución en vivo        | Exploratorias: links, imágenes, errores y responsive  | ejecucion-e2e                                                      | npm run explorar, generar_informe_exploratorio.py             | playwright, playwright-headless      | output/exploratorias/                                   |
 | generador-reporte-html   | Reportes                 | Reporte HTML de una corrida                           | —                                                                  | generar_reporte.py                                            | —                                    | output/ejecuciones/                                     |
 | generador-reporte-cierre | Reportes                 | Informe de cierre y go/no-go de la ronda              | —                                                                  | recolectar_resultados.py, generar_informe_cierre.py           | —                                    | output/informes-cierre/                                 |
 | web-mapper               | Automatización (k0lmena) | Automatiza casos web                                  | automatizacion-k0lmena, ejecucion-e2e, investigacion-contexto      | k0lmena (Playwright + Cucumber)                               | playwright, playwright-headless      | herramientas/k0lmena/web/ + output/mapeos/              |
@@ -112,6 +113,14 @@ Gastan tokens en cada corrida: sirven para casos sueltos. Lo que se repite convi
 - **Confirma**: la URL (tiene que estar en `SEGURIDAD_URLS_AUTORIZADAS`) y la duración del escaneo. Nunca escanea en modo activo.
 - **Tokens**: en cada uso.
 
+### explorador-web
+- **Cuándo**: para hacer pruebas exploratorias de un sitio: buscar links e imágenes rotas, errores de JavaScript y de consola, y revisar el responsive en varias resoluciones.
+- **Pedido de ejemplo**: *"Hacé pruebas exploratorias del sitio del .env"* · *"Buscá links rotos y problemas de responsive en https://staging.tu-app.com"*.
+- **Usa**: skill `ejecucion-e2e`; `npm run explorar` (recorrido automático con Playwright, `herramientas/k0lmena/tools/explorador/explorar.js`), conectores `playwright` o `playwright-headless` para la exploración manual y `scripts/generar_informe_exploratorio.py`.
+- **Entrega**: en `output/exploratorias/<HU o host>/` (cada corrida reemplaza a la anterior), `informe-exploratorio.html` (indicadores, gráficos, hallazgos por severidad con su captura, tiempos de carga, matriz de responsive, videos, galerías, links rotos, detalle por página y recomendaciones), `exploracion.json`, `analisis.json`, `capturas/` y `videos/`.
+- **Confirma**: el modo (headed o headless) si no lo dijiste. No envía formularios ni cambia datos sin tu ok; en producción pide confirmación antes de explorar.
+- **Tokens**: en cada uso (el recorrido de páginas lo hace el script, sin tokens por página).
+
 ## Reportes
 
 ### generador-reporte-html
@@ -199,7 +208,7 @@ Los skills se cargan solo cuando hacen falta.
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | investigacion-contexto | Investigar la historia completa (comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (FI-XX) | analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper |
 | tecnicas-de-diseno     | Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise                                                      | generador-casos-manuales, generador-casos-bdd, generador-casos-api, api-mapper                             |
-| ejecucion-e2e          | Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia                                                     | ejecutor-e2e, web-mapper                                                                                   |
+| ejecucion-e2e          | Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia                                                     | ejecutor-e2e, web-mapper, explorador-web                                                                   |
 | ejecucion-api          | Correr colecciones con Newman: base_url, token, validaciones y resultados                                                              | ejecutor-api                                                                                               |
 | automatizacion-k0lmena | Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance                                         | web-mapper, api-mapper, mobile-mapper, performance-mapper, verificador-datos                               |
 | guia-performance       | Guía paso a paso para planificar una prueba de performance con la persona                                                              | la conversación principal (antes de performance-mapper) y performance-mapper                               |
@@ -209,7 +218,7 @@ Los skills se cargan solo cuando hacen falta.
 | Herramienta o script                                         | Para qué                                                        | La usan                                                                      |
 | ------------------------------------------------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | k0lmena (herramientas/k0lmena)                               | Automatización web, API, mobile y performance; corre sin tokens | web-mapper, api-mapper, mobile-mapper, performance-mapper, verificador-datos |
-| Playwright MCP                                               | Navegador en vivo                                               | ejecutor-e2e, web-mapper                                                     |
+| Playwright MCP                                               | Navegador en vivo                                               | ejecutor-e2e, web-mapper, explorador-web                                     |
 | Newman (herramientas/newman)                                 | Colecciones de Postman                                          | ejecutor-api                                                                 |
 | OWASP ZAP (herramientas/zap)                                 | Seguridad web pasiva                                            | analista-seguridad                                                           |
 | k6 · Artillery · JMeter                                      | Performance                                                     | performance-mapper                                                           |
@@ -221,6 +230,8 @@ Los skills se cargan solo cuando hacen falta.
 | scripts/recolectar_resultados.py · generar_informe_cierre.py | Informe de cierre                                               | generador-reporte-cierre                                                     |
 | scripts/generar_informe_performance.py                       | Informe de performance                                          | performance-mapper                                                           |
 | scripts/generar_informe_seguridad.py                         | Informe de seguridad                                            | analista-seguridad                                                           |
+| npm run explorar (k0lmena tools/explorador)                  | Recorrido: links, imágenes, errores y responsive                | explorador-web                                                               |
+| scripts/generar_informe_exploratorio.py                      | Informe de pruebas exploratorias                                | explorador-web                                                               |
 | scripts/gestion/                                             | Xray, QTM4J y AIO Tests; conversión para Azure Test Plans       | gestor-pruebas, publicador-resultados                                        |
 | scripts/doctor.py (npm run doctor)                           | Revisa el entorno y la configuración                            | vos, al instalar o cuando algo no anda                                       |
 
@@ -228,7 +239,7 @@ Los skills se cargan solo cuando hacen falta.
 
 | Conector                         | Activo por defecto | Lo aprovechan                                                                                |
 | -------------------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
-| playwright · playwright-headless | Sí                 | ejecutor-e2e, web-mapper                                                                     |
+| playwright · playwright-headless | Sí                 | ejecutor-e2e, web-mapper, explorador-web                                                     |
 | atlassian (Jira y Confluence)    | Sí                 | todos los que investigan una historia (skill investigacion-contexto), generador-reportes-bug |
 | azure-devops                     | No                 | los mismos que atlassian, si tu equipo usa Azure DevOps; gestor-pruebas (Azure Test Plans)   |
 | figma · figma-desktop            | No                 | los que investigan una historia (textos, estados y validaciones del diseño), web-mapper      |

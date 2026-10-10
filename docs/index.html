@@ -73,7 +73,7 @@
     <div class="k">Documentación del proyecto</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">Agentes de QA para Claude Code: diseño de pruebas, automatización con k0lmena e integración con Xray, QMetry, AIO Tests y Azure DevOps — todo en español.</div>
-    <div class="chips"><span>19 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
+    <div class="chips"><span>20 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>Licencia MIT</span></div>
 </section>
@@ -230,6 +230,7 @@
   <div class="tarjetas">
     <div class="tarjeta c-naranja"><h4>ejecutor-e2e</h4><p>Ejecuta casos en un navegador real con Playwright MCP (headed o headless), con evidencia.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> generar_reporte.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>ejecutor-api</h4><p>Corre una colección de Postman con Newman.</p><div class="usa"><b>Skills</b> ejecucion-api<br><b>Usa</b> Newman, correr_newman.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>explorador-web</h4><p>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, y responsive en varias resoluciones, con capturas e informe.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> npm run explorar, generar_informe_exploratorio.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/exploratorias/</code></div></div>
     <div class="tarjeta c-naranja"><h4>generador-reporte-html</h4><p>Dashboard HTML de los resultados de una ejecución.</p><div class="usa"><b>Usa</b> generar_reporte.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>generador-reporte-cierre</h4><p>Informe de cierre de la ronda con recomendación go/no-go.</p><div class="usa"><b>Usa</b> recolectar_resultados.py, generar_informe_cierre.py</div><div class="salida"><code>output/informes-cierre/</code></div></div>
   </div>
@@ -674,7 +675,7 @@ npm run bd -- consultar --sql "SELECT id, estado FROM usuarios WHERE email = ?" 
 ├── tests/                  <span class="c">Tests de los scripts (pytest y node --test)</span>
 ├── .github/workflows/      <span class="c">CI: los tests en Ubuntu y Windows</span>
 ├── .claude/
-│   ├── agents/             <span class="c">Los 19 agentes</span>
+│   ├── agents/             <span class="c">Los 20 agentes</span>
 │   ├── skills/             <span class="c">Contexto, diseño, guía de performance, ejecución, k0lmena</span>
 │   └── settings.json       <span class="c">Conectores habilitados y permisos</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/</span>

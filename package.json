@@ -22,6 +22,7 @@
     "crawler": "npm --prefix herramientas/k0lmena run crawler --",
     "link-tester": "npm --prefix herramientas/k0lmena run link-tester --",
     "link-tester:full": "npm --prefix herramientas/k0lmena run link-tester:full --",
+    "explorar": "npm --prefix herramientas/k0lmena run explorar --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

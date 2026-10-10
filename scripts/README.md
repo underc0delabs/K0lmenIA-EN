@@ -16,6 +16,7 @@ Actuales:
 - `correr_newman.py` — corre una colección de Postman con el token y la URL del `.env` (PowerShell, bash y zsh) y deja su reporte HTML (`ejecutor-api`).
 - `recolectar_resultados.py` — junta los resultados de una historia (ejecuciones en vivo, `npm test`, bugs, performance y seguridad) para el informe de cierre.
 - `generar_informe_seguridad.py` — genera el **informe de seguridad web** en HTML a partir del `zap.json` de OWASP ZAP y del análisis del agente.
+- `generar_informe_exploratorio.py` — genera el **informe de pruebas exploratorias** en HTML a partir del `exploracion.json` de `npm run explorar` y del análisis del agente `explorador-web`.
 - `doctor.py` — revisa el entorno (Python, Node, k0lmena, Playwright, Newman, Java, Docker, `.env` y conectores) y dice qué falta. También: `npm run doctor`.
 - `_env.py` — lectura del `.env` de la raíz con las mismas reglas que k0lmena y `scripts/mcp/leer-env.js` (la usan los scripts de Python).
 - `_estilos_reporte.py` — sistema de diseño de todos los reportes HTML (plan, ejecución, cierre, performance y seguridad): modo oscuro, paleta categórica y de estado validadas para daltonismo y contraste, indicadores, pastillas con ícono, tooltips y gráficos (dona, barras, barras apiladas, columnas agrupadas y líneas con crosshair, siempre con un solo eje). Los reportes de k0lmena usan los mismos colores (`herramientas/k0lmena/reports/tema-oscuro.js` y el reporte de performance).

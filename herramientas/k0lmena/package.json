@@ -20,6 +20,7 @@
     "crawler": "ts-node -r ./env.js tools/crawler/locators-generator.ts",
     "link-tester": "npx ts-node -r ./env.js tools/link-tester/tester.ts",
     "link-tester:full": "npx ts-node -r ./env.js tools/link-tester/tester.ts -full",
+    "explorar": "node -r ./env.js tools/explorador/explorar.js",
     "debug": "cross-env CUCUMBER_DEBUG=1 npx cucumber-js --profile debug",
     "record": "node -r ./env.js tools/generator/codegen.js",
     "record:generator": "ts-node -r ./env.js tools/generator/record-generator.ts"
