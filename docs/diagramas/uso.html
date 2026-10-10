@@ -68,6 +68,11 @@
       <div class="paso"><div class="n">8</div><div><div class="pedido">"Revisá la seguridad de https://staging.tu-app.com"</div>
         <div class="quien">analista-seguridad: OWASP ZAP en modo pasivo, solo URLs autorizadas</div>
         <div class="sale">informe de seguridad: hallazgos por riesgo, evidencia y cómo corregirlos</div></div></div>
+      <div class="bajada">▼</div>
+      <div class="paso"><div class="n">9</div><div><div class="pedido">"Hacé pruebas exploratorias del sitio del .env"</div>
+        <div class="quien">explorador-web: recorrido automático + exploración manual con Playwright</div>
+        <div class="terminal">npm run explorar <span class="c">              # también sin agentes ni tokens</span></div>
+        <div class="sale">informe con links e imágenes rotas, errores, responsive y tiempos de carga, con capturas y video</div></div></div>
       <div class="bucle">¿Una prueba puntual que no vale la pena automatizar? → "Ejecutá el escenario X contra https://…" (ejecutor-e2e / ejecutor-api, en vivo)</div>
     </div>
 
@@ -75,16 +80,16 @@
     <div class="etapa">
       <h2><span class="num-etapa" style="background:var(--cian)">3</span>Gestión y cierre</h2>
       <p>Xray · QMetry (QTM4J) · AIO Tests · Azure DevOps</p>
-      <div class="paso"><div class="n">9</div><div><div class="pedido">"Subí los casos de HU-001 a Xray en 'HU-001 Registro', vinculados a PROJ-12"</div>
+      <div class="paso"><div class="n">10</div><div><div class="pedido">"Subí los casos de HU-001 a Xray en 'HU-001 Registro', vinculados a PROJ-12"</div>
         <div class="quien">gestor-pruebas</div><div class="sale">carpeta + casos vinculados a la historia</div></div></div>
       <div class="bajada">▼</div>
-      <div class="paso"><div class="n">10</div><div><div class="pedido">"Creá el ciclo Sprint 5 con esos casos"</div>
+      <div class="paso"><div class="n">11</div><div><div class="pedido">"Creá el ciclo Sprint 5 con esos casos"</div>
         <div class="quien">gestor-pruebas</div><div class="sale">ciclo (Test Execution) vinculado a PROJ-12</div></div></div>
       <div class="bajada">▼</div>
-      <div class="paso"><div class="n">11</div><div><div class="pedido">"Subí los resultados de la última corrida al ciclo PROJ-60"</div>
+      <div class="paso"><div class="n">12</div><div><div class="pedido">"Subí los resultados de la última corrida al ciclo PROJ-60"</div>
         <div class="quien">publicador-resultados</div><div class="sale">estado + error + captura, GIF y video (si falló) por caso</div></div></div>
       <div class="bajada">▼</div>
-      <div class="paso"><div class="n">12</div><div><div class="pedido">"Armá el informe de cierre de HU-001"</div>
+      <div class="paso"><div class="n">13</div><div><div class="pedido">"Armá el informe de cierre de HU-001"</div>
         <div class="quien">generador-reporte-cierre</div><div class="sale">resultados, bugs, riesgos y go / no-go</div></div></div>
     </div>
   </div>

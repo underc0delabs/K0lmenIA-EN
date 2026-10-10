@@ -98,6 +98,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Automatización con k0lmena](#️-automatización-con-k0lmena)
 - [Pruebas de performance](#-pruebas-de-performance)
 - [Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps](#️-gestión-de-pruebas-xray-qmetry-aio-tests-y-azure-devops)
+- [Pruebas exploratorias](#-pruebas-exploratorias)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -294,7 +295,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -456,7 +457,8 @@ npm run conector -- activar azure-devops    # queda solo para vos; reiniciá Cla
 6. npm test · npm run report:web                       → reporte con evidencias (sin tokens)
 7. "Subí los resultados al ciclo del Sprint 5"         → estados y evidencias en Xray
 8. "Armá una prueba de carga del login"                → script + reporte de performance
-9. "Armá el informe de cierre de HU-001"               → go / no-go
+9. "Hacé pruebas exploratorias del sitio del .env"     → links, imágenes, errores y responsive, con capturas y video
+10. "Armá el informe de cierre de HU-001"              → go / no-go
 ```
 </details>
 

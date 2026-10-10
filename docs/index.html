@@ -56,6 +56,7 @@
   <a href="#performance">Performance</a>
   <a href="#gestion">Xray, QMetry, AIO Tests y Azure DevOps</a>
   <a href="#base-de-datos">Verificación en base de datos</a>
+  <a href="#exploratorias">Pruebas exploratorias</a>
   <a href="#seguridad">Seguridad web</a>
   <a href="#conectores">Conectores MCP</a>
   <div class="grupo">Referencia</div>
@@ -83,8 +84,8 @@
     <li><span>1</span>Qué es k0lmenIA</li><li><span>2</span>Arquitectura</li><li><span>3</span>Cómo se usa</li><li><span>4</span>Agentes</li>
     <li><span>5</span>Requisitos</li><li><span>6</span>Instalación</li><li><span>7</span>Configuración: el archivo .env</li>
     <li><span>8</span>Investigación de contexto y falta información</li><li><span>9</span>Guía por tarea: diseño y ejecución</li><li><span>10</span>Automatización con k0lmena</li><li><span>11</span>Pruebas de performance</li>
-    <li><span>12</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>13</span>Verificación en base de datos</li><li><span>14</span>Seguridad web</li><li><span>15</span>Conectores MCP</li>
-    <li><span>16</span>Convenciones</li><li><span>17</span>Estructura del repositorio</li><li><span>18</span>Problemas frecuentes</li><li><span>19</span>Extender el proyecto</li>
+    <li><span>12</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>13</span>Verificación en base de datos</li><li><span>14</span>Pruebas exploratorias</li><li><span>15</span>Seguridad web</li><li><span>16</span>Conectores MCP</li>
+    <li><span>17</span>Convenciones</li><li><span>18</span>Estructura del repositorio</li><li><span>19</span>Problemas frecuentes</li><li><span>20</span>Extender el proyecto</li>
   </ol>
 </section>
 
@@ -255,7 +256,7 @@
     <tr><th style="width:24%">Skill</th><th>Qué enseña</th><th style="width:30%">Lo usan</th></tr>
     <tr><td><code>investigacion-contexto</code></td><td>Investigar la historia completa (comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper</td></tr>
     <tr><td><code>tecnicas-de-diseno</code></td><td>Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise</td><td>generadores de casos manuales, BDD y API; api-mapper</td></tr>
-    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper</td></tr>
+    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web</td></tr>
     <tr><td><code>ejecucion-api</code></td><td>Correr colecciones con Newman: base_url, token, validaciones y resultados</td><td>ejecutor-api</td></tr>
     <tr><td><code>automatizacion-k0lmena</code></td><td>Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance</td><td>los mappers y verificador-datos</td></tr>
     <tr><td><code>guia-performance</code></td><td>Planificar con la persona una prueba de performance paso a paso</td><td>la conversación principal y performance-mapper</td></tr>
@@ -399,7 +400,7 @@ npm run bootstrap:jmeter                           <span class="c"># performance
     <p>Datos válidos, inválidos y de borde. Los bugs siguen <code>plantillas/plantilla-reporte-bug.md</code> (editala para usar tu formato) y marcan lo que falta en vez de inventarlo.</p></div>
   <div class="guia"><h4>Ejecutar en vivo <span class="etiqueta neutra">ejecutor-e2e</span> <span class="etiqueta neutra">ejecutor-api</span> <span class="etiqueta tok">usa tokens</span></h4>
     <div class="pedido">Ejecutá SOLO el escenario de registro válido de HU-001 contra https://tu-app.com.</div>
-    <p>El ejecutor E2E pregunta si querés ver el navegador, ejecuta con Playwright MCP, saca evidencia y genera <code>reporte-HU-001-&lt;fecha-hora&gt;.html</code>. El de API corre la colección con Newman. Ideal para pruebas puntuales: lo que se repite conviene automatizarlo.</p></div>
+    <p>El ejecutor E2E pregunta si querés ver el navegador, ejecuta con Playwright MCP, saca evidencia y genera <code>reporte-HU-001-&lt;fecha-hora&gt;.html</code>. Para recorrer un sitio entero buscando fallas, está el <b>explorador-web</b> (ver <a href="#exploratorias">Pruebas exploratorias</a>). El de API corre la colección con Newman. Ideal para pruebas puntuales: lo que se repite conviene automatizarlo.</p></div>
   <div class="guia"><h4>Reportes e informe de cierre <span class="etiqueta neutra">generador-reporte-html</span> <span class="etiqueta neutra">generador-reporte-cierre</span></h4>
     <div class="pedido">Armá el informe de cierre de las pruebas de HU-001.</div>
     <p>Dashboards con indicadores, gráficos y detalle; el informe de cierre suma bugs abiertos, riesgos y la recomendación go/no-go.</p></div>
@@ -462,6 +463,7 @@ npm run report:web                        <span class="c"># también: report:api
     <tr><th style="width:30%">Comando</th><th>Para qué</th></tr>
     <tr><td><code>npm run crawler [url]</code></td><td>Genera un archivo de locators recorriendo una página.</td></tr>
     <tr><td><code>npm run link-tester</code></td><td>Busca enlaces e imágenes rotas en <code>BASEURL</code>.</td></tr>
+    <tr><td><code>npm run explorar</code></td><td>Recorrido exploratorio con navegador: links, imágenes, errores, responsive y tiempos de carga, con capturas, videos e informe HTML (lo usa el <b>explorador-web</b>).</td></tr>
     <tr><td><code>npm run record</code></td><td>Graba un flujo con Playwright codegen.</td></tr>
     <tr><td><code>npm run debug</code></td><td>Corre la suite web en modo debug.</td></tr>
   </table></div>
@@ -575,6 +577,32 @@ npm run bd -- consultar --sql "SELECT id, estado FROM usuarios WHERE email = ?" 
   <div class="aviso warn"><span class="ico">!</span><p>Para preparar o limpiar datos, la conexión necesita <code>DB_&lt;NOMBRE&gt;_ESCRITURA=si</code> y el agente muestra la sentencia y pide confirmación antes de cada operación. Con <code>DB_&lt;NOMBRE&gt;_PRODUCCION=si</code> nunca escribe. Recomendado: un usuario de base de datos con permisos de solo lectura.</p></div>
 </section>
 
+<!-- ======================================================= EXPLORATORIAS -->
+<section class="seccion" id="exploratorias">
+  <div class="kicker">Guías</div>
+  <h2>Pruebas exploratorias</h2>
+  <p class="bajada">El <b>explorador-web</b> recorre tu sitio (el <code>APP_URL</code> del <code>.env</code> o la URL que le digas) y busca lo que se rompe sin que nadie lo note. Primero un <b>recorrido automático</b> con un script, sin gastar tokens por página; después explora a mano con Playwright MCP lo que necesita criterio.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">Qué revisa</th><th>Cómo</th></tr>
+    <tr><td>Links e imágenes</td><td>Links rotos internos y externos (aparte, los que no se pueden verificar porque el sitio bloquea robots), imágenes que no cargan e imágenes sin <code>alt</code>.</td></tr>
+    <tr><td>Errores</td><td>Errores de JavaScript, errores de consola y recursos que fallan (scripts, CSS, fetch con 4xx/5xx o sin respuesta).</td></tr>
+    <tr><td>Responsive</td><td>En 360x740, 390x844, 768x1024, 1366x768 y 1920x1080: scroll horizontal y qué elemento se sale, texto de menos de 12px, objetivos táctiles chicos y muy juntos (WCAG 2.5.8) y falta de <code>meta viewport</code>.</td></tr>
+    <tr><td>Rendimiento</td><td>Tiempo de carga, primer byte, DOM listo, requests y peso de cada página; las lentas son hallazgos.</td></tr>
+    <tr><td>Exploración manual</td><td>Menús (también el mobile), formularios sin enviar, búsquedas, la página 404, recargar a mitad de un flujo. Con misión y tiempo acotado.</td></tr>
+  </table></div>
+  <div class="guia"><h4>explorador-web <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">Hacé pruebas exploratorias del sitio del .env.</div>
+    <ol>
+      <li><b>Recorre</b> el sitio con <code>npm run explorar</code>: captura cada página y cada resolución con los problemas <b>marcados en rojo</b> y graba un video del recorrido y de cada resolución.</li>
+      <li><b>Revisa</b> los hallazgos: reintenta los dudosos, mira las capturas y ajusta la severidad con su motivo.</li>
+      <li><b>Explora a mano</b> con Playwright MCP lo que un recorrido automático no ve.</li>
+      <li><b>Arma el informe</b> HTML: indicadores, gráficos, cada hallazgo con su captura (clic para ampliar), tiempos de carga, matriz de responsive, videos, links rotos, detalle por página y recomendaciones.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run explorar -- --url https://staging.mi-app.com --max-paginas 50 <span class="c"># sin agentes ni tokens</span>
+npm run explorar -- --resoluciones 360x740,768x1024,1366x768 --video no</pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Solo navega con GET: no envía formularios y no abre ni verifica links de cierre de sesión o borrado. Todo queda en <code>output/exploratorias/&lt;HU o sitio&gt;/</code> y <b>cada corrida reemplaza a la anterior</b> (para conservar una, usá otra <code>--historia</code> o copiá la carpeta).</p></div>
+</section>
+
 <!-- ======================================================= SEGURIDAD -->
 <section class="seccion" id="seguridad">
   <div class="kicker">Guías</div>
@@ -655,6 +683,7 @@ npm run bd -- consultar --sql "SELECT id, estado FROM usuarios WHERE email = ?" 
     <tr><td>Automatización</td><td><code>&lt;tipo&gt;/features/HU-001-&lt;slug&gt;.feature</code> · <code>steps/HU-001.steps.ts</code> · <code>locators/HU-001.locators.ts</code></td></tr>
     <tr><td>Performance</td><td><code>performance/k6/http/HU-001-&lt;slug&gt;.ts</code> · <code>performance/artillery/HU-001-&lt;slug&gt;.yaml</code> · <code>performance/jmeter/HU-001-&lt;slug&gt;.jmx</code></td></tr>
     <tr><td>Mapeo</td><td><code>output/mapeos/mapeo-HU-001-&lt;tipo&gt;.md</code></td></tr>
+    <tr><td>Exploratorias</td><td><code>output/exploratorias/&lt;HU o sitio&gt;/informe-exploratorio.html</code> + <code>exploracion.json</code> · <code>capturas/</code> · <code>videos/</code> (cada corrida reemplaza a la anterior)</td></tr>
   </table></div>
 </section>
 

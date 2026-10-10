@@ -10,7 +10,8 @@ Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae 
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | Conector                         | Herramienta                             | Server MCP                              | Tipo    | Transporte   | Habilitado por defecto   |
 +==================================+=========================================+=========================================+=========+==============+==========================+
-| playwright · playwright-headless | Navegador (ejecutor-e2e, web-mapper)    | @playwright/mcp                         | Oficial | stdio        | Sí                       |
+| playwright · playwright-headless | Navegador (ejecutor-e2e, web-mapper,    | @playwright/mcp                         | Oficial | stdio        | Sí                       |
+|                                  | explorador-web)                         |                                         |         |              |                          |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | atlassian                        | Jira y Confluence (Cloud)               | Atlassian Rovo MCP Server (remoto)      | Oficial | http         | Sí                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
