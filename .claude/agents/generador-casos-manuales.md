@@ -48,7 +48,7 @@ Aplicá el skill **`tecnicas-de-diseno`** (clases de equivalencia, valores lími
 python scripts/generar_casos.py output/casos-de-prueba/manuales/_casos-HU-XXX.json output/casos-de-prueba/manuales/casos-HU-XXX.xlsx --limpiar
 ```
 
-Esto crea `casos-HU-XXX.xlsx` **y** `casos-HU-XXX.md` (la misma ruta, extensión `.md`).
+Esto crea `casos-HU-XXX.xlsx` **y** `casos-HU-XXX.md` (la misma ruta, extensión `.md`). Cada caso lleva su **tiempo estimado de ejecución manual** (columna *Tiempo estimado (min)*, con el total al pie, y en el `.md`), calculado con la fórmula de `scripts/estimacion.py` (`plantillas/estimacion-tiempos.md`). Si sabés que un caso lleva más (por ejemplo, esperar un proceso de 10 minutos), poné `"tiempo_min"` en el JSON: manda sobre la fórmula. Decí el tiempo total en la respuesta.
 
 5. **Escribí el informe de cobertura** `casos-HU-XXX-cobertura.md` siguiendo `plantillas/plantilla-cobertura.md`. Sus tablas van como **Markdown normal** (ver abajo).
 6. **Normalizá las tablas del informe** para que queden alineadas:

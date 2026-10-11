@@ -2,6 +2,14 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-11 (5) — Revisor de casos, charters, UX, formularios, logs y tiempo de ejecución
+- **Tiempo estimado de ejecución manual** de cada caso (`scripts/estimacion.py`, fórmula en `plantillas/estimacion-tiempos.md`): columna *Tiempo estimado (min)* con el total en la planilla de casos y en el `.md`; al subir a la herramienta de gestión va en la descripción y en el campo nativo (Original Estimate en Xray Cloud y Server/DC, estimatedTime en QTM4J, estimatedEffort en AIO Tests; si se rechaza, se crea sin él); para Azure DevOps en el JSON y como etiqueta. Un valor cargado a mano en la planilla manda sobre la fórmula.
+- Nuevo agente `revisor-casos`: puntaje por caso, resultados y pasos vagos, duplicados, escenarios sin Then o imperativos, historias sin negativos, tiempo de ejecución y versiones mejoradas.
+- Nuevo agente `generador-charters`: charters de exploración por sesiones, hojas para imprimir, plantilla de notas e informe de las sesiones (bugs, preguntas, reparto del tiempo, áreas cubiertas).
+- Nuevo agente `evaluador-ux`: `npm run ux` con las 10 heurísticas de Nielsen en desktop y mobile, la página 404 y la revisión manual de los flujos.
+- Nuevo agente `probador-formularios`: `npm run formularios` prueba cada campo sin enviar (bloquea cualquier envío) y arma la matriz campo × prueba.
+- Nuevo agente `analista-logs`: agrupa los errores de los logs por firma, la línea de tiempo y el cruce con los escenarios fallidos; los steps comunes de k0lmena guardan el inicio y fin de cada escenario.
+
 ## 2026-10-11 (4) — Correos, traducciones e historial de corridas
 - Nuevo agente `verificador-correos`: con Mailpit como buzón de prueba (`herramientas/mailpit/`), `npm run correos` revisa que llegue lo esperado por caso (destinatario, asunto, textos, links, adjuntos), variables sin reemplazar, links rotos o a localhost, imágenes, texto plano, tamaño, compatibilidad del HTML con los clientes de correo (html-check de Mailpit) y cómo se ve en desktop y mobile. Steps de correo para los `.feature` de k0lmena (`tools/correos/correos.steps.ts`).
 - Nuevo agente `analista-traductor`: `npm run traductor` recorre cada página en cada idioma (hreflang, plantilla de URL o idioma del navegador) y detecta textos sin traducir, claves a la vista, caracteres mal codificados, textos cortados o desbordados, números y fechas de otra región y el atributo lang.

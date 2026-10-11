@@ -67,6 +67,8 @@ Feature: Inicio de sesión
       | maria@test.ar | incorrecta | Credenciales incorrectas   |
 ```
 
+En el informe de cobertura, sumá el **tiempo estimado de ejecución manual** de los escenarios (`python scripts/estimacion.py <archivo.feature>`, fórmula en `plantillas/estimacion-tiempos.md`): sirve para planificar si se ejecutan a mano antes de automatizarlos. Al subirlos a la herramienta de gestión, cada escenario lleva su tiempo.
+
 ## Convenciones del `.feature`
 
 - **Palabras clave en inglés:** `Feature`, `Background`, `Scenario`, `Scenario Outline`, `Examples`, `Given`, `When`, `Then`, `And`, `But`. (Para listar varios pasos del mismo tipo, usá `And` / `But`.)

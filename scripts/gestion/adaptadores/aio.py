@@ -17,7 +17,7 @@ import os
 import re
 from pathlib import Path
 
-from adaptadores.base import Adaptador, titulo_remoto
+from adaptadores.base import Adaptador, titulo_remoto, con_tiempo, tiempo_nativo, intentar_con_tiempo, jira_duracion, hhmm
 from comun import ErrorGestion, Http, env
 
 ESTADOS = {"aprobado": "Passed", "fallido": "Failed", "bloqueado": "Blocked",
@@ -101,7 +101,7 @@ class AIO(Adaptador):
         estado_caso = os.environ.get("AIO_ESTADO_CASO", "Published").strip().lower()
         cuerpo = {
             "title": titulo_remoto(caso, 255),
-            "description": caso.get("descripcion", ""),
+            "description": con_tiempo(caso.get("descripcion", ""), caso),
             "precondition": caso.get("precondiciones", ""),
             "folder": {"ID": carpeta_id},
             "tags": self._tags(caso.get("etiquetas", []) + ["k0lmenIA"]),
@@ -129,7 +129,10 @@ class AIO(Adaptador):
                 cuerpo["scriptType"] = {"ID": script_id}
             cuerpo["steps"] = [{"stepType": "TEXT", "step": p["accion"], "data": p["datos"],
                                 "expectedResult": p["resultado"]} for p in caso["pasos"]]
-        r = self.http.post(f"{self.p}/testcase", json_body=cuerpo)
+        con = cuerpo
+        if tiempo_nativo() and caso.get("estimacion"):
+            con = {**cuerpo, "estimatedEffort": caso["estimacion"]["segundos"]}  # en segundos
+        r = intentar_con_tiempo(lambda c: self.http.post(f"{self.p}/testcase", json_body=c), con, cuerpo)
         return {"key": r.get("key"), "id": r.get("ID")}
 
     def vincular_caso_historia(self, caso, historia):

@@ -4,11 +4,21 @@
 // Ej.: un step de API guarda el id creado ("guardo el campo "id" de la respuesta como "idUsuario"")
 // y un step de base de datos lo usa ("donde "id" es "{idUsuario}"").
 // Se reinician antes de cada escenario.
-import { Before } from '@cucumber/cucumber';
+import { After, Before } from '@cucumber/cucumber';
 
 export const variables: Record<string, unknown> = {};
 
+// Inicio y fin de cada escenario (en el reporte): el analista-logs los cruza con los logs del servidor.
+let inicioEscenario = new Date();
+After(function () {
+  const fin = new Date();
+  if (typeof (this as any)?.attach === 'function') {
+    return (this as any).attach(`TIEMPO: inicio=${inicioEscenario.toISOString()} fin=${fin.toISOString()}`, 'text/plain');
+  }
+});
+
 Before(function ({ pickle }) {
+  inicioEscenario = new Date();
   for (const k of Object.keys(variables)) delete variables[k];
 
   // Escenarios que dependen de información que falta (skill investigacion-contexto):

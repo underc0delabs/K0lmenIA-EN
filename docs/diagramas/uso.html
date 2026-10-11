@@ -43,7 +43,10 @@
         <div class="sale">plan HTML: alcance, riesgos, criterios</div></div></div>
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">3</div><div><div class="pedido">"Generá los casos de HU-001" · "Pasala a BDD"</div><div class="quien">generador-casos-manuales · generador-casos-bdd · generador-casos-api</div>
-        <div class="sale">casos-HU-001.xlsx + .md + cobertura · .feature</div></div></div>
+        <div class="sale">casos-HU-001.xlsx + .md + cobertura · .feature, cada caso con su tiempo estimado de ejecución manual</div></div></div>
+      <div class="bajada">▼</div>
+      <div class="paso"><div class="n" style="font-size:12px">3a</div><div><div class="pedido">"Revisá los casos de HU-001 y decime cuánto lleva ejecutarlos" · "Armá charters para explorar el checkout"</div><div class="quien">revisor-casos · generador-charters</div>
+        <div class="sale">puntaje, duplicados, mejoras y minutos · hojas de sesión exploratoria + informe</div></div></div>
       <div class="bajada">▼</div>
       <div class="paso"><div class="n" style="font-size:12px">3b</div><div><div class="pedido">"¿Qué casos corro para este cambio?"</div><div class="quien">selector-casos-de-prueba</div>
         <div class="sale">selección por riesgo + comando npm test con tags</div></div></div>
@@ -62,7 +65,7 @@
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">6</div><div><div class="pedido">Corrés la suite cuando quieras <span class="pill ok">sin tokens</span></div>
         <div class="terminal">cd herramientas/k0lmena<br>npm test <span class="c">           # web + api (TAGS=@HU-001)</span><br>npm run test:mobile<br>npm run report:web <span class="c"> # HTML con evidencias</span></div>
-        <div class="sale">¿falló algo? "Analizá por qué falló npm test" · analista-fallos: bugs reales vs. tests a arreglar · "Repará los locators rotos" · reparador-automatizacion</div></div></div>
+        <div class="sale">¿falló algo? "Analizá por qué falló npm test" · analista-fallos: bugs reales vs. tests a arreglar · "Repará los locators rotos" · reparador-automatizacion · "¿Qué error hubo en el servidor?" · analista-logs</div></div></div>
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">7</div><div><div class="pedido">"Armá una prueba de carga del login para 50 usuarios"</div>
         <div class="quien">guía paso a paso (tipo de prueba, herramienta, usuarios, umbrales) · performance-mapper con k6, Artillery o JMeter</div>
@@ -73,10 +76,10 @@
         <div class="quien">analista-seguridad: OWASP ZAP en modo pasivo, solo URLs autorizadas</div>
         <div class="sale">informe de seguridad: hallazgos por riesgo, evidencia y cómo corregirlos</div></div></div>
       <div class="bajada">▼</div>
-      <div class="paso"><div class="n">9</div><div><div class="pedido">"Hacé pruebas exploratorias" · "Revisá la accesibilidad" · "Revisá la velocidad" · "¿Se corrió algo?" · "Probalo en Safari" · "¿Llegó el mail?" · "Revisá las traducciones"</div>
-        <div class="quien">explorador-web · analista-accesibilidad (WCAG 2.2) · auditor-rendimiento-web (Lighthouse) · pixel-perfect (regresión visual) · cross-browser (Chromium, Firefox, WebKit) · verificador-correos (Mailpit) · analista-traductor (idiomas)</div>
-        <div class="terminal">npm run explorar · npm run accesibilidad<br>npm run rendimiento · npm run pixel-perfect<br>npm run cross-browser · npm run correos<br>npm run traductor <span class="c">           # también sin agentes ni tokens</span></div>
-        <div class="sale">links, imágenes, errores, responsive, WCAG, correos y traducciones, con capturas; cada informe compara contra las corridas anteriores (últimas 5)</div></div></div>
+      <div class="paso"><div class="n">9</div><div><div class="pedido">"Hacé pruebas exploratorias" · "Revisá la accesibilidad" · "Revisá la velocidad" · "¿Se corrió algo?" · "Probalo en Safari" · "¿Llegó el mail?" · "Revisá las traducciones" · "Evaluá la usabilidad" · "Probá las validaciones del formulario"</div>
+        <div class="quien">explorador-web · analista-accesibilidad (WCAG 2.2) · auditor-rendimiento-web (Lighthouse) · pixel-perfect (regresión visual) · cross-browser (Chromium, Firefox, WebKit) · verificador-correos (Mailpit) · analista-traductor (idiomas) · evaluador-ux (Nielsen) · probador-formularios</div>
+        <div class="terminal">npm run explorar · npm run accesibilidad<br>npm run rendimiento · npm run pixel-perfect<br>npm run cross-browser · npm run correos<br>npm run traductor · npm run ux<br>npm run formularios <span class="c">         # también sin agentes ni tokens</span></div>
+        <div class="sale">links, imágenes, errores, responsive, WCAG, correos, traducciones, usabilidad y formularios, con capturas; cada informe compara contra las corridas anteriores (últimas 5)</div></div></div>
       <div class="bucle">¿Una prueba puntual que no vale la pena automatizar? → "Ejecutá el escenario X contra https://…" (ejecutor-e2e / ejecutor-api, en vivo)</div>
     </div>
 
@@ -85,7 +88,7 @@
       <h2><span class="num-etapa" style="background:var(--cian)">3</span>Gestión y cierre</h2>
       <p>Xray · QMetry (QTM4J) · AIO Tests · Azure DevOps</p>
       <div class="paso"><div class="n">10</div><div><div class="pedido">"Subí los casos de HU-001 a Xray en 'HU-001 Registro', vinculados a PROJ-12"</div>
-        <div class="quien">gestor-pruebas</div><div class="sale">carpeta + casos vinculados a la historia</div></div></div>
+        <div class="quien">gestor-pruebas</div><div class="sale">carpeta + casos vinculados a la historia, con su tiempo estimado (Original Estimate, estimatedTime, estimatedEffort)</div></div></div>
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">11</div><div><div class="pedido">"Creá el ciclo Sprint 5 con esos casos"</div>
         <div class="quien">gestor-pruebas</div><div class="sale">ciclo (Test Execution) vinculado a PROJ-12</div></div></div>

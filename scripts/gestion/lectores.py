@@ -61,6 +61,7 @@ def leer_xlsx(ruta):
             "prioridad": PRIORIDADES.get(val(fila, "Prioridad").lower(), "Media"),
             "etiquetas": [e.lstrip("@") for e in re.split(r"[\s,]+", val(fila, "#Etiquetas")) if e],
             "tipo": "manual",
+            "tiempo_min": val(fila, "Tiempo estimado (min)"),
             "pasos": _pasos_desde_texto(val(fila, "Pasos"), val(fila, "Datos de Prueba"),
                                          val(fila, "Resultado Esperado") or val(fila, "Resultado esperado")),
         })
@@ -158,6 +159,12 @@ def leer_casos(origen, ids=None):
         faltan = pedidos - {c["id"] for c in casos}
         if faltan:
             raise ErrorGestion(f"No encontré en {origen} los casos: {', '.join(sorted(faltan))}.")
+    # Tiempo estimado de ejecución manual (scripts/estimacion.py): viaja a la herramienta de gestión.
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from estimacion import estimar_caso
+    for c in casos:
+        c["estimacion"] = estimar_caso(c)
     return casos
 
 

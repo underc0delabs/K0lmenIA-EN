@@ -15,7 +15,7 @@ import json
 import os
 from pathlib import Path
 
-from adaptadores.base import Adaptador, titulo_remoto
+from adaptadores.base import Adaptador, titulo_remoto, con_tiempo, tiempo_nativo, intentar_con_tiempo, jira_duracion, hhmm
 from comun import ErrorGestion, Http, env
 
 ESTADOS = {
@@ -130,7 +130,7 @@ class XrayCloud(Adaptador):
         fields = {
             "summary": titulo_remoto(caso, 250),
             "project": {"key": self.proyecto},
-            "description": descripcion.strip() or caso["titulo"],
+            "description": con_tiempo(descripcion.strip() or caso["titulo"], caso),
             "labels": [e.replace(" ", "_") for e in caso.get("etiquetas", [])] + ["k0lmenIA"],
         }
         prioridad = self.prioridades.get(caso.get("prioridad"))
@@ -145,7 +145,11 @@ class XrayCloud(Adaptador):
             consulta = ("mutation($j:JSON!,$s:[CreateStepInput],$f:String){ createTest(testType:{name:\"Manual\"}, "
                         "steps:$s, folderPath:$f, jira:$j){ test{ issueId jira(fields:[\"key\"]) } warnings } }")
             variables = {"j": {"fields": fields}, "s": pasos, "f": carpeta_ruta}
-        d = self.gql(consulta, variables)
+        # Tiempo estimado en el Original Estimate de Jira (si el proyecto tiene time tracking).
+        con = variables
+        if tiempo_nativo() and caso.get("estimacion"):
+            con = {**variables, "j": {"fields": {**fields, "timetracking": {"originalEstimate": jira_duracion(caso["estimacion"]["minutos"])}}}}
+        d = intentar_con_tiempo(lambda v: self.gql(consulta, v), con, variables)
         if self.dry_run:
             return {"key": f'DRY-{caso["id"]}', "id": None}
         test = d["createTest"]["test"]

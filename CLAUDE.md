@@ -207,6 +207,32 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | formatos de número y fecha; propone      |                                       |
 |                            | traducciones; informe HTML               |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `revisor-casos`            | Revisa la calidad de los casos           | `output/revision-casos/`              |
+|                            | existentes (puntaje, problemas,          |                                       |
+|                            | duplicados, historias sin negativos,     |                                       |
+|                            | tiempo de ejecución manual) y propone    |                                       |
+|                            | versiones mejoradas; informe HTML        |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `generador-charters`       | Charters de pruebas exploratorias por    | `output/charters/`                    |
+|                            | sesiones (hojas para imprimir, plantilla |                                       |
+|                            | de notas) y el informe de las sesiones;  |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `evaluador-ux`             | Evaluación heurística de usabilidad (10  | `output/ux/`                          |
+|                            | heurísticas de Nielsen): automática en   |                                       |
+|                            | desktop y mobile más la revisión manual  |                                       |
+|                            | de los flujos; informe HTML              |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-formularios`     | Prueba las validaciones de cada campo de | `output/formularios/`                 |
+|                            | los formularios sin enviarlos            |                                       |
+|                            | (obligatorios, largos, formatos,         |                                       |
+|                            | límites, mensajes); informe HTML         |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `analista-logs`            | Analiza los logs de la app: agrupa       | `output/logs/`                        |
+|                            | errores, arma la línea de tiempo y los   |                                       |
+|                            | cruza con los escenarios fallidos de npm |                                       |
+|                            | test; informe HTML                       |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-seguridad`       | Revisa la seguridad de una web propia o  | `output/seguridad/`                   |
 |                            | autorizada con un escaneo pasivo de      |                                       |
 |                            | OWASP ZAP (Docker), analiza los          |                                       |
@@ -284,6 +310,8 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/analizar_fallos.py` → clasifica las fallas de `npm test`, compara con reintentos y genera el informe (`analista-fallos`).
 - `scripts/analizar_cobertura.py` → arma la matriz de cobertura y trazabilidad por historia y genera el informe (`analista-cobertura`).
 - `scripts/generar_informe_correos.py` y `generar_informe_traductor.py` → los informes HTML de `npm run correos` (Mailpit) y `npm run traductor` (`verificador-correos`, `analista-traductor`).
+- `scripts/estimacion.py` → **tiempo estimado de ejecución manual** de cada caso (fórmula en `plantillas/estimacion-tiempos.md`): va en la planilla de casos, en la herramienta de gestión al subirlos (descripción y Original Estimate / estimatedTime / estimatedEffort), en la selección y en la revisión.
+- `scripts/revisar_casos.py`, `generar_charters.py` y `analizar_logs.py` (con sus `generar_informe_*`) → revisión de casos, charters exploratorios y análisis de logs; `generar_informe_ux.py` y `generar_informe_formularios.py` → los informes de `npm run ux` y `npm run formularios`.
 - `scripts/_historial.py` (y `herramientas/k0lmena/tools/historial/`) → guardan las últimas 5 corridas de cada herramienta y arman la sección de evolución de los informes.
 - `scripts/seleccionar_casos.py` → elige y prioriza los casos a correr para un cambio y genera el informe (`selector-casos-de-prueba`).
 - `scripts/generar_informe_pixel_perfect.py`, `generar_informe_cross_browser.py` y `generar_informe_reparacion.py` → los informes HTML de `npm run pixel-perfect`, `npm run cross-browser` y `npm run reparar` (`pixel-perfect`, `cross-browser`, `reparador-automatizacion`).
@@ -295,7 +323,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 - Ficha de contexto: `output/contexto/contexto-HU-001.md` (fuentes consultadas, hallazgos y Falta información)
 - Análisis de historia: `analisis-HU-001.md`
-- Casos manuales: `casos-HU-001.xlsx` + `casos-HU-001.md` + `casos-HU-001-cobertura.md`
+- Casos manuales: `casos-HU-001.xlsx` + `casos-HU-001.md` + `casos-HU-001-cobertura.md` (cada caso con su tiempo estimado de ejecución manual)
 - Casos BDD: `HU-001-registro.feature` + `HU-001-cobertura.md`
 - Reporte de bug: `BUG-001.md`
 - Seguridad web: `output/seguridad/<HU o host>/<fecha>/` con `zap.json`, `analisis.json` e `informe-seguridad.html`
@@ -307,6 +335,11 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Regresión visual: `output/pixel-perfect/<HU o host>/` con `referencia/` (se conserva entre corridas), `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json` e `informe-pixel-perfect.html`.
 - Cross-browser: `output/cross-browser/<HU, host o suite>/` con `cross-browser.json`, `informe-cross-browser.html`, `capturas/`, `diferencias/` y `suite/` (el reporte de Cucumber de cada navegador).
 - Reparación de la automatización: `output/reparaciones/<HU o suite>/` con `reparaciones.json`, `informe-reparacion.html`, `capturas/`, `cambios.diff` y `respaldo/`.
+- Revisión de casos: `output/revision-casos/<HU o nombre>/` con `revision.json` e `informe-revision.html`.
+- Charters exploratorios: `output/charters/<HU o nombre>/` con `charters.json`, `charters.html`, `charters.md`, `sesiones/CH-XX.md` e `informe-sesiones.html`.
+- Usabilidad: `output/ux/<HU o host>/` con `ux.json`, `informe-ux.html`, `capturas/` y `recortes/`.
+- Formularios: `output/formularios/<HU o host>/` con `formularios.json`, `informe-formularios.html` y `capturas/`.
+- Logs: `output/logs/<nombre>/` con `logs.json` e `informe-logs.html` (los logs de entrada, en `input/logs/`).
 - Correos: `output/correos/<HU o buzón>/` con `correos.json`, `informe-correos.html`, `capturas/` (desktop y mobile) y `eml/`.
 - Traducciones: `output/traductor/<HU o host>/` con `traductor.json`, `informe-traductor.html`, `capturas/` y `recortes/`.
 - **Historial**: Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida.

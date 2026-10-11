@@ -15,7 +15,7 @@ import json
 import os
 from pathlib import Path
 
-from adaptadores.base import Adaptador, titulo_remoto
+from adaptadores.base import Adaptador, titulo_remoto, con_tiempo, tiempo_nativo, intentar_con_tiempo, jira_duracion, hhmm
 from comun import ErrorGestion, Http, env, necesitar
 
 # estado normalizado -> defaultName de QTM4J (el "name" puede estar personalizado)
@@ -125,7 +125,7 @@ class QTM4J(Adaptador):
         cuerpo = {
             "projectId": self.project_id,
             "summary": titulo_remoto(caso, 255),
-            "description": caso.get("descripcion", ""),
+            "description": con_tiempo(caso.get("descripcion", ""), caso),
             "precondition": caso.get("precondiciones", ""),
             "folderId": carpeta_id,
             "labels": self._labels(caso.get("etiquetas", []) + ["k0lmenIA"]),
@@ -136,7 +136,10 @@ class QTM4J(Adaptador):
         if caso["tipo"] != "cucumber":
             cuerpo["steps"] = [{"stepDetails": p["accion"], "testData": p["datos"],
                                 "expectedResult": p["resultado"]} for p in caso["pasos"]]
-        r = self.http.post("/testcases", json_body=cuerpo)
+        con = cuerpo
+        if tiempo_nativo() and caso.get("estimacion"):
+            con = {**cuerpo, "estimatedTime": hhmm(caso["estimacion"]["minutos"])}  # HH:mm
+        r = intentar_con_tiempo(lambda c: self.http.post("/testcases", json_body=c), con, cuerpo)
         creado = {"key": r.get("key"), "id": r.get("id"), "versionNo": r.get("versionNo", 1)}
         if caso["tipo"] == "cucumber":
             self.http.put(f'/testcases/{creado["id"]}/versions/{creado["versionNo"]}',

@@ -51,6 +51,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "scripts"))
 sys.path.insert(0, str(RAIZ / "scripts" / "gestion"))
 import recolectar_resultados as rec  # noqa: E402
+from estimacion import estimar_caso  # noqa: E402
 import _historial  # noqa: E402
 
 GRUPOS = ["Imprescindible", "Recomendado", "Regresión mínima", "No seleccionado"]
@@ -243,7 +244,7 @@ def inventario():
         k = f"{hu}:{cid}"
         return casos.setdefault(k, {"clave": k, "historia": hu, "id": cid, "titulo": "", "prioridad": "", "etiquetas": set(), "texto": [],
                                     "titulo_historia": "", "fuentes": [], "automatizado": [], "pasos": 0, "resultado": None,
-                                    "duracion_s": None, "inestable": False, "bugs": []})
+                                    "duracion_s": None, "inestable": False, "bugs": [], "minutos_manual": None})
 
     for x in sorted(glob.glob(str(RAIZ / "output" / "casos-de-prueba" / "manuales" / "casos-HU-*.xlsx"))):
         hu = re.search(r"(HU-\d+)", x).group(1).upper()
@@ -256,6 +257,7 @@ def inventario():
                 k["texto"] += [c["titulo"], c["titulo"], c.get("descripcion", ""), c.get("precondiciones", "")] + \
                     [f'{p.get("accion", "")} {p.get("resultado", "")}' for p in c.get("pasos") or []]
                 k["pasos"] = max(k["pasos"], len(c.get("pasos") or []))
+                k["minutos_manual"] = estimar_caso(c)["minutos"]
                 if "Manual" not in k["fuentes"]:
                     k["fuentes"].append("Manual")
         except Exception as ex:  # una planilla con otro formato no corta la selección
@@ -281,6 +283,8 @@ def inventario():
                 k["etiquetas"].update(c["etiquetas"])
                 k["texto"] += [c["titulo"], c["titulo"], c.get("gherkin", ""), tit]
                 k["pasos"] = max(k["pasos"], len([l for l in c.get("gherkin", "").splitlines() if re.match(r"\s*(Given|When|Then|And|But|\*)\b", l)]))
+                if not k["minutos_manual"]:
+                    k["minutos_manual"] = estimar_caso(c)["minutos"]
                 if suite:
                     k["automatizado"].append({"suite": suite, "archivo": Path(x).relative_to(RAIZ).as_posix(),
                                               "bloqueado": any(t.lower() == "bloqueado" for t in c["etiquetas"])})
@@ -415,7 +419,9 @@ def seleccionar(cambio, casos, presupuesto=None, min_por_paso=1.5):
         activos = [x for x in c["automatizado"] if not x["bloqueado"]]
         c["tipo"] = "Automatizado" if activos else "Manual"
         c["suite"] = activos[0]["suite"] if activos else None
-        c["minutos"] = max(0.1, round((c["duracion_s"] or 30) / 60, 1)) if activos else round(max(2, (c["pasos"] or 3) * min_por_paso), 1)
+        # Automatizado: lo que tardó en la última corrida. Manual: la fórmula de scripts/estimacion.py.
+        c["minutos"] = max(0.1, round((c["duracion_s"] or 30) / 60, 1)) if activos else (
+            c.get("minutos_manual") or round(max(2, (c["pasos"] or 3) * min_por_paso), 1))
 
     # Presupuesto de tiempo: se mantienen los imprescindibles y se completan los demás por puntaje.
     if presupuesto:

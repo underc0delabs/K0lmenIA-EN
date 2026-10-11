@@ -108,6 +108,11 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Cross-browser](#-cross-browser)
 - [Reparación de la automatización](#-reparación-de-la-automatización)
 - [Correos](#-correos)
+- [Revisión de casos y tiempo de ejecución](#-revisión-de-casos-y-tiempo-de-ejecución)
+- [Exploratorias por sesiones](#-exploratorias-por-sesiones)
+- [Usabilidad (heurísticas de Nielsen)](#-usabilidad-heurísticas-de-nielsen)
+- [Formularios](#-formularios)
+- [Logs](#-logs)
 - [Traducciones e idiomas](#-traducciones-e-idiomas)
 - [Historial de corridas](#-historial-de-corridas)
 - [Seguridad web](#️-seguridad-web)
@@ -123,7 +128,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 
 <table>
 <tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="8"><b>🧠 Análisis<br>y diseño</b></td>
+<tr><td rowspan="10"><b>🧠 Análisis<br>y diseño</b></td>
   <td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
 <tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
 <tr><td><code>generador-casos-manuales</code></td><td>Casos en Excel y Markdown + informe de cobertura</td></tr>
@@ -131,26 +136,31 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
+<tr><td><code>revisor-casos</code></td><td>Revisa la calidad de los casos existentes: puntaje, problemas, duplicados, tiempo de ejecución manual y la versión mejorada</td></tr>
+<tr><td><code>generador-charters</code></td><td>Charters de exploración por sesiones (hojas y plantilla de notas) y el informe de las sesiones</td></tr>
 <tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
-<tr><td rowspan="12"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="14"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
 <tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
 <tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
 <tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
 <tr><td><code>pixel-perfect</code></td><td>Regresión visual contra una referencia (o el diseño): qué se corrió y cuántos píxeles, qué falta, qué es nuevo y qué cambió de estilo, con comparador deslizable</td></tr>
+<tr><td><code>evaluador-ux</code></td><td>Usabilidad con las 10 heurísticas de Nielsen: medición automática en desktop y mobile más la revisión manual de los flujos</td></tr>
+<tr><td><code>probador-formularios</code></td><td>Valida cada campo de los formularios sin enviarlos: obligatorios, largos, formatos, límites y mensajes</td></tr>
 <tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
 <tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
 <tr><td><code>analista-cobertura</code></td><td>Matriz de trazabilidad (HU → criterios → casos → automatización → resultados) y qué falta probar</td></tr>
-<tr><td rowspan="8"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
+<tr><td rowspan="9"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
   <td><code>web-mapper</code></td><td>Recorre la web siguiendo tus casos y genera <code>.feature</code>, steps y locators</td></tr>
 <tr><td><code>api-mapper</code></td><td>Lee Postman o Swagger/OpenAPI, verifica los endpoints y genera los <code>.feature</code></td></tr>
 <tr><td><code>mobile-mapper</code></td><td>Recorre la app con Appium y genera <code>.feature</code>, steps y locators</td></tr>
 <tr><td><code>performance-mapper</code></td><td>Carga, estrés, soak y picos con k6, Artillery o JMeter; pregunta carga y umbrales</td></tr>
 <tr><td><code>analista-fallos</code></td><td>Cuando <code>npm test</code> falla: separa bugs reales de tests rotos, inestables, de datos o de ambiente, con la evidencia</td></tr>
+<tr><td><code>analista-logs</code></td><td>Logs del servidor agrupados por error y cruzados con los escenarios que fallaron en <code>npm test</code></td></tr>
 <tr><td><code>reparador-automatizacion</code></td><td>Repara los locators y esperas que se rompieron: diagnostica con el DOM guardado al fallar, propone un locator único, lo aplica con respaldo y lo verifica</td></tr>
 <tr><td><code>verificador-datos</code></td><td>Verifica datos en PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB y suma verificaciones de BD a los tests</td></tr>
 <tr><td><code>analista-seguridad</code></td><td>Escaneo de seguridad web pasivo con OWASP ZAP e informe HTML con hallazgos, evidencia y cómo corregirlos</td></tr>
@@ -316,7 +326,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -526,6 +536,62 @@ Queda en `output/reparaciones/<HU o suite>/` (con `cambios.diff` y `respaldo/`).
 
 ---
 
+## ✅ Revisión de casos y tiempo de ejecución
+
+Cada caso de prueba lleva su **tiempo estimado de ejecución manual**, calculado con una fórmula (`scripts/estimacion.py`, explicada en [`plantillas/estimacion-tiempos.md`](plantillas/estimacion-tiempos.md)) según lo que pide cada paso (navegar, completar campos, esperar un correo, verificar), las precondiciones y si es un caso negativo. Aparece en la planilla (columna *Tiempo estimado (min)*, con el total) y viaja a **Xray, QMetry, AIO Tests y Azure DevOps** al subir los casos.
+
+El **revisor-casos** revisa los casos que ya existen: les da un puntaje, marca resultados vagos, pasos sin acción, duplicados e historias sin casos negativos, y propone la versión mejorada.
+
+- *"Revisá los casos de HU-001"* · *"¿Cuánto lleva ejecutar a mano la regresión?"*
+
+```bash
+python scripts/revisar_casos.py --historia HU-001
+python scripts/estimacion.py output/casos-de-prueba/manuales/casos-HU-001.xlsx
+```
+
+---
+
+## 🧭 Exploratorias por sesiones
+
+El **generador-charters** arma sesiones de exploración con objetivo: cada charter tiene una misión, áreas, riesgos, heurísticas, datos y un tiempo fijo. Genera las hojas para imprimir y una plantilla de notas por sesión (`BUG:`, `PREGUNTA:`, `CUBIERTO:`…); con las notas arma el informe.
+
+```bash
+python scripts/generar_charters.py --nombre HU-003              # hojas de sesión
+python scripts/generar_charters.py --nombre HU-003 --informe    # informe de las sesiones
+```
+
+---
+
+## 🧩 Usabilidad (heurísticas de Nielsen)
+
+El **evaluador-ux** revisa la usabilidad con las **10 heurísticas de Nielsen**: mide lo repetible en desktop y mobile (errores técnicos a la vista, vocabulario inconsistente, placeholders como etiqueta, la página 404…) y recorre a mano los flujos principales.
+
+```bash
+npm run ux -- --url https://staging.mi-app.com
+```
+
+---
+
+## 📝 Formularios
+
+El **probador-formularios** prueba cada campo **sin enviar el formulario**: obligatorios, largos, emails, números en los límites, teléfonos, nombres con acentos (que tienen que aceptarse), y los mensajes de error de la aplicación o del navegador.
+
+```bash
+npm run formularios -- --url https://staging.mi-app.com/registro
+```
+
+---
+
+## 🪵 Logs
+
+El **analista-logs** lee los logs de la aplicación (app, nginx, Apache, JSON, syslog), agrupa los errores por firma, arma la línea de tiempo y los cruza con los escenarios que fallaron en `npm test` (cada escenario guarda su inicio y fin) para encontrar el error del servidor detrás de cada falla.
+
+```bash
+python scripts/analizar_logs.py --logs "input/logs/*.log" --corrida web
+```
+
+---
+
 ## ✉️ Correos
 
 El **verificador-correos** revisa los mails que manda tu aplicación —registro, confirmación, recuperar contraseña, pedidos, notificaciones— con **Mailpit**, un buzón de prueba que los atrapa sin entregarlos a nadie: que llegue lo esperado a quien corresponde, sin **variables sin reemplazar** (`{{nombre}}`, `undefined`), con los **links** bien (no rotos ni a `localhost`), las imágenes visibles, versión de texto plano, la **compatibilidad** del HTML con Outlook, Gmail y Apple Mail, y cómo se ve en **desktop y mobile**.
@@ -686,7 +752,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 30 agentes
+│   ├── agents/             Los 35 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

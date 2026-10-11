@@ -28,6 +28,8 @@
     "reparar": "node -r ./env.js tools/reparador/reparar.js",
     "correos": "node -r ./env.js tools/correos/correos.js",
     "traductor": "node -r ./env.js tools/traductor/traductor.js",
+    "ux": "node -r ./env.js tools/ux/evaluar.js",
+    "formularios": "node -r ./env.js tools/formularios/formularios.js",
     "debug": "cross-env CUCUMBER_DEBUG=1 npx cucumber-js --profile debug",
     "record": "node -r ./env.js tools/generator/codegen.js",
     "record:generator": "ts-node -r ./env.js tools/generator/record-generator.ts"

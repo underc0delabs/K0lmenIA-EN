@@ -30,6 +30,8 @@
     "reparar": "npm --prefix herramientas/k0lmena run reparar --",
     "correos": "npm --prefix herramientas/k0lmena run correos --",
     "traductor": "npm --prefix herramientas/k0lmena run traductor --",
+    "ux": "npm --prefix herramientas/k0lmena run ux --",
+    "formularios": "npm --prefix herramientas/k0lmena run formularios --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

@@ -4,6 +4,10 @@
 !/output/**/
 !/output/**/.gitkeep
 
+# Logs de la aplicación para el analista-logs: pueden tener datos personales, no se versionan
+/input/logs/*
+!/input/logs/.gitkeep
+
 # Sistema operativo
 .DS_Store
 Thumbs.db

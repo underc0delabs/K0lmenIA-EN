@@ -238,6 +238,12 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 |                       | cortes y formatos (agente analista-      |
 |                       | traductor)                               |
 +-----------------------+------------------------------------------+
+| npm run ux            | Heurísticas de Nielsen en desktop y      |
+|                       | mobile (agente evaluador-ux)             |
++-----------------------+------------------------------------------+
+| npm run formularios   | Validaciones de cada campo sin enviar el |
+|                       | formulario (agente probador-formularios) |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

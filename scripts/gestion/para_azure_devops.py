@@ -72,7 +72,8 @@ def convertir(caso):
         "title": titulo,
         "priority": PRIORIDAD_ADO.get(caso["prioridad"], 3),
         "steps": "\n".join(lineas),
-        "etiquetas": caso["etiquetas"],
+        "etiquetas": caso["etiquetas"] + ([f"tiempo-estimado-{caso['estimacion']['minutos']:g}min"] if caso.get("estimacion") else []),
+        "tiempo_estimado_min": caso["estimacion"]["minutos"] if caso.get("estimacion") else None,
     }
 
 

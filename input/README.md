@@ -17,6 +17,12 @@
 | `bugs/`          | Observaciones sueltas de errores para    | `observacion-<tema>.md`               |
 |                  | convertir en reportes                    |                                       |
 +------------------+------------------------------------------+---------------------------------------+
+| `correos/`       | Lo que tiene que llegar por mail en cada | `espera-HU-001.json`                  |
+|                  | caso (verificador-correos)               |                                       |
++------------------+------------------------------------------+---------------------------------------+
+| `logs/`          | Logs de la aplicación para el            | `app.log`, `access.log` (no se        |
+|                  | analista-logs (no se versionan)          | versionan)                            |
++------------------+------------------------------------------+---------------------------------------+
 ```
 
 Si tu equipo usa Jira o Azure DevOps, no hace falta copiar las historias acá: pasale a los agentes

@@ -16,7 +16,7 @@ import os
 import re
 from pathlib import Path
 
-from adaptadores.base import Adaptador, titulo_remoto
+from adaptadores.base import Adaptador, titulo_remoto, con_tiempo, tiempo_nativo, intentar_con_tiempo, jira_duracion, hhmm
 from comun import ErrorGestion, Http, env
 
 ESTADOS = {"aprobado": "PASS", "fallido": "FAIL", "pendiente": "TODO",
@@ -74,6 +74,13 @@ class XrayDC(Adaptador):
         self.http.post("/rest/api/2/issueLink", json_body={
             "type": {"name": tipo}, "inwardIssue": {"key": inward}, "outwardIssue": {"key": outward}})
 
+    def _crear_con_tiempo(self, fields, caso):
+        """El tiempo estimado va al Original Estimate de Jira; si el proyecto no tiene time tracking, sin él."""
+        con = fields
+        if tiempo_nativo() and caso.get("estimacion"):
+            con = {**fields, "timetracking": {"originalEstimate": jira_duracion(caso["estimacion"]["minutos"])}}
+        return intentar_con_tiempo(self._crear_issue, con, fields)
+
     def _crear_issue(self, fields):
         r = self.http.post("/rest/api/2/issue", json_body={"fields": {"project": {"key": self.proyecto}, **fields}})
         return {"key": r.get("key"), "id": r.get("id")}
@@ -99,7 +106,7 @@ class XrayDC(Adaptador):
         fields = {
             "issuetype": {"name": "Test"},
             "summary": titulo_remoto(caso, 250),
-            "description": descripcion.strip() or caso["titulo"],
+            "description": con_tiempo(descripcion.strip() or caso["titulo"], caso),
             "labels": [e.replace(" ", "_") for e in caso.get("etiquetas", [])] + ["k0lmenIA"],
         }
         prioridad = self.prioridades.get(caso.get("prioridad"))
@@ -116,10 +123,10 @@ class XrayDC(Adaptador):
             fields[self.campo("Test Type")] = {"value": "Cucumber"}
             fields[self.campo("Cucumber Test Type")] = {"value": "Scenario Outline" if esquema else "Scenario"}
             fields[self.campo("Cucumber Scenario")] = "\n".join(l.strip() for l in lineas[inicio + 1:] if l.strip())
-            creado = self._crear_issue(fields)
+            creado = self._crear_con_tiempo(fields, caso)
         else:
             fields[self.campo("Test Type")] = {"value": "Manual"}
-            creado = self._crear_issue(fields)
+            creado = self._crear_con_tiempo(fields, caso)
             for p in caso["pasos"]:
                 self.http.put(f'/rest/raven/1.0/api/test/{creado["key"]}/step',
                               json_body={"step": p["accion"], "data": p["datos"], "result": p["resultado"]})

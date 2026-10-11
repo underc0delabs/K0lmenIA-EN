@@ -15,7 +15,7 @@ Formato del JSON de entrada:
   "casos": [
     {"id": "CP-001", "titulo": "...", "descripcion": "...", "precondiciones": "...",
      "datos": "Email: ...\nContraseña: ...", "pasos": "1. ...\n2. ...", "resultado": "...",
-     "estado": "Pendiente", "prioridad": "Alta", "etiquetas": "@login",
+     "estado": "Pendiente", "prioridad": "Alta", "etiquetas": "@login", "tiempo_min": 5.5,
      "evidencia": "", "fecha_ejecucion": "", "comentarios": "",
      "falta_info": ["FI-01"]}
   ],
@@ -26,6 +26,8 @@ Formato del JSON de entrada:
   ]
 }
 
+"tiempo_min" (opcional, por caso): minutos de ejecución manual. Si falta, se calcula con la fórmula de
+scripts/estimacion.py (columna "Tiempo estimado (min)" del .xlsx, con el total al pie).
 "falta_info" (opcional, por caso): IDs de "Falta información" de los que depende el caso.
 Esos casos se resaltan en la planilla, suman la etiqueta @falta-info y el detalle en
 Comentarios. "falta_informacion" (opcional) arma la hoja "Falta información" del .xlsx
@@ -39,24 +41,24 @@ import textwrap
 import subprocess
 
 COLS = ["ID #", "Título", "Descripción", "Precondiciones", "Datos de Prueba", "Pasos",
-        "Resultado Esperado", "Estado", "Prioridad", "#Etiquetas", "Evidencia",
+        "Resultado Esperado", "Estado", "Prioridad", "Tiempo estimado (min)", "#Etiquetas", "Evidencia",
         "Fecha de Ejecución", "Comentarios"]
 KEYS = ["id", "titulo", "descripcion", "precondiciones", "datos", "pasos", "resultado",
-        "estado", "prioridad", "etiquetas", "evidencia", "fecha_ejecucion", "comentarios"]
+        "estado", "prioridad", "tiempo_min", "etiquetas", "evidencia", "fecha_ejecucion", "comentarios"]
 # El .md tiene: (1) una tabla Resumen y (2) la tabla con todos los casos (una fila por caso).
 # Resumen: 4 columnas, ordenado por prioridad (lo más crítico primero).
-RESUMEN_COLS = ["ID", "Título", "Resultado esperado", "Prioridad"]
-RESUMEN_KEYS = ["id", "titulo", "resultado", "prioridad"]
-RESUMEN_W = [6, 24, 32, 10]
+RESUMEN_COLS = ["ID", "Título", "Resultado esperado", "Prioridad", "Tiempo"]
+RESUMEN_KEYS = ["id", "titulo", "resultado", "prioridad", "tiempo"]
+RESUMEN_W = [6, 24, 32, 10, 8]
 
 # Tabla de casos del .md. Quita Estado (siempre "Pendiente"), Evidencia, Fecha de Ejecución
 # y Comentarios para no ensanchar de más; todas esas columnas sí están en el .xlsx.
 MD_COLS = ["ID #", "Título", "Descripción", "Precondiciones", "Datos de Prueba", "Pasos",
-           "Resultado Esperado", "Prioridad", "#Etiquetas"]
+           "Resultado Esperado", "Prioridad", "Tiempo", "#Etiquetas"]
 MD_KEYS = ["id", "titulo", "descripcion", "precondiciones", "datos", "pasos",
-           "resultado", "prioridad", "etiquetas"]
+           "resultado", "prioridad", "tiempo", "etiquetas"]
 # Ancho máximo por columna (las celdas largas se ajustan a varias líneas dentro de la celda).
-MD_MAXW = [6, 16, 22, 16, 18, 24, 20, 9, 12]
+MD_MAXW = [6, 16, 22, 16, 18, 24, 20, 9, 7, 12]
 
 FI_COLS = ["ID", "Qué falta", "Dónde se buscó", "Impacto", "Pregunta para el PO", "Estado"]
 FI_KEYS = ["id", "que_falta", "donde_se_busco", "impacto", "pregunta", "estado"]
@@ -93,6 +95,24 @@ def preparar_falta_info(data):
         caso["_fi"] = ", ".join(ids)
 
 
+def preparar_tiempos(data):
+    """Tiempo estimado de ejecución manual de cada caso (scripts/estimacion.py). Si el JSON ya trae
+    "tiempo_min" (lo ajustó alguien), se respeta."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from estimacion import estimar_caso, formatear
+    total = 0.0
+    for caso in data.get("casos", []):
+        try:
+            minutos = float(str(caso.get("tiempo_min")).replace(",", "."))
+        except (TypeError, ValueError):
+            minutos = estimar_caso(caso)["minutos"]
+        caso["tiempo_min"] = minutos
+        caso["tiempo"] = formatear(minutos)
+        total += minutos
+    data["_tiempo_total"] = total
+    data["_tiempo_total_txt"] = formatear(total)
+
+
 # Orden de prioridad: más crítico primero, prioridad baja al final.
 PRIORIDAD_ORDEN = {"crítica": 0, "critica": 0, "alta": 1, "media": 2, "baja": 3}
 
@@ -125,7 +145,7 @@ def to_xlsx(data, out):
     proyecto = data.get("proyecto", "NOMBRE DEL PROYECTO")
     modulo = data.get("modulo", "Módulo")
     casos = data.get("casos", [])
-    widths = [6, 30, 42, 32, 30, 46, 40, 13, 11, 22, 20, 18, 30]
+    widths = [6, 30, 42, 32, 30, 46, 40, 13, 11, 12, 22, 20, 18, 30]
     n = len(COLS)
     last_col = chr(ord("A") + n - 1)
 
@@ -176,8 +196,20 @@ def to_xlsx(data, out):
             if falta:
                 cell.fill = ambar
             cell.alignment = Alignment(vertical="top", wrap_text=True,
-                                       horizontal="center" if c in (0, 7, 8) else "left")
+                                       horizontal="center" if c in (0, 7, 8, 9) else "left")
         ws.row_dimensions[row].height = 95
+
+    # Total de la ejecución manual (la columna de tiempo es numérica: se puede sumar o filtrar en Excel).
+    fila_total = start + len(casos)
+    col_t = KEYS.index("tiempo_min") + 1
+    letra_t = chr(ord("A") + col_t - 1)
+    et = ws.cell(row=fila_total, column=col_t - 1, value="Total estimado")
+    et.font = Font(name="Arial", size=10, bold=True)
+    et.alignment = Alignment(horizontal="right")
+    tot = ws.cell(row=fila_total, column=col_t, value=f"=SUM({letra_t}{start}:{letra_t}{fila_total - 1})" if casos else 0)
+    tot.font = Font(name="Arial", size=10, bold=True)
+    tot.alignment = Alignment(horizontal="center")
+    tot.border = borde
 
     last_row = start + len(casos) + 50
     dv_estado = DataValidation(type="list",
@@ -214,7 +246,7 @@ def to_xlsx(data, out):
                 cell.alignment = Alignment(vertical="top", wrap_text=True)
             wf.row_dimensions[3 + r].height = 60
         afectados = sum(1 for c in casos if c.get("_fi"))
-        nota = ws.cell(row=start + len(casos) + 1, column=1,
+        nota = ws.cell(row=start + len(casos) + 2, column=1,
                        value=f"Casos resaltados: dependen de información faltante ({afectados}). Ver la hoja \"Falta información\".")
         nota.font = Font(name="Arial", size=9, italic=True, color="9C5700")
     wb.save(out)
@@ -243,6 +275,9 @@ def to_md(data, out):
         cols_r = RESUMEN_COLS + ["Falta info"]
         filas_r = [f + [_wrap(c.get("_fi", ""), 10)] for f, c in zip(filas_r, casos)]
     partes += ["```", tabulate(filas_r, headers=cols_r, tablefmt="grid"), "```", ""]
+    if data.get("_tiempo_total_txt"):
+        partes += [f"**Tiempo estimado de ejecución manual:** {data['_tiempo_total_txt']} en total "
+                   f"(fórmula en `plantillas/estimacion-tiempos.md`).", ""]
     partes += ["## Detalle de los casos", ""]
     filas = [[c.get(k, "") for k in MD_KEYS] for c in casos]
     tabla = tabulate(filas, headers=MD_COLS, tablefmt="grid", maxcolwidths=MD_MAXW)
@@ -277,6 +312,7 @@ def main():
         data.get("casos", []),
         key=lambda c: PRIORIDAD_ORDEN.get(str(c.get("prioridad", "")).strip().lower(), 99))
     preparar_falta_info(data)
+    preparar_tiempos(data)
     to_xlsx(data, salida)
     print(f"OK: {salida}")
     md = re.sub(r"\.xlsx$", ".md", salida, flags=re.IGNORECASE)
