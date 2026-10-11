@@ -26,9 +26,11 @@ como nueva referencia (npm run pixel-perfect -- --aceptar <pantalla>).
 """
 import argparse
 import json
+from pathlib import Path
 import sys
 from collections import Counter
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, donut_panel,
                               two_col, nivel_badge, _pastilla, miniatura, NIVEL_COLOR, CRITICO, AVISO, NEUTRO, OK, SERIO, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
@@ -143,7 +145,7 @@ def deltas(h):
     return f'<div class="delta">{"".join(f"<span>{e(x)}</span>" for x in partes)}</div>' if partes else ""
 
 
-def build_html(datos, analisis):
+def build_html(datos, analisis, hist_html=""):
     ajustes = analisis.get("hallazgos") or {}
     hallazgos = []
     for h in datos.get("hallazgos") or []:
@@ -301,6 +303,8 @@ def build_html(datos, analisis):
     body.append(section("Referencia y configuración", table(["Dato", "Valor"], filas),
                         "la referencia es la versión aceptada como correcta; se conserva entre corridas"))
 
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Historia", datos.get("historia")), ("Sitio", datos.get("host")),
                       ("Fecha", (datos.get("fecha") or "")[:16].replace("T", " ")), ("Navegador", datos.get("navegador")),
                       ("Duración", f'{datos.get("duracion_s", 0)} s')])
@@ -324,8 +328,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("pixel-perfect", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis))
+        f.write(build_html(datos, analisis, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

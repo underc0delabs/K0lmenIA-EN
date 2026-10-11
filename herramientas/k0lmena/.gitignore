@@ -12,6 +12,7 @@ report.json
 report.json.html
 reports/web/screenshots/
 reports/web/dom/
+reports/**/historial/
 .k0lmena/auto-healing/
 index.html
 assets/

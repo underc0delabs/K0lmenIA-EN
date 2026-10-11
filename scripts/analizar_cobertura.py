@@ -40,6 +40,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "scripts"))
 sys.path.insert(0, str(RAIZ / "scripts" / "gestion"))
 import recolectar_resultados as rec  # noqa: E402
+import _historial  # noqa: E402
 
 RE_HU = re.compile(r"\b(HU-\d+)\b", re.I)
 RE_CA = re.compile(r"\bCA-?(\d+)\b")
@@ -306,6 +307,7 @@ def main():
     carpeta.mkdir(parents=True, exist_ok=True)
     datos_arch = carpeta / "cobertura.json"
     if not a.solo_informe:
+        _historial.archivar(carpeta, ["cobertura.json", "analisis.json", "informe-cobertura.html"], "cobertura.json")
         extra = json.loads(Path(a.criterios).read_text(encoding="utf-8")) if a.criterios else {}
         historias = [hu] if hu else historias_presentes()
         if not historias:

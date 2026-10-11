@@ -27,7 +27,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    python scripts/analizar_fallos.py [--historia HU-001] [--suites web,api,mobile]
    ```
-   Guarda una copia de la corrida en `output/fallos/<HU o suite>/corridas/` (el próximo `npm test` la pisa), rescata la evidencia de cada fallido en `evidencia/` (captura, video y trace), clasifica cada falla y genera `fallos.json` e `informe-fallos.html`. **Reemplaza el análisis anterior** de esa carpeta.
+   Guarda una copia de la corrida en `output/fallos/<HU o suite>/corridas/` (el próximo `npm test` la pisa), rescata la evidencia de cada fallido en `evidencia/` (captura, video y trace), clasifica cada falla y genera `fallos.json` e `informe-fallos.html`. El análisis anterior **pasa a `historial/`** (se guardan los últimos 5) y el informe muestra qué fallas son nuevas y cuáles se resolvieron.
 2. **Reintentá los fallidos** (solo con autorización): armá el filtro con los `@CP` de los fallidos y corré, en `herramientas/k0lmena`:
    ```bash
    TAGS="@CP-004 or @CP-005" npm test          # en PowerShell: $env:TAGS="@CP-004 or @CP-005"; npm test

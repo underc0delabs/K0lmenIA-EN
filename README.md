@@ -107,6 +107,9 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Regresión visual (pixel perfect)](#-regresión-visual-pixel-perfect)
 - [Cross-browser](#-cross-browser)
 - [Reparación de la automatización](#-reparación-de-la-automatización)
+- [Correos](#-correos)
+- [Traducciones e idiomas](#-traducciones-e-idiomas)
+- [Historial de corridas](#-historial-de-corridas)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -129,13 +132,15 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
 <tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
-<tr><td rowspan="10"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="12"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
 <tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
 <tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
 <tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
 <tr><td><code>pixel-perfect</code></td><td>Regresión visual contra una referencia (o el diseño): qué se corrió y cuántos píxeles, qué falta, qué es nuevo y qué cambió de estilo, con comparador deslizable</td></tr>
+<tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
+<tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
@@ -311,7 +316,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -521,6 +526,41 @@ Queda en `output/reparaciones/<HU o suite>/` (con `cambios.diff` y `respaldo/`).
 
 ---
 
+## ✉️ Correos
+
+El **verificador-correos** revisa los mails que manda tu aplicación —registro, confirmación, recuperar contraseña, pedidos, notificaciones— con **Mailpit**, un buzón de prueba que los atrapa sin entregarlos a nadie: que llegue lo esperado a quien corresponde, sin **variables sin reemplazar** (`{{nombre}}`, `undefined`), con los **links** bien (no rotos ni a `localhost`), las imágenes visibles, versión de texto plano, la **compatibilidad** del HTML con Outlook, Gmail y Apple Mail, y cómo se ve en **desktop y mobile**.
+
+1. Levantá Mailpit: `docker compose -f herramientas/mailpit/docker-compose.yml up -d` y configurá el SMTP de la app de pruebas a `localhost:1025` (detalle en [`herramientas/mailpit/README.md`](herramientas/mailpit/README.md)).
+2. Pedí: *"Verificá que llegue el mail de bienvenida a ana@test.com"*.
+
+```bash
+npm run correos -- --para ana@test.com --espera input/correos/espera-HU-001.json
+```
+
+Queda en `output/correos/<HU o buzón>/`. También suma steps de correo a los `.feature` (`Then llega un correo a "ana@test.com" con el asunto "Bienvenida"`), que corren con `npm test`.
+
+---
+
+## 🌐 Traducciones e idiomas
+
+El **analista-traductor** recorre cada página en cada idioma (el primero es la referencia) y encuentra **textos sin traducir** (también en placeholders y textos alternativos), **claves de traducción a la vista** (`checkout.add_to_cart`), caracteres mal codificados (`Ã©`), **textos cortados** porque la traducción es más larga, números y fechas con el **formato de otra región** y el atributo `lang` equivocado. Propone la traducción de lo que falta.
+
+- *"Revisá las traducciones del sitio en inglés y portugués"*
+
+```bash
+npm run traductor -- --url https://staging.mi-app.com --idiomas es-AR,en-US,pt-BR
+```
+
+Queda en `output/traductor/<HU o sitio>/`, con el porcentaje traducido por idioma y cada página en todos los idiomas lado a lado. Cambia de idioma con los `hreflang` del sitio, con `--url-idioma` o pidiéndolo al navegador.
+
+---
+
+## 🕒 Historial de corridas
+
+Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida. Así podés comparar, por ejemplo, la accesibilidad antes y después de un arreglo, o si una regresión visual ya se resolvió, sin perder la evidencia de la corrida anterior.
+
+---
+
 ## 🛡️ Seguridad web
 
 El **analista-seguridad** revisa la seguridad de tu aplicación con **OWASP ZAP** (libre y gratuito) en modo **pasivo**: recorre el sitio y analiza las respuestas sin enviar ataques ni modificar datos. Encuentra encabezados de seguridad faltantes, cookies inseguras, información expuesta, contenido mixto y otras configuraciones débiles.
@@ -646,7 +686,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 28 agentes
+│   ├── agents/             Los 30 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)
@@ -658,6 +698,7 @@ k0lmenIA/
 └── herramientas/
     ├── newman/             Colecciones de Postman
     ├── zap/                OWASP ZAP: seguridad web (escaneo pasivo)
+    ├── mailpit/            Mailpit: buzón de prueba para los correos
     └── k0lmena/            web/ api/ mobile/ performance/ reports/
 ```
 </details>

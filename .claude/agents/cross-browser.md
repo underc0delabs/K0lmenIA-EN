@@ -30,7 +30,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run cross-browser -- [--modo suite|paginas] [--historia HU-001] [--tags "@HU-001 and @CP-003"] [--navegadores chromium,firefox,webkit] [--resoluciones 1366x768,390x844] [--url <url>] [--paginas url1,url2]
    ```
-   Cada navegador corre en su propia carpeta (no pisa el último `npm test`). Deja todo en `output/cross-browser/<HU, host o suite>/` y **reemplaza la corrida anterior**: `cross-browser.json`, `informe-cross-browser.html`, `capturas/`, `diferencias/`, `recortes/` y `suite/` (el reporte de Cucumber de cada navegador).
+   Cada navegador corre en su propia carpeta (no pisa el último `npm test`). Deja todo en `output/cross-browser/<HU, host o suite>/` (la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución): `cross-browser.json`, `informe-cross-browser.html`, `capturas/`, `diferencias/`, `recortes/` y `suite/` (el reporte de Cucumber de cada navegador).
 2. **Interpretá los resultados** (`cross-browser.json` → `resumen`, `hallazgos`):
    - **Falla solo en algunos navegadores** (suite) o **error de JavaScript solo en uno** (páginas): es lo más importante. Leé el error y buscá la causa típica: una API o una propiedad CSS que ese motor no soporta, un formato de fecha distinto (Safari), un evento que se dispara distinto, un `user agent` detectado mal.
    - **Falla en todos**: no es de compatibilidad; derivalo al `analista-fallos`.

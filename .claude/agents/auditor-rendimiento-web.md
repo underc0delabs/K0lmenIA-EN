@@ -29,7 +29,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run rendimiento -- --url <url> [--historia HU-001] [--paginas url1,url2] [--max-paginas 5] [--dispositivos mobile,desktop] [--repeticiones 1]
    ```
-   Trabaja en una **carpeta fija**, `output/rendimiento/<HU o host>/`, y **reemplaza la corrida anterior**. Deja `rendimiento.json`, `informe-rendimiento.html` (ya generado), `capturas/` (captura final y secuencia de carga) y `lighthouse/` (el reporte nativo de cada página, para el detalle).
+   Trabaja en una **carpeta fija**, `output/rendimiento/<HU o host>/`, y la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución. Deja `rendimiento.json`, `informe-rendimiento.html` (ya generado), `capturas/` (captura final y secuencia de carga) y `lighthouse/` (el reporte nativo de cada página, para el detalle).
 2. **Interpretá los resultados** (`rendimiento.json` → `resumen`, `hallazgos`, `oportunidades`; no leas los reportes nativos completos):
    - **Core Web Vitals** de cada página: LCP (cuánto tarda en verse lo principal), CLS (cuánto se mueve el contenido) y TBT (cuánto se traba al interactuar). Explicá qué siente una persona con cada valor.
    - **Oportunidades**: ordenalas por impacto (ahorro de tiempo primero). **Agrupá** las que se resuelven con un solo cambio (por ejemplo, compresión y caché en el servidor) y las que vienen de la plantilla (aparecen en todas las páginas).
@@ -48,4 +48,4 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 - **No inventes** valores ni ahorros: salen de Lighthouse. Podés priorizar distinto explicando por qué.
 - **Compará solo lo comparable**: misma página, mismo dispositivo y, para conclusiones, varias repeticiones.
 - **Sin efectos**: solo carga las páginas (GET), como una visita. Para sitios con login, las páginas internas requieren otra herramienta; decilo si el pedido las incluye.
-- **Una corrida por carpeta**: correr de nuevo reemplaza la anterior. Para comparar antes y después, la persona usa otra `--historia` o copia la carpeta.
+- **Comparar corridas**: las últimas 5 quedan en `historial/` y el informe compara contra la anterior (ojo: Lighthouse varía; para conclusiones, `--repeticiones 3`).

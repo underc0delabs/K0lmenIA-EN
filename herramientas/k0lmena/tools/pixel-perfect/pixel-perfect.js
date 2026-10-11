@@ -27,6 +27,7 @@
 // comparación REEMPLAZA a la anterior (menos la referencia). Solo navega con GET.
 const fs = require('fs');
 const path = require('path');
+const { archivar } = require('../historial/historial.js');
 const { normalizar, slug, sello, NO_RECORRER, ARCHIVO, recorrerScroll, cargar } = require('../explorador/explorar.js');
 const visual = require('../visual/comparar.js');
 
@@ -267,6 +268,7 @@ async function main() {
   const hayRef = fs.existsSync(refArch) && !a.referencia;
   const ref = hayRef ? JSON.parse(fs.readFileSync(refArch, 'utf8')) : null;
 
+  archivar(carpeta, GENERADOS, 'pixel-perfect.json'); // la corrida anterior pasa a historial/ (últimas 5)
   for (const n of GENERADOS) fs.rmSync(path.join(carpeta, n), { recursive: true, force: true });
   if (a.referencia) fs.rmSync(dirRef, { recursive: true, force: true });
   const dirAct = path.join(carpeta, 'actual');

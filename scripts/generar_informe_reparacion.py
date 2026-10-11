@@ -30,6 +30,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, donut_panel, two_col,
                               nivel_badge, _pastilla, miniatura, CRITICO, AVISO, NEUTRO, OK, SERIO, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
@@ -181,7 +182,7 @@ def detalle(r, a):
     return "".join(partes)
 
 
-def build_html(datos, analisis, carpeta=None):
+def build_html(datos, analisis, carpeta=None, hist_html=""):
     rs = datos.get("reparaciones") or []
     r = datos.get("resumen") or {}
     ajustes = analisis.get("reparaciones") or {}
@@ -260,6 +261,8 @@ def build_html(datos, analisis, carpeta=None):
         filas.append(["Reporte de Cucumber de la verificación", f'<a href="{e(datos["verificacion"]["reporte"])}" style="color:var(--ink)">{e(datos["verificacion"]["reporte"])}</a>'])
     body.append(section("Cómo seguir", table(["Para", "Comando"], filas)))
 
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Historia", datos.get("historia")), ("Fecha", (datos.get("fecha") or "")[:16].replace("T", " ")),
                       ("Origen", datos.get("origen")), ("Herramienta", datos.get("herramienta"))])
     css_cat = ('<style>.cat{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;'
@@ -283,8 +286,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("reparacion", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis, Path(a.datos_json).parent))
+        f.write(build_html(datos, analisis, Path(a.datos_json).parent, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

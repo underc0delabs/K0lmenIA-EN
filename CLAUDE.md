@@ -194,6 +194,19 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | npm test y los cambios sin cobertura;    |                                       |
 |                            | informe HTML                             |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `verificador-correos`      | Verifica los correos de la app con un    | `output/correos/`                     |
+|                            | buzón de prueba Mailpit: que llegue lo   |                                       |
+|                            | esperado, variables sin reemplazar,      |                                       |
+|                            | links, compatibilidad y vista            |                                       |
+|                            | desktop/mobile; informe HTML y steps de  |                                       |
+|                            | correo para k0lmena                      |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `analista-traductor`       | Revisa cada página en cada idioma:       | `output/traductor/`                   |
+|                            | textos sin traducir, claves a la vista,  |                                       |
+|                            | caracteres rotos, textos cortados y      |                                       |
+|                            | formatos de número y fecha; propone      |                                       |
+|                            | traducciones; informe HTML               |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-seguridad`       | Revisa la seguridad de una web propia o  | `output/seguridad/`                   |
 |                            | autorizada con un escaneo pasivo de      |                                       |
 |                            | OWASP ZAP (Docker), analiza los          |                                       |
@@ -270,6 +283,8 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/generar_informe_rendimiento.py` → arma el informe HTML de rendimiento web desde el `rendimiento.json` de `npm run rendimiento` (`auditor-rendimiento-web`).
 - `scripts/analizar_fallos.py` → clasifica las fallas de `npm test`, compara con reintentos y genera el informe (`analista-fallos`).
 - `scripts/analizar_cobertura.py` → arma la matriz de cobertura y trazabilidad por historia y genera el informe (`analista-cobertura`).
+- `scripts/generar_informe_correos.py` y `generar_informe_traductor.py` → los informes HTML de `npm run correos` (Mailpit) y `npm run traductor` (`verificador-correos`, `analista-traductor`).
+- `scripts/_historial.py` (y `herramientas/k0lmena/tools/historial/`) → guardan las últimas 5 corridas de cada herramienta y arman la sección de evolución de los informes.
 - `scripts/seleccionar_casos.py` → elige y prioriza los casos a correr para un cambio y genera el informe (`selector-casos-de-prueba`).
 - `scripts/generar_informe_pixel_perfect.py`, `generar_informe_cross_browser.py` y `generar_informe_reparacion.py` → los informes HTML de `npm run pixel-perfect`, `npm run cross-browser` y `npm run reparar` (`pixel-perfect`, `cross-browser`, `reparador-automatizacion`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
@@ -284,14 +299,17 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Casos BDD: `HU-001-registro.feature` + `HU-001-cobertura.md`
 - Reporte de bug: `BUG-001.md`
 - Seguridad web: `output/seguridad/<HU o host>/<fecha>/` con `zap.json`, `analisis.json` e `informe-seguridad.html`
-- Pruebas exploratorias: `output/exploratorias/<HU o host>/` con `exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
-- Accesibilidad: `output/accesibilidad/<HU o host>/` con `auditoria.json`, `analisis.json`, `informe-accesibilidad.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
+- Pruebas exploratorias: `output/exploratorias/<HU o host>/` con `exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`. La corrida anterior pasa a `historial/` (últimas 5).
+- Accesibilidad: `output/accesibilidad/<HU o host>/` con `auditoria.json`, `analisis.json`, `informe-accesibilidad.html`, `capturas/` y `videos/`. La corrida anterior pasa a `historial/` (últimas 5).
 - Rendimiento web: `output/rendimiento/<HU o host>/` con `rendimiento.json`, `informe-rendimiento.html`, `capturas/` y `lighthouse/`.
 - Análisis de fallos: `output/fallos/<HU o suite>/` con `fallos.json`, `informe-fallos.html`, `corridas/` y `evidencia/`.
 - Cobertura y trazabilidad: `output/cobertura/<HU o todas>/` con `cobertura.json` e `informe-cobertura.html`.
 - Regresión visual: `output/pixel-perfect/<HU o host>/` con `referencia/` (se conserva entre corridas), `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json` e `informe-pixel-perfect.html`.
 - Cross-browser: `output/cross-browser/<HU, host o suite>/` con `cross-browser.json`, `informe-cross-browser.html`, `capturas/`, `diferencias/` y `suite/` (el reporte de Cucumber de cada navegador).
 - Reparación de la automatización: `output/reparaciones/<HU o suite>/` con `reparaciones.json`, `informe-reparacion.html`, `capturas/`, `cambios.diff` y `respaldo/`.
+- Correos: `output/correos/<HU o buzón>/` con `correos.json`, `informe-correos.html`, `capturas/` (desktop y mobile) y `eml/`.
+- Traducciones: `output/traductor/<HU o host>/` con `traductor.json`, `informe-traductor.html`, `capturas/` y `recortes/`.
+- **Historial**: Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida.
 - Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`

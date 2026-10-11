@@ -24,6 +24,7 @@
 // el resto requiere revisión manual (la hace el agente).
 const fs = require('fs');
 const path = require('path');
+const { archivar } = require('../historial/historial.js');
 const { normalizar, slug, sello, NO_RECORRER, ARCHIVO, recorrerScroll, cargar, capturar } = require('../explorador/explorar.js');
 
 const RAIZ = path.resolve(__dirname, '..', '..', '..', '..');
@@ -79,7 +80,9 @@ function severidad(impacto, tags) {
   return { 'Crítica': 'Alta', 'Alta': 'Media', 'Media': 'Baja', 'Baja': 'Baja' }[s];
 }
 
+// La corrida anterior no se borra: pasa a historial/<fecha>/ (se guardan las últimas 5) para compararla.
 function limpiarCarpeta(carpeta) {
+  archivar(carpeta, GENERADOS, 'auditoria.json');
   for (const nombre of GENERADOS) fs.rmSync(path.join(carpeta, nombre), { recursive: true, force: true });
 }
 

@@ -30,7 +30,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run explorar -- --url <url> [--historia HU-001] [--max-paginas 25] [--profundidad 3] [--resoluciones 360x740,390x844,768x1024,1366x768,1920x1080] [--responsive 10] [--externos si] [--video si] [--lenta-ms 3000]
    ```
-   Trabaja en una **carpeta fija**, `output/exploratorias/<HU o host>/` (la `<carpeta>` de los pasos siguientes): **al arrancar borra la corrida anterior** (`exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`; lo demás que haya en la carpeta no lo toca) y la reemplaza por la nueva. Por eso el recorrido va **siempre primero** y la exploración manual, después. Deja:
+   Trabaja en una **carpeta fija**, `output/exploratorias/<HU o host>/` (la `<carpeta>` de los pasos siguientes): al arrancar, la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución. Por eso el recorrido va **siempre primero** y la exploración manual, después. Deja:
    - `exploracion.json` (los datos), `informe-exploratorio.html` (el informe, ya generado),
    - `capturas/paginas/` (cada página, desktop, página completa) y `capturas/responsive/` (cada página en cada resolución), con los elementos con problemas **marcados en rojo**,
    - `videos/` (`recorrido.webm` y uno por resolución; `--video no` para no grabar).

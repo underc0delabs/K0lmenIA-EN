@@ -7,7 +7,7 @@
   .f-agentes { grid-template-columns: 1.25fr 1fr 1.1fr 0.9fr; }
   .f-soporte { grid-template-columns: 1fr 1.15fr 1.1fr; }
   .f-ejec { grid-template-columns: 1fr 1.6fr; }
-  .f-ext { grid-template-columns: repeat(7, 1fr); }
+  .f-ext { grid-template-columns: repeat(8, 1fr); }
   .centro { display: grid; grid-template-columns: 260px 1fr 260px; gap: 18px; align-items: stretch; }
   .lateral { display: flex; flex-direction: column; gap: 10px; }
   .lateral .caja { flex: 1; }
@@ -49,7 +49,7 @@
           <div class="caja acento-violeta"><div class="et">Análisis y diseño</div>
             <ul><li>analista-historias</li><li>estratega-pruebas</li><li>generador-casos-manuales</li><li>generador-casos-bdd</li><li>generador-casos-api</li><li>generador-datos-prueba</li><li>generador-reportes-bug</li><li>selector-casos-de-prueba</li></ul></div>
           <div class="caja acento-naranja"><div class="et">Ejecución en vivo <span class="pill token">usa tokens</span></div>
-            <ul><li>ejecutor-e2e</li><li>ejecutor-api</li><li>explorador-web</li><li>analista-accesibilidad</li><li>auditor-rendimiento-web</li><li>analista-seguridad (ZAP)</li><li>pixel-perfect</li><li>cross-browser</li><li>generador-reporte-html</li><li>generador-reporte-cierre</li><li>analista-cobertura</li></ul></div>
+            <ul><li>ejecutor-e2e</li><li>ejecutor-api</li><li>explorador-web</li><li>analista-accesibilidad</li><li>auditor-rendimiento-web</li><li>analista-seguridad (ZAP)</li><li>pixel-perfect</li><li>cross-browser</li><li>verificador-correos (Mailpit)</li><li>analista-traductor</li><li>generador-reporte-html</li><li>generador-reporte-cierre</li><li>analista-cobertura</li></ul></div>
           <div class="caja acento-verde"><div class="et">Automatización (mappers)</div>
             <ul><li>web-mapper</li><li>api-mapper</li><li>mobile-mapper</li><li>performance-mapper</li><li>verificador-datos (BD)</li><li>analista-fallos</li><li>reparador-automatizacion</li></ul>
             <p class="nota">Escriben el código una sola vez</p></div>
@@ -65,7 +65,7 @@
           <div class="caja acento-violeta"><div class="et">Skills · <code>.claude/skills/</code></div>
             <ul><li>investigacion-contexto</li><li>tecnicas-de-diseno</li><li>ejecucion-e2e · ejecucion-api</li><li>automatizacion-k0lmena</li><li>guia-performance</li></ul></div>
           <div class="caja acento-gris"><div class="et">Plantillas + scripts Python</div>
-            <ul><li>generar_casos.py → .xlsx + .md</li><li>formatear_tablas.py</li><li>generar_plan / generar_reporte / generar_informe_cierre</li><li>generar_informe_performance / generar_informe_seguridad</li><li>generar_informe_exploratorio / accesibilidad / rendimiento</li><li>analizar_fallos / analizar_cobertura</li><li>seleccionar_casos + informes pixel-perfect / cross-browser / reparación / selección</li><li>newman_a_resultados.py</li></ul></div>
+            <ul><li>generar_casos.py → .xlsx + .md</li><li>formatear_tablas.py</li><li>generar_plan / generar_reporte / generar_informe_cierre</li><li>generar_informe_performance / generar_informe_seguridad</li><li>generar_informe_exploratorio / accesibilidad / rendimiento</li><li>analizar_fallos / analizar_cobertura</li><li>seleccionar_casos + informes pixel-perfect / cross-browser / reparación / selección</li><li>informes de correos y traducciones · _historial (últimas 5 corridas)</li><li>newman_a_resultados.py</li></ul></div>
           <div class="caja acento-cian"><div class="et">Integración de gestión · <code>scripts/gestion/</code></div>
             <ul><li>gestion.py: carpetas, casos, vínculos, ciclos, resultados</li><li>Adaptadores: Xray Cloud · Xray DC · QTM4J · AIO</li><li>Trazabilidad CP-XXX → key remota</li><li>Azure DevOps: por su MCP + para_azure_devops.py</li></ul></div>
         </div>
@@ -81,14 +81,14 @@
         </div>
         <div class="bloque"><div class="bloque-tit">Herramientas <span class="tenue">· <code>herramientas/</code></span></div>
           <div class="caja acento-verde">
-            <div style="display:flex; justify-content:space-between; align-items:baseline"><h3>k0lmena <span class="pill ok">sin tokens</span></h3><span class="tenue">+ Newman (Postman) · OWASP ZAP (seguridad)</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline"><h3>k0lmena <span class="pill ok">sin tokens</span></h3><span class="tenue">+ Newman (Postman) · OWASP ZAP (seguridad) · Mailpit (correos)</span></div>
             <div class="k0">
               <div class="mini"><b>web/</b><span>Playwright + Cucumber · auto-healing · video, trace, GIF, DOM al fallar · Chromium, Firefox y WebKit</span></div>
               <div class="mini"><b>api/</b><span>axios + Cucumber · steps genéricos en español</span></div>
               <div class="mini"><b>mobile/</b><span>WebdriverIO + Appium · dispositivo, emulador o BrowserStack</span></div>
               <div class="mini"><b>performance/</b><span>k6 (APIs) · Artillery + Playwright (web) · JMeter</span></div>
             </div>
-            <div class="runners"><span class="cmd">npm test</span><span class="cmd">npm run report:web|api|mobile</span><span class="cmd">npm run perf -- &lt;script&gt; &lt;perfil&gt;</span><span class="cmd">npm run explorar</span><span class="cmd">npm run accesibilidad</span><span class="cmd">npm run rendimiento</span><span class="cmd">npm run pixel-perfect</span><span class="cmd">npm run cross-browser</span><span class="cmd">npm run reparar</span></div>
+            <div class="runners"><span class="cmd">npm test</span><span class="cmd">npm run report:web|api|mobile</span><span class="cmd">npm run perf -- &lt;script&gt; &lt;perfil&gt;</span><span class="cmd">npm run explorar</span><span class="cmd">npm run accesibilidad</span><span class="cmd">npm run rendimiento</span><span class="cmd">npm run pixel-perfect</span><span class="cmd">npm run cross-browser</span><span class="cmd">npm run reparar</span><span class="cmd">npm run correos</span><span class="cmd">npm run traductor</span></div>
           </div>
         </div>
       </div>
@@ -97,9 +97,9 @@
     <!-- output -->
     <div class="lateral">
       <div class="caja acento-gris"><div class="et">Salida</div><h3><code>output/</code></h3>
-        <ul><li>analisis-historias/</li><li>planes-de-prueba/</li><li>casos-de-prueba/</li><li>casos-api/</li><li>datos-de-prueba/</li><li>reportes-bug/</li><li>ejecuciones/</li><li>informes-cierre/</li><li>mapeos/</li><li>gestion/</li><li>performance/</li><li>seguridad/</li><li>exploratorias/</li><li>accesibilidad/</li><li>rendimiento/</li><li>fallos/</li><li>cobertura/</li><li>pixel-perfect/</li><li>cross-browser/</li><li>reparaciones/</li><li>seleccion-casos/</li><li>contexto/</li></ul></div>
+        <ul><li>analisis-historias/</li><li>planes-de-prueba/</li><li>casos-de-prueba/</li><li>casos-api/</li><li>datos-de-prueba/</li><li>reportes-bug/</li><li>ejecuciones/</li><li>informes-cierre/</li><li>mapeos/</li><li>gestion/</li><li>performance/</li><li>seguridad/</li><li>exploratorias/</li><li>accesibilidad/</li><li>rendimiento/</li><li>fallos/</li><li>cobertura/</li><li>pixel-perfect/</li><li>cross-browser/</li><li>reparaciones/</li><li>seleccion-casos/</li><li>correos/</li><li>traductor/</li><li>contexto/</li></ul><p class="nota">cada herramienta guarda sus últimas 5 corridas en historial/</p></div>
       <div class="caja acento-gris"><div class="et">Reportes de k0lmena</div><h3><code>reports/</code></h3>
-        <ul><li>web, api, mobile: HTML con evidencias</li><li>performance: HTML y resumen</li></ul></div>
+        <ul><li>web, api, mobile: HTML con evidencias</li><li>performance: HTML y resumen</li><li>historial/: las últimas 5 corridas de npm test</li></ul></div>
     </div>
   </div>
   <div class="flecha">▼</div>
@@ -111,6 +111,7 @@
       <div class="caja acento-gris centrado"><h3>App mobile</h3><p>Android · iOS · BrowserStack</p></div>
       <div class="caja acento-gris centrado"><h3>Jira · Confluence</h3><p>historias y documentación</p></div>
       <div class="caja acento-gris centrado"><h3>Figma</h3><p>diseños</p></div>
+      <div class="caja acento-gris centrado"><h3>Mailpit</h3><p>buzón de prueba de correos</p></div>
       <div class="caja acento-gris centrado"><h3>Bases de datos</h3><p>PostgreSQL · MySQL · SQL Server · MongoDB</p></div>
       <div class="caja acento-cian centrado"><h3>Xray · QMetry · AIO · Azure DevOps</h3><p>casos, ciclos y resultados</p></div>
     </div>

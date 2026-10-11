@@ -25,9 +25,11 @@ El análisis (opcional) aporta:
 """
 import argparse
 import json
+from pathlib import Path
 import sys
 from collections import Counter
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, stacked_bars, donut_panel, two_col,
                               nivel_badge, estado_pill, _pastilla, NEUTRO, SERIES, AVISO, CRITICO, OK, SERIO)
 from generar_informe_exploratorio import CSS_EXTRA
@@ -93,7 +95,7 @@ def fila_caso(c):
             f'{e(c["minutos"])} min', f'<ul class="razones">{"".join(f"<li>{e(r)}</li>" for r in c.get("razones") or [])}</ul>']
 
 
-def build_html(datos, analisis):
+def build_html(datos, analisis, hist_html=""):
     casos = datos.get("casos") or []
     r = datos.get("resumen") or {}
     cambio = datos.get("cambio") or {}
@@ -198,6 +200,8 @@ def build_html(datos, analisis):
         "Es una ayuda para decidir, no un reemplazo del criterio: el análisis del agente puede mover casos de grupo (queda anotado en Por qué).",
     ])))
 
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Selección", datos.get("nombre")), ("Fecha", (datos.get("fecha") or "")[:16].replace("T", " ")),
                       ("Presupuesto", f'{datos["presupuesto_min"]} min' if datos.get("presupuesto_min") else None),
                       ("Riesgo", riesgo)])
@@ -220,8 +224,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("seleccion", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis))
+        f.write(build_html(datos, analisis, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

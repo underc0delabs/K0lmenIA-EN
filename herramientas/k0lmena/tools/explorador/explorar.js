@@ -23,6 +23,7 @@
 // exploracion.json, informe-exploratorio.html, capturas/ y videos/ (y borra el analisis.json viejo).
 const fs = require('fs');
 const path = require('path');
+const { archivar } = require('../historial/historial.js');
 
 const RAIZ = path.resolve(__dirname, '..', '..', '..', '..');
 
@@ -238,7 +239,9 @@ async function capturar(page, archivo) {
 // Borra SOLO lo que genera este script (y el análisis viejo), para que la corrida nueva reemplace
 // a la anterior sin tocar otros archivos que la persona haya dejado en la carpeta.
 const GENERADOS = ['exploracion.json', 'analisis.json', 'informe-exploratorio.html', 'capturas', 'videos'];
+// La corrida anterior no se borra: pasa a historial/<fecha>/ (se guardan las últimas 5) para compararla.
 function limpiarCarpeta(carpeta) {
+  archivar(carpeta, GENERADOS, 'exploracion.json');
   for (const nombre of GENERADOS) fs.rmSync(path.join(carpeta, nombre), { recursive: true, force: true });
 }
 

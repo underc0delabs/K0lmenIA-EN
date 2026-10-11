@@ -25,6 +25,7 @@
 // cross-browser.json, informe-cross-browser.html, capturas/, diferencias/, recortes/ y suite/.
 const fs = require('fs');
 const path = require('path');
+const { archivar } = require('../historial/historial.js');
 const { spawnSync } = require('child_process');
 const { normalizar, slug, sello, recorrerScroll, cargar } = require('../explorador/explorar.js');
 const { parsearResoluciones, descubrir } = require('../pixel-perfect/pixel-perfect.js');
@@ -424,6 +425,7 @@ async function main() {
   if (modo === 'suite' && a.historia && !a.tags) a.tags = `@${a.historia}`;
   const nombre = a.historia || (modo === 'paginas' ? host : 'suite');
   const carpeta = a.salida ? desde(a.salida) : path.join(RAIZ, 'output', 'cross-browser', nombre);
+  archivar(carpeta, GENERADOS, 'cross-browser.json'); // la corrida anterior pasa a historial/ (últimas 5)
   for (const n of GENERADOS) fs.rmSync(path.join(carpeta, n), { recursive: true, force: true });
   for (const d of ['capturas', 'diferencias', 'recortes']) fs.mkdirSync(path.join(carpeta, d), { recursive: true });
   const rel = (p) => path.relative(carpeta, p).split(path.sep).join('/');

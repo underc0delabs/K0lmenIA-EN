@@ -33,8 +33,10 @@ Los hallazgos AUTOMÁTICOS salen del auditoria.json. El análisis (opcional) apo
 import argparse
 import datetime
 import json
+from pathlib import Path
 import sys
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, donut_panel,
                               two_col, nivel_badge, _pastilla, CRITICO, SERIO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA, JS_EXTRA, miniatura, corto, origen
@@ -110,7 +112,7 @@ def tono_auto(hallazgos, nivel):
     return "ok", f"Sin problemas detectados en la parte automática de WCAG {nivel} (falta la revisión manual)"
 
 
-def build_html(datos, analisis):
+def build_html(datos, analisis, hist_html=""):
     descartados = {str(d.get("id")): d.get("motivo", "") for d in analisis.get("descartados") or []}
     notas = analisis.get("notas") or {}
     ajustes = analisis.get("severidades") or {}
@@ -320,6 +322,8 @@ def build_html(datos, analisis):
         body.append(section("Próximos pasos", doc_list(analisis["proximos_pasos"])))
 
     fecha = (datos.get("fecha") or datetime.datetime.now().isoformat())[:16].replace("T", " ")
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Historia", datos.get("historia")), ("Sitio", datos.get("host")), ("Fecha", fecha),
                       ("Norma", f"WCAG 2.2 {nivel}"), ("Herramienta", datos.get("herramienta"))])
     return page("Informe de accesibilidad", "Accesibilidad", meta_html, CSS_EXTRA + CSS_A11Y + "".join(body) + JS_EXTRA)
@@ -341,8 +345,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("accesibilidad", Path(a.auditoria_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis))
+        f.write(build_html(datos, analisis, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

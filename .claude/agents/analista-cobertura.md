@@ -49,4 +49,4 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 - **El ID que traza es el par `@HU` + `@CP`**: un escenario automatizado sin `@CP` no se puede trazar y aparece como hueco; un `CP-001` de otra historia no cuenta para esta.
 - **Último resultado = el más reciente**: si un caso falló ayer y hoy pasó, está aprobado.
 - **Sin efectos**: este agente solo lee. No crea casos, no automatiza ni sube nada a la herramienta de gestión; recomienda con qué agente hacerlo.
-- **Una corrida por carpeta**: correr de nuevo reemplaza el análisis anterior de ese alcance.
+- **Comparar en el tiempo**: el análisis anterior de ese alcance pasa a `historial/` (se guardan los últimos 5) y el informe muestra qué huecos se cerraron y cuáles aparecieron.

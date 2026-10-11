@@ -28,9 +28,11 @@ Los datos salen del rendimiento.json. El análisis (opcional) aporta:
 import argparse
 import datetime
 import json
+from pathlib import Path
 import math
 import sys
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, stacked_bars,
                               grouped_columns, two_col, nivel_badge, _pastilla, CRITICO, AVISO, NEUTRO, OK, SERIES,
                               SUPERFICIE)
@@ -102,7 +104,7 @@ def tono_auto(res):
     return "ok", "Buen rendimiento en lo medido (datos de laboratorio)"
 
 
-def build_html(datos, analisis):
+def build_html(datos, analisis, hist_html=""):
     descartados = {str(d.get("id")): d.get("motivo", "") for d in analisis.get("descartados") or []}
     notas = analisis.get("notas") or {}
     ajustes = analisis.get("severidades") or {}
@@ -303,6 +305,8 @@ def build_html(datos, analisis):
                                                               [[e(x["url"]), e(x["dispositivo"]), e(x["error"])] for x in errores])))
 
     fecha = (datos.get("fecha") or datetime.datetime.now().isoformat())[:16].replace("T", " ")
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Historia", datos.get("historia")), ("Sitio", datos.get("host")), ("Fecha", fecha),
                       ("Herramienta", datos.get("herramienta"))])
     return page("Informe de rendimiento web", "Rendimiento web", meta_html, CSS_EXTRA + CSS_REND + "".join(body) + JS_EXTRA)
@@ -324,8 +328,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("rendimiento", Path(a.rendimiento_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis))
+        f.write(build_html(datos, analisis, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

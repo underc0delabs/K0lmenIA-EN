@@ -28,6 +28,8 @@
     "pixel-perfect": "npm --prefix herramientas/k0lmena run pixel-perfect --",
     "cross-browser": "npm --prefix herramientas/k0lmena run cross-browser --",
     "reparar": "npm --prefix herramientas/k0lmena run reparar --",
+    "correos": "npm --prefix herramientas/k0lmena run correos --",
+    "traductor": "npm --prefix herramientas/k0lmena run traductor --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

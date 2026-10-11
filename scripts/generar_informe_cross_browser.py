@@ -28,9 +28,11 @@ El análisis (opcional) aporta:
 """
 import argparse
 import json
+from pathlib import Path
 import sys
 from collections import Counter
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, donut_panel, grouped_columns,
                               two_col, nivel_badge, estado_pill, _pastilla, miniatura, NIVEL_COLOR, CRITICO, AVISO, NEUTRO, OK, SERIO, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
@@ -140,7 +142,7 @@ def detalle_hallazgo(h, a):
       {lista}{ad}{evid}</div>'''
 
 
-def build_html(datos, analisis):
+def build_html(datos, analisis, hist_html=""):
     ajustes = analisis.get("hallazgos") or {}
     hallazgos = []
     for h in datos.get("hallazgos") or []:
@@ -316,6 +318,8 @@ def build_html(datos, analisis):
                   ["Zonas ocultas", e(", ".join(cfg.get("ocultar") or []) or "ninguna")]]
     body.append(section("Configuración de la corrida", table(["Dato", "Valor"], filas)))
 
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Historia", datos.get("historia")), ("Sitio", datos.get("host")), ("Fecha", (datos.get("fecha") or "")[:16].replace("T", " ")),
                       ("Modo", "suite" if modo == "suite" else "páginas"), ("Duración", f'{datos.get("duracion_s", 0)} s')])
     return page("Cross-browser", "Compatibilidad entre navegadores", meta_html, CSS_EXTRA + CSS_PP + CSS_CB + "".join(body) + JS_PP)
@@ -337,8 +341,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("cross-browser", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis))
+        f.write(build_html(datos, analisis, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

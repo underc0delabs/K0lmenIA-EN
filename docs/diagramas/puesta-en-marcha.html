@@ -73,6 +73,8 @@
         <div class="env"><span class="k">ADO_ORGANIZACION</span> · <span class="k">ADO_PAT</span> · <span class="k">ADO_PROYECTO</span></div></div>
       <div class="grupo" style="border-left-color:var(--gris)"><div class="t">Bases de datos y seguridad</div>
         <div class="env"><span class="k">DB_CONEXIONES</span>=<span class="v">principal</span> + <span class="k">DB_PRINCIPAL_MOTOR</span> · <span class="k">_HOST</span> · <span class="k">_BASE</span> · <span class="k">_USUARIO</span> · <span class="k">_CLAVE</span><br><span class="k">SEGURIDAD_URLS_AUTORIZADAS</span>=<span class="v">https://staging.tu-app.com</span></div></div>
+      <div class="grupo" style="border-left-color:var(--cian)"><div class="t">Correos e idiomas <i>verificador-correos, analista-traductor</i></div>
+        <div class="env"><span class="k">MAILPIT_URL</span>=<span class="v">http://localhost:8025</span><br><span class="k">TRADUCTOR_IDIOMAS</span>=<span class="v">es-AR,en-US,pt-BR</span><br><span class="v">Mailpit: docker compose -f herramientas/mailpit/docker-compose.yml up -d</span></div></div>
       <div class="alerta"><b>Conectores opcionales</b> (Azure DevOps, Figma, QMetry, AIO Tests, k0lmenaTMT, Appium): <code>npm run conector -- activar &lt;nombre&gt;</code>, reiniciá Claude Code y verificá con <code>/mcp</code>. Usá credenciales de prueba, nunca de producción.</div>
     </div>
 
@@ -83,14 +85,16 @@
       <div class="fam">Análisis y diseño</div>
       <div class="prompt"><div class="q">"Analizá la historia HU-001 y decime qué falta definir"</div><div class="a"><span class="ag">analista-historias</span></div></div>
       <div class="prompt"><div class="q">"Generá los casos de prueba de PROJ-12"</div><div class="a"><span class="ag">generador-casos-manuales</span> Excel + cobertura</div></div>
-      <div class="prompt"><div class="q">"¿Qué casos corro para el PR #42?"</div><div class="a"><span class="ag">selector-casos-de-prueba</span><span class="nuevo">nuevo</span> selección por riesgo + comando</div></div>
+      <div class="prompt"><div class="q">"¿Qué casos corro para el PR #42?"</div><div class="a"><span class="ag">selector-casos-de-prueba</span>  selección por riesgo + comando</div></div>
       <div class="fam">Ejecución en vivo</div>
-      <div class="prompt"><div class="q">"Corré una regresión visual de qarmy.ar"</div><div class="a"><span class="ag">pixel-perfect</span><span class="nuevo">nuevo</span> qué se corrió y cuántos px</div></div>
-      <div class="prompt"><div class="q">"Probá HU-003 en Chrome, Firefox y Safari"</div><div class="a"><span class="ag">cross-browser</span><span class="nuevo">nuevo</span> matriz por navegador</div></div>
+      <div class="prompt"><div class="q">"Corré una regresión visual de qarmy.ar"</div><div class="a"><span class="ag">pixel-perfect</span>  qué se corrió y cuántos px</div></div>
+      <div class="prompt"><div class="q">"Probá HU-003 en Chrome, Firefox y Safari"</div><div class="a"><span class="ag">cross-browser</span>  matriz por navegador</div></div>
+      <div class="prompt"><div class="q">"Verificá que llegue el mail de bienvenida a ana@test.com"</div><div class="a"><span class="ag">verificador-correos</span><span class="nuevo">nuevo</span> con Mailpit</div></div>
+      <div class="prompt"><div class="q">"Revisá las traducciones del sitio en inglés y portugués"</div><div class="a"><span class="ag">analista-traductor</span><span class="nuevo">nuevo</span> % traducido por idioma</div></div>
       <div class="prompt"><div class="q">"Hacé pruebas exploratorias del sitio del .env"</div><div class="a"><span class="ag">explorador-web</span> · también accesibilidad y velocidad</div></div>
       <div class="fam">Automatización con k0lmena</div>
       <div class="prompt"><div class="q">"Automatizá en k0lmena los casos de HU-001"</div><div class="a"><span class="ag">web-mapper</span> después <code>npm test</code>, sin tokens</div></div>
-      <div class="prompt"><div class="q">"Repará los tests que fallaron por locators"</div><div class="a"><span class="ag">reparador-automatizacion</span><span class="nuevo">nuevo</span> propone, aplica y verifica</div></div>
+      <div class="prompt"><div class="q">"Repará los tests que fallaron por locators"</div><div class="a"><span class="ag">reparador-automatizacion</span>  propone, aplica y verifica</div></div>
       <div class="fam">Gestión y cierre</div>
       <div class="prompt"><div class="q">"Subí los casos de HU-001 a Xray y creá el ciclo Sprint 5"</div><div class="a"><span class="ag">gestor-pruebas</span></div></div>
       <div class="prompt"><div class="q">"Armá el informe de cierre de HU-001"</div><div class="a"><span class="ag">generador-reporte-cierre</span> go / no-go</div></div>
@@ -101,6 +105,6 @@
     <div class="caja acento-azul"><div class="et">Si falta un dato</div><p>El agente no inventa: devuelve <b>"Necesito que confirmes"</b> y Claude te pregunta.</p></div>
     <div class="caja acento-naranja"><div class="et">Acciones con efecto</div><p>Escribir en una base, crear datos en Jira/Xray o correr carga: siempre con tu ok.</p></div>
     <div class="caja acento-verde"><div class="et">Ahorra tokens</div><p>Lo automatizado corre con <code>npm test</code>, sin agentes.</p></div>
-    <div class="caja acento-violeta"><div class="et">Todo queda en</div><p><code>output/</code> (reportes HTML) y <code>herramientas/k0lmena/</code> (automatización).</p></div>
+    <div class="caja acento-violeta"><div class="et">Todo queda en</div><p><code>output/</code> (reportes HTML, con las últimas 5 corridas en <code>historial/</code>) y <code>herramientas/k0lmena/</code> (automatización).</p></div>
   </div>
 </div></body></html>

@@ -51,6 +51,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "scripts"))
 sys.path.insert(0, str(RAIZ / "scripts" / "gestion"))
 import recolectar_resultados as rec  # noqa: E402
+import _historial  # noqa: E402
 
 GRUPOS = ["Imprescindible", "Recomendado", "Regresión mínima", "No seleccionado"]
 PRIO_PUNTOS = {"Crítica": 15, "Alta": 10, "Media": 4, "Baja": 0}
@@ -527,8 +528,8 @@ def main():
         for c in casos:
             c["etiquetas"] = sorted(c["etiquetas"])
             c.pop("texto", None)
-        for nombre_arch in ("seleccion.json", "seleccion.csv", "informe-seleccion.html"):
-            (carpeta / nombre_arch).unlink(missing_ok=True)
+        # La selección anterior con el mismo nombre pasa a historial/<fecha>/ (se guardan las últimas 5).
+        _historial.archivar(carpeta, ["seleccion.json", "seleccion.csv", "informe-seleccion.html", "analisis.json", "cambios.json"], "seleccion.json")
         carpeta.mkdir(parents=True, exist_ok=True)
         orden = {g: i for i, g in enumerate(GRUPOS)}
         casos.sort(key=lambda c: (orden[c["grupo"]], -c["puntaje"], c["historia"], c["id"]))

@@ -231,6 +231,13 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 |                       | locators rotos (agente reparador-        |
 |                       | automatizacion)                          |
 +-----------------------+------------------------------------------+
+| npm run correos       | Revisa los correos del buzón de prueba   |
+|                       | Mailpit (agente verificador-correos)     |
++-----------------------+------------------------------------------+
+| npm run traductor     | Cada página en cada idioma: traducción,  |
+|                       | cortes y formatos (agente analista-      |
+|                       | traductor)                               |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

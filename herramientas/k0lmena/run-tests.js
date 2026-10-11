@@ -40,6 +40,14 @@ const CLEAN = {
   mobile: ['html/videos', 'html/evidencias', 'evidencias', 'screenshots'].map((d) => path.join(__dirname, 'reports/mobile', d)),
 };
 
+const { archivar } = require('./tools/historial/historial.js');
+const dirWeb = path.resolve(__dirname, process.env.REPORT_DIR || 'reports/web');
+const HISTORIAL = {
+  web: { dir: dirWeb, nombres: ['cucumber-report.json', 'front-report.html', 'screenshots', 'traces', 'videos', 'evidencias', 'dom'] },
+  api: { dir: path.join(__dirname, 'reports/api'), nombres: ['cucumber-report.json', 'api-report.html'] },
+  mobile: { dir: path.join(__dirname, 'reports/mobile'), nombres: ['cucumber-report.json', 'html', 'evidencias', 'screenshots'] },
+};
+
 // Evidencia de los tests que pasan: si EVIDENCE no está en el .env, se pregunta (solo en una
 // terminal interactiva; en CI o sin terminal queda "captura").
 function preguntarEvidencia() {
@@ -68,6 +76,9 @@ function preguntarEvidencia() {
 function correr() {
   const results = plan.map((suite) => {
     console.log(`\n=== k0lmena: suite ${suite} ===`);
+    // La corrida anterior (reporte + evidencia) pasa a historial/ (últimas 5) en vez de borrarse.
+    const h = HISTORIAL[suite];
+    if (h) archivar(h.dir, h.nombres, 'cucumber-report.json');
     for (const dir of CLEAN[suite] || []) fs.rmSync(dir, { recursive: true, force: true });
     const { status } = spawnSync(SUITES[suite], { stdio: 'inherit', shell: true });
     return { suite, ok: status === 0 };

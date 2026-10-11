@@ -32,8 +32,8 @@ const dirWeb = (process.env.REPORT_DIR ?? '').trim() || 'reports/web';
 const rawTags = (process.env.TAGS ?? '').trim();
 const tags = rawTags ? `(${rawTags}) and not @bloqueado` : 'not @bloqueado';
 
-// Steps compartidos por todas las suites: variables de escenario y verificaciones de base de datos.
-const pasosComunes = ['tools/variables.ts', 'tools/bd/bd.steps.ts'];
+// Steps compartidos por todas las suites: variables de escenario, verificaciones de base de datos y de correo.
+const pasosComunes = ['tools/variables.ts', 'tools/bd/bd.steps.ts', 'tools/correos/correos.steps.ts'];
 
 const common = {
   requireModule: ['ts-node/register'],

@@ -28,7 +28,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run reparar -- [--historia HU-001] [--fallos output/fallos/<x>/fallos.json]
    ```
-   No toca ningún archivo. Deja en `output/reparaciones/<HU o suite>/` el `reparaciones.json`, el `informe-reparacion.html` y las capturas del DOM con el elemento original (rojo) y el propuesto (verde). **Analizar de nuevo reemplaza la carpeta.**
+   No toca ningún archivo. Deja en `output/reparaciones/<HU o suite>/` el `reparaciones.json`, el `informe-reparacion.html` y las capturas del DOM con el elemento original (rojo) y el propuesto (verde). Al analizar de nuevo, la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución.
 2. **Revisá cada reparación** (`reparaciones.json` → `reparaciones`); el script propone, vos decidís:
    - **Ya no existe** en un paso de **acción** (Given/When) con un candidato claro (mismo rol, texto parecido): es un locator a actualizar. Seguí las convenciones de k0lmena (skill `automatizacion-k0lmena`): `role` + `name` → `label` → `placeholder` → `testId` → `text`; `css` solo si no hay alternativa.
    - **Ya no existe** en un paso de **verificación** (Then): **puede ser un bug** (la app no muestra lo que el caso espera). Compará con la historia o el caso: si el elemento debía estar, no cambies el test; marcá el posible bug y ofrecé redactarlo (`generador-reportes-bug`).

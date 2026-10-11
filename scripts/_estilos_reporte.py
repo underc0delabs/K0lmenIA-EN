@@ -953,8 +953,11 @@ def line_chart(x, series, fmt=None, fmt_x=None, alto=300, area=None, ancho=1320)
     px = lambda xv: izq + (xv - x0) / rx * pw
     py = lambda v: arriba + ph - ph * v / maxv
     svg = _grilla_y(W, izq, der, py, maxv, paso, fmt)
-    for xv in (x0, x0 + rx / 4, x0 + rx / 2, x0 + 3 * rx / 4, x1):
-        svg.append(f'<text class="axis" x="{px(xv):.1f}" y="{H - 8}" text-anchor="middle">{e(fmt_x(xv) if fmt_x else _num(xv))}</text>')
+    # Pocos puntos (por ejemplo, corridas): una marca por punto; si no, cinco marcas parejas.
+    marcas = list(x) if len(x) <= 8 else [x0, x0 + rx / 4, x0 + rx / 2, x0 + 3 * rx / 4, x1]
+    for xv in marcas:
+        ancla = "start" if xv == x0 else "end" if xv == x1 else "middle"  # los extremos no se cortan
+        svg.append(f'<text class="axis" x="{px(xv):.1f}" y="{H - 8}" text-anchor="{ancla}">{e(fmt_x(xv) if fmt_x else _num(xv))}</text>')
     defs = []
     for nombre, color, vs in series:
         pts = [(px(xv), py(v)) for xv, v in zip(x, vs) if v is not None]
@@ -975,7 +978,8 @@ def line_chart(x, series, fmt=None, fmt_x=None, alto=300, area=None, ancho=1320)
         imax = max(range(len(reales)), key=lambda k: reales[k][1])
         for k in sorted({imax, len(reales) - 1} if len(series) == 1 else {len(reales) - 1}):
             xv, v = reales[k]
-            svg.append(f'<text class="val" x="{px(xv):.1f}" y="{py(v) - 11:.1f}" text-anchor="middle">{e(_num(v, fmt))}</text>')
+            ancla = "start" if xv == x0 else "end" if xv == x1 else "middle"
+            svg.append(f'<text class="val" x="{px(xv):.1f}" y="{py(v) - 11:.1f}" text-anchor="{ancla}">{e(_num(v, fmt))}</text>')
     for k, xv in enumerate(x):
         izqz = px(x[k - 1]) if k else px(xv)
         derz = px(x[k + 1]) if k < len(x) - 1 else px(xv)

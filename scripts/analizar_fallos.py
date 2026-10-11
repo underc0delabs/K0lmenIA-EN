@@ -33,6 +33,8 @@ import sys
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(RAIZ / "scripts"))
+import _historial  # noqa: E402
 K0 = RAIZ / "herramientas" / "k0lmena" / "reports"
 SUITES = ["web", "api", "mobile"]
 
@@ -256,7 +258,8 @@ def main():
     carpeta = Path(a.salida) if a.salida else RAIZ / "output" / "fallos" / (historia or "suite")
 
     if not a.agregar_reintento and not a.solo_informe:
-        # Corrida nueva: reemplaza el análisis anterior (solo lo que genera este script).
+        # Corrida nueva: el análisis anterior pasa a historial/<fecha>/ (se guardan los últimos 5).
+        _historial.archivar(carpeta, ["corridas", "evidencia", "corridas.json", "fallos.json", "analisis.json", "informe-fallos.html"], "fallos.json")
         for nombre in ("corridas", "evidencia", "corridas.json", "fallos.json", "analisis.json", "informe-fallos.html"):
             p = carpeta / nombre
             shutil.rmtree(p, ignore_errors=True) if p.is_dir() else p.unlink(missing_ok=True)

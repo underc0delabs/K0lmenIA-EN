@@ -25,8 +25,10 @@ Error en la automatización · Paso sin definir · Sin clasificar
 """
 import argparse
 import json
+from pathlib import Path
 import sys
 
+import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, donut_panel, two_col,
                               nivel_badge, _pastilla, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA, JS_EXTRA, miniatura
@@ -63,7 +65,7 @@ def run_pill(estado, nombre):
     return _pastilla(nombre, NEUTRO, "–")
 
 
-def build_html(datos, analisis):
+def build_html(datos, analisis, hist_html=""):
     ajustes = analisis.get("fallos") or {}
     fallos = []
     for f in datos.get("fallos") or []:
@@ -167,6 +169,8 @@ def build_html(datos, analisis):
     if analisis.get("proximos_pasos"):
         body.append(section("Próximos pasos", doc_list(analisis["proximos_pasos"])))
 
+    if hist_html:
+        body.append(hist_html)
     meta_html = meta([("Historia", datos.get("historia")), ("Fecha", (datos.get("fecha") or "")[:16].replace("T", " ")),
                       ("Suites", ", ".join(datos.get("suites") or [])), ("Herramienta", "k0lmena · npm test")])
     return page("Análisis de fallos", "Análisis de fallos", meta_html, CSS_EXTRA + CSS_FALLOS + "".join(body) + JS_EXTRA)
@@ -188,8 +192,9 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+    hist_html = _historial.seccion("fallos", Path(a.fallos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(datos, analisis))
+        f.write(build_html(datos, analisis, hist_html=hist_html))
     print(f"OK: {a.salida}")
 
 

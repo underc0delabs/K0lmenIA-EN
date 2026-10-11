@@ -27,6 +27,7 @@
 // capturas/, respaldo/, cambios.diff y verificacion/. Analizar de nuevo REEMPLAZA la carpeta.
 const fs = require('fs');
 const path = require('path');
+const { archivar } = require('../historial/historial.js');
 const { spawnSync } = require('child_process');
 
 const RAIZ = path.resolve(__dirname, '..', '..', '..', '..');
@@ -599,6 +600,7 @@ async function main() {
   const origen = a.fallos ? desde(a.fallos) : (a.reporte ? desde(a.reporte) : path.join(K0, 'reports', 'web', 'cucumber-report.json'));
   if (!fs.existsSync(origen)) throw new Error(`No encontré ${origen}. Corré primero npm test (o pasá --reporte / --fallos).`);
   const fallas = a.fallos ? fallasDeAnalista(origen, a.historia) : fallasDelReporte(origen, a.historia);
+  archivar(carpeta, GENERADOS, 'reparaciones.json'); // la corrida anterior pasa a historial/ (últimas 5)
   for (const n of GENERADOS) fs.rmSync(path.join(carpeta, n), { recursive: true, force: true });
   const dirCap = path.join(carpeta, 'capturas');
   fs.mkdirSync(dirCap, { recursive: true });

@@ -2,6 +2,12 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-11 (4) — Correos, traducciones e historial de corridas
+- Nuevo agente `verificador-correos`: con Mailpit como buzón de prueba (`herramientas/mailpit/`), `npm run correos` revisa que llegue lo esperado por caso (destinatario, asunto, textos, links, adjuntos), variables sin reemplazar, links rotos o a localhost, imágenes, texto plano, tamaño, compatibilidad del HTML con los clientes de correo (html-check de Mailpit) y cómo se ve en desktop y mobile. Steps de correo para los `.feature` de k0lmena (`tools/correos/correos.steps.ts`).
+- Nuevo agente `analista-traductor`: `npm run traductor` recorre cada página en cada idioma (hreflang, plantilla de URL o idioma del navegador) y detecta textos sin traducir, claves a la vista, caracteres mal codificados, textos cortados o desbordados, números y fechas de otra región y el atributo lang.
+- **Historial de corridas**: cada herramienta guarda sus últimas 5 corridas con la evidencia en `historial/` (y `npm test`, en `reports/<suite>/historial/`); los informes suman "Evolución de las corridas" con lo nuevo, lo resuelto, los indicadores en el tiempo y el link a cada informe anterior.
+- Gráficos de línea: con pocos puntos marcan cada uno y las etiquetas de los extremos ya no se cortan.
+
 ## 2026-10-11 (3) — Pixel perfect, cross-browser, reparador y selector de casos
 - Nuevo agente `pixel-perfect`: `npm run pixel-perfect` toma una referencia de cada página en cada resolución (o usa un diseño de Figma) y compara píxel a píxel y elemento por elemento: qué se corrió y cuántos píxeles, bloques desplazados con su causa (qué apareció o creció arriba), cambios de tamaño, de texto y de estilo, faltantes y nuevos. Captura estable (sin animaciones, con fuentes e imágenes cargadas y zonas dinámicas ocultas). Informe con comparador deslizable referencia/actual, mapa de diferencias y el antes y después de cada hallazgo.
 - Nuevo agente `cross-browser`: `npm run cross-browser` corre la suite web de k0lmena en Chromium, Firefox y WebKit (cada navegador en su carpeta, sin pisar el último `npm test`) y separa lo que falla solo en algunos de lo que falla en todos; sin automatización, recorre las páginas y las compara contra el navegador base (errores de JavaScript y de consola exclusivos, recursos, desborde, elementos y estilos).

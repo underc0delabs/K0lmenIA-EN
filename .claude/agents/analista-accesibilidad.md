@@ -30,7 +30,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run accesibilidad -- --url <url> [--historia HU-001] [--nivel AA] [--max-paginas 15] [--profundidad 2] [--paginas url1,url2] [--buenas-practicas si] [--tabs 60] [--video si]
    ```
-   Trabaja en una **carpeta fija**, `output/accesibilidad/<HU o host>/` (la `<carpeta>` de los pasos siguientes): **al arrancar borra la corrida anterior** (`auditoria.json`, `analisis.json`, `informe-accesibilidad.html`, `capturas/` y `videos/`) y la reemplaza. Por eso va **siempre primero**. En cada página:
+   Trabaja en una **carpeta fija**, `output/accesibilidad/<HU o host>/` (la `<carpeta>` de los pasos siguientes): al arrancar, la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución. Por eso va **siempre primero**. En cada página:
    - **axe-core** con las reglas WCAG 2.2 del nivel pedido y las buenas prácticas, con los textos en español.
    - **Teclado**: recorre la página con Tab y detecta elementos que reciben foco **sin indicador visible** (2.4.7), **trampas de foco** (2.1.2) y la falta de un enlace para **saltar al contenido** (2.4.1).
    - **Reflow**: a 320px de ancho no tiene que haber scroll horizontal (1.4.10).

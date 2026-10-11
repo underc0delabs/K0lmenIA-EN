@@ -29,7 +29,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run pixel-perfect -- --url <url> [--historia HU-001] [--paginas url1,url2] [--resoluciones 390x844,1366x768] [--ocultar ".banner"]
    ```
-   Antes de cada captura apaga animaciones y transiciones, oculta las zonas de `--ocultar`, espera fuentes e imágenes y mide la caja de cada elemento visible. Trabaja en `output/pixel-perfect/<HU o host>/`: la **referencia** (`referencia/`) se conserva; `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json` e `informe-pixel-perfect.html` se reemplazan en cada corrida.
+   Antes de cada captura apaga animaciones y transiciones, oculta las zonas de `--ocultar`, espera fuentes e imágenes y mide la caja de cada elemento visible. Trabaja en `output/pixel-perfect/<HU o host>/`: la **referencia** (`referencia/`) se conserva; de `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json` e `informe-pixel-perfect.html`, la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución.
 2. **Interpretá los resultados** (`pixel-perfect.json` → `resumen`, `hallazgos`; no mires todas las capturas):
    - **Bloque desplazado**: muchos elementos que se movieron igual son **una sola causa** (algo de arriba apareció, creció o se fue). El hallazgo trae la causa probable: reportá esa causa, no cada elemento.
    - **Elemento corrido**: decí qué es, cuánto se movió y si tapa o pisa algo (mirá el antes y después del hallazgo).
