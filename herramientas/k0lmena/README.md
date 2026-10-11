@@ -220,6 +220,17 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 |                       | Vitals y oportunidades de mejora (agente |
 |                       | auditor-rendimiento-web)                 |
 +-----------------------+------------------------------------------+
+| npm run pixel-perfect | Regresión visual contra una referencia:  |
+|                       | píxel a píxel y por elemento (agente     |
+|                       | pixel-perfect)                           |
++-----------------------+------------------------------------------+
+| npm run cross-browser | Suite o páginas en Chromium, Firefox y   |
+|                       | WebKit (agente cross-browser)            |
++-----------------------+------------------------------------------+
+| npm run reparar       | Diagnostica, propone, aplica y verifica  |
+|                       | locators rotos (agente reparador-        |
+|                       | automatizacion)                          |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

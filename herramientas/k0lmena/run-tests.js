@@ -34,7 +34,7 @@ if (unknown.length) {
 const path = require('path');
 const fs = require('fs');
 const CLEAN = {
-  web: ['screenshots', 'traces', 'videos', 'evidencias'].map((d) =>
+  web: ['screenshots', 'traces', 'videos', 'evidencias', 'dom'].map((d) =>
     path.resolve(__dirname, process.env.REPORT_DIR || 'reports/web', d)
   ),
   mobile: ['html/videos', 'html/evidencias', 'evidencias', 'screenshots'].map((d) => path.join(__dirname, 'reports/mobile', d)),

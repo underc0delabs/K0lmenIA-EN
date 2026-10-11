@@ -112,6 +112,12 @@ def main():
         linea(OK, "Navegadores de Playwright")
     else:
         linea(AVISO, "No encuentro los navegadores de Playwright (web y ejecución E2E)", "cd herramientas/k0lmena && npx playwright install chromium")
+    faltan = [n for n in ("firefox", "webkit") if not (navegadores and any(navegadores.glob(f"{n}-*")))]
+    if faltan:
+        linea(AVISO, f"Sin {' ni '.join(faltan)} (opcionales: solo para el agente cross-browser)",
+              f"cd herramientas/k0lmena && npx playwright install {' '.join(faltan)}")
+    else:
+        linea(OK, "Firefox y WebKit (cross-browser)")
     if comando("newman", "--version"):
         linea(OK, "Newman (colecciones de Postman)")
     else:

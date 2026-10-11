@@ -107,6 +107,10 @@ ICONOS = {
     "carga": '<path d="M4 18l5-6 4 3 7-9"/><path d="M15 6h5v5"/>',
     "lupa": '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
     "objetivo": '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+    "mover": '<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>',
+    "navegador": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.1M9 6.5h.1"/>',
+    "llave": '<path d="M14.5 4a5.5 5.5 0 0 0-5 7.8L3 18.3V21h2.7l1-1v-2h2v-2h2l1.2-1.2A5.5 5.5 0 1 0 14.5 4z"/><circle cx="16" cy="8" r="1.2"/>',
+    "filtro": '<path d="M4 5h16l-6 7.5V19l-4 2v-8.5z"/>',
 }
 
 
@@ -451,7 +455,7 @@ if(nav.scrollWidth>nav.clientWidth)secs[i]._a.scrollIntoView({block:'nearest',in
 secs.forEach(function(s){io.observe(s);});}}
 
 // Tablas: buscador, filtros y orden
-var FILTRAR=['severidad','estado','tipo','causa probable','categoría','resultado','riesgo','prioridad','dispositivo','nivel','cobertura'];
+var FILTRAR=['grupo','severidad','estado','diagnóstico','tipo','causa probable','categoría','resultado','riesgo','prioridad','dispositivo','nivel','cobertura','navegador'];
 var tablas=[].slice.call(document.querySelectorAll('.tablecard table'));
 function texto(c){return (c.innerText||c.textContent||'').trim();}
 tablas.forEach(function(tb){

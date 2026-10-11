@@ -2,6 +2,14 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-11 (3) — Pixel perfect, cross-browser, reparador y selector de casos
+- Nuevo agente `pixel-perfect`: `npm run pixel-perfect` toma una referencia de cada página en cada resolución (o usa un diseño de Figma) y compara píxel a píxel y elemento por elemento: qué se corrió y cuántos píxeles, bloques desplazados con su causa (qué apareció o creció arriba), cambios de tamaño, de texto y de estilo, faltantes y nuevos. Captura estable (sin animaciones, con fuentes e imágenes cargadas y zonas dinámicas ocultas). Informe con comparador deslizable referencia/actual, mapa de diferencias y el antes y después de cada hallazgo.
+- Nuevo agente `cross-browser`: `npm run cross-browser` corre la suite web de k0lmena en Chromium, Firefox y WebKit (cada navegador en su carpeta, sin pisar el último `npm test`) y separa lo que falla solo en algunos de lo que falla en todos; sin automatización, recorre las páginas y las compara contra el navegador base (errores de JavaScript y de consola exclusivos, recursos, desborde, elementos y estilos).
+- Nuevo agente `reparador-automatizacion`: `npm run reparar` saca del error el locator que falló, lo prueba contra el DOM guardado, diagnostica (ya no existe, coincide con varios, no se ve, falló la espera), propone un locator único y robusto, lo aplica con respaldo y diff y verifica los escenarios. No cambia un test para tapar un bug.
+- Nuevo agente `selector-casos-de-prueba`: `scripts/seleccionar_casos.py` cruza un cambio (git, PR, Jira, notas de la release) con los casos manuales, BDD y automatizados y arma la selección por riesgo (imprescindibles, recomendados, regresión mínima) con el comando `npm test` y los cambios sin cobertura.
+- k0lmena: la suite web guarda el DOM de la página al fallar (`reports/web/dom/`), `REPORT_DIR` también mueve el reporte JSON y HTML de Cucumber y el `analista-fallos` rescata el DOM y la URL de cada falla.
+- Arreglo: con `VIEWPORT_WIDTH`/`VIEWPORT_HEIGHT` vacíos la ventana del navegador quedaba en 0x0 (los clics fallaban por "outside of the viewport"); ahora usa 1366x768.
+
 ## 2026-10-11 (2) — Reportes con diseño bento y navegación
 - Todos los reportes HTML (los 10 informes de Python, el de cada corrida de `npm run perf` y el tema de los reportes de Cucumber) pasan a un diseño tipo dashboard: barra lateral con el índice del reporte que marca la sección que se está leyendo, encabezado con buscador (Ctrl K) y grilla bento.
 - Tipografía Geist y Geist Mono incrustadas (`scripts/fuentes`, licencia OFL): se ven igual en cualquier máquina y sin internet.

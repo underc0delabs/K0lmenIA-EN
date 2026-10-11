@@ -23,6 +23,10 @@ const resolveParallel = () => {
 
 const parallel = resolveParallel();
 
+// REPORT_DIR: carpeta de los reportes y evidencias de la suite web (por defecto reports/web). La usa,
+// por ejemplo, el cross-browser para correr un navegador por carpeta sin pisar el último npm test.
+const dirWeb = (process.env.REPORT_DIR ?? '').trim() || 'reports/web';
+
 // TAGS env var: filtra escenarios por tag (ej. TAGS=@HU-001). Vacío = todos.
 // Los escenarios marcados @bloqueado (pasos que no se pudieron mapear) nunca corren.
 const rawTags = (process.env.TAGS ?? '').trim();
@@ -48,10 +52,10 @@ module.exports = {
     require: ['web/steps/*.ts', ...pasosComunes],
     parallel,
     format: [
-      ['html', 'reports/web/front-report.html'],
+      ['html', `${dirWeb}/front-report.html`],
       'summary',
       'progress-bar',
-      'json:reports/web/cucumber-report.json',
+      ['json', `${dirWeb}/cucumber-report.json`],
     ],
   },
 

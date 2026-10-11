@@ -25,6 +25,9 @@
     "explorar": "npm --prefix herramientas/k0lmena run explorar --",
     "accesibilidad": "npm --prefix herramientas/k0lmena run accesibilidad --",
     "rendimiento": "npm --prefix herramientas/k0lmena run rendimiento --",
+    "pixel-perfect": "npm --prefix herramientas/k0lmena run pixel-perfect --",
+    "cross-browser": "npm --prefix herramientas/k0lmena run cross-browser --",
+    "reparar": "npm --prefix herramientas/k0lmena run reparar --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

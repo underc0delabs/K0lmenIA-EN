@@ -68,7 +68,20 @@
       "Bash(npm --version)",
       "Bash(java -version)",
       "Bash(npm run conector)",
-      "Bash(npm run doctor)"
+      "Bash(npm run doctor)",
+      "Bash(python scripts/seleccionar_casos.py:*)",
+      "Bash(python scripts/generar_informe_seleccion.py:*)",
+      "Bash(python scripts/generar_informe_pixel_perfect.py:*)",
+      "Bash(python scripts/generar_informe_cross_browser.py:*)",
+      "Bash(python scripts/generar_informe_reparacion.py:*)",
+      "Bash(python3 scripts/seleccionar_casos.py:*)",
+      "Bash(python3 scripts/generar_informe_seleccion.py:*)",
+      "Bash(python3 scripts/generar_informe_pixel_perfect.py:*)",
+      "Bash(python3 scripts/generar_informe_cross_browser.py:*)",
+      "Bash(python3 scripts/generar_informe_reparacion.py:*)",
+      "Bash(npm run pixel-perfect:*)",
+      "Bash(npm run cross-browser:*)",
+      "Bash(npm run reparar:*)"
     ],
     "ask": [
       "mcp__playwright__browser_run_code_unsafe",

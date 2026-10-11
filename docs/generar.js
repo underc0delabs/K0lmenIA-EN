@@ -1,6 +1,7 @@
 // Regenera los recursos de la documentación de k0lmenIA:
 //   docs/assets/img/arquitectura.png  ← docs/diagramas/arquitectura.html
 //   docs/assets/img/uso.png           ← docs/diagramas/uso.html
+//   docs/assets/img/puesta-en-marcha.png ← docs/diagramas/puesta-en-marcha.html
 //   docs/k0lmenIA-documentacion.pdf   ← docs/index.html (estilos de impresión)
 //
 // Uso, desde la raíz del repo (con k0lmena instalado: usa su Playwright):
@@ -25,7 +26,7 @@ const ruta = (archivo) => path.join(__dirname, archivo);
 
   // Diagramas → PNG (2x para que se lean bien en pantallas de alta densidad)
   const lienzo = await navegador.newPage({ viewport: { width: 1900, height: 1200 }, deviceScaleFactor: 2 });
-  for (const nombre of ['arquitectura', 'uso']) {
+  for (const nombre of ['arquitectura', 'uso', 'puesta-en-marcha']) {
     await lienzo.goto(url(`diagramas/${nombre}.html`));
     await lienzo.locator('#captura').screenshot({ path: ruta(`assets/img/${nombre}.png`) });
     console.log(`docs/assets/img/${nombre}.png`);

@@ -23,6 +23,9 @@
     "explorar": "node -r ./env.js tools/explorador/explorar.js",
     "accesibilidad": "node -r ./env.js tools/accesibilidad/auditar.js",
     "rendimiento": "node -r ./env.js tools/rendimiento/auditar.js",
+    "pixel-perfect": "node -r ./env.js tools/pixel-perfect/pixel-perfect.js",
+    "cross-browser": "node -r ./env.js tools/cross-browser/cross-browser.js",
+    "reparar": "node -r ./env.js tools/reparador/reparar.js",
     "debug": "cross-env CUCUMBER_DEBUG=1 npx cucumber-js --profile debug",
     "record": "node -r ./env.js tools/generator/codegen.js",
     "record:generator": "ts-node -r ./env.js tools/generator/record-generator.ts"

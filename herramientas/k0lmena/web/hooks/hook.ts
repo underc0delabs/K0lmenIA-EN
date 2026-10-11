@@ -63,6 +63,8 @@ function boolFromEnv(name: string, defaultValue: boolean): boolean {
 
 function intFromEnv(name: string, defaultValue: number): number {
   const raw = (process.env[name] ?? "").trim();
+  // Vacío o sin definir → el valor por defecto (Number("") es 0: sin esto, el viewport quedaba en 0x0).
+  if (!raw) return defaultValue;
   const n = Number(raw);
   return Number.isFinite(n) ? n : defaultValue;
 }
@@ -266,6 +268,16 @@ AfterStep(async function ({ result, pickle }) {
       `PÁGINA AL FALLAR (${browserLabel})\n- URL: ${url}\n- Título: ${title}`,
       "text/plain"
     );
+
+    // DOM en el momento de la falla: el reparador-automatizacion busca ahí el elemento que el
+    // locator no encontró (y propone uno nuevo) sin volver a correr el escenario.
+    const html = await page.content().catch(() => undefined);
+    if (html) {
+      const domDir = await ensureDirAbs(path.join(reportRoot, "dom"));
+      const domAbs = path.join(domDir, `dom-${scenarioName}-${browserLabel}-${timestamp}.html`);
+      fs.writeFileSync(domAbs, html);
+      await this.attach(`DOM: ${toPosix(path.relative(reportRoot, domAbs))}\n- URL: ${url}`, "text/plain");
+    }
 
     const browserSideLogs = pageLogs.get(page) ?? [];
     if (browserSideLogs.length > 0) {

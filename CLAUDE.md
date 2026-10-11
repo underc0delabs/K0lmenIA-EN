@@ -168,6 +168,32 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | los huecos (qué falta probar); informe   |                                       |
 |                            | HTML                                     |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `pixel-perfect`            | Regresión visual: compara cada página    | `output/pixel-perfect/`               |
+|                            | contra su referencia (o el diseño) píxel |                                       |
+|                            | a píxel y por elemento; dice qué se      |                                       |
+|                            | corrió y cuánto, qué falta, qué es nuevo |                                       |
+|                            | y qué cambió de estilo; informe HTML con |                                       |
+|                            | comparador deslizable                    |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `cross-browser`            | Prueba en Chromium (Chrome, Edge),       | `output/cross-browser/`               |
+|                            | Firefox y WebKit (Safari): la suite de   |                                       |
+|                            | k0lmena por navegador o las páginas      |                                       |
+|                            | comparadas contra el navegador base;     |                                       |
+|                            | informe HTML con la matriz y las         |                                       |
+|                            | diferencias                              |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `reparador-automatizacion` | Repara locators y esperas rotos de la    | `herramientas/k0lmena/web/` +         |
+|                            | automatización web: diagnostica con el   | `output/reparaciones/`                |
+|                            | DOM guardado al fallar, propone un       |                                       |
+|                            | locator único, lo aplica con respaldo y  |                                       |
+|                            | verifica; informe HTML                   |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `selector-casos-de-prueba` | Elige qué casos correr para un cambio    | `output/seleccion-casos/`             |
+|                            | (git, PR, Jira, notas de la release)     |                                       |
+|                            | priorizados por riesgo, con el comando   |                                       |
+|                            | npm test y los cambios sin cobertura;    |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-seguridad`       | Revisa la seguridad de una web propia o  | `output/seguridad/`                   |
 |                            | autorizada con un escaneo pasivo de      |                                       |
 |                            | OWASP ZAP (Docker), analiza los          |                                       |
@@ -244,6 +270,8 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/generar_informe_rendimiento.py` → arma el informe HTML de rendimiento web desde el `rendimiento.json` de `npm run rendimiento` (`auditor-rendimiento-web`).
 - `scripts/analizar_fallos.py` → clasifica las fallas de `npm test`, compara con reintentos y genera el informe (`analista-fallos`).
 - `scripts/analizar_cobertura.py` → arma la matriz de cobertura y trazabilidad por historia y genera el informe (`analista-cobertura`).
+- `scripts/seleccionar_casos.py` → elige y prioriza los casos a correr para un cambio y genera el informe (`selector-casos-de-prueba`).
+- `scripts/generar_informe_pixel_perfect.py`, `generar_informe_cross_browser.py` y `generar_informe_reparacion.py` → los informes HTML de `npm run pixel-perfect`, `npm run cross-browser` y `npm run reparar` (`pixel-perfect`, `cross-browser`, `reparador-automatizacion`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
 
 ---
@@ -261,6 +289,10 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Rendimiento web: `output/rendimiento/<HU o host>/` con `rendimiento.json`, `informe-rendimiento.html`, `capturas/` y `lighthouse/`.
 - Análisis de fallos: `output/fallos/<HU o suite>/` con `fallos.json`, `informe-fallos.html`, `corridas/` y `evidencia/`.
 - Cobertura y trazabilidad: `output/cobertura/<HU o todas>/` con `cobertura.json` e `informe-cobertura.html`.
+- Regresión visual: `output/pixel-perfect/<HU o host>/` con `referencia/` (se conserva entre corridas), `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json` e `informe-pixel-perfect.html`.
+- Cross-browser: `output/cross-browser/<HU, host o suite>/` con `cross-browser.json`, `informe-cross-browser.html`, `capturas/`, `diferencias/` y `suite/` (el reporte de Cucumber de cada navegador).
+- Reparación de la automatización: `output/reparaciones/<HU o suite>/` con `reparaciones.json`, `informe-reparacion.html`, `capturas/`, `cambios.diff` y `respaldo/`.
+- Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`
 - Mapeo a automatización: `herramientas/k0lmena/<web|api|mobile>/features/HU-001-<slug>.feature` + `steps/HU-001.steps.ts` + `locators/HU-001.locators.ts`, y el reporte `output/mapeos/mapeo-HU-001-<web|api|mobile>.md`.

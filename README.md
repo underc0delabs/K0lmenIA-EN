@@ -103,6 +103,10 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Rendimiento web](#-rendimiento-web)
 - [Análisis de fallos](#-análisis-de-fallos)
 - [Cobertura y trazabilidad](#-cobertura-y-trazabilidad)
+- [Selección de casos por cambio](#-selección-de-casos-por-cambio)
+- [Regresión visual (pixel perfect)](#-regresión-visual-pixel-perfect)
+- [Cross-browser](#-cross-browser)
+- [Reparación de la automatización](#-reparación-de-la-automatización)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -116,7 +120,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 
 <table>
 <tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="7"><b>🧠 Análisis<br>y diseño</b></td>
+<tr><td rowspan="8"><b>🧠 Análisis<br>y diseño</b></td>
   <td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
 <tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
 <tr><td><code>generador-casos-manuales</code></td><td>Casos en Excel y Markdown + informe de cobertura</td></tr>
@@ -124,21 +128,25 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
-<tr><td rowspan="8"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
+<tr><td rowspan="10"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
 <tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
 <tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
 <tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
+<tr><td><code>pixel-perfect</code></td><td>Regresión visual contra una referencia (o el diseño): qué se corrió y cuántos píxeles, qué falta, qué es nuevo y qué cambió de estilo, con comparador deslizable</td></tr>
+<tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
 <tr><td><code>analista-cobertura</code></td><td>Matriz de trazabilidad (HU → criterios → casos → automatización → resultados) y qué falta probar</td></tr>
-<tr><td rowspan="7"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
+<tr><td rowspan="8"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
   <td><code>web-mapper</code></td><td>Recorre la web siguiendo tus casos y genera <code>.feature</code>, steps y locators</td></tr>
 <tr><td><code>api-mapper</code></td><td>Lee Postman o Swagger/OpenAPI, verifica los endpoints y genera los <code>.feature</code></td></tr>
 <tr><td><code>mobile-mapper</code></td><td>Recorre la app con Appium y genera <code>.feature</code>, steps y locators</td></tr>
 <tr><td><code>performance-mapper</code></td><td>Carga, estrés, soak y picos con k6, Artillery o JMeter; pregunta carga y umbrales</td></tr>
 <tr><td><code>analista-fallos</code></td><td>Cuando <code>npm test</code> falla: separa bugs reales de tests rotos, inestables, de datos o de ambiente, con la evidencia</td></tr>
+<tr><td><code>reparador-automatizacion</code></td><td>Repara los locators y esperas que se rompieron: diagnostica con el DOM guardado al fallar, propone un locator único, lo aplica con respaldo y lo verifica</td></tr>
 <tr><td><code>verificador-datos</code></td><td>Verifica datos en PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB y suma verificaciones de BD a los tests</td></tr>
 <tr><td><code>analista-seguridad</code></td><td>Escaneo de seguridad web pasivo con OWASP ZAP e informe HTML con hallazgos, evidencia y cómo corregirlos</td></tr>
 <tr><td rowspan="2"><b>🗂️ Gestión</b></td>
@@ -303,7 +311,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -448,6 +456,71 @@ Queda en `output/cobertura/<HU o todas>/`: el embudo de la historia al resultado
 
 ---
 
+## 🎯 Selección de casos por cambio
+
+El **selector-casos-de-prueba** responde *"¿qué pruebo con este cambio?"* sin correr toda la regresión: cruza lo que cambió (un rango de git, los archivos de un PR, issues de Jira o Azure DevOps, las notas de la release) con todos los casos —manuales, BDD y automatizados, con su último resultado, los inestables y los bugs abiertos— y arma una selección priorizada por riesgo: **imprescindibles**, **recomendados** y **regresión mínima**, cada uno con su porqué, el tiempo estimado y el ahorro contra correr todo.
+
+- *"¿Qué casos corro para el PR #42?"*
+- *"Armá la regresión de la release 2.4, tengo una hora"*
+
+```bash
+python scripts/seleccionar_casos.py --git main..release/2.4 --repo ../mi-app --nombre release-2.4 --presupuesto-min 60
+```
+
+Queda en `output/seleccion-casos/<nombre>/`: el informe, el comando `npm test` con los tags para lo automatizado (listo para copiar en bash o PowerShell), `seleccion.csv` con lo manual y los **cambios sin cobertura** (lo que cambió y ningún caso prueba). Opcional: `input/mapa-componentes.json` relaciona carpetas del código con historias.
+
+---
+
+## 🖼️ Regresión visual (pixel perfect)
+
+El **pixel-perfect** detecta **si algo se corrió**: toma una referencia de cada página en cada resolución y en cada corrida compara contra ella, píxel a píxel y elemento por elemento. Dice qué se movió y cuántos píxeles, qué bloque se desplazó y por qué (qué apareció o creció arriba), qué cambió de tamaño, de texto o de estilo, qué falta y qué es nuevo. La referencia también puede ser un diseño de Figma.
+
+- *"Corré una regresión visual de qarmy.ar"*
+- *"¿Se corrió algo en el checkout después del deploy?"*
+
+```bash
+npm run pixel-perfect -- --url https://staging.mi-app.com      # la primera vez crea la referencia
+npm run pixel-perfect -- --url https://staging.mi-app.com      # después compara contra ella
+npm run pixel-perfect -- --aceptar todas                       # acepta los cambios como nueva referencia
+```
+
+Queda en `output/pixel-perfect/<HU o sitio>/`, con un **comparador deslizable** (referencia ↔ actual), el mapa de diferencias y el antes y después de cada hallazgo. Las zonas que cambian solas (fechas, banners) se ocultan con `--ocultar`.
+
+---
+
+## 🧭 Cross-browser
+
+El **cross-browser** encuentra lo que funciona o se ve distinto según el navegador: **Chromium** (Chrome y Edge), **Firefox** y **WebKit** (el motor de Safari), en desktop y mobile. Si hay automatización, corre la suite de k0lmena en cada navegador y separa lo que falla solo en algunos (compatibilidad) de lo que falla en todos (bug o test roto); si no, recorre las páginas y las compara contra el navegador base.
+
+- *"Probá HU-003 en Chrome, Firefox y Safari"*
+- *"¿Por qué el menú no anda en Safari?"*
+
+```bash
+npm run cross-browser -- --historia HU-003                     # suite de k0lmena en los 3 navegadores
+npm run cross-browser -- --modo paginas --url https://staging.mi-app.com
+```
+
+Queda en `output/cross-browser/<HU, sitio o suite>/`. Firefox y WebKit se instalan una vez con `cd herramientas/k0lmena && npx playwright install firefox webkit`. WebKit es una muy buena aproximación, pero no reemplaza un Safari real.
+
+---
+
+## 🔧 Reparación de la automatización
+
+El **reparador-automatizacion** arregla los tests que fallan porque **la pantalla cambió**: saca del error el locator que no funcionó, lo prueba contra el DOM que k0lmena guarda al fallar (`reports/web/dom/`) y diagnostica (ya no existe, coincide con varios, existe pero no se ve, falló la espera). Propone el locator nuevo más robusto —verificando que encuentre un solo elemento—, lo aplica con respaldo y diff, y vuelve a correr los escenarios para confirmar que pasan. Si lo que falta es algo que el caso verifica, no toca el test: lo marca como posible bug.
+
+- *"Repará los tests que fallaron por locators"*
+- *"Arreglá la automatización de HU-001 después del rediseño"*
+
+```bash
+npm run reparar -- --historia HU-001                 # diagnostica y propone (no toca nada)
+npm run reparar -- --aplicar seguras                 # aplica las de confianza alta
+npm run reparar -- --verificar                       # vuelve a correr los escenarios reparados
+```
+
+Queda en `output/reparaciones/<HU o suite>/` (con `cambios.diff` y `respaldo/`). Aplicar lo que no es seguro y volver a correr se hace con tu ok.
+
+---
+
 ## 🛡️ Seguridad web
 
 El **analista-seguridad** revisa la seguridad de tu aplicación con **OWASP ZAP** (libre y gratuito) en modo **pasivo**: recorre el sitio y analiza las respuestas sin enviar ataques ni modificar datos. Encuentra encabezados de seguridad faltantes, cookies inseguras, información expuesta, contenido mixto y otras configuraciones débiles.
@@ -573,7 +646,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 24 agentes
+│   ├── agents/             Los 28 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)
@@ -595,7 +668,7 @@ k0lmenIA/
 | Problema                                                          | Solución                                                                                                                  |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Un agente nuevo no aparece                                        | Reiniciá Claude Code.                                                                                                     |
-| La suite web falla con viewport 0x0 o sin URL                     | Falta el `.env` de la raíz: `cp .env.example .env` y completalo.                                                          |
+| La suite web falla sin URL                                        | Falta el `.env` de la raíz: `cp .env.example .env` y completalo.                                                          |
 | `npm test` corre 0 escenarios                                     | Todavía no automatizaste nada o `TAGS` no coincide.                                                                       |
 | Un escenario nunca se ejecuta                                     | Tiene `@bloqueado`; el motivo está en un comentario arriba.                                                               |
 | "No encuentro k6"                                                 | `npm run bootstrap:k6` en `herramientas/k0lmena/`.                                                                        |

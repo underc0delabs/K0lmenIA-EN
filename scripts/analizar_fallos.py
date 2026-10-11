@@ -92,7 +92,7 @@ def leer_reporte(archivo, suite, historia=None):
             if historia and (hu or "").upper() != historia:
                 continue
             cp = next((t for t in tags if re.match(r"^CP(-API)?-\d+$", t)), None)
-            estados, error, paso, dur, capturas, videos, traces, textos = [], "", None, 0, [], [], [], []
+            estados, error, paso, dur, capturas, videos, traces, doms, textos, url = [], "", None, 0, [], [], [], [], [], None
             for p in esc.get("steps") or []:
                 res = p.get("result") or {}
                 st = res.get("status", "undefined")
@@ -102,7 +102,7 @@ def leer_reporte(archivo, suite, historia=None):
                 if st in ("failed", "undefined", "ambiguous", "pending") and paso is None:
                     paso = f'{p.get("keyword", "").strip()} {p.get("name", "")}'.strip() or "(hook)"
                 if st == "failed" and not error:
-                    error = (res.get("error_message") or "").strip()
+                    error = re.sub(r"\x1b\[[0-9;]*m", "", res.get("error_message") or "").strip()
                 for emb in p.get("embeddings") or []:
                     mime, data = emb.get("mime_type", ""), emb.get("data", "")
                     try:
@@ -117,6 +117,9 @@ def leer_reporte(archivo, suite, historia=None):
                     elif mime == "text/plain":
                         t = crudo.decode("utf-8", "replace")
                         traces += re.findall(r"TRACE:\s*(\S+)", t)
+                        doms += re.findall(r"^DOM:[ \t]*([^\r\n]+)", t, re.M)  # DOM al fallar (para el reparador)
+                        u = re.search(r"- URL:\s*(\S+)", t)
+                        url = url or (u.group(1) if u else None)
                         textos.append(t)
             if "failed" in estados or "ambiguous" in estados:
                 estado = "Fallido"
@@ -134,7 +137,7 @@ def leer_reporte(archivo, suite, historia=None):
                 "clave": clave, "suite": suite, "feature": f.get("name", ""), "uri": f.get("uri", ""), "linea": esc.get("line"),
                 "escenario": esc.get("name", ""), "tags": tags, "historia": hu, "caso": cp, "estado": estado,
                 "estados_pasos": estados, "paso_fallido": paso, "error": error[:4000], "duracion_s": round(dur / 1e9, 2),
-                "_capturas": capturas, "_videos": videos, "_traces": traces,
+                "url": url, "_capturas": capturas, "_videos": videos, "_traces": traces, "_doms": doms,
             }
     return salida
 
@@ -147,7 +150,7 @@ def _copiar_evidencia(r, base_reporte, dir_ev, prefijo):
         arch = dir_ev / f"{prefijo}-{nombre}-{hashlib.md5(png).hexdigest()[:6]}-{n}.png"
         arch.write_bytes(png)
         ev.append({"tipo": "captura", "archivo": arch})
-    for tipo, clave in (("video", "_videos"), ("trace", "_traces")):
+    for tipo, clave in (("video", "_videos"), ("trace", "_traces"), ("dom", "_doms")):
         for src in r.pop(clave, []):
             limpio = src.replace("../", "")
             destino = dir_ev / f"{prefijo}-{Path(limpio).name}"
