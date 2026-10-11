@@ -3,6 +3,7 @@ import json
 
 import formatear_tablas
 import generar_informe_cierre
+import generar_informe_accesibilidad
 import generar_informe_exploratorio
 import generar_informe_seguridad
 import generar_plan
@@ -108,3 +109,23 @@ def test_recolectar_resultados(tmp_path, monkeypatch):
     assert datos["resultados"] == {"aprobado": 2, "fallido": 0, "bloqueado": 0}
     assert datos["bugs"]["por_severidad"]["Alta"] == 1
     assert [b["id"] for b in datos["bugs"]["criticos_abiertos"]] == ["BUG-001"]
+
+
+def test_accesibilidad():
+    datos = {"url": "https://x.com/", "host": "x.com", "config": {"nivel": "AA", "buenas_practicas": True, "tabs": 60},
+             "resumen": {"paginas": 1, "cumplimiento_pct": 80.0},
+             "hallazgos": [{"id": "A-01", "fuente": "axe", "regla": "image-alt", "titulo": "Imágenes sin alt", "descripcion": "d",
+                            "severidad": "Crítica", "wcag": ["1.1.1"], "paginas": ["https://x.com/"], "total_nodos": 1,
+                            "ayuda": "https://dequeuniversity.com/rules/axe/4.13/image-alt",
+                            "ejemplos": [{"pagina": "https://x.com/", "selector": "img", "html": "<img src=a>",
+                                          "resumen": "Fix any of the following:", "captura": "capturas/elementos/01-image-alt-1.jpg"}]},
+                           {"id": "A-02", "fuente": "axe", "regla": "region", "titulo": "Regiones", "severidad": "Baja", "wcag": [],
+                            "paginas": ["https://x.com/"], "total_nodos": 3, "ejemplos": []}],
+             "revisar": [{"id": "R-01", "regla": "color-contrast", "titulo": "Contraste", "wcag": ["1.4.3"], "paginas": ["https://x.com/"], "total_nodos": 1}],
+             "paginas": [{"url": "https://x.com/", "status": 200, "aprobadas": ["a"] * 8, "violaciones": [{}, {}],
+                          "teclado": {"pasos": [{"elemento": "a", "texto": "Inicio", "visible_indicador": False}], "trampa": None}}]}
+    html = generar_informe_accesibilidad.build_html(datos, {"manuales": [{"id": "M-01", "titulo": "Error no anunciado", "severidad": "Alta", "wcag": ["3.3.1"]}]})
+    assert "No cumple WCAG AA" in html and "Contenido no textual" in html and "Identificación de errores" in html
+    assert "capturas/elementos/01-image-alt-1.jpg" in html and "Corregí alguna de estas:" in html
+    assert "Para revisar a mano" in html and "Buena práctica" in html and "sin foco visible" in html
+    assert "cumple WCAG" not in html.replace("No cumple WCAG", "")  # nunca afirma conformidad

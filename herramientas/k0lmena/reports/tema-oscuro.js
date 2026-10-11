@@ -17,27 +17,27 @@ try {
 
 // Paleta validada para la superficie oscura (CVD y contraste, skill dataviz).
 const TOKENS = {
-  '--background': '#0D1117',
-  '--foreground': '#E8ECF2',
-  '--card': '#161B22',
-  '--card-foreground': '#E8ECF2',
-  '--popover': '#161B22',
-  '--popover-foreground': '#E8ECF2',
-  '--primary': '#3987E5',
-  '--primary-foreground': '#FFFFFF',
-  '--secondary': '#1C2330',
-  '--secondary-foreground': '#E8ECF2',
-  '--muted': '#1C2330',
-  '--muted-foreground': '#8B95A3',
-  '--accent': '#1E2A3D',
-  '--accent-foreground': '#C9DDF7',
+  '--background': '#0B0D11',
+  '--foreground': '#F3F5F8',
+  '--card': '#15181D',
+  '--card-foreground': '#F3F5F8',
+  '--popover': '#15181D',
+  '--popover-foreground': '#F3F5F8',
+  '--primary': '#14A895',
+  '--primary-foreground': '#0B0D11',
+  '--secondary': '#1A1E25',
+  '--secondary-foreground': '#F3F5F8',
+  '--muted': '#1A1E25',
+  '--muted-foreground': '#7F8896',
+  '--accent': '#16302D',
+  '--accent-foreground': '#BFF1E9',
   '--destructive': '#D03B3B',
-  '--border': '#283040',
-  '--input': '#283040',
-  '--ring': '#3987E5',
-  '--chart-1': '#3987E5',
-  '--chart-2': '#D95926',
-  '--chart-3': '#199E70',
+  '--border': '#242A33',
+  '--input': '#242A33',
+  '--ring': '#14A895',
+  '--chart-1': '#14A895',
+  '--chart-2': '#E0702E',
+  '--chart-3': '#4C8DEB',
   '--chart-4': '#C98500',
   '--chart-5': '#9085E9',
   // Estados de Cucumber (siempre acompañados del nombre del estado en el reporte)
@@ -47,8 +47,8 @@ const TOKENS = {
   '--status-undefined': '#FAB219',
   '--status-pending': '#9085E9',
   '--status-skipped': '#8B949E',
-  '--font-sans': '"Inter","Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,sans-serif',
-  '--radius': '.75rem',
+  '--font-sans': '"Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif',
+  '--radius': '1rem',
 };
 
 const ESTILO = `
@@ -56,18 +56,21 @@ const ESTILO = `
 html.dark,:root.dark{${Object.entries(TOKENS).map(([k, v]) => `${k}:${v}`).join(';')}}
 html.dark{color-scheme:dark}
 html.dark body{
-  background:radial-gradient(1200px 500px at 15% -10%,rgba(57,135,229,.14),transparent 60%),
-             radial-gradient(900px 400px at 100% 0%,rgba(144,133,233,.09),transparent 55%),var(--background) !important;
-  background-attachment:fixed !important;font-family:var(--font-sans) !important;font-feature-settings:"tnum" 1;
+  background:radial-gradient(1100px 420px at 8% -8%,rgba(20,168,149,.10),transparent 60%),var(--background) !important;
+  background-attachment:fixed !important;font-family:var(--font-sans) !important;-webkit-font-smoothing:antialiased;
 }
-html.dark .bg-card{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 120px),var(--card) !important;
-  border:1px solid var(--border) !important;box-shadow:0 12px 32px -18px rgba(0,0,0,.7) !important;border-radius:16px !important}
-html.dark header,html.dark nav{background:rgba(13,17,23,.82) !important;backdrop-filter:blur(10px);border-color:var(--border) !important}
+html.dark main,html.dark .container,html.dark .max-w-7xl,html.dark .max-w-6xl,html.dark .max-w-screen-xl{max-width:1480px !important}
+html.dark .bg-card{background:var(--card) !important;border:1px solid var(--border) !important;border-radius:18px !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.035) inset,0 18px 40px -28px rgba(0,0,0,.8) !important}
+html.dark h1,html.dark h2,html.dark h3{letter-spacing:-.015em}
+html.dark header,html.dark nav{background:rgba(11,13,17,.85) !important;backdrop-filter:blur(10px);border-color:var(--border) !important}
+html.dark table{font-variant-numeric:tabular-nums}
+html.dark thead th{font-size:10.5px !important;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-foreground) !important;background:rgba(255,255,255,.02)}
 html.dark table tbody tr:hover td{background:rgba(255,255,255,.025)}
 html.dark code,html.dark pre,html.dark .font-mono{font-family:"JetBrains Mono","Cascadia Code",ui-monospace,Consolas,monospace !important}
-html.dark .apexcharts-tooltip{background:#0B0F15 !important;border:1px solid var(--border) !important;color:var(--foreground) !important;
-  box-shadow:0 10px 28px rgba(0,0,0,.55) !important;border-radius:10px !important}
-html.dark .apexcharts-legend-text{color:#B4BCC8 !important}
+html.dark .apexcharts-tooltip{background:#0E1116 !important;border:1px solid var(--border) !important;color:var(--foreground) !important;
+  box-shadow:0 14px 34px rgba(0,0,0,.6) !important;border-radius:12px !important}
+html.dark .apexcharts-legend-text{color:#B7BECA !important}
 #theme-toggle{display:none !important}
 </style>
 <script id="k0lmena-dark">document.documentElement.classList.add('dark');try{localStorage.setItem('theme','dark')}catch(e){}</script>`;

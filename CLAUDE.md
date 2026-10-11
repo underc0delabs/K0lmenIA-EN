@@ -141,6 +141,14 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | explora a mano con Playwright MCP; arma  |                                       |
 |                            | el informe HTML con hallazgos y capturas |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `analista-accesibilidad`   | Audita la accesibilidad contra WCAG 2.2  | `output/accesibilidad/`               |
+|                            | (AA por defecto): axe-core en cada       |                                       |
+|                            | página, navegación con teclado y reflow  |                                       |
+|                            | a 320px, más revisión manual con         |                                       |
+|                            | Playwright MCP; arma el informe HTML con |                                       |
+|                            | criterios incumplidos, capturas y cómo   |                                       |
+|                            | corregir cada problema                   |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-seguridad`       | Revisa la seguridad de una web propia o  | `output/seguridad/`                   |
 |                            | autorizada con un escaneo pasivo de      |                                       |
 |                            | OWASP ZAP (Docker), analiza los          |                                       |
@@ -213,6 +221,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/recolectar_resultados.py` → junta los resultados de una historia (ejecuciones en vivo, `npm test`, bugs, performance y seguridad) para el informe de cierre.
 - `scripts/doctor.py` → revisa el entorno y la configuración.
 - `scripts/generar_informe_exploratorio.py` → arma el informe HTML de pruebas exploratorias desde el `exploracion.json` de `npm run explorar` (`explorador-web`).
+- `scripts/generar_informe_accesibilidad.py` → arma el informe HTML de accesibilidad desde el `auditoria.json` de `npm run accesibilidad` (`analista-accesibilidad`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
 
 ---
@@ -226,6 +235,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Reporte de bug: `BUG-001.md`
 - Seguridad web: `output/seguridad/<HU o host>/<fecha>/` con `zap.json`, `analisis.json` e `informe-seguridad.html`
 - Pruebas exploratorias: `output/exploratorias/<HU o host>/` con `exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
+- Accesibilidad: `output/accesibilidad/<HU o host>/` con `auditoria.json`, `analisis.json`, `informe-accesibilidad.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`
 - Mapeo a automatización: `herramientas/k0lmena/<web|api|mobile>/features/HU-001-<slug>.feature` + `steps/HU-001.steps.ts` + `locators/HU-001.locators.ts`, y el reporte `output/mapeos/mapeo-HU-001-<web|api|mobile>.md`.

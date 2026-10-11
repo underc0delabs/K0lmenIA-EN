@@ -2,6 +2,17 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-10 (4) — Rediseño de todos los reportes
+- Sistema de diseño nuevo (`scripts/_estilos_reporte.py`) para los 7 informes HTML (plan, ejecución, cierre, performance, seguridad, exploratorias y accesibilidad): más ancho (hasta 1480px), tarjetas con el título adentro, indicadores con íconos según lo que miden y el estado como símbolo (✓ ✕ ! ⊘), nunca solo color, tablas con encabezado destacado y números alineados.
+- Gráficos nuevos: curvas suaves con área en degradado y etiquetas solo en el máximo y el último valor, columnas con el valor en la punta, donas con leyenda de valores y porcentajes, barras sobre un riel tenue. Paleta categórica nueva liderada por verde azulado (#14A895), validada para daltonismo y contraste con el script del skill dataviz; los colores de estado no cambian.
+- Mismo diseño en el informe de cada corrida de `npm run perf` (k0lmena) y en el tema de los reportes de Cucumber (`npm test` web, API y mobile).
+- Arreglo: la duración de una corrida de performance ya no muestra "3m 60s".
+
+## 2026-10-10 (3) — Accesibilidad
+- Nuevo agente `analista-accesibilidad`: audita WCAG 2.2 (AA por defecto) y revisa a mano con Playwright MCP lo que una herramienta no puede juzgar (textos alternativos, encabezados, formularios y errores, menús y modales con teclado, lector de pantalla). Nunca afirma conformidad.
+- `npm run accesibilidad` (`herramientas/k0lmena/tools/accesibilidad/auditar.js`): axe-core 4.13 con los textos en español, navegación con Tab (foco no visible, trampas de foco, salto al contenido) y reflow a 320px; captura de cada página y de cada elemento que falla, y video. Cada corrida reemplaza a la anterior en `output/accesibilidad/<HU o host>/`.
+- `scripts/generar_informe_accesibilidad.py`: informe HTML con cumplimiento, criterios WCAG incumplidos (nombre y nivel), cada problema con sus elementos, capturas y cómo corregirlo, teclado y orden del foco, revisión manual y recomendaciones.
+
 ## 2026-10-10 (2) — Pruebas exploratorias
 - Nuevo agente `explorador-web`: recorre el sitio (`APP_URL` del `.env` o la URL pedida) buscando links e imágenes rotas, errores de JavaScript y de consola y recursos que fallan; revisa el responsive en mobile, tablet y desktop (scroll horizontal, texto chico, objetivos táctiles chicos según WCAG 2.5.8, meta viewport) con capturas; y explora a mano con Playwright MCP.
 - `npm run explorar` (`herramientas/k0lmena/tools/explorador/explorar.js`): el recorrido automático, sin tokens por página. Solo GET: no envía formularios ni sigue links de cierre de sesión. Separa los links rotos de los no verificables (403, 429, timeouts).

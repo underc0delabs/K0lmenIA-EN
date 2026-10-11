@@ -212,6 +212,10 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 |                       | links, imágenes, errores y responsive    |
 |                       | (agente explorador-web)                  |
 +-----------------------+------------------------------------------+
+| npm run accesibilidad | Auditoría WCAG 2.2 con axe-core, teclado |
+|                       | y reflow a 320px (agente                 |
+|                       | analista-accesibilidad)                  |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

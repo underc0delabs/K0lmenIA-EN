@@ -20,7 +20,8 @@ function ms(x) {
 }
 function duracion(seg) {
   if (seg == null) return '—';
-  const m = Math.floor(seg / 60), s = Math.round(seg % 60);
+  const total = Math.round(seg); // redondear antes de separar: 239,6 s es "4m 0s", no "3m 60s"
+  const m = Math.floor(total / 60), s = total % 60;
   return m ? `${m}m ${s}s` : `${s}s`;
 }
 function fecha(iso) {
@@ -321,70 +322,89 @@ function desdeJMeter(texto, defUmbrales) {
 // Mismo sistema de diseño que los informes de k0lmenIA (scripts/_estilos_reporte.py): modo
 // oscuro, paleta categórica y de estado validadas (CVD y contraste), un solo eje por gráfico,
 // tooltips al pasar el mouse y el estado siempre con ícono + texto, nunca solo color.
-const SERIES = ['#3987E5', '#D95926', '#199E70', '#C98500'];
+const SERIES = ['#14A895', '#E0702E', '#4C8DEB', '#C98500'];
 const ESTADO = { ok: '#0CA30C', warn: '#FAB219', serio: '#EC835A', err: '#D03B3B', neutro: '#8B949E' };
+const SUPERFICIE = '#15181D';
+
+// Íconos de línea para los indicadores (24x24, trazo 1.8).
+const ICONOS = {
+  carga: '<path d="M4 18l5-6 4 3 7-9"/><path d="M15 6h5v5"/>',
+  rayo: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+  warn: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/>',
+  reloj: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  persona: '<circle cx="12" cy="6" r="2.2"/><path d="M5 9.5l7 1.5 7-1.5M12 11v4l-3 5M12 15l3 5"/>',
+  lista: '<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.1M4.5 12h.1M4.5 18h.1"/>',
+};
+const icono = (n) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[n] || ICONOS.lista}</svg>`;
 
 const CSS = `*{box-sizing:border-box;margin:0;padding:0}
-:root{color-scheme:dark;--bg:#0D1117;--surface:#161B22;--tile:#1C2330;--border:#283040;--border-soft:#202836;
-  --ink:#E8ECF2;--body:#B4BCC8;--muted:#7D8693;--ok:#0CA30C;--warn:#FAB219;--err:#D03B3B;--neutral:#8B949E}
-body{background:radial-gradient(1200px 500px at 15% -10%,rgba(57,135,229,.16),transparent 60%),radial-gradient(900px 400px at 100% 0%,rgba(144,133,233,.1),transparent 55%),var(--bg);
-  background-attachment:fixed;color:var(--ink);font:14px/1.55 "Inter","Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-feature-settings:"tnum" 1;padding:40px 20px 56px}
-.wrap{max-width:1160px;margin:0 auto}
-.brand{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:5px 12px 5px 8px;border:1px solid var(--border);border-radius:999px;background:rgba(22,27,34,.7);
-  font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:650;color:var(--muted)}
-.brand i{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#3987E5,#9085E9);display:inline-block}
-h1{font-size:30px;font-weight:750;letter-spacing:-.025em;line-height:1.15}
-h2{font-size:16px;font-weight:680;margin-bottom:4px}
-.sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+:root{color-scheme:dark;--bg:#0B0D11;--surface:#15181D;--tile:#1A1E25;--border:#242A33;--border-soft:#1E232A;
+  --ink:#F3F5F8;--body:#B7BECA;--muted:#7F8896;--accent:#14A895;--accent-soft:rgba(20,168,149,.14);
+  --ok:#0CA30C;--warn:#FAB219;--err:#D03B3B;--neutral:#8B949E}
+body{background:radial-gradient(1100px 420px at 8% -8%,rgba(20,168,149,.10),transparent 60%),var(--bg);background-attachment:fixed;color:var(--ink);
+  font:14.5px/1.55 "Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;padding:40px 36px 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1480px;margin:0 auto}
+.brand{display:inline-flex;align-items:center;gap:9px;margin-bottom:14px;padding:6px 14px 6px 7px;border:1px solid var(--border);border-radius:999px;background:rgba(21,24,29,.8);
+  font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:650;color:var(--muted)}
+.brand i{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,#14A895,#4C8DEB);display:inline-block}
+h1{font-size:34px;font-weight:760;letter-spacing:-.03em;line-height:1.1}
+h2{font-size:16px;font-weight:680;letter-spacing:-.01em}
+.sub{font-size:12.5px;color:var(--muted);margin:2px 0 14px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.chip{background:var(--tile);border:1px solid var(--border);border-radius:999px;padding:5px 12px;color:var(--muted);font-size:12.5px}
-.chip b{color:var(--ink);font-weight:600}
-main{display:grid;gap:16px;grid-template-columns:repeat(12,1fr);margin-top:26px}
-.card{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 120px),var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;grid-column:span 12;min-width:0;
-  box-shadow:0 12px 32px -18px rgba(0,0,0,.7)}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 12px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:650}
+.chip b{color:var(--ink);font-weight:600;font-size:12.5px;text-transform:none;letter-spacing:0;margin-left:6px}
+main{display:grid;gap:20px;grid-template-columns:repeat(12,1fr);margin-top:26px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px 24px 22px;grid-column:span 12;min-width:0;
+  box-shadow:0 1px 0 rgba(255,255,255,.035) inset,0 18px 40px -28px rgba(0,0,0,.8)}
 .c6{grid-column:span 6}
-@media(max-width:860px){.c6{grid-column:span 12}body{padding:24px 14px}h1{font-size:24px}}
-.banner{display:flex;align-items:center;gap:12px;padding:15px 18px;border-radius:14px;border:1px solid;font-weight:650;font-size:15.5px}
-.banner .bic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#0D1117;font-weight:800;flex:none}
-.banner.ok{background:linear-gradient(90deg,rgba(12,163,12,.16),rgba(12,163,12,.04));border-color:rgba(12,163,12,.45);color:#7BE07B}.banner.ok .bic{background:var(--ok)}
-.banner.err{background:linear-gradient(90deg,rgba(208,59,59,.18),rgba(208,59,59,.04));border-color:rgba(208,59,59,.5);color:#F59A9A}.banner.err .bic{background:var(--err)}
-.banner.warn{background:linear-gradient(90deg,rgba(250,178,25,.15),rgba(250,178,25,.03));border-color:rgba(250,178,25,.45);color:#F7CD6E}.banner.warn .bic{background:var(--warn)}
+@media(max-width:900px){.c6{grid-column:span 12}body{padding:24px 16px}h1{font-size:26px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+.banner{position:relative;display:flex;align-items:center;gap:14px;padding:16px 20px 16px 22px;border-radius:14px;border:1px solid var(--border);font-weight:650;font-size:15.5px;overflow:hidden}
+.banner::before{content:"";position:absolute;inset:0 auto 0 0;width:4px}
+.banner .bic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;flex:none}
+.banner.ok{background:linear-gradient(90deg,rgba(12,163,12,.12),transparent 60%)}.banner.ok::before{background:var(--ok)}.banner.ok .bic{background:rgba(12,163,12,.18);color:#3FCB3F}
+.banner.err{background:linear-gradient(90deg,rgba(208,59,59,.14),transparent 60%)}.banner.err::before{background:var(--err)}.banner.err .bic{background:rgba(208,59,59,.2);color:#EE6A6A}
+.banner.warn{background:linear-gradient(90deg,rgba(250,178,25,.11),transparent 60%)}.banner.warn::before{background:var(--warn)}.banner.warn .bic{background:rgba(250,178,25,.16);color:#FAB219}
 .nota{color:var(--muted);margin-top:12px}.nota.err{color:#F59A9A}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:12px;margin-top:16px}
-.kpi{position:relative;background:var(--tile);border:1px solid var(--border);border-radius:14px;padding:14px 14px 12px;overflow:hidden}
-.kpi::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--border)}
-.kpi.ok::before{background:var(--ok)}.kpi.err::before{background:var(--err)}
-.kpi .v{font-size:24px;font-weight:750;letter-spacing:-.02em;line-height:1.1}
-.kpi .et{color:var(--muted);font-size:12px;margin-top:6px}
-.barras{display:flex;flex-direction:column;gap:11px;margin-top:6px}
-.barra{display:grid;grid-template-columns:110px 1fr 76px;gap:12px;align-items:center}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:18px}
+.kpi{position:relative;background:var(--tile);border:1px solid var(--border);border-radius:16px;padding:18px 20px 16px;display:flex;flex-direction:column;min-height:128px}
+.kpi .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--accent);background:var(--accent-soft)}
+.kpi.ok .ic{color:#3FCB3F;background:rgba(12,163,12,.14)}.kpi.err .ic{color:#EE6A6A;background:rgba(208,59,59,.16)}
+.kpi .st{position:absolute;top:16px;right:16px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#0B0D11}
+.kpi.ok .st{background:var(--ok)}.kpi.err .st{background:var(--err)}
+.kpi .et{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:650;margin-top:auto;padding-top:16px}
+.kpi .v{font-size:28px;font-weight:760;letter-spacing:-.025em;line-height:1.1;margin-top:6px}
+.barras{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.barra{display:grid;grid-template-columns:110px 1fr 80px;gap:14px;align-items:center}
 .barra .et{color:var(--body);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pista{height:12px;background:rgba(255,255,255,.04);border-radius:0 4px 4px 0;overflow:hidden}
-.relleno{display:block;height:100%;border-radius:0 4px 4px 0}
-.barra .val{text-align:right;font-weight:600}
+.pista{height:12px;background:rgba(255,255,255,.035);border-radius:0 6px 6px 0;overflow:hidden}
+.relleno{display:block;height:100%;border-radius:0 6px 6px 0}
+.barra .val{text-align:right;font-weight:650;font-variant-numeric:tabular-nums}
 svg{width:100%;height:auto;display:block;overflow:visible}
-.axis{font-size:11px;fill:var(--muted)}.grid{stroke:var(--border-soft)}.base{stroke:var(--border)}
-.hit rect{fill:transparent}.hit .cross{stroke:var(--muted);stroke-dasharray:3 3;opacity:0}.hit:hover .cross{opacity:1}
+.axis{font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}.grid{stroke:var(--border-soft)}.base{stroke:var(--border)}
+.valor{font-size:12px;fill:var(--ink);font-weight:650}
+.hit rect{fill:transparent}.hit .cross{stroke:var(--muted);opacity:0}.hit:hover .cross{opacity:.6}
 .hit circle{opacity:0}.hit:hover circle{opacity:1}
-.tabla{overflow-x:auto;margin:0 -8px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:650;text-align:left;padding:10px 12px;white-space:nowrap}
-td{padding:11px 12px;border-top:1px solid var(--border-soft);color:var(--body);white-space:nowrap}
+.tabla{overflow-x:auto;margin:0 -24px -22px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:650;text-align:left;padding:12px 24px;white-space:nowrap;
+  background:rgba(255,255,255,.02);border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)}
+td{padding:13px 24px;border-bottom:1px solid var(--border-soft);color:var(--body);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
 td:first-child{white-space:normal;word-break:break-word}
 tbody tr:hover td{background:rgba(255,255,255,.025)}
 code{font-family:"JetBrains Mono","Cascadia Code",ui-monospace,Consolas,monospace;font-size:12.5px;color:var(--ink)}
-.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:650;padding:3px 10px;border-radius:999px;color:var(--ink)}
-.pill.ok{background:rgba(12,163,12,.16);box-shadow:inset 0 0 0 1px rgba(12,163,12,.45)}.pill.ok b{color:var(--ok)}
-.pill.err{background:rgba(208,59,59,.16);box-shadow:inset 0 0 0 1px rgba(208,59,59,.5)}.pill.err b{color:var(--err)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;color:var(--ink)}
+.pill.ok{background:rgba(12,163,12,.14);box-shadow:inset 0 0 0 1px rgba(12,163,12,.38)}.pill.ok b{color:var(--ok)}
+.pill.err{background:rgba(208,59,59,.14);box-shadow:inset 0 0 0 1px rgba(208,59,59,.4)}.pill.err b{color:var(--err)}
 .muted{color:var(--muted)}.vacio{color:#7BE07B}
-#tip{position:fixed;z-index:10;pointer-events:none;opacity:0;transition:opacity .12s;background:#0B0F15;border:1px solid var(--border);border-radius:10px;padding:8px 11px;
-  font-size:12.5px;color:var(--ink);box-shadow:0 10px 28px rgba(0,0,0,.55);white-space:pre-line}#tip.on{opacity:1}
-footer{max-width:1160px;margin:28px auto 0;color:var(--muted);font-size:12px;text-align:center}`;
+#tip{position:fixed;z-index:10;pointer-events:none;opacity:0;transition:opacity .12s;background:#0E1116;border:1px solid var(--border);border-radius:12px;padding:9px 12px;
+  font-size:12.5px;color:var(--ink);box-shadow:0 14px 34px rgba(0,0,0,.6);white-space:pre-line}#tip.on{opacity:1}
+footer{max-width:1480px;margin:32px auto 0;color:var(--muted);font-size:12px;text-align:center}`;
 
 const JS = `(function(){var t=document.createElement('div');t.id='tip';document.body.appendChild(t);
 document.addEventListener('mousemove',function(e){var el=e.target.closest('[data-tip]');if(!el){t.className='';return;}
 t.textContent=el.getAttribute('data-tip');t.className='on';var w=t.offsetWidth,h=t.offsetHeight;
-t.style.left=Math.min(e.clientX+14,innerWidth-w-8)+'px';t.style.top=(e.clientY-h-12<4?e.clientY+16:e.clientY-h-12)+'px';});})();`;
+t.style.left=Math.max(8,Math.min(e.clientX+14,innerWidth-w-8))+'px';t.style.top=(e.clientY-h-12<4?e.clientY+16:e.clientY-h-12)+'px';});})();`;
 
 function barras(items, fmt) {
   if (!items.length) return '<p class="muted">Sin datos.</p>';
@@ -403,11 +423,35 @@ function escala(max) {
   return [max, max / 4];
 }
 
-// Línea de una sola serie sobre un eje (área suave), con crosshair y tooltip por intervalo.
-function grafLinea(puntos, clave, color, fmt, nombre, W = 520) {
+// Curva suave monótona (Fritsch–Carlson): pasa por los puntos sin inventar picos.
+function curva(p) {
+  const n = p.length;
+  if (n < 3) return p.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+  const m = [];
+  for (let i = 0; i < n - 1; i++) m.push((p[i + 1][1] - p[i][1]) / ((p[i + 1][0] - p[i][0]) || 1));
+  const t = [m[0]];
+  for (let i = 1; i < n - 1; i++) t.push(m[i - 1] * m[i] <= 0 ? 0 : (m[i - 1] + m[i]) / 2);
+  t.push(m[n - 2]);
+  for (let i = 0; i < n - 1; i++) {
+    if (m[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; }
+    const a = t[i] / m[i], b = t[i + 1] / m[i], s = a * a + b * b;
+    if (s > 9) { const k = 3 / Math.sqrt(s); t[i] = k * a * m[i]; t[i + 1] = k * b * m[i]; }
+  }
+  let d = `M${p[0][0].toFixed(1)},${p[0][1].toFixed(1)}`;
+  for (let i = 0; i < n - 1; i++) {
+    const h = (p[i + 1][0] - p[i][0]) / 3;
+    d += ` C${(p[i][0] + h).toFixed(1)},${(p[i][1] + t[i] * h).toFixed(1)} ${(p[i + 1][0] - h).toFixed(1)},${(p[i + 1][1] - t[i + 1] * h).toFixed(1)} ${p[i + 1][0].toFixed(1)},${p[i + 1][1].toFixed(1)}`;
+  }
+  return d;
+}
+
+let gradientes = 0;
+// Línea de una sola serie sobre un eje (curva suave con área en degradado), etiqueta en el máximo
+// y el último valor, crosshair y tooltip por intervalo.
+function grafLinea(puntos, clave, color, fmt, nombre, W = 700) {
   const pts = puntos.filter((p) => p[clave] != null);
   if (pts.length < 2) return '<p class="muted">Corrida demasiado corta: menos de dos intervalos de 10 s.</p>';
-  const H = 240, izq = 58, der = 12, arriba = 12, abajo = 28;
+  const H = 260, izq = 58, der = 14, arriba = 22, abajo = 28;
   const [max, paso] = escala(Math.max(...pts.map((p) => p[clave])));
   const t0 = pts[0].t, rango = (pts[pts.length - 1].t - t0) || 1;
   const px = (t) => izq + ((t - t0) / rango) * (W - izq - der);
@@ -415,18 +459,25 @@ function grafLinea(puntos, clave, color, fmt, nombre, W = 520) {
   let svg = '';
   for (let v = 0; v <= max + 1e-9; v += paso) {
     svg += `<line class="${v === 0 ? 'base' : 'grid'}" x1="${izq}" x2="${W - der}" y1="${py(v).toFixed(1)}" y2="${py(v).toFixed(1)}"/>`
-      + `<text class="axis" x="${izq - 8}" y="${(py(v) + 4).toFixed(1)}" text-anchor="end">${esc(fmt(v))}</text>`;
+      + `<text class="axis" x="${izq - 10}" y="${(py(v) + 4).toFixed(1)}" text-anchor="end">${esc(fmt(v))}</text>`;
   }
-  const d = pts.map((p, i) => `${i ? 'L' : 'M'}${px(p.t).toFixed(1)},${py(p[clave]).toFixed(1)}`).join(' ');
-  svg += `<path d="${d} L${px(pts[pts.length - 1].t).toFixed(1)},${py(0).toFixed(1)} L${px(t0).toFixed(1)},${py(0).toFixed(1)} Z" fill="${color}" opacity=".13"/>`
+  const d = curva(pts.map((p) => [px(p.t), py(p[clave])]));
+  const gid = `g${++gradientes}`;
+  svg += `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".32"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>`
+    + `<path d="${d} L${px(pts[pts.length - 1].t).toFixed(1)},${py(0).toFixed(1)} L${px(t0).toFixed(1)},${py(0).toFixed(1)} Z" fill="url(#${gid})"/>`
     + `<path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if (pts.length <= 40) svg += pts.map((p) => `<circle cx="${px(p.t).toFixed(1)}" cy="${py(p[clave]).toFixed(1)}" r="3.5" fill="${color}" stroke="${SUPERFICIE}" stroke-width="2"/>`).join('');
+  const iMax = pts.reduce((m, p, i) => (p[clave] > pts[m][clave] ? i : m), 0);
+  for (const i of new Set([iMax, pts.length - 1])) {
+    svg += `<text class="valor" x="${px(pts[i].t).toFixed(1)}" y="${(py(pts[i][clave]) - 10).toFixed(1)}" text-anchor="middle">${esc(fmt(pts[i][clave]))}</text>`;
+  }
   pts.forEach((p, i) => {
     const a = i ? (px(pts[i - 1].t) + px(p.t)) / 2 : px(p.t);
     const b = i < pts.length - 1 ? (px(p.t) + px(pts[i + 1].t)) / 2 : px(p.t);
     svg += `<g class="hit" data-tip="${esc(duracion((p.t - t0) / 1000))}\n${esc(nombre)}: ${esc(fmt(p[clave]))}${p.errores ? `\nerrores: ${p.errores}` : ''}">`
       + `<rect x="${a.toFixed(1)}" y="${arriba}" width="${Math.max(b - a, 1).toFixed(1)}" height="${H - arriba - abajo}"/>`
       + `<line class="cross" x1="${px(p.t).toFixed(1)}" x2="${px(p.t).toFixed(1)}" y1="${arriba}" y2="${H - abajo}"/>`
-      + `<circle cx="${px(p.t).toFixed(1)}" cy="${py(p[clave]).toFixed(1)}" r="4.5" fill="${color}" stroke="#161B22" stroke-width="2"/></g>`;
+      + `<circle cx="${px(p.t).toFixed(1)}" cy="${py(p[clave]).toFixed(1)}" r="5.5" fill="${color}" stroke="${SUPERFICIE}" stroke-width="2"/></g>`;
   });
   svg += `<text class="axis" x="${izq}" y="${H - 6}">0 s</text><text class="axis" x="${W - der}" y="${H - 6}" text-anchor="end">${esc(duracion(rango / 1000))}</text>`;
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de ${esc(nombre)}">${svg}</svg>`;
@@ -442,7 +493,8 @@ function html(r) {
   const k = r.kpis, l = r.latencia;
   const ver = { cumple: ['ok', '✓', 'Cumple los umbrales'], 'no cumple': ['err', '✕', 'No cumple los umbrales'],
     'sin umbrales': ['warn', '!', 'Sin umbrales definidos'], error: ['err', '✕', 'La corrida terminó con error'] }[r.veredicto];
-  const kpi = (et, val, clase = '') => `<div class="kpi ${clase}"><div class="v">${val}</div><div class="et">${et}</div></div>`;
+  const kpi = (et, val, clase = '', ic = 'lista') => `<div class="kpi ${clase}"><div class="ic">${icono(ic)}</div>`
+    + `${clase ? `<span class="st">${clase === 'ok' ? '✓' : '✕'}</span>` : ''}<div class="et">${et}</div><div class="v">${val}</div></div>`;
   const colorCodigo = (c) => (c === 'sin respuesta' || Number(c) >= 500 ? ESTADO.err : Number(c) >= 400 ? ESTADO.serio : Number(c) >= 300 ? ESTADO.warn : ESTADO.ok);
   const codigos = Object.entries(r.codigos).map(([c, n]) => ({ etiqueta: c, valor: n, color: colorCodigo(c) }));
   const pill = (ok) => (ok ? '<span class="pill ok"><b>✓</b>Cumple</span>' : '<span class="pill err"><b>✕</b>No cumple</span>');
@@ -469,11 +521,11 @@ function html(r) {
     ${r.perfil === 'smoke' ? '<p class="nota">Perfil smoke: carga mínima para validar que el script funciona; no representa la carga objetivo.</p>' : ''}
     ${r.error ? `<p class="nota err">${esc(r.error)}</p>` : ''}
     <div class="kpis">
-      ${kpi('Requests', entero(k.requests))}${kpi('Req/s promedio', k.rps == null ? '—' : k.rps.toFixed(2))}
-      ${kpi('Errores', k.error_pct == null ? '—' : `${k.error_pct.toFixed(2)} %`, k.error_pct > 0 ? 'err' : 'ok')}
-      ${kpi('p50', ms(l.p50))}${kpi('p95', ms(l.p95))}${kpi('p99', ms(l.p99))}
-      ${kpi(r.herramienta === 'artillery' ? 'Usuarios creados' : 'Usuarios máx.', entero(k.usuarios_max))}
-      ${kpi({ k6: 'Iteraciones', artillery: 'Flujos completos', jmeter: 'Muestras con error' }[r.herramienta], entero(k.iteraciones))}
+      ${kpi('Requests', entero(k.requests), '', 'carga')}${kpi('Req/s promedio', k.rps == null ? '—' : k.rps.toFixed(2), '', 'rayo')}
+      ${kpi('Errores', k.error_pct == null ? '—' : `${k.error_pct.toFixed(2)} %`, k.error_pct > 0 ? 'err' : 'ok', 'warn')}
+      ${kpi('p50', ms(l.p50), '', 'reloj')}${kpi('p95', ms(l.p95), '', 'reloj')}${kpi('p99', ms(l.p99), '', 'reloj')}
+      ${kpi(r.herramienta === 'artillery' ? 'Usuarios creados' : 'Usuarios máx.', entero(k.usuarios_max), '', 'persona')}
+      ${kpi({ k6: 'Iteraciones', artillery: 'Flujos completos', jmeter: 'Muestras con error' }[r.herramienta], entero(k.iteraciones), '', 'lista')}
     </div>
   </section>
   <section class="card"><h2>Umbrales</h2><p class="sub">criterio de aceptación de la corrida</p>

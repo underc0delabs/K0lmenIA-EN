@@ -43,7 +43,7 @@ import json
 import sys
 
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, stacked_bars,
-                              donut, legend, two_col, nivel_badge, _pastilla, CRITICO, SERIO, AVISO, NEUTRO, OK, SERIES)
+                              donut_panel, two_col, nivel_badge, _pastilla, CRITICO, SERIO, AVISO, NEUTRO, OK, SERIES)
 
 SEVERIDADES = [("Crítica", CRITICO), ("Alta", SERIO), ("Media", AVISO), ("Baja", NEUTRO)]
 ORDEN = {s: i for i, (s, _) in enumerate(SEVERIDADES)}
@@ -87,8 +87,7 @@ details.pag .cuerpo ul{margin-left:18px;color:var(--body)}
 details.pag .cuerpo li{word-break:break-all;margin:2px 0}
 .metr{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;color:var(--body);font-size:13px}
 .metr b{color:var(--ink)}
-.panorama{grid-template-columns:200px 1fr}
-@media (max-width:720px){details.pag .cuerpo{grid-template-columns:1fr}.panorama{grid-template-columns:1fr}}
+@media (max-width:720px){details.pag .cuerpo{grid-template-columns:1fr}}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:99;cursor:zoom-out;padding:24px}
 #lb.on{display:flex}
 #lb img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.6)}
@@ -207,13 +206,11 @@ def build_html(datos, analisis):
     nov_l = sum(1 for l in links if l.get("resultado") == "no_verificable")
     pct_l = round(ok_l / len(links) * 100) if links else 0
     seg_l = [(ok_l, OK, "OK"), (rot_l, CRITICO, "Rotos"), (nov_l, NEUTRO, "No verificables")]
-    g_pag = f'<div class="card hero panorama"><div class="gauge">{donut(seg_pag, pct_pag, "páginas sanas")}</div>{legend([(n, c, v) for v, c, n in seg_pag])}</div>'
-    g_lnk = f'<div class="card hero panorama"><div class="gauge">{donut(seg_l, pct_l, "links ok")}</div>{legend([(n, c, v) for v, c, n in seg_l])}</div>'
-    body.append(two_col(f'<div class="section"><div class="section-title"><h2>Páginas</h2><span class="sub">sin errores de JS, consola, recursos ni imágenes</span></div>{g_pag}</div>',
-                        f'<div class="section"><div class="section-title"><h2>Links</h2><span class="sub">internos y externos</span></div>{g_lnk}</div>'))
+    body.append(two_col(section("Páginas", donut_panel(seg_pag, pct_pag, "páginas sanas"), "sin errores de JS, consola, recursos ni imágenes"),
+                        section("Links", donut_panel(seg_l, pct_l, "links ok"), "internos y externos")))
 
     if todos:
-        cats = [(c, cuenta(c), col) for c, col in CATEGORIAS if cuenta(c)]
+        cats = sorted([(c, cuenta(c), SERIES[0]) for c, _ in CATEGORIAS if cuenta(c)], key=lambda x: -x[1])
         body.append(two_col(section("Hallazgos por severidad", bar_chart([(s, por_sev[s], col) for s, col in SEVERIDADES])),
                             section("Hallazgos por tipo", bar_chart(cats, ancho_etiqueta=150))))
 
@@ -239,7 +236,7 @@ def build_html(datos, analisis):
         for h in todos:
             res = h.get("resoluciones") or ([h["resolucion"]] if h.get("resolucion") else [])
             nota = f'<div class="muted" style="margin-top:4px">{e(notas[h["id"]])}</div>' if h.get("id") in notas else ""
-            filas.append([e(h.get("id")), nivel_badge(h.get("severidad")), e(h.get("categoria")),
+            filas.append([f'<span class="id">{e(h.get("id"))}</span>', nivel_badge(h.get("severidad")), e(h.get("categoria")),
                           f'<strong style="color:var(--ink)">{e(h.get("titulo"))}</strong>'
                           f'<div class="mono muted">{e(h.get("detalle") or h.get("obtenido") or "")}</div>{nota}',
                           f'<span class="mono">{e(corto(h.get("pagina"), base))}</span>'

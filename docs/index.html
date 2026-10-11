@@ -57,6 +57,7 @@
   <a href="#gestion">Xray, QMetry, AIO Tests y Azure DevOps</a>
   <a href="#base-de-datos">Verificación en base de datos</a>
   <a href="#exploratorias">Pruebas exploratorias</a>
+  <a href="#accesibilidad">Accesibilidad</a>
   <a href="#seguridad">Seguridad web</a>
   <a href="#conectores">Conectores MCP</a>
   <div class="grupo">Referencia</div>
@@ -74,7 +75,7 @@
     <div class="k">Documentación del proyecto</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">Agentes de QA para Claude Code: diseño de pruebas, automatización con k0lmena e integración con Xray, QMetry, AIO Tests y Azure DevOps — todo en español.</div>
-    <div class="chips"><span>20 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
+    <div class="chips"><span>21 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>Licencia MIT</span></div>
 </section>
@@ -84,8 +85,8 @@
     <li><span>1</span>Qué es k0lmenIA</li><li><span>2</span>Arquitectura</li><li><span>3</span>Cómo se usa</li><li><span>4</span>Agentes</li>
     <li><span>5</span>Requisitos</li><li><span>6</span>Instalación</li><li><span>7</span>Configuración: el archivo .env</li>
     <li><span>8</span>Investigación de contexto y falta información</li><li><span>9</span>Guía por tarea: diseño y ejecución</li><li><span>10</span>Automatización con k0lmena</li><li><span>11</span>Pruebas de performance</li>
-    <li><span>12</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>13</span>Verificación en base de datos</li><li><span>14</span>Pruebas exploratorias</li><li><span>15</span>Seguridad web</li><li><span>16</span>Conectores MCP</li>
-    <li><span>17</span>Convenciones</li><li><span>18</span>Estructura del repositorio</li><li><span>19</span>Problemas frecuentes</li><li><span>20</span>Extender el proyecto</li>
+    <li><span>12</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>13</span>Verificación en base de datos</li><li><span>14</span>Pruebas exploratorias</li><li><span>15</span>Accesibilidad</li><li><span>16</span>Seguridad web</li><li><span>17</span>Conectores MCP</li>
+    <li><span>18</span>Convenciones</li><li><span>19</span>Estructura del repositorio</li><li><span>20</span>Problemas frecuentes</li><li><span>21</span>Extender el proyecto</li>
   </ol>
 </section>
 
@@ -232,6 +233,7 @@
     <div class="tarjeta c-naranja"><h4>ejecutor-e2e</h4><p>Ejecuta casos en un navegador real con Playwright MCP (headed o headless), con evidencia.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> generar_reporte.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>ejecutor-api</h4><p>Corre una colección de Postman con Newman.</p><div class="usa"><b>Skills</b> ejecucion-api<br><b>Usa</b> Newman, correr_newman.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>explorador-web</h4><p>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, y responsive en varias resoluciones, con capturas e informe.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> npm run explorar, generar_informe_exploratorio.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/exploratorias/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-accesibilidad</h4><p>Auditoría WCAG 2.2 con axe-core, teclado y reflow, más revisión manual: criterios incumplidos, capturas y cómo corregir.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> npm run accesibilidad, generar_informe_accesibilidad.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/accesibilidad/</code></div></div>
     <div class="tarjeta c-naranja"><h4>generador-reporte-html</h4><p>Dashboard HTML de los resultados de una ejecución.</p><div class="usa"><b>Usa</b> generar_reporte.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>generador-reporte-cierre</h4><p>Informe de cierre de la ronda con recomendación go/no-go.</p><div class="usa"><b>Usa</b> recolectar_resultados.py, generar_informe_cierre.py</div><div class="salida"><code>output/informes-cierre/</code></div></div>
   </div>
@@ -256,7 +258,7 @@
     <tr><th style="width:24%">Skill</th><th>Qué enseña</th><th style="width:30%">Lo usan</th></tr>
     <tr><td><code>investigacion-contexto</code></td><td>Investigar la historia completa (comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper</td></tr>
     <tr><td><code>tecnicas-de-diseno</code></td><td>Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise</td><td>generadores de casos manuales, BDD y API; api-mapper</td></tr>
-    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web</td></tr>
+    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad</td></tr>
     <tr><td><code>ejecucion-api</code></td><td>Correr colecciones con Newman: base_url, token, validaciones y resultados</td><td>ejecutor-api</td></tr>
     <tr><td><code>automatizacion-k0lmena</code></td><td>Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance</td><td>los mappers y verificador-datos</td></tr>
     <tr><td><code>guia-performance</code></td><td>Planificar con la persona una prueba de performance paso a paso</td><td>la conversación principal y performance-mapper</td></tr>
@@ -464,6 +466,7 @@ npm run report:web                        <span class="c"># también: report:api
     <tr><td><code>npm run crawler [url]</code></td><td>Genera un archivo de locators recorriendo una página.</td></tr>
     <tr><td><code>npm run link-tester</code></td><td>Busca enlaces e imágenes rotas en <code>BASEURL</code>.</td></tr>
     <tr><td><code>npm run explorar</code></td><td>Recorrido exploratorio con navegador: links, imágenes, errores, responsive y tiempos de carga, con capturas, videos e informe HTML (lo usa el <b>explorador-web</b>).</td></tr>
+    <tr><td><code>npm run accesibilidad</code></td><td>Auditoría WCAG 2.2 con axe-core, navegación con teclado y reflow a 320px, con capturas, video e informe HTML (lo usa el <b>analista-accesibilidad</b>).</td></tr>
     <tr><td><code>npm run record</code></td><td>Graba un flujo con Playwright codegen.</td></tr>
     <tr><td><code>npm run debug</code></td><td>Corre la suite web en modo debug.</td></tr>
   </table></div>
@@ -603,6 +606,31 @@ npm run explorar -- --resoluciones 360x740,768x1024,1366x768 --video no</pre></d
   <div class="aviso info"><span class="ico">i</span><p>Solo navega con GET: no envía formularios y no abre ni verifica links de cierre de sesión o borrado. Todo queda en <code>output/exploratorias/&lt;HU o sitio&gt;/</code> y <b>cada corrida reemplaza a la anterior</b> (para conservar una, usá otra <code>--historia</code> o copiá la carpeta).</p></div>
 </section>
 
+<!-- ======================================================= ACCESIBILIDAD -->
+<section class="seccion" id="accesibilidad">
+  <div class="kicker">Guías</div>
+  <h2>Accesibilidad</h2>
+  <p class="bajada">El <b>analista-accesibilidad</b> audita tu sitio contra <b>WCAG 2.2</b> (nivel AA por defecto): primero una auditoría automática, sin gastar tokens por página, y después una revisión manual de lo que una herramienta no puede juzgar.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">Qué revisa</th><th>Cómo</th></tr>
+    <tr><td>Reglas WCAG</td><td><b>axe-core</b> en cada página, con los textos en español: contraste, textos alternativos, etiquetas de formularios, nombres de botones y links, idioma, estructura, ARIA. También las buenas prácticas.</td></tr>
+    <tr><td>Teclado</td><td>Recorre la página con Tab: elementos que reciben foco sin indicador visible (2.4.7), trampas de foco (2.1.2) y enlace para saltar al contenido (2.4.1). Muestra el orden del foco.</td></tr>
+    <tr><td>Reflow</td><td>A 320px de ancho no tiene que haber scroll horizontal (1.4.10, equivale a un zoom del 400 %).</td></tr>
+    <tr><td>Revisión manual</td><td>Con el snapshot de accesibilidad de Playwright (lo que "oye" un lector de pantalla): si los textos alternativos describen, encabezados y regiones, formularios y mensajes de error, menús y modales con teclado, zoom, color y movimiento.</td></tr>
+  </table></div>
+  <div class="guia"><h4>analista-accesibilidad <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">Revisá la accesibilidad del sitio del .env.</div>
+    <ol>
+      <li><b>Audita</b> con <code>npm run accesibilidad</code>: captura cada página con los elementos que fallan <b>marcados en rojo</b>, cada elemento por separado y un video del recorrido.</li>
+      <li><b>Revisa</b> los hallazgos: confirma con las capturas, ajusta la severidad y decide lo que axe no pudo.</li>
+      <li><b>Revisa a mano</b> con Playwright MCP los flujos más importantes.</li>
+      <li><b>Arma el informe</b> HTML: cumplimiento, criterios WCAG incumplidos con su nombre y nivel, cada problema con sus elementos, capturas y cómo corregirlo, teclado y orden del foco, y recomendaciones.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run accesibilidad -- --url https://staging.mi-app.com --nivel AA <span class="c"># sin agentes ni tokens</span>
+npm run accesibilidad -- --paginas https://mi-app.com/registro,https://mi-app.com/login --historia HU-001</pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>Una auditoría automática detecta entre un 30 y un 50 % de los problemas de accesibilidad: el agente nunca dice que el sitio "cumple", dice qué no cumple y qué faltó revisar. Todo queda en <code>output/accesibilidad/&lt;HU o sitio&gt;/</code> y <b>cada corrida reemplaza a la anterior</b>.</p></div>
+</section>
+
 <!-- ======================================================= SEGURIDAD -->
 <section class="seccion" id="seguridad">
   <div class="kicker">Guías</div>
@@ -684,6 +712,7 @@ npm run explorar -- --resoluciones 360x740,768x1024,1366x768 --video no</pre></d
     <tr><td>Performance</td><td><code>performance/k6/http/HU-001-&lt;slug&gt;.ts</code> · <code>performance/artillery/HU-001-&lt;slug&gt;.yaml</code> · <code>performance/jmeter/HU-001-&lt;slug&gt;.jmx</code></td></tr>
     <tr><td>Mapeo</td><td><code>output/mapeos/mapeo-HU-001-&lt;tipo&gt;.md</code></td></tr>
     <tr><td>Exploratorias</td><td><code>output/exploratorias/&lt;HU o sitio&gt;/informe-exploratorio.html</code> + <code>exploracion.json</code> · <code>capturas/</code> · <code>videos/</code> (cada corrida reemplaza a la anterior)</td></tr>
+    <tr><td>Accesibilidad</td><td><code>output/accesibilidad/&lt;HU o sitio&gt;/informe-accesibilidad.html</code> + <code>auditoria.json</code> · <code>capturas/</code> · <code>videos/</code> (cada corrida reemplaza a la anterior)</td></tr>
   </table></div>
 </section>
 
@@ -704,7 +733,7 @@ npm run explorar -- --resoluciones 360x740,768x1024,1366x768 --video no</pre></d
 ├── tests/                  <span class="c">Tests de los scripts (pytest y node --test)</span>
 ├── .github/workflows/      <span class="c">CI: los tests en Ubuntu y Windows</span>
 ├── .claude/
-│   ├── agents/             <span class="c">Los 20 agentes</span>
+│   ├── agents/             <span class="c">Los 21 agentes</span>
 │   ├── skills/             <span class="c">Contexto, diseño, guía de performance, ejecución, k0lmena</span>
 │   └── settings.json       <span class="c">Conectores habilitados y permisos</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/</span>

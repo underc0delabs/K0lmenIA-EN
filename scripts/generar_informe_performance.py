@@ -212,9 +212,9 @@ def build_html(data, corridas):
         ("p99", SERIES[2], [(c.get("latencia") or {}).get("p99") for c in corridas]),
     ], fmt=ms)
     body.append(section("Latencia por corrida", lat, "percentiles del tiempo de respuesta"))
-    thr = grouped_columns(grupos, [("Req/s", SERIES[0], [(c.get("kpis") or {}).get("rps") for c in corridas])], alto=240, ancho=380)
+    thr = grouped_columns(grupos, [("Req/s", SERIES[0], [(c.get("kpis") or {}).get("rps") for c in corridas])], alto=260, ancho=660)
     err = grouped_columns(grupos, [("% de error", CRITICO, [(c.get("kpis") or {}).get("error_pct") for c in corridas])],
-                          fmt=lambda v: f"{v:.0f} %", alto=240, ancho=380)
+                          fmt=lambda v: f"{v:.2f}".rstrip("0").rstrip(".") + " %", alto=260, ancho=660)
     body.append(two_col(section("Throughput", thr, "requests por segundo"), section("Errores", err, "% de requests fallidos")))
 
     # Evolución en el tiempo: un gráfico por métrica (nunca dos escalas en el mismo gráfico)

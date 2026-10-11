@@ -21,6 +21,7 @@
     "link-tester": "npx ts-node -r ./env.js tools/link-tester/tester.ts",
     "link-tester:full": "npx ts-node -r ./env.js tools/link-tester/tester.ts -full",
     "explorar": "node -r ./env.js tools/explorador/explorar.js",
+    "accesibilidad": "node -r ./env.js tools/accesibilidad/auditar.js",
     "debug": "cross-env CUCUMBER_DEBUG=1 npx cucumber-js --profile debug",
     "record": "node -r ./env.js tools/generator/codegen.js",
     "record:generator": "ts-node -r ./env.js tools/generator/record-generator.ts"
@@ -56,6 +57,7 @@
   "dependencies": {
     "@artilleryio/playwright-reporter": "^1.1.3",
     "artillery-plugin-html-report": "^2.0.0",
+    "axe-core": "4.13.0",
     "axios": "^1.18.1",
     "cheerio": "^1.2.0",
     "gifenc": "^1.0.3",

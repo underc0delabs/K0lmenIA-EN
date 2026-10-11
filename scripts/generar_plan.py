@@ -29,7 +29,7 @@ El HTML es autocontenido (CSS y SVG inline), no usa internet.
 import sys
 import json
 
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, bar_chart,
+from _estilos_reporte import (e, page, meta, section, section_group, kpi_tiles, bar_chart,
                               doc_list, two_col, table, nivel_badge, NIVEL_COLOR)
 
 NIVELES = ["Alto", "Medio", "Bajo"]
@@ -71,9 +71,8 @@ def build_html(data):
     body.append(section("Objetivos", doc_list(objetivos)))
 
     # Alcance (dos columnas)
-    body.append('<div class="section"><div class="section-title"><h2>Alcance</h2></div>'
-                + two_col(_scope_card("Incluye", "ok", incluye),
-                          _scope_card("Fuera de alcance", "bad", excluye)) + '</div>')
+    body.append(section_group("Alcance", two_col(_scope_card("Incluye", "ok", incluye),
+                                                _scope_card("Fuera de alcance", "bad", excluye))))
 
     # Enfoque
     if enfoque:
@@ -103,9 +102,8 @@ def build_html(data):
 
     # Criterios de entrada / salida (dos columnas)
     if c_entrada or c_salida:
-        body.append('<div class="section"><div class="section-title"><h2>Criterios</h2></div>'
-                    + two_col(_scope_card("De entrada", "ok", c_entrada),
-                              _scope_card("De salida", "ok", c_salida)) + '</div>')
+        body.append(section_group("Criterios", two_col(_scope_card("De entrada", "ok", c_entrada),
+                                                       _scope_card("De salida", "ok", c_salida))))
 
     # Supuestos y preguntas para el PO
     if supuestos or preguntas:

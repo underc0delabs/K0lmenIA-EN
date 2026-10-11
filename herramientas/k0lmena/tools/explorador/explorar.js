@@ -598,4 +598,6 @@ if (require.main === module) {
   main().catch((e) => { console.error(`Error: ${e.message}`); process.exit(1); });
 }
 
-module.exports = { normalizar, slug, parsearResoluciones, clasificarLink, armarHallazgos, argumentos, tiempos, limpiarCarpeta, GENERADOS };
+module.exports = { normalizar, slug, parsearResoluciones, clasificarLink, armarHallazgos, argumentos, tiempos, limpiarCarpeta, GENERADOS,
+  // Los reutiliza el auditor de accesibilidad (tools/accesibilidad).
+  NO_RECORRER, ARCHIVO, sello, recorrerScroll, cargar, capturar };

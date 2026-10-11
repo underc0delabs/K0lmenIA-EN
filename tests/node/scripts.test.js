@@ -131,3 +131,35 @@ test('explorador: un problema repetido en varias páginas es un solo hallazgo, c
   assert.deepEqual(explorador.tiempos([{ tiempo_ms: 1000 }, { tiempo_ms: 3000 }, { error: 'x' }]),
     { carga_promedio_ms: 2000, carga_max_ms: 3000, carga_p90_ms: 3000 });
 });
+
+const a11y = require(path.join(RAIZ, 'herramientas/k0lmena/tools/accesibilidad/auditar.js'));
+
+test('accesibilidad: criterios WCAG, nivel y severidad desde los tags de axe', () => {
+  assert.deepEqual(a11y.criterios(['cat.color', 'wcag2aa', 'wcag143', 'wcag1410']), ['1.4.3', '1.4.10']);
+  assert.equal(a11y.nivelDe(['wcag2a', 'wcag111']), 'A');
+  assert.equal(a11y.nivelDe(['wcag21aa']), 'AA');
+  assert.equal(a11y.nivelDe(['best-practice']), null);
+  assert.equal(a11y.severidad('critical', ['wcag2a', 'wcag111']), 'Crítica');
+  assert.equal(a11y.severidad('serious', ['best-practice']), 'Media'); // buena práctica: baja un nivel
+  assert.equal(a11y.argumentos(['--nivel', 'aaa']).nivel, 'AAA');
+  assert.throws(() => a11y.argumentos(['--nivel', 'B']), /A, AA o AAA/);
+});
+
+test('accesibilidad: agrupa por regla entre páginas y suma teclado y reflow', () => {
+  const v = { id: 'image-alt', impacto: 'critical', titulo: 'Imágenes sin alt', tags: ['wcag2a', 'wcag111'], total_nodos: 2,
+    nodos: [{ selector: 'img', html: '<img>' }, { selector: 'img.b', html: '<img>' }] };
+  const pag = (url, extra = {}) => ({ url, violaciones: [v], revisar: [], aprobadas: ['a', 'b', 'c'],
+    teclado: { pasos: [{ elemento: 'a', texto: 'Saltar al contenido', visible_indicador: true }], trampa: null }, ...extra });
+  const { hallazgos } = a11y.armarHallazgos([
+    pag('https://x.com/'),
+    pag('https://x.com/b', { teclado: { pasos: [{ elemento: 'a', texto: 'Inicio', visible_indicador: false }], trampa: { elemento: 'input', texto: 'Editor' } },
+      reflow: { desborda: true, ancho_documento: 500 } }),
+  ]);
+  const alt = hallazgos.find((h) => h.regla === 'image-alt');
+  assert.deepEqual(alt.paginas, ['https://x.com/', 'https://x.com/b']);
+  assert.equal(alt.total_nodos, 4);
+  assert.deepEqual(alt.wcag, ['1.1.1']);
+  for (const r of ['trampa-de-foco', 'foco-no-visible', 'reflow-320']) assert.ok(hallazgos.some((h) => h.regla === r), r);
+  assert.equal(hallazgos[0].severidad, 'Crítica');
+  assert.equal(a11y.cumplimiento([{ aprobadas: ['a', 'b', 'c'], violaciones: [v] }]), 75);
+});

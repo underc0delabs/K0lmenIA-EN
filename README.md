@@ -99,6 +99,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Pruebas de performance](#-pruebas-de-performance)
 - [Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps](#️-gestión-de-pruebas-xray-qmetry-aio-tests-y-azure-devops)
 - [Pruebas exploratorias](#-pruebas-exploratorias)
+- [Accesibilidad](#-accesibilidad)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -120,9 +121,10 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
-<tr><td rowspan="5"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="6"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
+<tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
 <tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
@@ -295,7 +297,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -371,6 +373,26 @@ npm run explorar -- --url https://staging.mi-app.com --max-paginas 50 --resoluci
 ```
 
 Queda en `output/exploratorias/<HU o sitio>/`: el **informe HTML** (indicadores, gráficos, cada hallazgo con su captura, tiempos de carga, responsive por resolución, videos del recorrido y de cada resolución, links rotos y el detalle de cada página), las capturas con los problemas marcados en rojo y los videos. Cada corrida **reemplaza** a la anterior. Solo navega con GET: no envía formularios ni sigue links de cierre de sesión.
+
+---
+
+## ♿ Accesibilidad
+
+El **analista-accesibilidad** audita tu sitio contra **WCAG 2.2** (nivel AA por defecto). Primero una auditoría automática: **axe-core** en cada página (contraste, textos alternativos, etiquetas, nombres de botones, idioma, estructura), **navegación con teclado** (elementos sin foco visible, trampas de foco, salto al contenido) y **reflow a 320px**. Después revisa a mano con Playwright MCP lo que una herramienta no puede juzgar: si los textos alternativos describen, los encabezados, los mensajes de error de los formularios, menús y modales con teclado y lo que "oye" un lector de pantalla.
+
+- *"Revisá la accesibilidad del sitio del .env"*
+- *"Auditá WCAG AA del registro de HU-001 en https://staging.mi-app.com/registro"*
+
+La auditoría automática también corre sola, sin agentes ni tokens:
+
+```bash
+npm run accesibilidad -- --url https://staging.mi-app.com --nivel AA --max-paginas 20
+```
+
+Queda en `output/accesibilidad/<HU o sitio>/`: el **informe HTML** (cumplimiento, criterios WCAG incumplidos con su nombre y nivel, cada problema con los elementos afectados marcados en rojo, cómo corregirlos y el link a la guía, la navegación con teclado y el orden del foco, la revisión manual y las recomendaciones), las capturas y el video. Cada corrida **reemplaza** a la anterior.
+
+> [!NOTE]
+> Una auditoría automática detecta entre un 30 y un 50 % de los problemas de accesibilidad. Por eso el agente nunca dice que el sitio "cumple": dice qué no cumple y qué faltó revisar.
 
 ---
 
@@ -458,6 +480,7 @@ npm run conector -- activar azure-devops    # queda solo para vos; reiniciá Cla
 7. "Subí los resultados al ciclo del Sprint 5"         → estados y evidencias en Xray
 8. "Armá una prueba de carga del login"                → script + reporte de performance
 9. "Hacé pruebas exploratorias del sitio del .env"     → links, imágenes, errores y responsive, con capturas y video
+   "Revisá la accesibilidad del sitio"                 → criterios WCAG incumplidos y cómo corregirlos
 10. "Armá el informe de cierre de HU-001"              → go / no-go
 ```
 </details>
@@ -495,7 +518,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 20 agentes
+│   ├── agents/             Los 21 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)
