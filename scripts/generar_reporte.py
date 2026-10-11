@@ -34,8 +34,9 @@ El HTML es autocontenido: CSS y gráficos van inline (SVG/CSS), no usa internet.
 """
 import sys
 import json
+import os
 
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, donut, legend, banner, table,
+from _estilos_reporte import (miniatura, resolver_evidencia, e, page, meta, section, kpi_tiles, donut, legend, banner, table,
                               stacked_bars, bar_chart, nivel_badge, estado_pill, ESTADO_COLOR, SERIES)
 
 ESTADOS = ["Aprobado", "Fallido", "Bloqueado"]
@@ -62,7 +63,7 @@ def _hero(casos):
     durs = [c.get("duracion_s") for c in casos if isinstance(c.get("duracion_s"), (int, float))]
     kpis = kpi_tiles([
         ("Casos ejecutados", total, "", f"{sum(durs):.1f} s en total" if durs else ""),
-        ("Aprobados", counts["Aprobado"], "ok", f"{pct} % del total"),
+        ("Aprobados", counts["Aprobado"], "ok", f"{pct} % del total", "", {"pct": pct}),
         ("Fallidos", counts["Fallido"], "bad" if counts["Fallido"] else "ok"),
         ("Bloqueados", counts["Bloqueado"], "blk" if counts["Bloqueado"] else ""),
     ])
@@ -87,11 +88,15 @@ def _duraciones(casos):
     return section("Duración por caso", bar_chart(filas, ancho_etiqueta=260), "segundos · los 15 más largos")
 
 
-def _tabla(casos):
+def _tabla(casos, dir_html=None):
     filas = []
     for c in casos:
         ev = c.get("evidencia")
-        ev_html = f'<a href="{e(ev)}" target="_blank" rel="noopener">ver</a>' if ev else '<span class="muted">—</span>'
+        if ev and dir_html:
+            ev, existe = resolver_evidencia(ev, dir_html)
+        else:
+            existe = True
+        ev_html = miniatura(ev, f'{c.get("id", "")} · {c.get("titulo", "")}', "s", existe) if ev else '<span class="muted">—</span>'
         det = e(c.get("motivo") or "") or '<span class="muted">—</span>'
         if _fi_ids(c):
             det += f'<br><span style="color:#F7CD6E">Falta información: {e(", ".join(_fi_ids(c)))}</span>'
@@ -102,7 +107,8 @@ def _tabla(casos):
     return table(["ID", "Caso", "Prioridad", "Estado", "Duración", "Detalle", "Evidencia"], filas)
 
 
-def build_html(data):
+def build_html(data, dir_html=None):
+    """dir_html: carpeta donde queda el HTML (para ubicar la evidencia y avisar si falta)."""
     casos = data.get("casos", []) or []
     body = [_hero(casos)]
 
@@ -116,7 +122,7 @@ def build_html(data):
 
     body.append(section("Resultados por prioridad", _por_prioridad(casos)))
     body.append(_duraciones(casos))
-    body.append(section("Detalle de casos", _tabla(casos), f"{len(casos)} casos"))
+    body.append(section("Detalle de casos", _tabla(casos, dir_html), f"{len(casos)} casos · clic en la evidencia para ampliarla"))
 
     faltan = data.get("falta_informacion") or []
     if faltan:
@@ -140,7 +146,7 @@ def main():
     with open(entrada, encoding="utf-8") as f:
         data = json.load(f)
     with open(salida, "w", encoding="utf-8") as f:
-        f.write(build_html(data))
+        f.write(build_html(data, os.path.dirname(os.path.abspath(salida))))
     print(f"OK: {salida}")
 
 

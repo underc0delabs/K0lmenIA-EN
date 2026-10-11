@@ -42,6 +42,7 @@ import datetime
 import json
 import sys
 
+from _estilos_reporte import miniatura  # noqa: F401 (la importan los otros informes)
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, stacked_bars,
                               donut_panel, two_col, nivel_badge, _pastilla, CRITICO, SERIO, AVISO, NEUTRO, OK, SERIES)
 
@@ -60,10 +61,6 @@ CSS_EXTRA = """
 .hallazgo .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:12px 0 4px}
 .hallazgo p,.hallazgo li{color:var(--body)}
 .hallazgo ol,.hallazgo ul{margin-left:18px}
-.thumb{display:inline-block;width:120px;height:80px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg);vertical-align:middle}
-.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-.thumb.s{width:72px;height:54px}
-.thumb:hover{border-color:var(--ink)}
 .galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;padding:20px 24px}
 .galeria figure{margin:0;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
 .galeria img{display:block;width:100%;height:230px;object-fit:cover;object-position:top}
@@ -88,28 +85,11 @@ details.pag .cuerpo li{word-break:break-all;margin:2px 0}
 .metr{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;color:var(--body);font-size:13px}
 .metr b{color:var(--ink)}
 @media (max-width:720px){details.pag .cuerpo{grid-template-columns:1fr}}
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:99;cursor:zoom-out;padding:24px}
-#lb.on{display:flex}
-#lb img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.6)}
-#lb span{position:fixed;top:12px;right:18px;color:#fff;font-size:13px;opacity:.8}
 </style>
 """
 
 # Lightbox: las miniaturas (a.lb) se amplían en la misma página; Esc o clic cierran.
-JS_EXTRA = """
-<div id="lb" role="dialog" aria-label="Captura ampliada"><span>Esc para cerrar · clic derecho para abrir aparte</span><img alt=""></div>
-<script>(function(){var lb=document.getElementById('lb'),im=lb.querySelector('img');
-document.addEventListener('click',function(ev){var a=ev.target.closest('a.lb');if(a){ev.preventDefault();im.src=a.getAttribute('href');im.alt=a.title||'';lb.className='on';}
-else if(ev.target.closest('#lb')){lb.className='';}});
-document.addEventListener('keydown',function(ev){if(ev.key==='Escape')lb.className='';});})();</script>
-"""
-
-
-def miniatura(ruta, titulo="", clase=""):
-    if not ruta:
-        return '<span class="muted">—</span>'
-    return (f'<a class="lb thumb {clase}" href="{e(ruta)}" title="{e(titulo)}">'
-            f'<img src="{e(ruta)}" loading="lazy" alt="{e(titulo or "Captura")}"></a>')
+JS_EXTRA = ""  # el visor de evidencia ahora es común (scripts/_estilos_reporte.py)
 
 
 def pill(ok, texto_ok, texto_mal, tono_mal=CRITICO):

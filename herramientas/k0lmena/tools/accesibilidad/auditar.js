@@ -144,6 +144,36 @@ async function navegarConTeclado(page, tabs, capturaFoco = null) {
   return { pasos, trampa: null };
 }
 
+// Captura de un elemento con contexto: un margen alrededor y el elemento marcado en rojo, así se
+// entiende qué se señala (un campo de 30 px solo, en una miniatura, es un rectángulo en blanco).
+async function capturarElemento(page, selector, archivo, margen = 90) {
+  const loc = page.locator(selector).first();
+  try {
+    await loc.scrollIntoViewIfNeeded({ timeout: 3000 });
+    const caja = await loc.boundingBox();
+    if (!caja) return;
+    await loc.evaluate((el) => {
+      el.setAttribute('data-k0-foco', '');
+      if (!document.getElementById('k0-foco')) {
+        const s = document.createElement('style');
+        s.id = 'k0-foco';
+        s.textContent = '[data-k0-foco]{outline:3px solid #ff2d2d !important;outline-offset:3px !important;box-shadow:0 0 0 9px rgba(255,45,45,.28) !important}';
+        document.head.appendChild(s);
+      }
+    });
+    const vp = page.viewportSize();
+    const ancho = Math.min(vp.width, Math.max(caja.width + margen * 2, 360));
+    const alto = Math.min(vp.height, Math.max(caja.height + margen * 2, 220));
+    const x = Math.max(0, Math.min(caja.x + caja.width / 2 - ancho / 2, vp.width - ancho));
+    const y = Math.max(0, Math.min(caja.y + caja.height / 2 - alto / 2, vp.height - alto));
+    await page.screenshot({ path: archivo, type: 'jpeg', quality: 82, clip: { x, y, width: ancho, height: alto }, timeout: 5000 });
+  } catch {
+    // si el elemento no se puede ubicar (oculto, fuera del documento), queda sin captura
+  } finally {
+    await loc.evaluate((el) => el.removeAttribute('data-k0-foco')).catch(() => {});
+  }
+}
+
 // Corre axe en la página (con los textos en español) y devuelve solo lo necesario.
 async function correrAxe(page, tags, locale) {
   await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
@@ -342,7 +372,7 @@ async function main() {
           if (!nodo.simple) continue;
           if (i < 3) {
             const archivo = path.join(dirElementos, `${n}-${v.id}-${i + 1}.jpg`);
-            await page.locator(nodo.simple).first().screenshot({ path: archivo, type: 'jpeg', quality: 80, timeout: 4000 }).catch(() => {});
+            await capturarElemento(page, nodo.simple, archivo);
             if (fs.existsSync(archivo)) nodo.captura = rel(archivo);
           }
           await page.evaluate((s) => { try { document.querySelectorAll(s).forEach((e) => e.setAttribute('data-k0-marca', '')); } catch {} }, nodo.simple);

@@ -17,9 +17,9 @@ try {
 
 // Paleta validada para la superficie oscura (CVD y contraste, skill dataviz).
 const TOKENS = {
-  '--background': '#0B0D11',
+  '--background': '#08090C',
   '--foreground': '#F3F5F8',
-  '--card': '#15181D',
+  '--card': '#111318',
   '--card-foreground': '#F3F5F8',
   '--popover': '#15181D',
   '--popover-foreground': '#F3F5F8',
@@ -47,21 +47,37 @@ const TOKENS = {
   '--status-undefined': '#FAB219',
   '--status-pending': '#9085E9',
   '--status-skipped': '#8B949E',
-  '--font-sans': '"Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif',
+  '--font-sans': '"Geist","Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif',
   '--radius': '1rem',
 };
 
+// Tipografía Geist incrustada (scripts/fuentes, licencia OFL): igual sin internet.
+const FUENTES = (() => {
+  const dir = path.resolve(__dirname, '..', '..', '..', 'scripts', 'fuentes');
+  return [['Geist', 'geist-latin-wght-normal.woff2'], ['Geist Mono', 'geist-mono-latin-wght-normal.woff2']].map(([familia, archivo]) => {
+    try {
+      return `@font-face{font-family:'${familia}';font-weight:100 900;font-display:swap;src:url(data:font/woff2;base64,${fs.readFileSync(path.join(dir, archivo)).toString('base64')}) format('woff2')}`;
+    } catch {
+      return '';
+    }
+  }).join('');
+})();
+
 const ESTILO = `
 <style id="k0lmena-theme">
+${FUENTES}
 html.dark,:root.dark{${Object.entries(TOKENS).map(([k, v]) => `${k}:${v}`).join(';')}}
 html.dark{color-scheme:dark}
 html.dark body{
-  background:radial-gradient(1100px 420px at 8% -8%,rgba(20,168,149,.10),transparent 60%),var(--background) !important;
+  background:radial-gradient(900px 480px at 18% -12%,rgba(20,168,149,.13),transparent 62%),
+             radial-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/22px 22px,var(--background) !important;
   background-attachment:fixed !important;font-family:var(--font-sans) !important;-webkit-font-smoothing:antialiased;
 }
-html.dark main,html.dark .container,html.dark .max-w-7xl,html.dark .max-w-6xl,html.dark .max-w-screen-xl{max-width:1480px !important}
-html.dark .bg-card{background:var(--card) !important;border:1px solid var(--border) !important;border-radius:18px !important;
-  box-shadow:0 1px 0 rgba(255,255,255,.035) inset,0 18px 40px -28px rgba(0,0,0,.8) !important}
+html.dark main,html.dark .container,html.dark .max-w-7xl,html.dark .max-w-6xl,html.dark .max-w-screen-xl{max-width:1480px !important;margin-left:auto !important;margin-right:auto !important}
+html.dark .bg-card{border:1px solid transparent !important;border-radius:20px !important;
+  background:linear-gradient(180deg,#14171D,#111318) padding-box,linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03) 45%,rgba(255,255,255,.05)) border-box !important;
+  box-shadow:0 24px 48px -32px rgba(0,0,0,.9) !important}
+html.dark code,html.dark pre{font-family:"Geist Mono",ui-monospace,Consolas,monospace !important}
 html.dark h1,html.dark h2,html.dark h3{letter-spacing:-.015em}
 html.dark header,html.dark nav{background:rgba(11,13,17,.85) !important;backdrop-filter:blur(10px);border-color:var(--border) !important}
 html.dark table{font-variant-numeric:tabular-nums}

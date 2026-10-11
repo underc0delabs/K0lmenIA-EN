@@ -149,6 +149,25 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | criterios incumplidos, capturas y cómo   |                                       |
 |                            | corregir cada problema                   |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `auditor-rendimiento-web`  | Velocidad de carga con Lighthouse en     | `output/rendimiento/`                 |
+|                            | mobile y desktop: puntajes, Core Web     |                                       |
+|                            | Vitals (LCP, CLS, TBT), oportunidades    |                                       |
+|                            | con el ahorro estimado y secuencia de    |                                       |
+|                            | carga; informe HTML                      |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `analista-fallos`          | Analiza las fallas de npm test: las      | `output/fallos/` + `output/reportes-  |
+|                            | clasifica (posible bug, locator o        | bug/`                                 |
+|                            | espera, ambiente, datos,                 |                                       |
+|                            | automatización), detecta inestables con  |                                       |
+|                            | reintentos, rescata la evidencia y       |                                       |
+|                            | redacta los bugs reales; informe HTML    |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `analista-cobertura`       | Matriz de cobertura y trazabilidad: HU,  | `output/cobertura/`                   |
+|                            | criterios, casos, automatización,        |                                       |
+|                            | gestión, último resultado y bugs; marca  |                                       |
+|                            | los huecos (qué falta probar); informe   |                                       |
+|                            | HTML                                     |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-seguridad`       | Revisa la seguridad de una web propia o  | `output/seguridad/`                   |
 |                            | autorizada con un escaneo pasivo de      |                                       |
 |                            | OWASP ZAP (Docker), analiza los          |                                       |
@@ -222,6 +241,9 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/doctor.py` → revisa el entorno y la configuración.
 - `scripts/generar_informe_exploratorio.py` → arma el informe HTML de pruebas exploratorias desde el `exploracion.json` de `npm run explorar` (`explorador-web`).
 - `scripts/generar_informe_accesibilidad.py` → arma el informe HTML de accesibilidad desde el `auditoria.json` de `npm run accesibilidad` (`analista-accesibilidad`).
+- `scripts/generar_informe_rendimiento.py` → arma el informe HTML de rendimiento web desde el `rendimiento.json` de `npm run rendimiento` (`auditor-rendimiento-web`).
+- `scripts/analizar_fallos.py` → clasifica las fallas de `npm test`, compara con reintentos y genera el informe (`analista-fallos`).
+- `scripts/analizar_cobertura.py` → arma la matriz de cobertura y trazabilidad por historia y genera el informe (`analista-cobertura`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
 
 ---
@@ -236,6 +258,9 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Seguridad web: `output/seguridad/<HU o host>/<fecha>/` con `zap.json`, `analisis.json` e `informe-seguridad.html`
 - Pruebas exploratorias: `output/exploratorias/<HU o host>/` con `exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
 - Accesibilidad: `output/accesibilidad/<HU o host>/` con `auditoria.json`, `analisis.json`, `informe-accesibilidad.html`, `capturas/` y `videos/`. Cada corrida reemplaza a la anterior de esa historia o sitio.
+- Rendimiento web: `output/rendimiento/<HU o host>/` con `rendimiento.json`, `informe-rendimiento.html`, `capturas/` y `lighthouse/`.
+- Análisis de fallos: `output/fallos/<HU o suite>/` con `fallos.json`, `informe-fallos.html`, `corridas/` y `evidencia/`.
+- Cobertura y trazabilidad: `output/cobertura/<HU o todas>/` con `cobertura.json` e `informe-cobertura.html`.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`
 - Mapeo a automatización: `herramientas/k0lmena/<web|api|mobile>/features/HU-001-<slug>.feature` + `steps/HU-001.steps.ts` + `locators/HU-001.locators.ts`, y el reporte `output/mapeos/mapeo-HU-001-<web|api|mobile>.md`.

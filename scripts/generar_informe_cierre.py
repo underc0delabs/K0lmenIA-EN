@@ -83,7 +83,7 @@ def build_html(data):
                 (blo, ESTADO_COLOR["Bloqueado"], "Bloqueados")], pct, "aprobados")
     kpis = kpi_tiles([
         ("Total", total, ""),
-        ("Aprobados", apr, "ok"),
+        ("Aprobados", apr, "ok", f"{pct} % de lo ejecutado", "", {"pct": pct}),
         ("Fallidos", fal, "bad"),
         ("Bloqueados", blo, "blk"),
     ])

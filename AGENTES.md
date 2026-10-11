@@ -1,6 +1,6 @@
 # Catálogo de agentes
 
-Los 21 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
+Los 24 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
 
 **Leyenda**
 - **Tokens**: *en cada uso* = trabaja con el modelo cada vez que lo pedís; *una vez* = genera algo que después corre solo, sin agentes ni tokens (`npm test`, `npm run perf`).
@@ -23,13 +23,16 @@ Los 21 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | analista-seguridad       | Ejecución en vivo        | Escaneo de seguridad web pasivo e informe              | —                                                                  | OWASP ZAP (Docker), escanear.py, generar_informe_seguridad.py      | —                                    | output/seguridad/                                       |
 | explorador-web           | Ejecución en vivo        | Exploratorias: links, imágenes, errores y responsive   | ejecucion-e2e                                                      | npm run explorar, generar_informe_exploratorio.py                  | playwright, playwright-headless      | output/exploratorias/                                   |
 | analista-accesibilidad   | Ejecución en vivo        | Accesibilidad WCAG 2.2: axe, teclado y revisión manual | ejecucion-e2e                                                      | npm run accesibilidad (axe-core), generar_informe_accesibilidad.py | playwright, playwright-headless      | output/accesibilidad/                                   |
+| auditor-rendimiento-web  | Ejecución en vivo        | Velocidad de carga: Lighthouse y Core Web Vitals       | —                                                                  | npm run rendimiento (Lighthouse), generar_informe_rendimiento.py   | —                                    | output/rendimiento/                                     |
 | generador-reporte-html   | Reportes                 | Reporte HTML de una corrida                            | —                                                                  | generar_reporte.py                                                 | —                                    | output/ejecuciones/                                     |
 | generador-reporte-cierre | Reportes                 | Informe de cierre y go/no-go de la ronda               | —                                                                  | recolectar_resultados.py, generar_informe_cierre.py                | —                                    | output/informes-cierre/                                 |
+| analista-cobertura       | Reportes                 | Matriz de trazabilidad y qué falta probar              | investigacion-contexto                                             | analizar_cobertura.py, generar_informe_cobertura.py                | atlassian, azure-devops              | output/cobertura/                                       |
 | web-mapper               | Automatización (k0lmena) | Automatiza casos web                                   | automatizacion-k0lmena, ejecucion-e2e, investigacion-contexto      | k0lmena (Playwright + Cucumber)                                    | playwright, playwright-headless      | herramientas/k0lmena/web/ + output/mapeos/              |
 | api-mapper               | Automatización (k0lmena) | Automatiza APIs desde Postman o Swagger                | automatizacion-k0lmena, investigacion-contexto, tecnicas-de-diseno | k0lmena (axios + Cucumber)                                         | —                                    | herramientas/k0lmena/api/ + output/mapeos/              |
 | mobile-mapper            | Automatización (k0lmena) | Automatiza casos mobile                                | automatizacion-k0lmena, investigacion-contexto                     | k0lmena (WebdriverIO + Appium)                                     | appium-mcp                           | herramientas/k0lmena/mobile/ + output/mapeos/           |
 | performance-mapper       | Automatización (k0lmena) | Carga, estrés, soak y picos con informe                | automatizacion-k0lmena, guia-performance                           | k6, Artillery, JMeter, generar_informe_performance.py              | —                                    | herramientas/k0lmena/performance/ + output/performance/ |
 | verificador-datos        | Automatización (k0lmena) | Consulta y verifica datos en bases                     | automatizacion-k0lmena                                             | k0lmena tools/bd (npm run bd)                                      | —                                    | chat (+ output/verificaciones-datos/)                   |
+| analista-fallos          | Automatización (k0lmena) | Clasifica las fallas de npm test y detecta inestables  | ejecucion-e2e                                                      | analizar_fallos.py, generar_informe_fallos.py                      | playwright, playwright-headless      | output/fallos/ + output/reportes-bug/                   |
 | gestor-pruebas           | Gestión                  | Carpetas, casos y ciclos en la herramienta de gestión  | —                                                                  | gestion.py, para_azure_devops.py                                   | azure-devops (para Azure Test Plans) | Xray / QMetry / AIO / Azure DevOps + output/gestion/    |
 | publicador-resultados    | Gestión                  | Sube resultados de npm test con evidencias             | —                                                                  | gestion.py                                                         | —                                    | Xray / QMetry / AIO                                     |
 
@@ -130,6 +133,14 @@ Gastan tokens en cada corrida: sirven para casos sueltos. Lo que se repite convi
 - **Confirma**: el modo (headed o headless) si no lo dijiste. No envía formularios sin tu ok. Nunca afirma que el sitio "cumple": la parte automática detecta solo una parte de los problemas.
 - **Tokens**: en cada uso (las reglas automáticas las corre el script, sin tokens por página).
 
+### auditor-rendimiento-web
+- **Cuándo**: para saber qué tan rápido carga cada página para una persona y por qué (no es una prueba de carga: eso es el performance-mapper).
+- **Pedido de ejemplo**: *"Revisá la velocidad del sitio del .env"* · *"¿Por qué carga lenta la home en mobile?"*.
+- **Usa**: `npm run rendimiento` (Lighthouse en mobile y desktop, con los textos en español, `herramientas/k0lmena/tools/rendimiento/auditar.js`) y `scripts/generar_informe_rendimiento.py`.
+- **Entrega**: en `output/rendimiento/<HU o host>/` (cada corrida reemplaza a la anterior), `informe-rendimiento.html` (puntajes, Core Web Vitals con sus umbrales, oportunidades con el ahorro estimado, peso por tipo de recurso, elemento LCP, terceros y secuencia de carga), `rendimiento.json`, `capturas/` y el reporte nativo de Lighthouse de cada página.
+- **Confirma**: nada con efecto (solo carga las páginas). Necesita Node 22.19 o superior.
+- **Tokens**: en cada uso (las mediciones las hace el script).
+
 ## Reportes
 
 ### generador-reporte-html
@@ -145,6 +156,14 @@ Gastan tokens en cada corrida: sirven para casos sueltos. Lo que se repite convi
 - **Usa**: `scripts/recolectar_resultados.py` (junta ejecuciones en vivo, `npm test`, bugs, performance y seguridad) y `scripts/generar_informe_cierre.py`.
 - **Entrega**: `output/informes-cierre/cierre-HU-XXX-<fecha>.html` con la recomendación (Apto / Apto con observaciones / No apto), resultados, bugs por severidad, alcance, riesgos y falta información.
 - **Tokens**: en cada uso.
+
+### analista-cobertura
+- **Cuándo**: para saber qué falta probar de una historia o de la ronda.
+- **Pedido de ejemplo**: *"¿Qué nos falta probar de HU-001?"* · *"Armá la matriz de trazabilidad de la ronda"*.
+- **Usa**: skill `investigacion-contexto` (los criterios de Jira o Azure DevOps si no están en archivos); `scripts/analizar_cobertura.py` y `scripts/generar_informe_cobertura.py`.
+- **Entrega**: en `output/cobertura/<HU o todas>/`, `informe-cobertura.html` (embudo de la historia al resultado, cobertura por criterio, matriz de trazabilidad caso por caso y huecos priorizados) y `cobertura.json`.
+- **Confirma**: nada (solo lee).
+- **Tokens**: en cada uso (el cruce lo hace el script).
 
 ## Automatización con k0lmena
 
@@ -189,6 +208,14 @@ Escriben la automatización **una vez**; después corre sin agentes ni tokens co
 - **Confirma**: toda escritura (y nunca escribe en producción).
 - **Tokens**: en cada consulta; las verificaciones en los `.feature`, una vez.
 
+### analista-fallos
+- **Cuándo**: cuando `npm test` falla, para separar los bugs reales de los tests rotos, inestables, de datos o de ambiente.
+- **Pedido de ejemplo**: *"Analizá por qué falló npm test"* · *"¿Cuáles de estas fallas son bugs?"*.
+- **Usa**: `scripts/analizar_fallos.py` (clasifica, rescata captura, video y trace, compara con reintentos) y `scripts/generar_informe_fallos.py`; skill `ejecucion-e2e` para reproducir a mano si hace falta.
+- **Entrega**: en `output/fallos/<HU o suite>/`, `informe-fallos.html` (fallas por causa, historial de corridas, error, evidencia y qué hacer) y los bugs reales en `output/reportes-bug/`.
+- **Confirma**: volver a correr los fallidos (corre contra el ambiente) y cargar bugs en Jira o Azure DevOps.
+- **Tokens**: en cada uso.
+
 ## Gestión de pruebas
 
 ### gestor-pruebas
@@ -213,44 +240,48 @@ Escriben la automatización **una vez**; después corre sin agentes ni tokens co
 
 Los skills se cargan solo cuando hacen falta.
 
-| Skill                  | Qué enseña                                                                                                                             | Lo usan                                                                                                    |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| investigacion-contexto | Investigar la historia completa (comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (FI-XX) | analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper |
-| tecnicas-de-diseno     | Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise                                                      | generador-casos-manuales, generador-casos-bdd, generador-casos-api, api-mapper                             |
-| ejecucion-e2e          | Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia                                                     | ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad                                           |
-| ejecucion-api          | Correr colecciones con Newman: base_url, token, validaciones y resultados                                                              | ejecutor-api                                                                                               |
-| automatizacion-k0lmena | Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance                                         | web-mapper, api-mapper, mobile-mapper, performance-mapper, verificador-datos                               |
-| guia-performance       | Guía paso a paso para planificar una prueba de performance con la persona                                                              | la conversación principal (antes de performance-mapper) y performance-mapper                               |
+| Skill                  | Qué enseña                                                                                                                             | Lo usan                                                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| investigacion-contexto | Investigar la historia completa (comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (FI-XX) | analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper, analista-cobertura |
+| tecnicas-de-diseno     | Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise                                                      | generador-casos-manuales, generador-casos-bdd, generador-casos-api, api-mapper                                                 |
+| ejecucion-e2e          | Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia                                                     | ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos                                              |
+| ejecucion-api          | Correr colecciones con Newman: base_url, token, validaciones y resultados                                                              | ejecutor-api                                                                                                                   |
+| automatizacion-k0lmena | Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance                                         | web-mapper, api-mapper, mobile-mapper, performance-mapper, verificador-datos                                                   |
+| guia-performance       | Guía paso a paso para planificar una prueba de performance con la persona                                                              | la conversación principal (antes de performance-mapper) y performance-mapper                                                   |
 
 ## Herramientas y scripts: quién usa qué
 
-| Herramienta o script                                         | Para qué                                                        | La usan                                                                      |
-| ------------------------------------------------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| k0lmena (herramientas/k0lmena)                               | Automatización web, API, mobile y performance; corre sin tokens | web-mapper, api-mapper, mobile-mapper, performance-mapper, verificador-datos |
-| Playwright MCP                                               | Navegador en vivo                                               | ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad             |
-| Newman (herramientas/newman)                                 | Colecciones de Postman                                          | ejecutor-api                                                                 |
-| OWASP ZAP (herramientas/zap)                                 | Seguridad web pasiva                                            | analista-seguridad                                                           |
-| k6 · Artillery · JMeter                                      | Performance                                                     | performance-mapper                                                           |
-| scripts/generar_casos.py                                     | Planilla y Markdown de casos                                    | generador-casos-manuales                                                     |
-| scripts/formatear_tablas.py                                  | Tablas alineadas en los .md                                     | casi todos los que escriben .md                                              |
-| scripts/generar_plan.py                                      | Plan de pruebas HTML                                            | estratega-pruebas                                                            |
-| scripts/generar_reporte.py                                   | Reporte HTML de una corrida                                     | ejecutor-e2e, ejecutor-api, generador-reporte-html                           |
-| scripts/correr_newman.py                                     | Newman con el .env y su reporte                                 | ejecutor-api                                                                 |
-| scripts/recolectar_resultados.py · generar_informe_cierre.py | Informe de cierre                                               | generador-reporte-cierre                                                     |
-| scripts/generar_informe_performance.py                       | Informe de performance                                          | performance-mapper                                                           |
-| scripts/generar_informe_seguridad.py                         | Informe de seguridad                                            | analista-seguridad                                                           |
-| npm run explorar (k0lmena tools/explorador)                  | Recorrido: links, imágenes, errores y responsive                | explorador-web                                                               |
-| scripts/generar_informe_exploratorio.py                      | Informe de pruebas exploratorias                                | explorador-web                                                               |
-| npm run accesibilidad (k0lmena tools/accesibilidad)          | Auditoría de accesibilidad: axe-core, teclado y reflow          | analista-accesibilidad                                                       |
-| scripts/generar_informe_accesibilidad.py                     | Informe de accesibilidad                                        | analista-accesibilidad                                                       |
-| scripts/gestion/                                             | Xray, QTM4J y AIO Tests; conversión para Azure Test Plans       | gestor-pruebas, publicador-resultados                                        |
-| scripts/doctor.py (npm run doctor)                           | Revisa el entorno y la configuración                            | vos, al instalar o cuando algo no anda                                       |
+| Herramienta o script                                         | Para qué                                                        | La usan                                                                           |
+| ------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| k0lmena (herramientas/k0lmena)                               | Automatización web, API, mobile y performance; corre sin tokens | web-mapper, api-mapper, mobile-mapper, performance-mapper, verificador-datos      |
+| Playwright MCP                                               | Navegador en vivo                                               | ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos |
+| Newman (herramientas/newman)                                 | Colecciones de Postman                                          | ejecutor-api                                                                      |
+| OWASP ZAP (herramientas/zap)                                 | Seguridad web pasiva                                            | analista-seguridad                                                                |
+| k6 · Artillery · JMeter                                      | Performance                                                     | performance-mapper                                                                |
+| scripts/generar_casos.py                                     | Planilla y Markdown de casos                                    | generador-casos-manuales                                                          |
+| scripts/formatear_tablas.py                                  | Tablas alineadas en los .md                                     | casi todos los que escriben .md                                                   |
+| scripts/generar_plan.py                                      | Plan de pruebas HTML                                            | estratega-pruebas                                                                 |
+| scripts/generar_reporte.py                                   | Reporte HTML de una corrida                                     | ejecutor-e2e, ejecutor-api, generador-reporte-html                                |
+| scripts/correr_newman.py                                     | Newman con el .env y su reporte                                 | ejecutor-api                                                                      |
+| scripts/recolectar_resultados.py · generar_informe_cierre.py | Informe de cierre                                               | generador-reporte-cierre                                                          |
+| scripts/generar_informe_performance.py                       | Informe de performance                                          | performance-mapper                                                                |
+| scripts/generar_informe_seguridad.py                         | Informe de seguridad                                            | analista-seguridad                                                                |
+| npm run explorar (k0lmena tools/explorador)                  | Recorrido: links, imágenes, errores y responsive                | explorador-web                                                                    |
+| scripts/generar_informe_exploratorio.py                      | Informe de pruebas exploratorias                                | explorador-web                                                                    |
+| npm run accesibilidad (k0lmena tools/accesibilidad)          | Auditoría de accesibilidad: axe-core, teclado y reflow          | analista-accesibilidad                                                            |
+| scripts/generar_informe_accesibilidad.py                     | Informe de accesibilidad                                        | analista-accesibilidad                                                            |
+| npm run rendimiento (k0lmena tools/rendimiento)              | Lighthouse: velocidad de carga y Core Web Vitals                | auditor-rendimiento-web                                                           |
+| scripts/generar_informe_rendimiento.py                       | Informe de rendimiento web                                      | auditor-rendimiento-web                                                           |
+| scripts/analizar_fallos.py · generar_informe_fallos.py       | Clasifica las fallas de npm test e informe                      | analista-fallos                                                                   |
+| scripts/analizar_cobertura.py · generar_informe_cobertura.py | Matriz de cobertura y trazabilidad e informe                    | analista-cobertura                                                                |
+| scripts/gestion/                                             | Xray, QTM4J y AIO Tests; conversión para Azure Test Plans       | gestor-pruebas, publicador-resultados                                             |
+| scripts/doctor.py (npm run doctor)                           | Revisa el entorno y la configuración                            | vos, al instalar o cuando algo no anda                                            |
 
 ## Conectores: qué agentes los aprovechan
 
 | Conector                         | Activo por defecto | Lo aprovechan                                                                                |
 | -------------------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
-| playwright · playwright-headless | Sí                 | ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad                             |
+| playwright · playwright-headless | Sí                 | ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos            |
 | atlassian (Jira y Confluence)    | Sí                 | todos los que investigan una historia (skill investigacion-contexto), generador-reportes-bug |
 | azure-devops                     | No                 | los mismos que atlassian, si tu equipo usa Azure DevOps; gestor-pruebas (Azure Test Plans)   |
 | figma · figma-desktop            | No                 | los que investigan una historia (textos, estados y validaciones del diseño), web-mapper      |

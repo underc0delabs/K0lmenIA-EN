@@ -100,6 +100,9 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps](#️-gestión-de-pruebas-xray-qmetry-aio-tests-y-azure-devops)
 - [Pruebas exploratorias](#-pruebas-exploratorias)
 - [Accesibilidad](#-accesibilidad)
+- [Rendimiento web](#-rendimiento-web)
+- [Análisis de fallos](#-análisis-de-fallos)
+- [Cobertura y trazabilidad](#-cobertura-y-trazabilidad)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -121,18 +124,21 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
-<tr><td rowspan="6"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="8"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
+<tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
 <tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
 <tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
-<tr><td rowspan="6"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
+<tr><td><code>analista-cobertura</code></td><td>Matriz de trazabilidad (HU → criterios → casos → automatización → resultados) y qué falta probar</td></tr>
+<tr><td rowspan="7"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
   <td><code>web-mapper</code></td><td>Recorre la web siguiendo tus casos y genera <code>.feature</code>, steps y locators</td></tr>
 <tr><td><code>api-mapper</code></td><td>Lee Postman o Swagger/OpenAPI, verifica los endpoints y genera los <code>.feature</code></td></tr>
 <tr><td><code>mobile-mapper</code></td><td>Recorre la app con Appium y genera <code>.feature</code>, steps y locators</td></tr>
 <tr><td><code>performance-mapper</code></td><td>Carga, estrés, soak y picos con k6, Artillery o JMeter; pregunta carga y umbrales</td></tr>
+<tr><td><code>analista-fallos</code></td><td>Cuando <code>npm test</code> falla: separa bugs reales de tests rotos, inestables, de datos o de ambiente, con la evidencia</td></tr>
 <tr><td><code>verificador-datos</code></td><td>Verifica datos en PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB y suma verificaciones de BD a los tests</td></tr>
 <tr><td><code>analista-seguridad</code></td><td>Escaneo de seguridad web pasivo con OWASP ZAP e informe HTML con hallazgos, evidencia y cómo corregirlos</td></tr>
 <tr><td rowspan="2"><b>🗂️ Gestión</b></td>
@@ -297,7 +303,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -396,6 +402,52 @@ Queda en `output/accesibilidad/<HU o sitio>/`: el **informe HTML** (cumplimiento
 
 ---
 
+## ⚡ Rendimiento web
+
+El **auditor-rendimiento-web** mide qué tan rápido carga cada página para una persona y por qué, con **Lighthouse** en mobile y desktop: puntajes, **Core Web Vitals** (LCP, CLS y TBT) con los umbrales de Google, las **oportunidades de mejora con el ahorro estimado** y los recursos que las causan, el elemento LCP, el peso por tipo de recurso, el código de terceros y la secuencia de carga en capturas.
+
+- *"Revisá la velocidad del sitio del .env"*
+- *"¿Por qué carga lenta la home en mobile?"*
+
+```bash
+npm run rendimiento -- --url https://staging.mi-app.com --max-paginas 5 --repeticiones 3
+```
+
+Queda en `output/rendimiento/<HU o sitio>/`, con el reporte nativo de Lighthouse de cada página. Son datos de laboratorio (una carga simulada): sirven para encontrar y comparar problemas. No es una prueba de carga: eso es el **performance-mapper**. Necesita Node 22.19 o superior.
+
+---
+
+## 🧪 Análisis de fallos
+
+Cuando `npm test` falla, el **analista-fallos** separa los **bugs reales** de los **tests rotos**: clasifica cada falla (posible bug, locator o espera, ambiente, datos de prueba, error en la automatización, paso sin definir), vuelve a correr los fallidos para detectar los **inestables**, rescata la captura, el video y el trace, redacta los reportes de bug de los reales y propone cómo arreglar el resto.
+
+- *"Analizá por qué falló npm test"*
+- *"¿Cuáles de estas fallas son bugs?"*
+
+```bash
+python scripts/analizar_fallos.py                       # analiza la última corrida
+python scripts/analizar_fallos.py --agregar-reintento   # después de volver a correr los fallidos
+```
+
+Queda en `output/fallos/<HU o suite>/`. Volver a correr los fallidos se hace solo con tu ok, porque corre contra el ambiente.
+
+---
+
+## 🧭 Cobertura y trazabilidad
+
+El **analista-cobertura** responde *"¿qué nos falta probar?"*: cruza criterios de aceptación, casos manuales y BDD, automatización de k0lmena, la herramienta de gestión, los últimos resultados y los bugs, y marca los **huecos**: criterios sin casos, casos sin automatizar, automatizados bloqueados o que nunca corrieron, fallidos, casos sin subir a Xray/QMetry/AIO y falta información abierta.
+
+- *"¿Qué nos falta probar de HU-001?"*
+- *"Armá la matriz de trazabilidad de la ronda"*
+
+```bash
+python scripts/analizar_cobertura.py --historia HU-001
+```
+
+Queda en `output/cobertura/<HU o todas>/`: el embudo de la historia al resultado, la cobertura por criterio, la matriz caso por caso y los huecos priorizados.
+
+---
+
 ## 🛡️ Seguridad web
 
 El **analista-seguridad** revisa la seguridad de tu aplicación con **OWASP ZAP** (libre y gratuito) en modo **pasivo**: recorre el sitio y analiza las respuestas sin enviar ataques ni modificar datos. Encuentra encabezados de seguridad faltantes, cookies inseguras, información expuesta, contenido mixto y otras configuraciones débiles.
@@ -481,6 +533,9 @@ npm run conector -- activar azure-devops    # queda solo para vos; reiniciá Cla
 8. "Armá una prueba de carga del login"                → script + reporte de performance
 9. "Hacé pruebas exploratorias del sitio del .env"     → links, imágenes, errores y responsive, con capturas y video
    "Revisá la accesibilidad del sitio"                 → criterios WCAG incumplidos y cómo corregirlos
+   "Revisá la velocidad del sitio"                     → Core Web Vitals y mejoras con su ahorro
+   "Analizá por qué falló npm test"                    → bugs reales vs. tests a arreglar
+   "¿Qué nos falta probar de HU-001?"                  → matriz de trazabilidad y huecos
 10. "Armá el informe de cierre de HU-001"              → go / no-go
 ```
 </details>
@@ -518,7 +573,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 21 agentes
+│   ├── agents/             Los 24 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

@@ -142,7 +142,7 @@ def build_html(datos, analisis):
     pct = r.get("cumplimiento_pct")
     body.append('<div style="margin-top:20px">' + kpi_tiles([
         ("Cumplimiento automático", f"{pct:g} %" if pct is not None else "—", "ok" if (pct or 0) >= 95 else "warn" if (pct or 0) >= 80 else "bad",
-         "de las reglas de axe que aplican"),
+         "de las reglas de axe que aplican", "", {"pct": pct or 0}),
         ("Hallazgos", len(todos), "bad" if por_sev["Crítica"] else ("warn" if todos else "ok"),
          f'{por_sev["Crítica"]} críticos · {por_sev["Alta"]} altos · {por_sev["Media"]} medios · {por_sev["Baja"]} bajos'),
         ("Criterios WCAG incumplidos", len(criterios), "bad" if criterios else "ok", f"nivel objetivo {nivel}"),

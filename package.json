@@ -24,6 +24,7 @@
     "link-tester:full": "npm --prefix herramientas/k0lmena run link-tester:full --",
     "explorar": "npm --prefix herramientas/k0lmena run explorar --",
     "accesibilidad": "npm --prefix herramientas/k0lmena run accesibilidad --",
+    "rendimiento": "npm --prefix herramientas/k0lmena run rendimiento --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

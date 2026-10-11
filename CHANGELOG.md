@@ -2,6 +2,18 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-11 (2) — Reportes con diseño bento y navegación
+- Todos los reportes HTML (los 10 informes de Python, el de cada corrida de `npm run perf` y el tema de los reportes de Cucumber) pasan a un diseño tipo dashboard: barra lateral con el índice del reporte que marca la sección que se está leyendo, encabezado con buscador (Ctrl K) y grilla bento.
+- Tipografía Geist y Geist Mono incrustadas (`scripts/fuentes`, licencia OFL): se ven igual en cualquier máquina y sin internet.
+- Tarjetas con borde en degradado, indicadores con etiqueta de estado, brillo y barra de progreso o sparkline; columnas y barras con degradado, donas con barras de proporción en la leyenda, líneas con brillo y un medidor semicircular nuevo.
+- Las tablas largas suman solas un buscador, filtros por severidad, estado o tipo (con contador) y orden al hacer clic en el encabezado.
+
+## 2026-10-11 — Rendimiento web, análisis de fallos y cobertura
+- Nuevo agente `auditor-rendimiento-web`: Lighthouse 13 en mobile y desktop (textos en español) con `npm run rendimiento`. Puntajes, Core Web Vitals de laboratorio con los umbrales de Google, oportunidades con el ahorro estimado y los recursos que las causan, elemento LCP, peso por tipo de recurso, terceros, secuencia de carga y el reporte nativo de cada página.
+- Nuevo agente `analista-fallos`: `scripts/analizar_fallos.py` clasifica las fallas de `npm test` (posible bug, locator o espera, ambiente, datos, error en la automatización, paso sin definir), detecta los inestables comparando con reintentos y rescata captura, video y trace; el agente confirma la causa y redacta los bugs reales.
+- Nuevo agente `analista-cobertura`: `scripts/analizar_cobertura.py` arma la matriz HU → criterios → casos → automatización → gestión → resultado → bugs y marca los huecos.
+- Los tres con su informe HTML con el diseño nuevo, documentación, permisos y tests.
+
 ## 2026-10-10 (4) — Rediseño de todos los reportes
 - Sistema de diseño nuevo (`scripts/_estilos_reporte.py`) para los 7 informes HTML (plan, ejecución, cierre, performance, seguridad, exploratorias y accesibilidad): más ancho (hasta 1480px), tarjetas con el título adentro, indicadores con íconos según lo que miden y el estado como símbolo (✓ ✕ ! ⊘), nunca solo color, tablas con encabezado destacado y números alineados.
 - Gráficos nuevos: curvas suaves con área en degradado y etiquetas solo en el máximo y el último valor, columnas con el valor en la punta, donas con leyenda de valores y porcentajes, barras sobre un riel tenue. Paleta categórica nueva liderada por verde azulado (#14A895), validada para daltonismo y contraste con el script del skill dataviz; los colores de estado no cambian.

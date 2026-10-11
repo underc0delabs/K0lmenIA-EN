@@ -163,3 +163,21 @@ test('accesibilidad: agrupa por regla entre páginas y suma teclado y reflow', (
   assert.equal(hallazgos[0].severidad, 'Crítica');
   assert.equal(a11y.cumplimiento([{ aprobadas: ['a', 'b', 'c'], violaciones: [v] }]), 75);
 });
+
+const rend = require(path.join(RAIZ, 'herramientas/k0lmena/tools/rendimiento/auditar.js'));
+
+test('rendimiento: califica con los umbrales de Google y arma hallazgos y oportunidades', () => {
+  assert.equal(rend.calificar('lcp', 2400), 'bueno');
+  assert.equal(rend.calificar('lcp', 3000), 'mejorar');
+  assert.equal(rend.calificar('cls', 0.3), 'malo');
+  assert.throws(() => rend.argumentos(['--dispositivos', 'tablet']), /mobile y\/o desktop/);
+  const pagina = (url) => ({ url, dispositivo: 'mobile', metricas: { lcp: { valor: 4500, texto: '4.5 s', estado: 'malo' }, cls: { valor: 0, texto: '0', estado: 'bueno' } },
+    oportunidades: [{ id: 'unused-javascript', titulo: 'JS sin usar', ahorro_ms: 1800, ahorro_bytes: 0 }] });
+  const { hallazgos, oportunidades } = rend.armarHallazgos([pagina('https://x.com/'), pagina('https://x.com/b'), { url: 'https://x.com/c', dispositivo: 'mobile', error: 'boom' }]);
+  assert.equal(oportunidades.length, 1);
+  assert.deepEqual(oportunidades[0].paginas, ['https://x.com/', 'https://x.com/b']);
+  assert.ok(hallazgos.some((h) => h.categoria === 'Core Web Vitals' && h.severidad === 'Alta'));
+  assert.ok(hallazgos.some((h) => h.categoria === 'Oportunidad' && h.severidad === 'Alta'));
+  assert.ok(hallazgos.some((h) => h.categoria === 'Error'));
+  assert.deepEqual(hallazgos.map((h) => h.id), hallazgos.map((_, i) => `R-${String(i + 1).padStart(2, '0')}`));
+});

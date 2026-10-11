@@ -216,6 +216,10 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 |                       | y reflow a 320px (agente                 |
 |                       | analista-accesibilidad)                  |
 +-----------------------+------------------------------------------+
+| npm run rendimiento   | Lighthouse en mobile y desktop: Core Web |
+|                       | Vitals y oportunidades de mejora (agente |
+|                       | auditor-rendimiento-web)                 |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

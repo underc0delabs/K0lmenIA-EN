@@ -157,7 +157,7 @@ def build_html(data, corridas):
     usuarios_max = max(((c.get("kpis") or {}).get("usuarios_max") or 0) for c in corridas)
     fila1 = kpi_tiles([
         ("Corridas", len(corridas), ""),
-        ("Cumplen umbrales", f"{cumplen}/{len(corridas)}", "ok" if cumplen == len(corridas) else "bad"),
+        ("Cumplen umbrales", f"{cumplen}/{len(corridas)}", "ok" if cumplen == len(corridas) else "bad", "", "", {"pct": cumplen / len(corridas) * 100 if corridas else 0}),
         ("Peor p95", ms(max(p95s)) if p95s else "—", ""),
         ("Peor % de error", f"{max(errs):.2f} %" if errs else "—", "bad" if errs and max(errs) > 0 else "ok"),
     ])
