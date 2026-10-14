@@ -19,6 +19,19 @@ try {
   process.exit(1);
 }
 
+// Encabezado o pie del PDF: ocupa todo el margen con el fondo noche (#0E0C09) de k0lmena.
+// Los márgenes de @page (docs/assets/estilos.css) son 13 mm arriba y 15 mm abajo. Chromium dibuja la
+// plantilla a ~5 mm del borde de la hoja (medido: 5,0 arriba y 5,5 abajo): la parte visible mide el
+// margen menos eso, y el fondo se estira 7 mm hacia afuera (arriba en el encabezado, abajo en el pie)
+// para llegar al borde sin tapar el contenido.
+const BORDE_ARRIBA = 5.0;
+const BORDE_ABAJO = 5.5;
+const EXTRA = '7mm';
+const MARGEN = (contenido, alto, arriba) =>
+  '<style>html,body{margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}</style>' +
+  `<div style="width:100%;margin:${arriba ? `-${EXTRA} 0 0` : `0 0 -${EXTRA}`};padding:${arriba ? `${EXTRA} 0 0` : `0 0 ${EXTRA}`};background:#0E0C09">` +
+  `<div style="height:${alto}">${contenido}</div></div>`;
+
 const url = (archivo) => pathToFileURL(path.join(__dirname, archivo)).href;
 const ruta = (archivo) => path.join(__dirname, archivo);
 
@@ -42,10 +55,14 @@ const ruta = (archivo) => path.join(__dirname, archivo);
     printBackground: true,
     preferCSSPageSize: true,
     displayHeaderFooter: true,
-    headerTemplate: '<span></span>',
-    footerTemplate:
-      '<div style="width:100%;font-size:7.5px;color:#8A8172;padding:0 15mm;display:flex;justify-content:space-between;font-family:Consolas,monospace">' +
-      '<span>// k0lmenIA · documentación</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>',
+    // Chromium no pinta el fondo de la página en los márgenes de @page (quedan grises): el encabezado
+    // y el pie, que se dibujan en esos márgenes, los cubren con el fondo de k0lmena.
+    headerTemplate: MARGEN('', `${13 - BORDE_ARRIBA}mm`, true),
+    footerTemplate: MARGEN(
+      '<div style="height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 15mm;' +
+      'font:9px Consolas,\'Cascadia Mono\',monospace;color:#8A8172">' +
+      '<span><span style="color:#F9B006">//</span> k0lmenIA · documentación</span>' +
+      '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>', `${15 - BORDE_ABAJO}mm`, false),
   });
   console.log('docs/k0lmenIA-documentacion.pdf');
   await navegador.close();

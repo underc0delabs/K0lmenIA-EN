@@ -262,7 +262,7 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
    ========================================================================== */
 @page { size: A4; margin: 13mm 0 15mm; }
 @page :first { margin: 0; }
-@page apaisada { size: A4 landscape; margin: 8mm 0 10mm; }
+@page apaisada { size: A4 landscape; margin: 13mm 0 15mm; }
 
 @media print {
   html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: var(--noche) !important; }
@@ -285,8 +285,9 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
   h3, h4, .subtitulo-grupo { break-after: avoid; }
   pre { font-size: 8.2pt; white-space: pre-wrap; padding: 9mm 4mm 3mm; border-radius: 8px; box-shadow: none; }
   code { white-space: normal; }
-  .tarjetas { grid-template-columns: repeat(4, 1fr); gap: 2.5mm; }
-  .tarjeta { padding: 3.5mm; }
+  /* En la grilla Chromium parte las tarjetas entre páginas: al imprimir van en línea (no se parten). */
+  .tarjetas { display: block; font-size: 0; margin-right: -2.5mm; }
+  .tarjeta { display: inline-block; vertical-align: top; width: calc(25% - 2.5mm); margin: 0 2.5mm 2.5mm 0; padding: 3.5mm; font-size: 9.6pt; }
   .tarjeta:hover { box-shadow: none; }
   .tarjeta p { font-size: 8.8pt; }
   .guia { padding: 3.5mm 4.5mm; margin-bottom: 3mm; }
@@ -321,7 +322,7 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
   .lamina h2 { font-size: 15pt; margin-bottom: 3mm; }
   .lamina .figura { margin: 0; text-align: center; }
   .lamina .figura a { display: inline-block; border: 0; box-shadow: none; }
-  .lamina .figura img { width: auto; max-width: 100%; max-height: 165mm; }
+  .lamina .figura img { width: auto; max-width: 100%; max-height: 158mm; }
   .seccion.con-lamina { break-before: auto; padding-top: 0; }
   .figura a[href]::after { content: none; }
 }
