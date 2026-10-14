@@ -1,0 +1,1340 @@
+<!doctype html>
+<!--
+  k0lmenIA documentation — English version.
+  This file is a translation of ../index.html (Spanish, the source of truth). To keep them in sync:
+    1. Edit ../index.html first; then apply the same change here (same section ids and order, so the
+       anchors, the search and the language switch keep matching between both versions).
+    2. Names of agents, commands, paths, environment variables and IDs stay exactly as in Spanish.
+    3. The diagrams have an English copy in ../diagramas/en/ (rendered to ../assets/img/en/).
+    4. Regenerate images and both PDFs with: node docs/generar.js
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>k0lmenIA · Documentation</title>
+  <meta name="description" content="QA agents for Claude Code: test design, automation with k0lmena (web, API, mobile and performance) and integration with Xray, QMetry, AIO Tests and Azure DevOps.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0E0C09">
+  <meta property="og:title" content="k0lmenIA · QA agents for Claude Code">
+  <meta property="og:description" content="Test design, automation with k0lmena and integration with Xray, QMetry, AIO Tests and Azure DevOps.">
+  <meta property="og:image" content="../assets/img/en/arquitectura.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFD60A'/%3E%3Cstop offset='1' stop-color='%23FF8A00'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='16,3 48,3 63,32 48,61 16,61 1,32' fill='url(%23g)'/%3E%3Ctext x='32' y='42' font-family='Saira,Segoe UI,Arial' font-size='26' font-weight='800' fill='%230E0C09' text-anchor='middle'%3Ek0%3C/text%3E%3C/svg%3E">
+  <link rel="preload" href="../assets/fuentes/saira.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fuentes/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="alternate" hreflang="es" href="../index.html">
+  <link rel="alternate" hreflang="en" href="index.html">
+  <link rel="stylesheet" href="../assets/estilos.css">
+  <script src="../assets/sitio.js"></script>
+</head>
+<body>
+
+<!-- ======================================================= TOP BAR -->
+<header class="barra">
+  <button class="btn-icono" id="abrir-nav" type="button" aria-label="Open the menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="marca" href="#inicio"><span class="logo">k0</span>k0lmenIA <span class="version">Docs</span></a>
+  <div class="espacio"></div>
+  <button class="buscar-btn" id="abrir-busqueda" type="button" aria-label="Search the documentation (Ctrl K)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <span class="txt">Search the documentation…</span><kbd>Ctrl K</kbd>
+  </button>
+  <nav class="acciones">
+    <a class="enlace-barra idioma" href="../index.html" hreflang="es" lang="es" title="Leer la documentación en español">ES</a>
+    <a class="enlace-barra" href="../k0lmenIA-documentation.pdf" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg><span>PDF</span></a>
+    <a class="enlace-barra acento" href="https://github.com/underc0delabs/k0lmenIA" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 00-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 015.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.27 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0012 .5z"/></svg><span>GitHub</span></a>
+    <button class="btn-icono" id="cambiar-tema" type="button" aria-label="Change theme">
+      <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+    </button>
+  </nav>
+</header>
+
+<div class="layout">
+<!-- ======================================================= SIDE MENU -->
+<aside class="lateral" aria-label="Contents">
+  <div class="grupo">Introduction</div>
+  <a href="#que-es">What is k0lmenIA</a>
+  <a href="#arquitectura">Architecture</a>
+  <a href="#flujo">How to use it</a>
+  <a href="#agentes">Agents</a>
+  <div class="grupo">Getting started</div>
+  <a href="#requisitos">Requirements</a>
+  <a href="#instalacion">Installation</a>
+  <a href="#configuracion">Configuration (.env)</a>
+  <div class="grupo">Guides</div>
+  <a href="#documentacion">Project documentation</a>
+  <a href="#contexto">Context and missing information</a>
+  <a href="#guia">Design and execution</a>
+  <a href="#k0lmena">Automation with k0lmena</a>
+  <a href="#performance">Performance</a>
+  <a href="#gestion">Xray, QMetry, AIO Tests and Azure DevOps</a>
+  <a href="#base-de-datos">Database checks</a>
+  <a href="#exploratorias">Exploratory testing</a>
+  <a href="#accesibilidad">Accessibility</a>
+  <a href="#rendimiento">Web performance</a>
+  <a href="#fallos">Failure analysis</a>
+  <a href="#logs">Server logs</a>
+  <a href="#cobertura">Coverage and traceability</a>
+  <a href="#visual">Visual regression</a>
+  <a href="#cross-browser">Cross-browser</a>
+  <a href="#reparador">Repairing the automation</a>
+  <a href="#seleccion">Which cases to run</a>
+  <a href="#revision">Case review and timing</a>
+  <a href="#charters">Exploratory charters</a>
+  <a href="#correos">Emails</a>
+  <a href="#traductor">Translations and languages</a>
+  <a href="#ux">Usability</a>
+  <a href="#formularios">Forms</a>
+  <a href="#permisos">Role permissions</a>
+  <a href="#resiliencia">Resilience</a>
+  <a href="#triage">Bug triage and questions</a>
+  <a href="#historial">Run history</a>
+  <a href="#tablero">Dashboard and portal</a>
+  <a href="#avisos">Notifications and monitoring</a>
+  <a href="#evals">Agent evals</a>
+  <a href="#tokens">Token usage</a>
+  <a href="#onboarding">Onboarding</a>
+  <a href="#seguridad">Web security</a>
+  <a href="#conectores">MCP connectors</a>
+  <div class="grupo">Reference</div>
+  <a href="#convenciones">Conventions</a>
+  <a href="#estructura">Repository structure</a>
+  <a href="#faq">Troubleshooting</a>
+  <a href="#extender">Extending the project</a>
+</aside>
+
+<main class="contenido">
+
+<!-- ======================================================= COVER + CONTENTS (PDF only) -->
+<section class="solo-impresion portada">
+  <div>
+    <div class="k">Project documentation</div>
+    <h1><span>k0lmenIA</span></h1>
+    <div class="l">QA agents for Claude Code: test design, automation with k0lmena and integration with Xray, QMetry, AIO Tests and Azure DevOps. The agents work in Spanish.</div>
+    <div class="chips"><span>42 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
+  </div>
+  <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>MIT License</span></div>
+</section>
+<section class="solo-impresion indice">
+  <h2>Contents</h2>
+  <ol>
+    <li><span>1</span>What is k0lmenIA</li><li><span>2</span>Architecture</li><li><span>3</span>How to use it</li><li><span>4</span>Agents</li><li><span>5</span>Requirements</li><li><span>6</span>Installation</li><li><span>7</span>Configuration: the .env file</li><li><span>8</span>Project documentation</li><li><span>9</span>Context research and missing information</li><li><span>10</span>Task guide: design and execution</li><li><span>11</span>Automation with k0lmena</li><li><span>12</span>Performance testing</li><li><span>13</span>Test management: Xray, QMetry, AIO Tests and Azure DevOps</li><li><span>14</span>Database checks</li><li><span>15</span>Exploratory testing</li><li><span>16</span>Accessibility</li><li><span>17</span>Web performance</li><li><span>18</span>Failure analysis</li><li><span>19</span>Server logs</li><li><span>20</span>Coverage and traceability</li><li><span>21</span>Visual regression (pixel perfect)</li><li><span>22</span>Cross-browser</li><li><span>23</span>Repairing the automation</li><li><span>24</span>Selecting cases for a change</li><li><span>25</span>Case review and estimated time</li><li><span>26</span>Charters and exploratory sessions</li><li><span>27</span>Emails</li><li><span>28</span>Translations and languages</li><li><span>29</span>Usability</li><li><span>30</span>Forms</li><li><span>31</span>Role permissions</li><li><span>32</span>Resilience</li><li><span>33</span>Bug triage and questions</li><li><span>34</span>Run history</li><li><span>35</span>Quality dashboard and report portal</li><li><span>36</span>Notifications and synthetic monitoring</li><li><span>37</span>Agent evals</li><li><span>38</span>Token usage</li><li><span>39</span>Onboarding</li><li><span>40</span>Web security</li><li><span>41</span>MCP connectors</li><li><span>42</span>Conventions</li><li><span>43</span>Repository structure</li><li><span>44</span>Troubleshooting</li><li><span>45</span>Extending the project</li>
+  </ol>
+</section>
+
+<!-- ======================================================= HERO -->
+<section class="hero" id="inicio">
+  <div class="pildora">QA agents for Claude Code · token-free suites</div>
+  <h1><span class="grad">k0lmenIA</span></h1>
+  <p class="lema">Design, run and automate tests by talking to Claude Code. The agents analyze user stories, write test cases, automate with <b>k0lmena</b> (web, API, mobile and performance) and take everything to <b>Xray, QMetry, AIO Tests or Azure DevOps</b>. The agents and their deliverables are in Spanish.</p>
+  <div class="ctas">
+    <a class="btn primario" href="#instalacion">Get started
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6l6 6-6 6"/></svg></a>
+    <a class="btn" href="https://github.com/underc0delabs/k0lmenIA" target="_blank" rel="noopener">View on GitHub</a>
+    <a class="btn" href="../k0lmenIA-documentation.pdf" download>Download PDF</a>
+  </div>
+  <div class="tecnologias">
+    <span class="tec"><i style="background:#d97757"></i>Claude Code</span>
+    <span class="tec"><i style="background:#2ead33"></i>Playwright</span>
+    <span class="tec"><i style="background:#23d96c"></i>Cucumber</span>
+    <span class="tec"><i style="background:#ea5906"></i>WebdriverIO</span>
+    <span class="tec"><i style="background:#662d91"></i>Appium</span>
+    <span class="tec"><i style="background:#7d64ff"></i>k6</span>
+    <span class="tec"><i style="background:#e94f37"></i>Artillery</span>
+    <span class="tec"><i style="background:#d22128"></i>JMeter</span>
+    <span class="tec"><i style="background:#00549e"></i>OWASP ZAP</span>
+    <span class="tec"><i style="background:#ff6c37"></i>Postman · Newman</span>
+    <span class="tec"><i style="background:#3178c6"></i>TypeScript</span>
+    <span class="tec"><i style="background:#5fa04e"></i>Node.js</span>
+    <span class="tec"><i style="background:#3776ab"></i>Python</span>
+    <span class="tec"><i style="background:#0052cc"></i>Jira · Confluence</span>
+    <span class="tec"><i style="background:#a259ff"></i>Figma</span>
+    <span class="tec"><i style="background:#6e5494"></i>GitHub · GitLab · Bitbucket</span>
+    <span class="tec"><i style="background:#5e6ad2"></i>Linear · ClickUp · monday · Asana · Trello · Notion · YouTrack · Shortcut</span>
+    <span class="tec"><i style="background:#e01e5a"></i>Slack · Teams</span>
+    <span class="tec"><i style="background:#e10098"></i>GraphQL · Bruno · Insomnia</span>
+    <span class="tec"><i style="background:#00c7b1"></i>Xray · QMetry · AIO Tests · Azure DevOps</span>
+    <span class="tec"><i style="background:#4169e1"></i>PostgreSQL</span>
+    <span class="tec"><i style="background:#4479a1"></i>MySQL · MariaDB</span>
+    <span class="tec"><i style="background:#cc2927"></i>SQL Server</span>
+    <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
+  </div>
+  <div class="metricas">
+    <div class="metrica"><div class="n">42</div><div class="t">specialized agents</div></div>
+    <div class="metrica"><div class="n">4</div><div class="t">types of automation</div></div>
+    <div class="metrica"><div class="n">4</div><div class="t">test management tools</div></div>
+    <div class="metrica"><div class="n">0</div><div class="t">tokens to run the suites</div></div>
+  </div>
+</section>
+
+
+<!-- ======================================================= 1 WHAT IS IT -->
+<section class="seccion" id="que-es">
+  <div class="kicker">Introduction</div>
+  <h2>What is k0lmenIA</h2>
+  <p class="bajada">A team of <b>specialized QA agents</b> for Claude Code, built for manual testing professionals: no programming needed, you work by talking to it inside VS Code.</p>
+  <p>You provide an input (a user story, a bug observation, an API contract, or simply a Jira key or a Figma link), ask for what you need in natural language, and the right agent produces the result: analyses, plans, test cases in Excel or Gherkin, test data, bug reports, HTML reports, automation and upload to your test management tool. The agents and their deliverables are in Spanish.</p>
+
+  <div class="tarjetas">
+    <div class="tarjeta c-violeta"><div class="ico">◆</div><h4>1 · Design</h4><p>Analyze stories, plan, write and review manual, BDD and API test cases (with their estimated time), generate data and charters, and write bug reports.</p><div class="salida">Saved in <code>output/</code></div></div>
+    <div class="tarjeta c-verde"><div class="ico">▶</div><h4>2 · Automation</h4><p>The <i>mapper</i> agents write the automation once; after that it runs with <code>npm</code>, with no tokens.</p><div class="salida">Saved in <code>herramientas/k0lmena/</code></div></div>
+    <div class="tarjeta c-cian"><div class="ico">⇄</div><h4>3 · Management</h4><p>Test cases, cycles and results with evidence in Xray, QMetry or AIO Tests (test cases also in Azure DevOps), and the closing report.</p><div class="salida">Your tool + <code>output/</code></div></div>
+  </div>
+
+  <h3>Principles</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:24%">Principle</th><th>In practice</th></tr>
+    <tr><td>Don't make things up</td><td>If a step, a piece of data, a rule or a threshold is missing, the agent flags it and asks. Better an artifact with marked gaps than a complete but invented one.</td></tr>
+    <tr><td>Respect the formats</td><td>Fields, their order and their values are defined by the templates and scripts, not by the agent.</td></tr>
+    <tr><td>Traceability</td><td>Everything references the story (<code>HU-XXX</code>); every automated scenario carries the test case ID (<code>@CP-001</code>) and the key in the test management tool.</td></tr>
+    <tr><td>Thoughtful coverage</td><td>Positive, negative, edge cases and field validations, not just the happy path.</td></tr>
+    <tr><td>Research before assuming</td><td>Before working on a story, the agents review the project documentation (repository, PRs, map of the web app), its comments, subtasks, epic, linked issues, Confluence and Figma. Whatever doesn't show up is marked as <b>Missing information</b> (<code>FI-01</code>).</td></tr>
+    <tr><td>Token savings</td><td>What repeats is automated once and then runs without agents.</td></tr>
+    <tr><td>Security</td><td>Secrets live in the <code>.env</code> at the root, which is never committed; the agents never ask for tokens in the chat.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 2 ARCHITECTURE -->
+<section class="seccion con-lamina" id="arquitectura">
+  <div class="lamina">
+    <div class="kicker">Introduction</div>
+    <h2>Architecture</h2>
+    <figure class="figura">
+      <a href="../assets/img/en/arquitectura.png" target="_blank" rel="noopener"><img src="../assets/img/en/arquitectura.png" alt="k0lmenIA architecture diagram: Claude Code, agents, support, MCP connectors, tools and external systems"></a>
+      <figcaption>k0lmenIA architecture · click to see it full size</figcaption>
+    </figure>
+  </div>
+  <figure class="figura">
+    <a href="../assets/img/en/relaciones.png" target="_blank" rel="noopener"><img src="../assets/img/en/relaciones.png" alt="How the pieces of k0lmenIA relate: the agent in the center uses skills, templates, scripts, tools and MCP connectors, reads input/ and writes output/"></a>
+    <figcaption>How the pieces relate · the agent is the center · click to see it full size</figcaption>
+  </figure>
+  <div class="tabla"><table>
+    <tr><th style="width:22%">Piece</th><th>What it is</th><th style="width:26%">Where</th></tr>
+    <tr><td>Claude Code</td><td>Orchestrator: interprets the request, picks the agent and applies the project standards.</td><td><code>CLAUDE.md</code></td></tr>
+    <tr><td>Agents</td><td>The "who": one specialist per task.</td><td><code>.claude/agents/</code></td></tr>
+    <tr><td>Skills</td><td>The "how": knowledge loaded only when needed (design techniques, E2E and API execution, k0lmena conventions).</td><td><code>.claude/skills/</code></td></tr>
+    <tr><td>Templates and scripts</td><td>Output format (test case spreadsheet, coverage, bug report) and deterministic HTML reports.</td><td><code>plantillas/</code> · <code>scripts/</code></td></tr>
+    <tr><td>Test management integration</td><td><code>gestion.py</code> with one adapter per tool: Xray Cloud, Xray Server/DC, QTM4J and AIO Tests. Azure DevOps goes through its MCP connector.</td><td><code>scripts/gestion/</code></td></tr>
+    <tr><td>MCP connectors</td><td>Playwright and Atlassian (Jira and Confluence) active; Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, Appium, QMetry, AIO Tests and k0lmenaTMT ready to enable. Pinned versions, no secrets in the file.</td><td><code>.mcp.json</code></td></tr>
+    <tr><td>Tools</td><td>Newman for Postman collections and k0lmena for web, API, mobile and performance.</td><td><code>herramientas/</code></td></tr>
+    <tr><td>Input and output</td><td>User inputs and generated artifacts, organized by type.</td><td><code>input/</code> · <code>output/</code></td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 3 FLOW -->
+<section class="seccion con-lamina" id="flujo">
+  <div class="lamina">
+    <div class="kicker">Introduction</div>
+    <h2>How to use it</h2>
+    <figure class="figura">
+      <a href="../assets/img/en/uso.png" target="_blank" rel="noopener"><img src="../assets/img/en/uso.png" alt="k0lmenIA usage flow in three stages: design, execution and automation, management and closing"></a>
+      <figcaption>End-to-end flow · click to see it full size</figcaption>
+    </figure>
+  </div>
+  <ol class="pasos">
+    <li><b>Provide your inputs</b>Ask <i>"Documentá el proyecto"</i> (document the project) to gather the context from the repository, the stories and the web app into <code>input/documentacion/</code>; put everything else in <code>input/</code>, or pass a Jira key, a Confluence page or a Figma link with the connector active. The agents research the full context and flag what's missing (<code>FI-01</code>).</li>
+    <li><b>Ask in natural language</b>Claude Code picks the agent. You can also name it: <i>"usá el web-mapper para…"</i> (use the web-mapper to…).</li>
+    <li><b>Review the result</b>In <code>output/</code> or in <code>herramientas/k0lmena/</code>.</li>
+    <li><b>Automate what repeats</b>And run it with <code>npm test</code> as many times as you want, with no tokens.</li>
+  </ol>
+  <p>The agents work in Spanish, so the example requests below are in Spanish, followed by their meaning.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:7%">#</th><th>You ask</th><th style="width:32%">You get</th></tr>
+    <tr><td>0</td><td>"Documentá el proyecto" · "Juntá el contexto de PROJ-12" (document the project · gather the context of PROJ-12)</td><td>Project knowledge base + story dossier in <code>input/documentacion/</code></td></tr>
+    <tr><td>1</td><td>"Investigá el contexto de PROJ-12" (research the context of PROJ-12)</td><td>Context sheet + Missing information</td></tr>
+    <tr><td>2</td><td>"Analizá la historia HU-001" (analyze story HU-001)</td><td>Ambiguities and questions for the PO</td></tr>
+    <tr><td>3</td><td>"Armá el plan de pruebas de HU-001" (build the test plan)</td><td>HTML plan</td></tr>
+    <tr><td>4</td><td>"Generá los casos de HU-001" (generate the test cases)</td><td><code>casos-HU-001.xlsx</code> + coverage</td></tr>
+    <tr><td>5</td><td>"Subí los casos a Xray en 'HU-001 Registro', vinculados a PROJ-12, y creá el ciclo Sprint 5" (upload to Xray, link them and create the cycle)</td><td>Test cases and cycle in Xray</td></tr>
+    <tr><td>6</td><td>"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com" (automate them in k0lmena)</td><td><code>.feature</code> + steps + locators</td></tr>
+    <tr><td>7</td><td><code>npm test</code> · <code>npm run report:web</code></td><td>HTML report with evidence</td></tr>
+    <tr><td>8</td><td>"Subí los resultados al ciclo del Sprint 5" (upload the results to the cycle)</td><td>Statuses and evidence in Xray</td></tr>
+    <tr><td>9</td><td>"Armá una prueba de carga del login para 20 usuarios" (load test the login with 20 users)</td><td>k6/Artillery/JMeter script + HTML report</td></tr>
+    <tr><td>10</td><td>"¿Qué casos corro para el PR #42?" (which cases should I run for PR #42?)</td><td>Risk-based selection + <code>npm test</code> command with tags</td></tr>
+    <tr><td>11</td><td>"Corré una regresión visual de https://tu-app.com" · "Probá HU-003 en Chrome, Firefox y Safari" (visual regression · cross-browser)</td><td>What moved and by how many px · per-browser matrix</td></tr>
+    <tr><td>12</td><td>"Repará los tests que fallaron por locators" (repair the tests that failed because of locators)</td><td>New locators applied and verified</td></tr>
+    <tr><td>13</td><td>"Verificá que llegue el mail de bienvenida a ana@test.com" · "Revisá las traducciones del sitio en inglés y portugués" (check the welcome email · review the translations)</td><td>Emails checked against expectations · percentage translated per language</td></tr>
+    <tr><td>14</td><td>"¿Este bug ya está cargado en Jira?" · "¿Qué pasa si un usuario bloqueado intenta pagar?" (is this bug already in Jira? · what happens if a blocked user tries to pay?)</td><td>Duplicates and regressions · answer with its source</td></tr>
+    <tr><td>15</td><td>"Probá los permisos de admin, operador e invitado" · "¿Qué ve el usuario si la API se cae?" (test role permissions · what does the user see if the API goes down?)</td><td>Role × route matrix · page × scenario matrix</td></tr>
+    <tr><td>16</td><td>"Armá el informe de cierre de HU-001" (build the closing report)</td><td>Go / no-go</td></tr>
+    <tr><td>17</td><td>"Armá el tablero del sprint 12" · "Avisá en Slack el resultado" (sprint dashboard · post the result to Slack)</td><td>Trend and management summary · notification in Slack or Teams</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 4 AGENTS -->
+<section class="seccion" id="agentes">
+  <div class="kicker">Introduction</div>
+  <h2>Agents</h2>
+  <p class="bajada">Claude Code picks the agent based on what you ask. They live in <code>.claude/agents/</code> and are grouped into four families. The full catalog (when to use each one, example request, inputs, outputs and what it asks you to confirm) is in <a href="https://github.com/underc0delabs/k0lmenIA/blob/main/AGENTES.md"><code>AGENTES.md</code></a> (in Spanish).</p>
+
+  <div class="subtitulo-grupo"><h3>Analysis and design</h3></div>
+  <div class="tarjetas">
+    <div class="tarjeta c-violeta"><h4>documentador-proyecto</h4><p>Builds the project documentation for the other agents: reads the repository (read-only), the stories with their comments, PRs and links, and makes a functional map of the web app.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e<br><b>Uses</b> npm run mapa-funcional, indice_documentacion.py<br><b>Connectors</b> github, gitlab, azure-devops, atlassian, playwright</div><div class="salida"><code>input/documentacion/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>analista-historias</h4><p>Researches the story context and detects ambiguities, gaps, risks and Missing information.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> formatear_tablas.py<br><b>Connectors</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/analisis-historias/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>estratega-pruebas</h4><p>Test plan: scope, risks, test types, environment and criteria, in HTML.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> generar_plan.py<br><b>Connectors</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/planes-de-prueba/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>generador-casos-manuales</h4><p>Test cases in Excel and Markdown + a coverage report with questions for the PO.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno<br><b>Uses</b> generar_casos.py<br><b>Connectors</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/casos-de-prueba/manuales/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>generador-casos-bdd</h4><p>Gherkin scenarios (keywords in English, content in Spanish) + coverage.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno<br><b>Uses</b> formatear_tablas.py<br><b>Connectors</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/casos-de-prueba/bdd/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>generador-casos-api</h4><p>Positive, negative, schema and authorization API test cases.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno<br><b>Uses</b> formatear_tablas.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/casos-api/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>generador-datos-prueba</h4><p>Valid, invalid and edge-case data in Markdown or CSV.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> formatear_tablas.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/datos-de-prueba/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>selector-casos-de-prueba</h4><p>What should I test with this change? It crosses a diff, a PR, issues or release notes with all the test cases and builds a risk-based selection, with the <code>npm test</code> command ready.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> seleccionar_casos.py, generar_informe_seleccion.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/seleccion-casos/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>revisor-casos</h4><p>Reviews existing test cases: vague steps or missing expected results, duplicates, stories without negative cases, a score per case and how long they take to run by hand.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno<br><b>Uses</b> revisar_casos.py, generar_informe_revision.py, estimacion.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/revision-casos/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>generador-charters</h4><p>Session-based exploratory testing: charters with mission, focus, heuristics and time box, and the sessions report built from the notes.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno, ejecucion-e2e<br><b>Uses</b> generar_charters.py<br><b>Connectors</b> atlassian, azure-devops, playwright</div><div class="salida"><code>output/charters/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>triador-bugs</h4><p>Before a bug is filed, it looks for duplicates and possible regressions (Jira, Azure DevOps, local bugs, repository issues) and suggests severity, component, owner and story.</p><div class="usa"><b>Uses</b> buscar_duplicados.py, avisar.py<br><b>Connectors</b> atlassian, azure-devops, github, gitlab</div><div class="salida"><code>output/triage/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>consultor-proyecto</h4><p>Answers questions about the product using the project documentation, citing the source of every fact or saying it isn't documented.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> input/documentacion/</div><div class="salida"><code>chat · output/consultas/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>guia-onboarding</h4><p>Onboarding plan for a new QA: the product with its sources, their environment, the agents for their role, the first tasks and a checklist.</p><div class="usa"><b>Uses</b> generar_onboarding.py, doctor.py</div><div class="salida"><code>output/onboarding/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>generador-reportes-bug</h4><p>Professional bug report following the template, with justified severity and priority.</p><div class="usa"><b>Uses</b> bug template, formatear_tablas.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/reportes-bug/</code></div></div>
+  </div>
+
+  <div class="subtitulo-grupo"><h3>Live execution</h3><span class="etiqueta tok">uses tokens on every run</span></div>
+  <div class="tarjetas">
+    <div class="tarjeta c-naranja"><h4>ejecutor-e2e</h4><p>Runs test cases in a real browser with Playwright MCP (headed or headless), with evidence.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Uses</b> generar_reporte.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/ejecuciones/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>ejecutor-api</h4><p>Runs a Postman, Bruno or Insomnia collection with Newman (REST and GraphQL).</p><div class="usa"><b>Skills</b> ejecucion-api<br><b>Uses</b> Newman, correr_newman.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>explorador-web</h4><p>Exploratory testing: broken links and images, JavaScript and console errors, and responsive layout at several resolutions, with screenshots and a report.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Uses</b> npm run explorar, generar_informe_exploratorio.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/exploratorias/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-accesibilidad</h4><p>WCAG 2.2 audit with axe-core, keyboard and reflow, plus a manual review: failed criteria, screenshots and how to fix each one.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Uses</b> npm run accesibilidad, generar_informe_accesibilidad.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/accesibilidad/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>auditor-rendimiento-web</h4><p>Load speed with Lighthouse on mobile and desktop: Core Web Vitals, opportunities with estimated savings and the loading sequence.</p><div class="usa"><b>Uses</b> npm run rendimiento (Lighthouse), generar_informe_rendimiento.py</div><div class="salida"><code>output/rendimiento/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>pixel-perfect</h4><p>Visual regression against a reference (or the design): what moved and by how many px, what's missing, what changed in text or color, with a slider comparator.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Uses</b> npm run pixel-perfect, generar_informe_pixel_perfect.py<br><b>Connectors</b> playwright, figma</div><div class="salida"><code>output/pixel-perfect/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>cross-browser</h4><p>Chromium (Chrome and Edge), Firefox and WebKit (Safari): the k0lmena suite on each one or the pages compared side by side; separates what fails in only one browser.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Uses</b> npm run cross-browser, generar_informe_cross_browser.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/cross-browser/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>verificador-correos</h4><p>The app's emails with a test mailbox (Mailpit): the expected email arrives, no unreplaced variables, working links and images, compatible with Outlook and Gmail, and how it looks on desktop and mobile.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e, automatizacion-k0lmena<br><b>Uses</b> Mailpit, npm run correos, generar_informe_correos.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/correos/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-traductor</h4><p>Every page in every language: untranslated text, visible keys, broken characters, cut-off text and number and date formats from another region, with the proposed translation.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e<br><b>Uses</b> npm run traductor, generar_informe_traductor.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/traductor/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>evaluador-ux</h4><p>Usability with Nielsen's 10 heuristics: a score per heuristic, automatic findings and findings from the manual walkthrough with screenshots, the 404 page, desktop and mobile.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Uses</b> npm run ux, generar_informe_ux.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/ux/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-permisos</h4><p>Logs in with every role and builds the matrix of what each one sees and can open (also by direct URL and in the API), compared with the documented rule.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e<br><b>Uses</b> npm run permisos, generar_informe_permisos.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/permisos/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-resiliencia</h4><p>Simulates a down or slow API, no connection, broken responses and static files that don't load, and checks for blank screens, endless spinners and recovery.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Uses</b> npm run resiliencia, generar_informe_resiliencia.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/resiliencia/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-formularios</h4><p>Validations of every field without submitting the form: required fields, lengths, formats and limits, invalid values accepted and valid ones rejected, with the message and a screenshot.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Uses</b> npm run formularios, generar_informe_formularios.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/formularios/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>generador-reporte-html</h4><p>HTML dashboard of a test run's results.</p><div class="usa"><b>Uses</b> generar_reporte.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>generador-reporte-cierre</h4><p>Closing report of the test round with a go/no-go recommendation.</p><div class="usa"><b>Uses</b> recolectar_resultados.py, generar_informe_cierre.py</div><div class="salida"><code>output/informes-cierre/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>tablero-calidad</h4><p>Dashboard per sprint or release: pass rate and trend, % automated, coverage, bugs, flaky tests and a management summary.</p><div class="usa"><b>Uses</b> tablero_calidad.py, portal_informes.py</div><div class="salida"><code>output/tablero/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-cobertura</h4><p>Traceability matrix (story → criteria → test cases → automation → results) and what's left to test.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> analizar_cobertura.py, generar_informe_cobertura.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/cobertura/</code></div></div>
+  </div>
+
+  <div class="subtitulo-grupo"><h3>Automation with k0lmena</h3><span class="etiqueta sin">then runs with no tokens</span></div>
+  <div class="tarjetas">
+    <div class="tarjeta c-verde"><h4>web-mapper</h4><p>Walks the web app following your test cases and generates the <code>.feature</code> files, steps and locators.</p><div class="usa"><b>Skills</b> automatizacion-k0lmena, ejecucion-e2e, investigacion-contexto<br><b>Uses</b> k0lmena (Playwright + Cucumber)<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>k0lmena/web/</code></div></div>
+    <div class="tarjeta c-verde"><h4>api-mapper</h4><p>Reads Postman or Swagger/OpenAPI, verifies the endpoints and generates the <code>.feature</code> files.</p><div class="usa"><b>Skills</b> automatizacion-k0lmena, investigacion-contexto, tecnicas-de-diseno<br><b>Uses</b> k0lmena (axios + Cucumber)</div><div class="salida"><code>k0lmena/api/</code></div></div>
+    <div class="tarjeta c-verde"><h4>mobile-mapper</h4><p>Walks the app with Appium and generates the <code>.feature</code> files, steps and locators.</p><div class="usa"><b>Skills</b> automatizacion-k0lmena, investigacion-contexto<br><b>Uses</b> k0lmena (WebdriverIO + Appium)<br><b>Connectors</b> appium-mcp</div><div class="salida"><code>k0lmena/mobile/</code></div></div>
+    <div class="tarjeta c-verde"><h4>performance-mapper</h4><p>Load, stress, soak and spike tests with k6, Artillery or JMeter; asks for the load and thresholds.</p><div class="usa"><b>Skills</b> guia-performance, automatizacion-k0lmena<br><b>Uses</b> k6, Artillery, JMeter, generar_informe_performance.py</div><div class="salida"><code>k0lmena/performance/</code></div></div>
+    <div class="tarjeta c-verde"><h4>verificador-datos</h4><p>Checks data in PostgreSQL, MySQL, SQL Server or MongoDB and adds database checks to the tests.</p><div class="usa"><b>Skills</b> automatizacion-k0lmena<br><b>Uses</b> npm run bd</div><div class="salida">Chat · steps in <code>.feature</code></div></div>
+    <div class="tarjeta c-verde"><h4>analista-fallos</h4><p>When <code>npm test</code> fails: separates real bugs from broken, flaky, data or environment tests, with the evidence.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Uses</b> analizar_fallos.py, generar_informe_fallos.py</div><div class="salida"><code>output/fallos/</code></div></div>
+    <div class="tarjeta c-verde"><h4>analista-logs</h4><p>Server logs (app, nginx, Apache, JSON, syslog) grouped by signature with their stack trace and crossed with the run: which server error happened while each scenario failed.</p><div class="usa"><b>Uses</b> analizar_logs.py, generar_informe_logs.py</div><div class="salida"><code>output/logs/</code></div></div>
+    <div class="tarjeta c-verde"><h4>reparador-automatizacion</h4><p>When a test fails because of a locator or a wait: diagnoses it with the DOM saved at failure time, proposes the new locator, applies it with a backup and verifies it. If it's a bug, it doesn't touch the test.</p><div class="usa"><b>Skills</b> automatizacion-k0lmena, ejecucion-e2e<br><b>Uses</b> npm run reparar, generar_informe_reparacion.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/reparaciones/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-seguridad</h4><p>Passive web security scan with OWASP ZAP and a report with findings, evidence and how to fix them.</p><div class="usa"><b>Uses</b> OWASP ZAP (Docker), generar_informe_seguridad.py</div><div class="salida"><code>output/seguridad/</code></div></div>
+  </div>
+
+  <div class="subtitulo-grupo"><h3>Test management</h3></div>
+  <div class="tarjetas">
+    <div class="tarjeta c-cian"><h4>gestor-pruebas</h4><p>Folders, test cases, links to the story and cycles in Xray, QMetry (QTM4J), AIO Tests or Azure DevOps Test Plans.</p><div class="usa"><b>Uses</b> scripts/gestion/gestion.py<br><b>Connectors</b> azure-devops (Azure Test Plans)</div><div class="salida">The tool + <code>output/gestion/</code></div></div>
+    <div class="tarjeta c-cian"><h4>publicador-resultados</h4><p>Uploads the <code>npm test</code> results to the cycle: status, error and evidence.</p><div class="usa"><b>Uses</b> scripts/gestion/gestion.py</div><div class="salida">The tool</div></div>
+  </div>
+  <div class="subtitulo-grupo"><h3>Skills: the "how" the agents use</h3></div>
+  <div class="tabla"><table>
+    <tr><th style="width:24%">Skill</th><th>What it teaches</th><th style="width:30%">Used by</th></tr>
+    <tr><td><code>investigacion-contexto</code></td><td>Research the whole story (project documentation, comments, subtasks, epic, Confluence, Figma, contracts) and record the Missing information (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, the test case and data generators, web-mapper, api-mapper, mobile-mapper, analista-cobertura, selector-casos-de-prueba, verificador-correos, analista-traductor, revisor-casos, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto, probador-permisos, probador-resiliencia, consultor-proyecto</td></tr>
+    <tr><td><code>tecnicas-de-diseno</code></td><td>Equivalence partitioning, boundary values, decision tables, state transitions and pairwise</td><td>the manual, BDD and API test case generators; api-mapper, revisor-casos, generador-charters</td></tr>
+    <tr><td><code>ejecucion-e2e</code></td><td>Running in the browser with Playwright MCP: modes, snapshots, waits and evidence</td><td>ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos, pixel-perfect, cross-browser, reparador-automatizacion, verificador-correos, analista-traductor, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto, probador-permisos, probador-resiliencia</td></tr>
+    <tr><td><code>ejecucion-api</code></td><td>Running collections with Newman: base_url, token, assertions and results</td><td>ejecutor-api</td></tr>
+    <tr><td><code>automatizacion-k0lmena</code></td><td>k0lmena conventions: features, steps, locators, tags, database steps and performance scripts</td><td>the mappers, verificador-datos, reparador-automatizacion and verificador-correos</td></tr>
+    <tr><td><code>guia-performance</code></td><td>Plan a performance test step by step with the person</td><td>the main conversation and performance-mapper</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 5 REQUIREMENTS -->
+<section class="seccion" id="requisitos">
+  <div class="kicker">Getting started</div>
+  <h2>Requirements</h2>
+  <p class="bajada">Install only what you'll use.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:34%">To…</th><th>You need</th></tr>
+    <tr><td>Use the agents</td><td><b>Claude Code</b> and a Claude account (Pro, Max, Team or Enterprise) or Anthropic API access. VS Code recommended.</td></tr>
+    <tr><td>Test cases, reports and management</td><td><b>Python 3</b> with <code>openpyxl</code>, <code>tabulate</code> and <code>requests</code>.</td></tr>
+    <tr><td>Run live E2E</td><td><b>Node.js 18+</b> and the Playwright browsers.</td></tr>
+    <tr><td>Run Postman collections</td><td><b>Newman</b>.</td></tr>
+    <tr><td>Automate with k0lmena</td><td><b>Node.js 20+</b>.</td></tr>
+    <tr><td>Automate mobile</td><td><b>Node.js 22+</b>, JDK and Android SDK, or macOS with Xcode for iOS; or a BrowserStack account.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 6 INSTALLATION -->
+<section class="seccion" id="instalacion">
+  <div class="kicker">Getting started</div>
+  <h2>Installation</h2>
+  <p class="bajada">In five minutes you have the agents running; k0lmena and the rest can be added when you need them.</p>
+  <figure class="figura">
+    <a href="../assets/img/en/puesta-en-marcha.png" target="_blank" rel="noopener"><img src="../assets/img/en/puesta-en-marcha.png" alt="Getting k0lmenIA running: installation steps, how to set the tokens in the .env and example requests to the agents"></a>
+    <figcaption>Getting started: installation, <code>.env</code> tokens and example requests · click to see it full size</figcaption>
+  </figure>
+  <ol class="pasos">
+    <li><b>Install Claude Code</b>
+      <div class="codigo"><pre>curl -fsSL https://claude.ai/install.sh | bash     <span class="c"># macOS / Linux</span>
+npm install -g @anthropic-ai/claude-code           <span class="c"># alternative (Node.js 22 LTS covers everything)</span>
+claude --version</pre></div>
+      On Windows, follow the <a href="https://docs.claude.com/en/docs/claude-code/overview" target="_blank" rel="noopener">official guide</a>.</li>
+    <li><b>Clone the repository</b>
+      <div class="codigo"><pre>git clone https://github.com/underc0delabs/k0lmenIA.git
+cd k0lmenIA                                        <span class="c"># or the folder you cloned it into</span>
+pip install -r requirements.txt                    <span class="c"># Mac/Linux: pip3</span>
+npm install                                        <span class="c"># k0lmena</span>
+cp .env.example .env                               <span class="c"># and fill it in (PowerShell: copy)</span></pre></div>
+      On Windows the command is <code>python</code>; on Mac and Linux, <code>python3</code> and <code>pip3</code> (if <code>pip3</code> answers <i>externally-managed-environment</i>, use a virtual environment: <code>python3 -m venv .venv</code>).</li>
+    <li><b>Check that everything is ready</b>
+      <div class="codigo"><pre>npm run doctor                                     <span class="c"># tells you what's missing and how to fix it</span>
+npm run doctor -- --seccion env,integraciones       <span class="c"># only one part · --rapido · --json</span></pre></div></li>
+    <li><b>Open VS Code and launch Claude Code</b>
+      <div class="codigo"><pre>code .
+claude                                             <span class="c"># asks you to sign in the first time</span></pre></div></li>
+    <li><b>Add the optional pieces</b>
+      <div class="codigo"><pre>npx playwright install                             <span class="c"># live E2E execution</span>
+npm install -g newman                              <span class="c"># Postman collections</span>
+cd herramientas/k0lmena
+npx playwright install chromium               <span class="c"># + firefox webkit for cross-browser</span>
+npm run bootstrap:k6                               <span class="c"># API performance with k6</span>
+npm run bootstrap:jmeter                           <span class="c"># performance with JMeter (Java 8+)</span></pre></div></li>
+  </ol>
+</section>
+
+<!-- ======================================================= 7 CONFIGURATION -->
+<section class="seccion" id="configuracion">
+  <div class="kicker">Getting started</div>
+  <h2>Configuration: the <code>.env</code> file</h2>
+  <p class="bajada">There is <b>a single <code>.env</code>, at the root of the repo</b>. The agents, k0lmena and the management scripts use it. It's in <code>.gitignore</code> and the commented template is <code>.env.example</code>.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:18%">Group</th><th style="width:47%">Variables</th><th>What for</th></tr>
+    <tr><td>App under test</td><td><code>APP_URL</code> <code>APP_USER</code> <code>APP_PASSWORD</code></td><td>E2E execution and logins</td></tr>
+    <tr><td>API</td><td><code>API_TOKEN</code> <code>API_BASEURL</code> <code>GRAPHQL_URL</code></td><td>Newman, the API suite and k6</td></tr>
+    <tr><td>Web</td><td><code>BASEURL</code> <code>BROWSER</code> <code>HEADLESS</code> <code>VIEWPORT_WIDTH</code> <code>VIEWPORT_HEIGHT</code> <code>LOCALE</code> <code>TIMEZONE</code></td><td>Browser for the web suite (empty: Chromium, Firefox and WebKit at 1366x768)</td></tr>
+    <tr><td>Execution</td><td><code>TAGS</code> <code>PARALLEL</code></td><td>Which scenarios run and how</td></tr>
+    <tr><td>Evidence</td><td><code>EVIDENCE</code> (<code>captura</code> · <code>ambos</code> · <code>off</code>) <code>VIDEO</code> <code>TRACE</code></td><td>What gets attached to the report</td></tr>
+    <tr><td>Auto-healing</td><td><code>K0LMENA_AUTO_HEALING</code></td><td>Recover broken locators</td></tr>
+    <tr><td>Mobile</td><td><code>MOBILE_TARGET</code> <code>MOBILE_PLATFORM</code> <code>MOBILE_DEVICE_NAME</code> <code>MOBILE_APP</code> <code>MOBILE_UDID</code> <code>BROWSERSTACK_*</code></td><td>Where the mobile suite runs</td></tr>
+    <tr><td>Performance</td><td><code>PERF_VUS</code> <code>PERF_DURACION</code></td><td>Override the load of the k6 scripts</td></tr>
+    <tr><td>Databases</td><td><code>DB_CONEXIONES</code> + <code>DB_&lt;NAME&gt;_MOTOR</code> <code>_HOST</code> <code>_PUERTO</code> <code>_BASE</code> <code>_USUARIO</code> <code>_CLAVE</code> (or <code>_URL</code>) <code>_ESCRITURA</code> <code>_PRODUCCION</code></td><td>Database checks</td></tr>
+    <tr><td>Test management</td><td><code>GESTION_HERRAMIENTA</code> <code>GESTION_PROYECTO</code> + the tool's credentials</td><td>Xray, QMetry and AIO Tests</td></tr>
+    <tr><td>Azure DevOps (MCP)</td><td><code>ADO_ORGANIZACION</code> <code>ADO_PAT</code> <code>ADO_PROYECTO</code></td><td>Boards, Wiki, Repos and Test Plans</td></tr>
+    <tr><td>Role permissions</td><td><code>PERMISOS_ROLES</code> <code>PERMISOS_&lt;ROLE&gt;_USUARIO</code> <code>_CLAVE</code> <code>_TOKEN</code> <code>PERMISOS_LOGIN_URL</code></td><td>Roles tested by probador-permisos</td></tr>
+    <tr><td>Notifications</td><td><code>SLACK_WEBHOOK_URL</code> <code>TEAMS_WEBHOOK_URL</code></td><td>Notifications to Slack and Teams (scripts/avisar.py)</td></tr>
+    <tr><td>Monitoring</td><td><code>MONITOREO_URLS</code> <code>MONITOREO_LINK</code></td><td>Synthetic monitoring (npm run monitorear)</td></tr>
+    <tr><td>App repository</td><td><code>REPO_PROVEEDOR</code> <code>REPO_NOMBRE</code> <code>REPO_RAMA</code> <code>REPO_RUTA_LOCAL</code> <code>GITHUB_TOKEN</code> <code>GITLAB_URL</code> <code>GITLAB_TOKEN</code></td><td>Read by documentador-proyecto (GitHub, GitLab, Azure Repos or Bitbucket, read-only)</td></tr>
+    <tr><td>Email</td><td><code>MAILPIT_URL</code> <code>MAILPIT_USUARIO</code> <code>MAILPIT_CLAVE</code> <code>CORREO_TIMEOUT_S</code></td><td>Mailpit test mailbox (verificador-correos and email steps)</td></tr>
+    <tr><td>Languages</td><td><code>TRADUCTOR_IDIOMAS</code> <code>TRADUCTOR_URL_IDIOMA</code></td><td>Languages to review and how the language is switched (analista-traductor)</td></tr>
+    <tr><td>Estimated time</td><td><code>ESTIMACION_FACTOR</code> <code>GESTION_TIEMPO_NATIVO</code></td><td>Optional: multiply the estimated time of the test cases (for example 1.3) and don't use the test management tool's time field (<code>0</code>)</td></tr>
+  </table></div>
+  <div class="aviso warn"><span class="ico">!</span><p>Use credentials from a test environment, never from production. The agents read secrets from the <code>.env</code>: never paste a token in the chat or write it in a versioned file.</p></div>
+
+  <h3>Input folders</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:28%">Folder</th><th>What goes there</th></tr>
+    <tr><td><code>input/historias/</code></td><td>User stories with their acceptance criteria (<code>HU-001.md</code>, …).</td></tr>
+    <tr><td><code>input/documentacion/</code></td><td>Project documentation: what documentador-proyecto builds (index, project base, dossier per story) and whatever you add by hand. Not versioned.</td></tr>
+    <tr><td><code>input/api/</code></td><td>Contracts, Postman collections and environments.</td></tr>
+    <tr><td><code>input/bugs/</code></td><td>Loose bug observations to turn into reports.</td></tr>
+    <tr><td><code>input/correos/</code></td><td>What should arrive by email in each case (<code>espera-HU-001.json</code>, for verificador-correos).</td></tr>
+    <tr><td><code>input/logs/</code></td><td>Application logs for analista-logs (<code>app.log</code>, <code>access.log</code>). Not versioned.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= PROJECT DOCUMENTATION -->
+<section class="seccion" id="documentacion">
+  <div class="kicker">Guides</div>
+  <h2>Project documentation</h2>
+  <p class="bajada"><b>documentador-proyecto</b> gathers the real project context and leaves it in <code>input/documentacion/</code>, so the analyst, the strategist and the test case generators work on what exists and not on assumptions. It's <b>read-only</b>: it doesn't write to the repository, to Jira or to the application.</p>
+  <h3>What it reads</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:24%">Source</th><th>What it extracts</th></tr>
+    <tr><td>App repository</td><td>README and docs; validations and limits, error messages, states and transitions, roles and permissions, routes and screens, API contracts; and the PRs and commits of each story, with their review comments.</td></tr>
+    <tr><td>Stories</td><td>Jira or Azure DevOps with <b>all</b> their comments, subtasks, epic, sibling stories, linked issues and bugs (skill <code>investigacion-contexto</code>).</td></tr>
+    <tr><td>Links</td><td>Confluence, the Azure DevOps Wiki and Figma through their connector; public pages with a quick read. Private ones without a connector (Google Docs, SharePoint, Notion) are listed as <b>Not accessible</b>, with what it would take to read them.</td></tr>
+    <tr><td>The application</td><td><code>npm run mapa-funcional</code>: every page with its sections, menus, forms (each field with its label, type, required, lengths, minimums, maximums, pattern and options), buttons, visible messages and tables. GET only, no login and nothing submitted.</td></tr>
+  </table></div>
+  <h3>What it leaves</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:34%">File</th><th>Contents</th></tr>
+    <tr><td><code>INDICE.md</code></td><td>What documentation exists, which sources it comes from, when it was updated and whether it should be reviewed (<code>scripts/indice_documentacion.py</code>).</td></tr>
+    <tr><td><code>proyecto/</code></td><td>Product summary (modules, roles, glossary), repository, business rules, messages, states and permissions, functional map and links.</td></tr>
+    <tr><td><code>api/</code></td><td>The API contracts found in the repository and their summary.</td></tr>
+    <tr><td><code>historias/&lt;HU or key&gt;/dossier.md</code></td><td>Everything about a story: criteria, decisions in comments, links, PRs and touched code, screens, API, <b>contradictions</b> between sources and hints for testing.</td></tr>
+  </table></div>
+  <p>Every fact carries its source (<code>src/pagos/validaciones.ts:42</code>, the PR, the comment with author and date). What comes from the code or the application is recorded as <b>"how it works today"</b>, not as a requirement: if it contradicts the story, the <code>investigacion-contexto</code> skill records it as <code>FI-XX</code>. That skill reads the index and the dossier first, so every agent that researches a story benefits from it. <code>input/documentacion/</code> is not versioned.</p>
+  <h3>Connecting the repository</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:18%">Provider</th><th style="width:22%">Connector</th><th>What to configure</th></tr>
+    <tr><td>GitHub</td><td><code>github</code> (remote, read-only)</td><td>A read-only fine-grained <code>GITHUB_TOKEN</code>. Doesn't support GitHub Enterprise Server.</td></tr>
+    <tr><td>GitLab</td><td><code>gitlab</code> (<code>/api/v4/mcp</code>)</td><td><code>GITLAB_URL</code>; your account (OAuth) or a fine-grained <code>GITLAB_TOKEN</code>. GitLab.com or 19.5+.</td></tr>
+    <tr><td>Azure Repos</td><td><code>azure-devops</code></td><td>The <code>repositories</code> domain is on by default; the PAT needs <i>Code (Read)</i>.</td></tr>
+    <tr><td>Bitbucket Cloud</td><td><code>atlassian</code></td><td><code>ATLASSIAN_MCP_AUTENTICACION=token</code> and an API token with Bitbucket permissions.</td></tr>
+  </table></div>
+  <p>In the <code>.env</code>: <code>REPO_PROVEEDOR</code>, <code>REPO_NOMBRE</code> (one or several, comma-separated), <code>REPO_RAMA</code> and, optionally, <code>REPO_RUTA_LOCAL</code> (a local clone: the code is read from there, faster and without spending connector tokens). Then run <code>npm run conector -- activar github</code> (or <code>gitlab</code>) and restart Claude Code.</p>
+  <div class="pedido">Documentá el proyecto.</div>
+  <div class="pedido">Juntá todo el contexto de PROJ-12 antes de escribir los casos.</div>
+  <p class="nota-en">Document the project · Gather all the context of PROJ-12 before writing the test cases.</p>
+</section>
+
+<!-- ======================================================= CONTEXT -->
+<section class="seccion" id="contexto">
+  <div class="kicker">Guides</div>
+  <h2>Context research and "Missing information"</h2>
+  <p class="bajada">Before analyzing, planning, writing test cases or automating, the agents <b>research the full context</b> of the story instead of assuming. Whatever they can't find in any source is marked as <b>Missing information</b> in every report.</p>
+  <h3>Where they look</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">Source</th><th>What they review</th></tr>
+    <tr><td>Project documentation</td><td><b>First.</b> The index and the story dossier built by documentador-proyecto in <code>input/documentacion/</code>: if it's up to date, Jira isn't walked again.</td></tr>
+    <tr><td>Jira story</td><td>Description, criteria, status, labels, components and attachments.</td></tr>
+    <tr><td>Comments</td><td><b>All of them.</b> Decisions made later ("we agreed the limit is 50") replace the description, citing who and when.</td></tr>
+    <tr><td>Subtasks, epic and linked issues</td><td>Details of each subtask, general rules and sibling stories in the epic, dependencies and known bugs in the flow.</td></tr>
+    <tr><td>Confluence</td><td>Linked pages or, if there are none, the most relevant ones in the project space.</td></tr>
+    <tr><td>Figma</td><td>Exact texts, error messages, states and required fields.</td></tr>
+    <tr><td>Contracts and <code>input/</code></td><td>Swagger, Postman and local documentation.</td></tr>
+  </table></div>
+  <p>The result is a reusable <b>context sheet</b>, <code>output/contexto/contexto-HU-XXX.md</code>: sources consulted, findings per criterion, decisions, contradictions and what's missing. If the story didn't change, the other agents reuse it without researching again. If a connector isn't active, the source is recorded as "Not available" instead of being assumed.</p>
+  <div class="pedido">Investigá el contexto de PROJ-12 y generá los casos de prueba.</div>
+  <p class="nota-en">Research the context of PROJ-12 and generate the test cases.</p>
+  <h3>Missing information (FI-XX)</h3>
+  <p>Every fact that doesn't appear in any source (or appears contradictory) gets an ID per story, with what's missing, where it was searched, what it affects and the question for the PO. The same ID travels to every artifact. The app isn't a source of requirements: if the expected result depends on a missing fact, the scenario isn't "adjusted" to what the application does; it's automated with the assumption marked or stays <code>@bloqueado</code> (blocked) until the PO answers.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:30%">Where</th><th>How it looks</th></tr>
+    <tr><td>Test case spreadsheet</td><td>Cases highlighted in amber, tag <code>@falta-info</code>, details in Comments and a <b>Falta información</b> sheet.</td></tr>
+    <tr><td>Analyses and coverage</td><td><b>Falta información</b> section; criteria with coverage <code>Parcial (falta información)</code>.</td></tr>
+    <tr><td>k0lmena <code>.feature</code></td><td>Tags <code>@falta-info @FI-01</code> and the comment <code># FALTA INFORMACIÓN (FI-01): …</code>.</td></tr>
+    <tr><td>Mapping report</td><td>Status <code>Falta información</code>. The mapper doesn't use the app to fill in the fact: what the app shows is recorded as an observation.</td></tr>
+    <tr><td>k0lmena and execution reports</td><td>Visible note on the scenario and a warning in the summary.</td></tr>
+    <tr><td>Closing report</td><td><b>Falta información</b> section; open items count as risk for the go/no-go.</td></tr>
+    <tr><td>Xray · QMetry · AIO</td><td>The result comment clarifies that the test case depends on missing information.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 8 GUIDE -->
+<section class="seccion" id="guia">
+  <div class="kicker">Guides</div>
+  <h2>Design and execution</h2>
+  <p class="bajada">What to ask, what each agent does and what it leaves. Requests are written in Spanish, like the agents; the meaning is below each one.</p>
+
+  <div class="guia"><h4>Analyze a story <span class="etiqueta neutra">analista-historias</span></h4>
+    <div class="pedido">Analizá la historia HU-001 y decime qué ambigüedades tiene.</div>
+    <p><i>Analyze story HU-001 and tell me what ambiguities it has.</i> It reviews each criterion and delivers <code>analisis-HU-001.md</code> with ambiguities, gaps, risks, uncovered cases and questions for the PO.</p></div>
+  <div class="guia"><h4>Build the test plan <span class="etiqueta neutra">estratega-pruebas</span></h4>
+    <div class="pedido">Armá el plan de pruebas de HU-001.</div>
+    <p><i>Build the test plan for HU-001.</i> HTML dashboard with scope, objectives, test types, risks, data and environment, and entry and exit criteria.</p></div>
+  <div class="guia"><h4>Generate manual test cases <span class="etiqueta neutra">generador-casos-manuales</span></h4>
+    <div class="pedido">Generá los casos de prueba de HU-001.</div>
+    <p><i>Generate the test cases for HU-001.</i> Delivers <code>casos-HU-001.xlsx</code>, <code>casos-HU-001.md</code> and <code>casos-HU-001-cobertura.md</code>. Covers the happy path, negatives, edges and validations. Each case carries its <b>estimated manual execution time</b>, with the total at the bottom (see <a href="#revision">Test case review and estimated time</a>). That spreadsheet is what later gets uploaded to the test management tool or automated.</p></div>
+  <div class="guia"><h4>Generate BDD scenarios <span class="etiqueta neutra">generador-casos-bdd</span></h4>
+    <div class="pedido">Pasá la historia HU-001 a escenarios BDD.</div>
+    <p><i>Turn story HU-001 into BDD scenarios.</i> Generates <code>HU-001-&lt;slug&gt;.feature</code>, with one <code>@CP-XXX</code> tag per scenario, and <code>HU-001-cobertura.md</code>, with the estimated time if they're run by hand.</p></div>
+  <div class="guia"><h4>Generate API test cases <span class="etiqueta neutra">generador-casos-api</span></h4>
+    <div class="pedido">Generá los casos de la API de autenticación a partir de input/api/auth-endpoints.md.</div>
+    <p><i>Generate the authentication API test cases from input/api/auth-endpoints.md.</i> Summary table and details per case: method, endpoint, headers, body, expected status and schema.</p></div>
+  <div class="guia"><h4>Test data and bugs <span class="etiqueta neutra">generador-datos-prueba</span> <span class="etiqueta neutra">generador-reportes-bug</span></h4>
+    <div class="pedido">Generá datos de prueba para el formulario de registro, en CSV.</div>
+    <p><i>Generate test data for the sign-up form, in CSV.</i> Valid, invalid and edge-case data. Bugs follow <code>plantillas/plantilla-reporte-bug.md</code> (edit it to use your format) and mark what's missing instead of making it up.</p></div>
+  <div class="guia"><h4>Run live <span class="etiqueta neutra">ejecutor-e2e</span> <span class="etiqueta neutra">ejecutor-api</span> <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Ejecutá SOLO el escenario de registro válido de HU-001 contra https://tu-app.com.</div>
+    <p><i>Run ONLY the valid sign-up scenario of HU-001 against https://tu-app.com.</i> The E2E runner asks whether you want to see the browser, runs with Playwright MCP, captures evidence and generates <code>reporte-HU-001-&lt;date-time&gt;.html</code>. To walk a whole site looking for failures there's <b>explorador-web</b> (see <a href="#exploratorias">Exploratory testing</a>). The API runner runs the collection with Newman. Ideal for one-off tests: what repeats is better automated.</p></div>
+  <div class="guia"><h4>Reports and closing report <span class="etiqueta neutra">generador-reporte-html</span> <span class="etiqueta neutra">generador-reporte-cierre</span></h4>
+    <div class="pedido">Armá el informe de cierre de las pruebas de HU-001.</div>
+    <p><i>Build the closing report for the HU-001 tests.</i> Dashboards with indicators, charts and details; the closing report adds open bugs, risks and the go/no-go recommendation.</p></div>
+</section>
+
+<!-- ======================================================= 9 K0LMENA -->
+<section class="seccion" id="k0lmena">
+  <div class="kicker">Guides</div>
+  <h2>Automation with k0lmena</h2>
+  <p class="bajada">The framework built into <code>herramientas/k0lmena/</code>. A <i>mapper</i> agent walks the application <b>only once</b> and writes the automation; from then on the suite runs with <code>npm</code>, with no agents and no tokens.</p>
+  <div class="tarjetas">
+    <div class="tarjeta c-azul"><div class="ico">◎</div><h4>Web</h4><p>Playwright + Cucumber, video, trace and GIF. With <code>K0LMENA_AUTO_HEALING=on</code> it recovers broken locators.</p></div>
+    <div class="tarjeta c-violeta"><div class="ico">{ }</div><h4>API</h4><p>axios + Cucumber with generic steps in Spanish: no programming needed.</p></div>
+    <div class="tarjeta c-verde"><div class="ico">▢</div><h4>Mobile</h4><p>WebdriverIO + Appium on a device, emulator or BrowserStack.</p></div>
+    <div class="tarjeta c-naranja"><div class="ico">⚡</div><h4>Performance</h4><p>k6 for APIs, Artillery + Playwright for web flows and JMeter for those who already work with .jmx.</p></div>
+  </div>
+  <div class="aviso info"><span class="ico">i</span><p>The k0lmena folders ship empty: everything inside them is generated by the mappers for your application.</p></div>
+
+  <div class="guia"><h4>web-mapper</h4>
+    <div class="pedido">Automatizá en k0lmena los casos de output/casos-de-prueba/manuales/casos-HU-001.xlsx contra https://tu-app.com.</div>
+    <p><i>Automate in k0lmena the test cases in casos-HU-001.xlsx against https://tu-app.com.</i></p>
+    <ol>
+      <li>Reads the test cases (manual or BDD).</li>
+      <li>Navigates the real web app with Playwright MCP and checks that each step can be executed.</li>
+      <li>Generates <code>web/features/HU-001-&lt;slug&gt;.feature</code>, <code>web/steps/HU-001.steps.ts</code> and <code>web/locators/HU-001.locators.ts</code>, reusing existing steps.</li>
+      <li>Validates with <code>npm run test:web</code> and leaves <code>output/mapeos/mapeo-HU-001-web.md</code>.</li>
+    </ol>
+    <p>If a step can't be executed, the scenario is marked <code>@bloqueado</code> with the reason and doesn't run until it's resolved.</p></div>
+  <div class="guia"><h4>api-mapper</h4>
+    <div class="pedido">Pasá a k0lmena los endpoints de /pet del Swagger https://petstore.swagger.io/v2/swagger.json.</div>
+    <p><i>Move the /pet endpoints from the Swagger to k0lmena.</i> Reads Postman (v2.x) or Swagger/OpenAPI, lets you choose the endpoints, designs positive, negative and authorization scenarios, verifies them against the real API and writes the <code>.feature</code> files with the generic steps. Before a POST, PUT, PATCH or DELETE it asks for authorization.</p></div>
+  <div class="guia"><h4>mobile-mapper</h4>
+    <div class="pedido">Automatizá en k0lmena los casos de login de la app en el emulador.</div>
+    <p><i>Automate the app's login test cases in k0lmena on the emulator.</i> Needs the Appium MCP connector and the app in <code>mobile/apps/</code> (not versioned). After that the suite runs without MCP according to <code>MOBILE_TARGET</code>:</p>
+    <div class="tabla"><table>
+      <tr><th style="width:22%">Target</th><th>What you need</th></tr>
+      <tr><td><code>device</code></td><td>A USB device with debugging enabled and <code>MOBILE_UDID</code> (from <code>adb devices</code>).</td></tr>
+      <tr><td><code>emulator</code></td><td>A running emulator or simulator and <code>MOBILE_DEVICE_NAME</code>.</td></tr>
+      <tr><td><code>browserstack</code></td><td><code>BROWSERSTACK_USER</code>, <code>BROWSERSTACK_KEY</code> and <code>BROWSERSTACK_APP</code>.</td></tr>
+    </table></div></div>
+
+  <h3>Running the suite</h3>
+  <div class="codigo"><pre>cd herramientas/k0lmena
+npm test                                  <span class="c"># web + API</span>
+npm run test:web                          <span class="c"># also: test:api · test:mobile · test:all</span>
+TAGS=@HU-001 npm test                     <span class="c"># filter by tag (bash)</span>
+$env:TAGS="@HU-001"; npm test             <span class="c"># filter by tag (PowerShell)</span>
+npm run report:web                        <span class="c"># also: report:api · report:mobile</span></pre></div>
+  <p>If <code>EVIDENCE</code> is empty, <code>npm test</code> asks at startup what to keep from passing tests: just a screenshot, or a screenshot + a GIF of the run.</p>
+
+  <h3>Evidence in the report</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:12%">Suite</th><th style="width:30%">Passing scenario</th><th>Failing scenario</th></tr>
+    <tr><td>Web</td><td>Final screenshot (+ optional GIF)</td><td>Full video, screenshot, error with stack, URL and title, browser logs (console, JS errors, failed requests, HTTP ≥ 400), Node logs, Playwright trace and the page DOM at failure time (<code>reports/web/dom/</code>, used by the repairer)</td></tr>
+    <tr><td>API</td><td>Request and response (the <code>Authorization</code> header is hidden)</td><td>The same, plus the validation that failed</td></tr>
+    <tr><td>Mobile</td><td>Final screenshot (+ optional GIF)</td><td>Full video, screenshot, page source and device logs</td></tr>
+  </table></div>
+
+  <h3>Extra tools</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:30%">Command</th><th>What for</th></tr>
+    <tr><td><code>npm run crawler [url]</code></td><td>Generates a locators file by walking a page.</td></tr>
+    <tr><td><code>npm run link-tester</code></td><td>Looks for broken links and images in <code>BASEURL</code>.</td></tr>
+    <tr><td><code>npm run explorar</code></td><td>Exploratory browser walk: links, images, errors, responsive layout and load times, with screenshots, videos and an HTML report (used by <b>explorador-web</b>).</td></tr>
+    <tr><td><code>npm run accesibilidad</code></td><td>WCAG 2.2 audit with axe-core, keyboard navigation and reflow at 320px, with screenshots, video and an HTML report (used by <b>analista-accesibilidad</b>).</td></tr>
+    <tr><td><code>npm run rendimiento</code></td><td>Lighthouse on mobile and desktop: Core Web Vitals, improvement opportunities and loading sequence, with an HTML report (used by <b>auditor-rendimiento-web</b>).</td></tr>
+    <tr><td><code>npm run pixel-perfect</code></td><td>Visual regression against the reference: shifted, missing, new or restyled pixels and elements, with an HTML report (used by <b>pixel-perfect</b>).</td></tr>
+    <tr><td><code>npm run cross-browser</code></td><td>The web suite or the pages in Chromium, Firefox and WebKit, with a matrix and side-by-side comparison (used by <b>cross-browser</b>).</td></tr>
+    <tr><td><code>npm run reparar</code></td><td>Diagnoses broken locators with the DOM saved at failure time, proposes, applies and verifies (used by <b>reparador-automatizacion</b>).</td></tr>
+    <tr><td><code>npm run correos</code></td><td>Checks the emails in the Mailpit test mailbox against what's expected, with an HTML report (used by <b>verificador-correos</b>).</td></tr>
+    <tr><td><code>npm run traductor</code></td><td>Every page in every language: untranslated and cut-off text and formats, with an HTML report (used by <b>analista-traductor</b>).</td></tr>
+    <tr><td><code>npm run ux</code></td><td>Usability with Nielsen's 10 heuristics on desktop and mobile, with the 404 page, screenshots and an HTML report (used by <b>evaluador-ux</b>).</td></tr>
+    <tr><td><code>npm run formularios</code></td><td>Validations of every field without submitting the form, with a field × test matrix, screenshots and an HTML report (used by <b>probador-formularios</b>).</td></tr>
+    <tr><td><code>npm run permisos</code></td><td>Role × route and role × endpoint matrix with screenshots and an HTML report (used by <b>probador-permisos</b>).</td></tr>
+    <tr><td><code>npm run resiliencia</code></td><td>Simulated API, network and resource failures from the browser, with a page × scenario matrix and an HTML report (used by <b>probador-resiliencia</b>).</td></tr>
+    <tr><td><code>npm run monitorear</code></td><td>Read-only synthetic monitoring with history, a report and a Slack or Teams notification when something breaks or recovers.</td></tr>
+    <tr><td><code>npm run mapa-funcional</code></td><td>Functional map of the site: pages, menus, forms with every field, buttons and messages, without submitting anything (used by <b>documentador-proyecto</b>, in <code>input/documentacion/</code>).</td></tr>
+    <tr><td><code>npm run record</code></td><td>Records a flow with Playwright codegen.</td></tr>
+    <tr><td><code>npm run debug</code></td><td>Runs the web suite in debug mode.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 10 PERFORMANCE -->
+<section class="seccion" id="performance">
+  <div class="kicker">Guides</div>
+  <h2>Performance testing</h2>
+  <p class="bajada"><b>performance-mapper</b> builds load, stress, soak and spike tests. It never uses default values: you define the load and the thresholds.</p>
+  <div class="aviso warn"><span class="ico">!</span><p>A load test generates real traffic. Run it only against test environments or with authorization from the system owners.</p></div>
+  <div class="guia"><h4>performance-mapper</h4>
+    <div class="pedido">Armá una prueba de carga de los endpoints de /pet para 50 usuarios.</div>
+    <p><i>Build a load test of the /pet endpoints for 50 users.</i></p>
+    <ol>
+      <li><b>Guides you step by step</b>, one question at a time with a justified suggestion for each: goal and test type, tool, environment (and that it isn't production) and endpoints, concurrent users, ramp-up, duration and think time (it helps you calculate them from business volume), thresholds and profiles to run.</li>
+      <li><b>Leaves the plan</b> in <code>output/performance/&lt;HU&gt;/</code> and asks for confirmation.</li>
+      <li><b>Recommends the tool</b> (the decision is yours): k6 for APIs (scales to thousands of users), Artillery + Playwright for browser flows (few users: each one is a Chromium) or JMeter if your team already uses it, you bring a <code>.jmx</code> or you need other protocols.</li>
+      <li><b>Writes the script</b> once and validates it with a smoke run.</li>
+      <li><b>Runs under load</b> only with your explicit confirmation for each run.</li>
+      <li><b>Builds the performance report</b>: dashboard with verdict, observed capacity, metrics and charts per run, thresholds, p95 per endpoint, findings and recommendations.</li>
+    </ol></div>
+
+  <h3>Commands</h3>
+  <div class="codigo"><pre>npm run perf                                       <span class="c"># lists the scripts</span>
+npm run perf -- &lt;script&gt; smoke                     <span class="c"># validates the script with minimal load</span>
+npm run perf -- &lt;script&gt; load                      <span class="c"># target load (asks for confirmation)</span>
+npm run perf -- &lt;script&gt; stress --confirmar        <span class="c"># no prompt: CI or with authorization</span>
+npm run perf -- &lt;script&gt; load --vus 20 --duracion 2m   <span class="c"># k6 and JMeter: overrides the load</span></pre></div>
+  <div class="tabla"><table>
+    <tr><th style="width:16%">Profile</th><th>What it does</th></tr>
+    <tr><td><code>smoke</code></td><td>Minimal load to validate that the script works.</td></tr>
+    <tr><td><code>load</code></td><td>Ramps up to the target load, holds it and ramps down.</td></tr>
+    <tr><td><code>stress</code></td><td>1x, 2x and 3x the target load: looks for the breaking point.</td></tr>
+    <tr><td><code>soak</code></td><td>Target load for a long time: memory leaks and degradation.</td></tr>
+    <tr><td><code>spike</code></td><td>Sudden jump to a peak and back: how it recovers.</td></tr>
+  </table></div>
+  <p>Each run leaves in <code>reports/performance/&lt;k6|artillery|jmeter&gt;/</code> an HTML report with the verdict, requests, req/s, errors, p50/p95/p99 latencies, thresholds with the measured value, details per endpoint or step, response codes, checks and, in Artillery, the evolution over time. If a threshold isn't met, the command exits with an error.</p>
+</section>
+
+<!-- ======================================================= 11 MANAGEMENT -->
+<section class="seccion" id="gestion">
+  <div class="kicker">Guides</div>
+  <h2>Xray, QMetry, AIO Tests and Azure DevOps</h2>
+  <p class="bajada"><b>gestor-pruebas</b> and <b>publicador-resultados</b> work with Xray Cloud, Xray Server/Data Center, QMetry for Jira (QTM4J) and AIO Tests, with the same commands for all of them.</p>
+  <p>It's configured in the <code>.env</code>: <code>GESTION_HERRAMIENTA</code> (<code>xray-cloud</code>, <code>xray-dc</code>, <code>qtm4j</code> or <code>aio</code>), <code>GESTION_PROYECTO</code> (the Jira project key) and your tool's credentials, explained in <code>.env.example</code>.</p>
+  <div class="guia"><h4>gestor-pruebas</h4>
+    <div class="pedido">Subí los casos de HU-001 a Xray en la carpeta 'HU-001 Registro', vinculados a PROJ-12, y creá el ciclo Sprint 5.</div>
+    <p><i>Upload the HU-001 test cases to Xray in the 'HU-001 Registro' folder, linked to PROJ-12, and create the Sprint 5 cycle.</i> Creates the folder, uploads the test cases (manual ones from the <code>.xlsx</code> or BDD ones from the <code>.feature</code>), links them to the story, creates cycles and adds test cases to them. The first time it does a dry run (<code>--dry-run</code>). It saves traceability in <code>output/gestion/HU-001-&lt;tool&gt;.json</code>: a test case is never uploaded twice.</p></div>
+  <div class="aviso info"><span class="ico">i</span><p><b>Estimated time.</b> Each test case is uploaded with its manual execution time: in the description and in the tool's time field — Jira's <i>Original Estimate</i> in Xray (if the project has time tracking), <code>estimatedTime</code> in QTM4J and <code>estimatedEffort</code> in AIO Tests. In Azure DevOps it travels in the JSON from <code>para_azure_devops.py</code> and as the tag <code>tiempo-estimado-Xmin</code>. If the tool rejects the field, the test case is still created with the time in the description (<code>GESTION_TIEMPO_NATIVO=0</code> turns it off). See <a href="#revision">the formula</a>.</p></div>
+  <div class="guia"><h4>publicador-resultados</h4>
+    <div class="pedido">Subí los resultados de la última corrida web al ciclo PROJ-60.</div>
+    <p><i>Upload the results of the last web run to cycle PROJ-60.</i> Matches each scenario to its test case by the <code>@CP-XXX</code> tag and loads the status, a comment with the error and the evidence: always a screenshot, a GIF if one was generated and video only if it failed. It never assigns a result by approximation.</p></div>
+  <h3>Equivalences</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:18%">Concept</th><th>Xray</th><th>QTM4J</th><th>AIO Tests</th></tr>
+    <tr><td>Test case</td><td>Test issue (Manual or Cucumber)</td><td>Test case</td><td>Case (Classic or BDD)</td></tr>
+    <tr><td>Cycle</td><td>Test Execution</td><td>Test cycle</td><td>Test cycle</td></tr>
+    <tr><td>Case ↔ story</td><td>"Test" link (coverage)</td><td>Requirement link</td><td>jiraRequirementIDs</td></tr>
+    <tr><td>Cycle ↔ story</td><td>"Relates" link</td><td>Requirement link</td><td>jiraTaskIDs</td></tr>
+  </table></div>
+  <h3>Manual commands</h3>
+  <div class="codigo"><pre>python scripts/gestion/gestion.py --dry-run carpeta --ruta "HU-001 Registro"
+python scripts/gestion/gestion.py subir-casos --origen &lt;casos.xlsx&gt; --carpeta "HU-001 Registro" --historia PROJ-12 --traza HU-001
+python scripts/gestion/gestion.py crear-ciclo --nombre "Sprint 5" --historia PROJ-12 --traza HU-001
+python scripts/gestion/gestion.py extraer-resultados --reporte &lt;cucumber-report.json&gt;
+python scripts/gestion/gestion.py publicar-resultados --ciclo PROJ-60 --resultados &lt;resultados.json&gt; --traza HU-001</pre></div>
+  <p>Folders go without a leading slash (in Git Bash, <code>/HU-001</code> becomes a Windows path). Full reference in <code>scripts/gestion/README.md</code>.</p>
+  <h3>Azure DevOps (Test Plans)</h3>
+  <p>Azure DevOps doesn't go through <code>gestion.py</code>: it's integrated through its official MCP connector (<code>azure-devops</code>), with <code>ADO_ORGANIZACION</code>, <code>ADO_PAT</code> and <code>ADO_PROYECTO</code> in the <code>.env</code>. The agents read the stories (with comments, tasks, parent and links) and the Wiki, and <b>gestor-pruebas</b> creates the <i>Test Cases</i> with their steps (built by <code>scripts/gestion/para_azure_devops.py</code>), links them to the story and adds them to a suite. Execution results aren't published to Azure DevOps yet.</p>
+  <div class="pedido">Subí los casos de casos-HU-001.xlsx a Azure Test Plans, plan 'Sprint 5', suite 'HU-001 Registro', vinculados a la historia 1234.</div>
+  <p class="nota-en">Upload the test cases from casos-HU-001.xlsx to Azure Test Plans, plan 'Sprint 5', suite 'HU-001 Registro', linked to story 1234.</p>
+</section>
+
+<!-- ======================================================= 12 DATABASE -->
+<section class="seccion" id="base-de-datos">
+  <div class="kicker">Guides</div>
+  <h2>Database checks</h2>
+  <p class="bajada"><b>verificador-datos</b> checks what the tests don't see: what was saved, in what state and with what values. It supports <b>PostgreSQL, MySQL / MariaDB, SQL Server and MongoDB</b>, with several named connections.</p>
+  <div class="tarjetas">
+    <div class="tarjeta c-azul"><div class="ico">?</div><h4>On request</h4><p>"Verificá si existe el usuario ana@test.com y en qué estado quedó" (check whether user ana@test.com exists and its status). It looks at the schema, builds the parameterized query and answers you.</p></div>
+    <div class="tarjeta c-verde"><div class="ico">✓</div><h4>Inside the tests, if you ask</h4><p>Adds database steps to the web, API or mobile <code>.feature</code> files only when you ask; then they run with <code>npm test</code>, with no tokens.</p></div>
+    <div class="tarjeta c-naranja"><div class="ico">!</div><h4>Safe by default</h4><p>Read-only, in transactions that are discarded; sensitive data masked. Writing must be enabled and each operation confirmed.</p></div>
+  </div>
+  <h3>Configuration</h3>
+  <div class="codigo"><pre>DB_CONEXIONES=principal,pagos              <span class="c"># the first one is the default</span>
+DB_PRINCIPAL_MOTOR=postgres                <span class="c"># postgres | mysql | mariadb | sqlserver | mongodb</span>
+DB_PRINCIPAL_HOST=localhost
+DB_PRINCIPAL_PUERTO=5432
+DB_PRINCIPAL_BASE=tienda
+DB_PRINCIPAL_USUARIO=qa_lectura
+DB_PRINCIPAL_CLAVE=...
+DB_PRINCIPAL_ESCRITURA=no                  <span class="c"># si = allows writing with confirmation</span>
+DB_PRINCIPAL_PRODUCCION=no                 <span class="c"># si = never writes</span></pre></div>
+  <h3>Steps for the tests</h3>
+  <div class="aviso info"><span class="ico">i</span><p><b>Only when you ask.</b> The mappers (web, API and mobile) don't add database checks on their own: if a test case mentions saved data, they leave it as a suggestion in the mapping report. verificador-datos, for a one-off question, answers without touching the <code>.feature</code> files.</p></div>
+  <div class="codigo"><pre>When envío un POST a "/usuarios" con el body: ...
+And guardo el campo "id" de la respuesta como "idUsuario"
+Then existe en la base de datos un registro en "usuarios" donde "id" es "{idUsuario}"
+And el registro de "usuarios" donde "id" es "{idUsuario}" tiene:
+  | campo  | valor  |
+  | estado | ACTIVO |
+  | baja   | (nulo) |
+And la base de datos "pagos" tiene 1 registro en "movimientos" donde:
+  | campo      | valor       |
+  | usuario_id | {idUsuario} |</pre></div>
+  <p>The steps are in Spanish. There are also: <code>no existe en la base de datos …</code> (doesn't exist), <code>consulto en la base de datos:</code> (SQL, or JSON in MongoDB), <code>la consulta devuelve N filas</code> (returns N rows), <code>el campo "x" de la consulta es "y"</code> and <code>guardo el campo "x" de la consulta como "var"</code> (save a field). If the data is saved asynchronously, the steps retry up to <code>DB_ESPERA_MS</code>. Each check leaves the query and the rows found in the report.</p>
+  <h3>Without an agent</h3>
+  <div class="codigo"><pre>cd herramientas/k0lmena
+npm run bd -- conexiones                                   <span class="c"># lists and tests the connections</span>
+npm run bd -- esquema --tabla usuarios                     <span class="c"># a table's columns</span>
+npm run bd -- existe --tabla usuarios --donde email=ana@test.com
+npm run bd -- consultar --sql "SELECT id, estado FROM usuarios WHERE email = ?" --param ana@test.com</pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>To prepare or clean up data, the connection needs <code>DB_&lt;NAME&gt;_ESCRITURA=si</code> and the agent shows the statement and asks for confirmation before each operation. With <code>DB_&lt;NAME&gt;_PRODUCCION=si</code> it never writes. Recommended: a database user with read-only permissions.</p></div>
+</section>
+
+<!-- ======================================================= EXPLORATORY -->
+<section class="seccion" id="exploratorias">
+  <div class="kicker">Guides</div>
+  <h2>Exploratory testing</h2>
+  <p class="bajada"><b>explorador-web</b> walks your site (the <code>APP_URL</code> in the <code>.env</code> or the URL you give it) and looks for what breaks without anyone noticing. First an <b>automatic walk</b> with a script, without spending tokens per page; then it explores by hand with Playwright MCP whatever needs judgment.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">What it checks</th><th>How</th></tr>
+    <tr><td>Links and images</td><td>Broken internal and external links (separately, the ones that can't be verified because the site blocks robots), images that don't load and images without <code>alt</code>.</td></tr>
+    <tr><td>Errors</td><td>JavaScript errors, console errors and failing resources (scripts, CSS, fetch with 4xx/5xx or no response).</td></tr>
+    <tr><td>Responsive</td><td>At 360x740, 390x844, 768x1024, 1366x768 and 1920x1080: horizontal scroll and which element overflows, text under 12px, small and crowded touch targets (WCAG 2.5.8) and missing <code>meta viewport</code>.</td></tr>
+    <tr><td>Performance</td><td>Load time, time to first byte, DOM ready, requests and weight of each page; slow ones are findings.</td></tr>
+    <tr><td>Manual exploration</td><td>Menus (the mobile one too), forms without submitting, searches, the 404 page, reloading mid-flow. With a mission and a time box.</td></tr>
+  </table></div>
+  <div class="guia"><h4>explorador-web <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Hacé pruebas exploratorias del sitio del .env.</div>
+    <p><i>Run exploratory tests on the site in the .env.</i></p>
+    <ol>
+      <li><b>Walks</b> the site with <code>npm run explorar</code>: screenshots of every page and every resolution with the problems <b>marked in red</b>, and a video of the walk and of each resolution.</li>
+      <li><b>Reviews</b> the findings: retries the doubtful ones, looks at the screenshots and adjusts the severity with its reason.</li>
+      <li><b>Explores by hand</b> with Playwright MCP what an automatic walk doesn't see.</li>
+      <li><b>Builds the HTML report</b>: indicators, charts, every finding with its screenshot (click to enlarge), load times, responsive matrix, videos, broken links, details per page and recommendations.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run explorar -- --url https://staging.mi-app.com --max-paginas 50 <span class="c"># no agents, no tokens</span>
+npm run explorar -- --resoluciones 360x740,768x1024,1366x768 --video no</pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>It only navigates with GET: it doesn't submit forms and doesn't open or check logout or delete links. Everything stays in <code>output/exploratorias/&lt;HU or site&gt;/</code>; the previous run moves to <code>historial/</code> (the last 5 are kept) and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= ACCESSIBILITY -->
+<section class="seccion" id="accesibilidad">
+  <div class="kicker">Guides</div>
+  <h2>Accessibility</h2>
+  <p class="bajada"><b>analista-accesibilidad</b> audits your site against <b>WCAG 2.2</b> (level AA by default): first an automatic audit, without spending tokens per page, and then a manual review of what a tool can't judge.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">What it checks</th><th>How</th></tr>
+    <tr><td>WCAG rules</td><td><b>axe-core</b> on every page, with the texts in Spanish: contrast, alternative texts, form labels, button and link names, language, structure, ARIA. Best practices too.</td></tr>
+    <tr><td>Keyboard</td><td>Walks the page with Tab: elements that receive focus without a visible indicator (2.4.7), focus traps (2.1.2) and a skip-to-content link (2.4.1). Shows the focus order.</td></tr>
+    <tr><td>Reflow</td><td>At 320px wide there must be no horizontal scroll (1.4.10, equivalent to a 400% zoom).</td></tr>
+    <tr><td>Manual review</td><td>With Playwright's accessibility snapshot (what a screen reader "hears"): whether alternative texts describe, headings and regions, forms and error messages, menus and modals with the keyboard, zoom, color and motion.</td></tr>
+  </table></div>
+  <div class="guia"><h4>analista-accesibilidad <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Revisá la accesibilidad del sitio del .env.</div>
+    <p><i>Review the accessibility of the site in the .env.</i></p>
+    <ol>
+      <li><b>Audits</b> with <code>npm run accesibilidad</code>: screenshots of every page with the failing elements <b>marked in red</b>, each element separately and a video of the walk.</li>
+      <li><b>Reviews</b> the findings: confirms with the screenshots, adjusts the severity and decides what axe couldn't.</li>
+      <li><b>Reviews by hand</b> the most important flows with Playwright MCP.</li>
+      <li><b>Builds the HTML report</b>: compliance, failed WCAG criteria with their name and level, every problem with its elements, screenshots and how to fix it, keyboard and focus order, and recommendations.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run accesibilidad -- --url https://staging.mi-app.com --nivel AA <span class="c"># no agents, no tokens</span>
+npm run accesibilidad -- --paginas https://mi-app.com/registro,https://mi-app.com/login --historia HU-001</pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>An automatic audit detects between 30 and 50% of accessibility problems: the agent never says the site "complies", it says what doesn't comply and what was left unreviewed. Everything stays in <code>output/accesibilidad/&lt;HU or site&gt;/</code>; the previous run moves to <code>historial/</code> (the last 5 are kept) and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= WEB PERFORMANCE -->
+<section class="seccion" id="rendimiento">
+  <div class="kicker">Guides</div>
+  <h2>Web performance</h2>
+  <p class="bajada"><b>auditor-rendimiento-web</b> measures how fast each page loads for one person and why, with <b>Lighthouse</b> on mobile and desktop. It isn't a load test with many users: that's <b>performance-mapper</b>.</p>
+  <div class="guia"><h4>auditor-rendimiento-web <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Revisá la velocidad del sitio del .env.</div>
+    <p><i>Check the speed of the site in the .env.</i></p>
+    <ol><li><b>Measures</b> each page with <code>npm run rendimiento</code>: scores, Core Web Vitals (LCP, CLS and TBT) with Google's thresholds, FCP and Speed Index.</li><li><b>Finds</b> the improvement opportunities with the estimated savings and the resources causing them, the LCP element, weight by resource type and third-party code.</li><li><b>Builds the HTML report</b> with the loading sequence in screenshots, Lighthouse's native report for each page and prioritized recommendations.</li></ol></div>
+  <div class="codigo"><pre>npm run rendimiento -- --url https://staging.mi-app.com --max-paginas 5 <span class="c"># no agents, no tokens</span>
+npm run rendimiento -- --paginas https://mi-app.com/,https://mi-app.com/login --repeticiones 3</pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>This is lab data (a simulated load under fixed conditions): it's for finding and comparing problems, not for claiming how each person experiences it. To compare before and after, use <code>--repeticiones 3</code>. Requires Node 22.19 or later.</p></div>
+</section>
+
+<!-- ======================================================= FAILURES -->
+<section class="seccion" id="fallos">
+  <div class="kicker">Guides</div>
+  <h2>Failure analysis</h2>
+  <p class="bajada">When <code>npm test</code> fails, <b>analista-fallos</b> separates real bugs from broken, flaky, data or environment tests, so you don't review failure by failure.</p>
+  <div class="guia"><h4>analista-fallos <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Analizá por qué falló npm test.</div>
+    <p><i>Analyze why npm test failed.</i></p>
+    <ol><li><b>Classifies</b> each failure with <code>scripts/analizar_fallos.py</code>: possible bug, locator or wait, environment, test data, automation error or undefined step, and recovers the screenshot, video and trace.</li><li><b>Retries</b> the failed ones (with your ok) and adds the retry: what failed and then passed is marked as flaky.</li><li><b>Confirms</b> the cause with the evidence, writes the bug reports for the real ones and proposes how to fix the rest.</li></ol></div>
+  <div class="codigo"><pre>python scripts/analizar_fallos.py                       <span class="c"># the last npm test run</span>
+python scripts/analizar_fallos.py --agregar-reintento   <span class="c"># after re-running the failed ones</span></pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Re-running the failed tests runs the suite against the environment: it's only done with your confirmation. Changes to the automation are made by the mappers.</p></div>
+</section>
+
+<!-- ======================================================= LOGS -->
+<section class="seccion" id="logs">
+  <div class="kicker">Guides</div>
+  <h2>Server logs</h2>
+  <p class="bajada"><b>analista-logs</b> reads the application logs and crosses them with the <code>npm test</code> run: which errors happened, when, and which server error was behind each failed scenario.</p>
+  <div class="guia"><h4>analista-logs <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">¿Por qué falló CP-004 del lado del servidor? Los logs están en input/logs/.</div>
+    <p><i>Why did CP-004 fail on the server side? The logs are in input/logs/.</i> It understands app logs (ISO, <code>YYYY/MM/DD</code>), nginx and Apache access logs, JSON lines, syslog and <code>.gz</code>. It groups errors by signature (ignoring numbers and ids), attaches their stack trace and places them in time. The k0lmena steps record the start and end of each scenario, so every failure gets the server errors that happened while it ran. Delivers <code>informe-logs.html</code> with errors and warnings per minute, the signatures and each failed scenario with its context.</p></div>
+  <div class="codigo"><pre>python scripts/analizar_logs.py --logs "input/logs/*.log" --corrida web
+python scripts/analizar_logs.py --logs input/logs/app.log --desde 2026-10-11T10:00 --hasta 2026-10-11T11:00</pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Without <code>--desde</code> or <code>--hasta</code> it analyzes the run's window plus 5 minutes before and after. <code>input/logs/</code> is not versioned. Downloading logs from a shared server is confirmed first. Output in <code>output/logs/&lt;name&gt;/</code>.</p></div>
+</section>
+
+<!-- ======================================================= COVERAGE -->
+<section class="seccion" id="cobertura">
+  <div class="kicker">Guides</div>
+  <h2>Coverage and traceability</h2>
+  <p class="bajada"><b>analista-cobertura</b> answers “what's left to test?”: it crosses criteria, test cases, automation, management, results and bugs for each story and marks where the chain breaks.</p>
+  <div class="guia"><h4>analista-cobertura <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">¿Qué nos falta probar de HU-001?</div>
+    <p><i>What's left to test in HU-001?</i></p>
+    <ol><li><b>Crosses</b>, with <code>scripts/analizar_cobertura.py</code>, the criteria (story, context sheet, coverage tables or Jira), the manual and BDD test cases, the k0lmena automation, the traceability with Xray/QMetry/AIO, the latest results and the bugs.</li><li><b>Marks the gaps</b>: criteria without test cases, test cases without a criterion, not automated, blocked or not run, failed, not uploaded to the test management tool and open missing information.</li><li><b>Builds the HTML report</b> with the funnel from story to result, coverage per criterion, the case-by-case matrix and what to do about each gap.</li></ol></div>
+  <div class="codigo"><pre>python scripts/analizar_cobertura.py --historia HU-001
+python scripts/analizar_cobertura.py                    <span class="c"># every story in the repo</span></pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Read-only: it doesn't create test cases or automate. The <code>@HU</code> + <code>@CP</code> pair is what traces each test case; a scenario without <code>@CP</code> shows up as a gap.</p></div>
+</section>
+
+<!-- ======================================================= VISUAL REGRESSION -->
+<section class="seccion" id="visual">
+  <div class="kicker">Guides</div>
+  <h2>Visual regression (pixel perfect)</h2>
+  <p class="bajada"><b>pixel-perfect</b> detects <b>what changed visually</b> between the accepted version of your site (the reference) and the current one: what shifted and by how many pixels, what changed size, text or color, what's missing and what appeared.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">What it compares</th><th>How</th></tr>
+    <tr><td>Pixels</td><td>Percentage of the screen that changed and the regions with changes, with the difference map in red.</td></tr>
+    <tr><td>Elements</td><td>Position and size of every heading, link, button, field and image: shifted (with the px), missing, new and with different text.</td></tr>
+    <tr><td>Shifted blocks</td><td>If many elements moved the same way, it's a single cause (a new banner pushed everything down): it reports the block and the probable cause.</td></tr>
+    <tr><td>Styles</td><td>Background color, text color, font size and weight.</td></tr>
+  </table></div>
+  <div class="guia"><h4>pixel-perfect <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Corré una regresión visual de https://staging.tu-app.com y decime si algo se corrió.</div>
+    <p><i>Run a visual regression of https://staging.tu-app.com and tell me if anything shifted.</i></p>
+    <ol>
+      <li><b>The first run creates the reference</b>: a stable screenshot of every page at every resolution (no animations, fonts and images loaded and dynamic areas hidden).</li>
+      <li><b>The following runs compare</b> against it, pixel by pixel and element by element.</li>
+      <li><b>Separates the intentional</b> (what the story asked for) from regressions.</li>
+      <li><b>Builds the report</b>: reference/current slider comparator, difference map, close-ups of the regions and the before and after of every finding.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run pixel-perfect -- --url https://staging.tu-app.com --resoluciones 390x844,1366x768 <span class="c"># no agents, no tokens</span>
+npm run pixel-perfect -- --ocultar ".banner,.fecha"     <span class="c"># areas that change on their own</span>
+npm run pixel-perfect -- --aceptar todas                <span class="c"># current becomes the reference (with your ok)</span></pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>The reference can also be a Figma design exported as PNG. Everything stays in <code>output/pixel-perfect/&lt;HU or site&gt;/</code>: <code>referencia/</code> is kept and, on every comparison, the previous run moves to <code>historial/</code> (the last 5 are kept) and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= CROSS-BROWSER -->
+<section class="seccion" id="cross-browser">
+  <div class="kicker">Guides</div>
+  <h2>Cross-browser</h2>
+  <p class="bajada"><b>cross-browser</b> finds what works or looks different depending on the browser: <b>Chromium</b> (Chrome and Edge), <b>Firefox</b> and <b>WebKit</b> (Safari's engine), on desktop and mobile.</p>
+  <div class="tarjetas">
+    <div class="tarjeta c-verde"><div class="ico">▶</div><h4>Suite mode</h4><p>Runs the k0lmena web suite once per browser (each in its own folder) and builds the scenario × browser matrix: passes in all, fails only in some or fails in all.</p></div>
+    <div class="tarjeta c-naranja"><div class="ico">◎</div><h4>Pages mode</h4><p>No automation needed: walks the pages in each browser and compares them against the base: JavaScript and console errors in only one, overflow, missing or shifted elements and different styles.</p></div>
+  </div>
+  <div class="guia"><h4>cross-browser <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Probá HU-003 en Chrome, Firefox y Safari.</div>
+    <p><i>Test HU-003 in Chrome, Firefox and Safari.</i> The report brings the matrix with each browser's screenshot, the pages side by side with the slider comparator, and every difference with its error and probable cause. What fails in all of them isn't a browser issue: it hands it to <b>analista-fallos</b>.</p></div>
+  <div class="codigo"><pre>npm run cross-browser -- --historia HU-003                              <span class="c"># suite mode (runs against the environment: with your ok)</span>
+npm run cross-browser -- --modo paginas --url https://staging.tu-app.com <span class="c"># GET only</span>
+cd herramientas/k0lmena && npx playwright install firefox webkit        <span class="c"># if the browsers are missing</span></pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>WebKit is Safari's engine and finds almost everything, but it doesn't replace a real Safari on a Mac or iPhone. Output in <code>output/cross-browser/&lt;HU, site or suite&gt;/</code>; the previous run moves to <code>historial/</code> (the last 5 are kept) and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= REPAIRER -->
+<section class="seccion" id="reparador">
+  <div class="kicker">Guides</div>
+  <h2>Automation repair</h2>
+  <p class="bajada">When a test fails because <b>the screen changed</b> (a button with another name, a selector that now finds several elements), <b>reparador-automatizacion</b> proposes the new locator, applies it and verifies that the test passes again. If it fails because the application has a bug, it doesn't touch the test.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">Diagnosis</th><th>What it does</th></tr>
+    <tr><td>No longer exists</td><td>Looks for the most similar element (role, name, text, label, placeholder, data-testid) and proposes the most robust locator that finds <b>a single</b> element. In a verification step (Then) it flags it as a possible bug.</td></tr>
+    <tr><td>Matches several</td><td>Tries <code>exact: true</code> or scopes it to each element's container (the product card) and lets you choose.</td></tr>
+    <tr><td>Exists but isn't visible</td><td>A previous step is missing (opening a menu) or the app doesn't show it.</td></tr>
+    <tr><td>Exists and is visible</td><td>The locator is fine: it proposes the right wait.</td></tr>
+  </table></div>
+  <div class="guia"><h4>reparador-automatizacion <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Repará los tests de HU-001 que fallaron por locators.</div>
+    <p><i>Repair the HU-001 tests that failed because of locators.</i></p>
+    <ol><li><b>Analyzes</b> the failures of the last <code>npm test</code> (or from analista-fallos) against the DOM that k0lmena saved at failure time, without touching files.</li><li><b>Applies</b> the safe repairs (or the ones you confirm), with a backup copy and <code>cambios.diff</code>.</li><li><b>Verifies</b> by running only the repaired scenarios (with your ok) and builds the report with the diagnosis, the change and the screenshots.</li></ol></div>
+  <div class="codigo"><pre>npm run reparar -- --historia HU-001                    <span class="c"># diagnosis and proposals</span>
+npm run reparar -- --aplicar seguras --historia HU-001  <span class="c"># or --aplicar R-01,R-03</span>
+npm run reparar -- --verificar --historia HU-001        <span class="c"># re-runs the repaired ones</span></pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Since this version, k0lmena saves the page DOM at failure time (<code>reports/web/dom/</code>) and the viewport was fixed: if <code>VIEWPORT_WIDTH</code> and <code>VIEWPORT_HEIGHT</code> are empty, the window uses 1366x768 (before it stayed at 0 and clicks failed). Output in <code>output/reparaciones/&lt;HU or suite&gt;/</code>.</p></div>
+</section>
+
+<!-- ======================================================= SELECTION -->
+<section class="seccion" id="seleccion">
+  <div class="kicker">Guides</div>
+  <h2>Test case selection for a change</h2>
+  <p class="bajada"><b>selector-casos-de-prueba</b> answers “what should I test with this change?” without running the whole regression: it crosses what changed with all the test cases and delivers a prioritized, explained list ready to run.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">Input</th><th>What it uses</th></tr>
+    <tr><td>The change</td><td>A git range (files, commits with their Jira keys and touched functions), a PR's files, Jira and Azure DevOps stories or issues, or the release notes.</td></tr>
+    <tr><td>The inventory</td><td>Manual (Excel), BDD and k0lmena automated test cases, with their last result, the flaky ones and open bugs.</td></tr>
+    <tr><td>The result</td><td>Must-run, recommended and minimal regression (smoke and Critical priority), with the reason, estimated time, savings and the changes no test case covers.</td></tr>
+  </table></div>
+  <div class="guia"><h4>selector-casos-de-prueba <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">¿Qué casos corro para el PR #42? Toca el pago con tarjeta (PROJ-55).</div>
+    <p><i>Which test cases should I run for PR #42? It touches card payment (PROJ-55).</i> Delivers <code>informe-seleccion.html</code> with ready-to-copy commands (bash and PowerShell) for what's automated and <code>seleccion.csv</code> with the manual ones. It doesn't run the tests: the automated ones run with <code>npm test</code>, with no tokens.</p></div>
+  <div class="codigo"><pre>python scripts/seleccionar_casos.py --nombre release-2.4 --git main..feature/pagos --repo ../mi-app
+python scripts/seleccionar_casos.py --nombre pr-42 --historias HU-003 --presupuesto-min 60
+TAGS="(@HU-003 and (@CP-001 or @CP-003))" npm test -- web   <span class="c"># the command the report builds</span></pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Optional: <code>input/mapa-componentes.json</code> maps code folders to stories to refine the selection. Output in <code>output/seleccion-casos/&lt;name&gt;/</code>.</p></div>
+</section>
+
+<!-- ======================================================= CASE REVIEW -->
+<section class="seccion" id="revision">
+  <div class="kicker">Guides</div>
+  <h2>Test case review and estimated time</h2>
+  <p class="bajada"><b>revisor-casos</b> reviews existing test cases (manual in Excel or BDD scenarios) before running, uploading or automating them, and calculates how long they take to run by hand.</p>
+  <div class="guia"><h4>revisor-casos <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Revisá los casos de HU-001 y decime cuánto lleva ejecutarlos.</div>
+    <p><i>Review the HU-001 test cases and tell me how long they take to run.</i> A script reviews each case (title, preconditions, actionable steps, verifiable expected result, data, priority, traceability) and scores it from 0 to 100; it detects duplicates and near-duplicates and stories without negative or edge cases. The agent adds what needs judgment and proposes an improved version of the worst ones. Delivers <code>informe-revision.html</code>; if you ask, the corrected spreadsheet goes into a new file and never overwrites the original.</p></div>
+  <div class="codigo"><pre>python scripts/revisar_casos.py --historia HU-001
+python scripts/revisar_casos.py --origen output/casos-de-prueba/manuales/casos-HU-001.xlsx,output/casos-de-prueba/bdd/HU-001-registro.feature
+python scripts/estimacion.py output/casos-de-prueba/manuales/casos-HU-001.xlsx   <span class="c"># only the time</span></pre></div>
+  <h3>How the estimated time is calculated</h3>
+  <p>Each test case (manual or BDD) carries the time a person who knows the application takes to run it end to end. It's calculated by <code>scripts/estimacion.py</code> and appears in the spreadsheet (the <b>Tiempo estimado (min)</b> column with the total), in the <code>.md</code>, in the test management tool, in the test case selection and in this review.</p>
+  <div class="codigo"><pre>case time = (setup + Σ steps + logging) × factor   <span class="c"># rounded up to 0.5 min, minimum 1</span>
+step time = action + data + verification</pre></div>
+  <div class="tabla"><table>
+    <tr><th style="width:22%">Part</th><th>How it's calculated</th></tr>
+    <tr><td>Action</td><td>By verb: navigate 0.5 · click 0.25 · fill in 0.3 per field · log in 1 · upload or download a file 1 · wait for an email or a process 2 · query a database, an API or logs 2 · read 0.5 · other 0.5 min.</td></tr>
+    <tr><td>Data</td><td>0.15 min for each extra piece of data in the step.</td></tr>
+    <tr><td>Verification</td><td>0.5 min if there's an expected result (or it's a <code>Then</code>) + 0.25 for each extra check (up to 4).</td></tr>
+    <tr><td>Setup</td><td>1 min + 0.5 per precondition (up to 3) + 2 if data or users have to be created.</td></tr>
+    <tr><td>Logging</td><td>0.5 min + 0.1 per step (marking the result and saving the evidence).</td></tr>
+    <tr><td>Factor</td><td>1.1 for negative or edge cases; <code>ESTIMACION_FACTOR</code> in the <code>.env</code> multiplies everything (for example 1.3 for someone new to the application).</td></tr>
+  </table></div>
+  <div class="aviso info"><span class="ico">i</span><p>If the spreadsheet already has a value in <b>Tiempo estimado (min)</b>, that one wins: what the person entered is respected. Full formula, with examples, in <a href="https://github.com/underc0delabs/k0lmenIA/blob/main/plantillas/estimacion-tiempos.md"><code>plantillas/estimacion-tiempos.md</code></a> (in Spanish). Review output in <code>output/revision-casos/&lt;HU or name&gt;/</code>.</p></div>
+</section>
+
+<!-- ======================================================= CHARTERS -->
+<section class="seccion" id="charters">
+  <div class="kicker">Guides</div>
+  <h2>Charters and exploratory sessions</h2>
+  <p class="bajada"><b>generador-charters</b> plans session-based exploratory testing: each charter says what to explore, with which focus and heuristics, with which data and in how much time. Afterwards it builds the report with what each session found.</p>
+  <div class="guia"><h4>generador-charters <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Armá charters para explorar el checkout de la release 2.4.</div>
+    <p><i>Build charters to explore the checkout in release 2.4.</i> Delivers the session sheets (<code>charters.html</code> and <code>.md</code>) and a notes template per session in <code>sesiones/CH-XX.md</code>. Whoever explores takes notes with prefixes (<code>BUG:</code> <code>PREGUNTA:</code> <code>IDEA:</code> <code>RIESGO:</code> <code>CUBIERTO:</code> <code>SIN CUBRIR:</code> <code>NOTA:</code> and <code>Tiempo:</code> — bug, question, idea, risk, covered, not covered, note and time) and the report comes out of those notes: bugs, questions, risks, time split and covered areas.</p></div>
+  <div class="codigo"><pre>python scripts/generar_charters.py --nombre HU-003             <span class="c"># session sheets</span>
+python scripts/generar_charters.py --nombre HU-003 --informe   <span class="c"># informe-sesiones.html from sesiones/</span></pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>If you ask it to explore itself, it uses Playwright MCP and fills in the session notes. Output in <code>output/charters/&lt;HU or name&gt;/</code>.</p></div>
+</section>
+
+<!-- ======================================================= EMAIL -->
+<section class="seccion" id="correos">
+  <div class="kicker">Guides</div>
+  <h2>Email</h2>
+  <p class="bajada"><b>verificador-correos</b> checks that the emails your application sends (sign-up, confirmation, password recovery, orders, notifications) <b>arrive correctly</b>: to the right person, with the right content and looking good in email clients. It uses <b>Mailpit</b>, a test mailbox that catches the test environment's emails without delivering them to anyone.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">What it checks</th><th>How</th></tr>
+    <tr><td>What's expected</td><td>For each case: recipient, sender, subject, texts it contains (and doesn't), links and attachments. Flags the ones that didn't arrive.</td></tr>
+    <tr><td>Content</td><td>Unreplaced variables (<code>{{nombre}}</code>, <code>undefined</code>, <code>null</code>), subject, plain-text version and size (Gmail clips from 102 KB).</td></tr>
+    <tr><td>Links and images</td><td>Broken links, links to <code>localhost</code> or without https; images without alternative text or pointing to local paths.</td></tr>
+    <tr><td>How it looks</td><td>HTML compatibility with Outlook, Gmail, Apple Mail and others (Mailpit's check) and screenshots on desktop (700 px) and mobile (375 px).</td></tr>
+  </table></div>
+  <div class="guia"><h4>verificador-correos <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Verificá que llegue el mail de bienvenida a ana@test.com.</div>
+    <p><i>Check that the welcome email reaches ana@test.com.</i></p>
+    <ol>
+      <li><b>Start Mailpit</b> and point the test app's SMTP to <code>localhost:1025</code>.</li>
+      <li><b>Trigger the email</b> (yourself, <code>npm test</code> or the agent with your ok: it creates data).</li>
+      <li><b>It checks the mailbox</b> against what's expected for each case and builds the report with a view of each email.</li>
+      <li><b>If you ask</b>, it adds email steps to the k0lmena <code>.feature</code> files, which run without tokens.</li>
+    </ol></div>
+  <div class="codigo"><pre>docker compose -f herramientas/mailpit/docker-compose.yml up -d      <span class="c"># web and API on :8025, SMTP on :1025</span>
+npm run correos -- --para ana@test.com --espera input/correos/espera-HU-001.json
+npm run correos -- --para ana@test.com --esperar 1 --timeout-s 90   <span class="c"># waits for it to arrive</span></pre></div>
+  <div class="codigo"><pre>Then llega un correo a "ana@test.com" con el asunto "Confirmá tu cuenta"
+And el correo contiene "Hola Ana"
+And el correo no contiene "undefined"
+When guardo el link del correo que contiene "/confirmar" como "linkConfirmacion"</pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>Test mailboxes only: never real inboxes or the production mail server. Emptying the mailbox (<code>--limpiar-buzon</code>) is confirmed first. Output in <code>output/correos/&lt;HU or mailbox&gt;/</code>; the previous run moves to <code>historial/</code> (the last 5 are kept) and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= TRANSLATIONS -->
+<section class="seccion" id="traductor">
+  <div class="kicker">Guides</div>
+  <h2>Translations and languages</h2>
+  <p class="bajada"><b>analista-traductor</b> walks every page in every language (the first one is the reference) and finds what's left to translate or looks wrong in another language. It proposes the translation for what's missing.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">What it looks for</th><th>Example</th></tr>
+    <tr><td>Untranslated text</td><td>A paragraph in Spanish in the English version, or identical to the reference; also in placeholders, alternative texts and <code>aria-label</code>.</td></tr>
+    <tr><td>Visible keys</td><td><code>checkout.add_to_cart</code>, <code>MISSING_TRANSLATION</code>.</td></tr>
+    <tr><td>Broken characters</td><td><code>EnvÃ­o</code> instead of <code>Envío</code>.</td></tr>
+    <tr><td>Cut-off text</td><td>A button that leaves no room for a longer translation.</td></tr>
+    <tr><td>Formats</td><td><code>1.234,56</code> in the English version; “octubre” in an English date; the wrong <code>lang</code> attribute.</td></tr>
+  </table></div>
+  <div class="guia"><h4>analista-traductor <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Revisá las traducciones del sitio en inglés y portugués.</div>
+    <p><i>Review the site's English and Portuguese translations.</i> It switches language with the site's <code>hreflang</code>, with <code>--url-idioma</code> (for example <code>https://tu-app.com/{idioma_corto}/</code>) or by asking the browser for the language. The report brings the percentage translated per language, every page in all languages side by side and every problem with its crop.</p></div>
+  <div class="codigo"><pre>npm run traductor -- --url https://staging.tu-app.com --idiomas es-AR,en-US,pt-BR <span class="c"># no agents, no tokens</span>
+npm run traductor -- --url https://tu-app.com --url-idioma "https://tu-app.com/{idioma_corto}/"</pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>Language detection is a heuristic: the agent confirms each case and discards proper names and brands. Output in <code>output/traductor/&lt;HU or site&gt;/</code>; the previous run moves to <code>historial/</code> (the last 5 are kept) and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= UX -->
+<section class="seccion" id="ux">
+  <div class="kicker">Guides</div>
+  <h2>Usability</h2>
+  <p class="bajada"><b>evaluador-ux</b> reviews what confuses, slows down or misleads the person, with <b>Nielsen's 10 heuristics</b>: an automatic walk through the pages and a manual one through the important flows.</p>
+  <div class="guia"><h4>evaluador-ux <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Evaluá la usabilidad del checkout.</div>
+    <p><i>Evaluate the checkout's usability.</i> The automatic walk checks, on desktop and mobile, what can be measured: the 404 page (whether it helps you get back), very long menus or menus without the current section marked, different names for the same action, links that open another tab without warning, icon-only buttons, fields with the placeholder as their only label, technical messages in view, the main action below the fold on mobile and more. The agent walks the flows with Playwright MCP and adds what only shows up when using them. Delivers <code>informe-ux.html</code> with a score per heuristic, every finding with its screenshot and recommendations.</p></div>
+  <div class="codigo"><pre>npm run ux -- --url https://staging.tu-app.com   <span class="c"># no agents, no tokens</span>
+npm run ux -- --url https://tu-app.com/checkout --max-paginas 4 --resoluciones 1440x900,390x844</pre></div>
+  <div class="aviso info"><span class="ico">i</span><p>It doesn't advance in a flow that creates data (an order, an account) without confirmation. Output in <code>output/ux/&lt;HU or site&gt;/</code>; the previous run moves to <code>historial/</code> and the report compares against it.</p></div>
+</section>
+
+<!-- ======================================================= FORMS -->
+<section class="seccion" id="formularios">
+  <div class="kicker">Guides</div>
+  <h2>Forms</h2>
+  <p class="bajada"><b>probador-formularios</b> tests the validations of every field in a form <b>without submitting it</b>: required fields, lengths, formats, limits and error messages.</p>
+  <div class="guia"><h4>probador-formularios <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Probá las validaciones del formulario de registro.</div>
+    <p><i>Test the sign-up form's validations.</i> It finds the forms, works out what each field is (type, label, <code>required</code>, <code>maxlength</code>, <code>min</code>/<code>max</code>, <code>pattern</code>) and tries what applies: empty, only spaces, longer than the maximum, invalid emails and phone numbers, out-of-range numbers, names with accents and ñ. It flags <b>accepted invalid values</b> and <b>rejected valid ones</b>, fields without a label and messages that don't say what to fix. If the story defines rules, the agent compares against them. Delivers <code>informe-formularios.html</code> with the field × test matrix and screenshots with the errors in view.</p></div>
+  <div class="codigo"><pre>npm run formularios -- --url https://staging.tu-app.com/registro   <span class="c"># no agents, no tokens</span>
+npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio   <span class="c"># only with confirmation</span></pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>It never submits a form with data: it blocks every submission that isn't GET. The only thing it can submit, with confirmation, is the empty form (<code>--enviar-vacio</code>). Output in <code>output/formularios/&lt;HU or site&gt;/</code>.</p></div>
+</section>
+
+<section class="seccion" id="permisos">
+  <div class="kicker">Guides</div>
+  <h2>Role permissions</h2>
+  <p class="bajada"><b>probador-permisos</b> checks that each role sees and can do only what it's supposed to.</p>
+  <div class="guia"><h4>probador-permisos <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Probá los permisos de admin, operador e invitado en https://staging.tu-app.com.</div>
+    <p><i>Test the admin, operator and guest permissions on https://staging.tu-app.com.</i> It logs in with each role in the <code>.env</code> (<code>PERMISOS_ROLES</code>, <code>PERMISOS_&lt;ROLE&gt;_USUARIO</code>/<code>_CLAVE</code>/<code>_TOKEN</code>) plus anonymous, walks the site, opens each route with each role <b>by direct URL</b> and requests the endpoints with each one's session and token. It builds the role × route and role × endpoint matrix (opens, denies, asks for login), which menus and buttons each role sees and the differences from the expected rule (documentador's <code>estados-y-permisos.md</code> or the story). Typical findings: protected routes open without login, another role's URLs, visible buttons that then deny access and APIs without authentication.</p></div>
+  <div class="codigo"><pre>npm run permisos -- --url https://staging.tu-app.com --endpoints "GET /api/usuarios"</pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>GET only: it doesn't make clicks with side effects or submit forms without confirmation. It doesn't store credentials. Output in <code>output/permisos/&lt;HU or site&gt;/</code>.</p></div>
+</section>
+
+<section class="seccion" id="resiliencia">
+  <div class="kicker">Guides</div>
+  <h2>Resilience</h2>
+  <p class="bajada"><b>probador-resiliencia</b> answers what the person sees when something fails underneath.</p>
+  <div class="guia"><h4>probador-resiliencia <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Probá qué pasa en el listado de productos si la API se cae o la red está lenta.</div>
+    <p><i>Test what happens on the product list if the API goes down or the network is slow.</i> From the browser it intercepts the network and simulates, page by page: an API returning 500, 503 or 404, timeout, slow network, offline, empty responses, broken JSON or null fields, and static files (CSS, JS, images, fonts) that don't load. It detects blank screens, silent failures, endless spinners, technical messages, JavaScript errors, retries and whether the page recovers when the network comes back. Delivers the page × scenario matrix with a screenshot of each.</p></div>
+  <div class="codigo"><pre>npm run resiliencia -- --url https://staging.tu-app.com/productos --escenarios api-500,timeout,offline</pre></div>
+  <div class="aviso"><span class="ico">i</span><p>It doesn't generate load or attack the server: it only intercepts what the browser requests. Output in <code>output/resiliencia/&lt;HU or site&gt;/</code>.</p></div>
+</section>
+
+<section class="seccion" id="triage">
+  <div class="kicker">Guides</div>
+  <h2>Bug triage and questions</h2>
+  <div class="guia"><h4>triador-bugs <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">¿BUG-008 ya está cargado en Jira? · Triá los bugs de output/reportes-bug.</div>
+    <p><i>Is BUG-008 already filed in Jira? · Triage the bugs in output/reportes-bug.</i> Before a bug is filed it looks for candidates in Jira (JQL), Azure DevOps (WIQL), the local bugs and the repository issues, closed ones included, and with <code>scripts/buscar_duplicados.py</code> classifies them as duplicate, <b>possible regression</b>, related or different. It suggests severity and priority with its reasoning, component, owner (from <code>CODEOWNERS</code> and commits) and the story to link. Creating, linking or commenting in the tool happens only with your confirmation. Output in <code>output/triage/</code>.</p></div>
+  <div class="guia"><h4>consultor-proyecto <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">¿Qué pasa si un usuario bloqueado intenta pagar?</div>
+    <p><i>What happens if a blocked user tries to pay?</i> It answers product questions using only the project documentation (<code>input/documentacion/</code>, context sheets and artifacts), citing the original source of every fact and separating what the story says from what the code does today. If it isn't documented, it says so and proposes the <code>FI-XX</code>.</p></div>
+</section>
+
+<section class="seccion" id="historial">
+  <div class="kicker">Guides</div>
+  <h2>Run history</h2>
+  <p class="bajada">Every tool keeps its <b>last 5 runs</b> with their evidence, so you can compare before and after a fix without losing anything.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:26%">Where</th><th>What it keeps</th></tr>
+    <tr><td><code>output/&lt;tool&gt;/&lt;HU or site&gt;/historial/&lt;date-time&gt;/</code></td><td>The JSON, the analysis, the report and the evidence (screenshots, videos, crops) of each previous run: its report still opens the same way.</td></tr>
+    <tr><td><code>herramientas/k0lmena/reports/&lt;suite&gt;/historial/</code></td><td>The Cucumber report and the evidence of each previous <code>npm test</code> (screenshots, videos, traces and the DOM at failure time).</td></tr>
+  </table></div>
+  <div class="tarjetas">
+    <div class="tarjeta c-verde"><div class="ico">+</div><h4>New</h4><p>What shows up in this run and wasn't in the previous one.</p></div>
+    <div class="tarjeta c-cian"><div class="ico">✓</div><h4>Resolved</h4><p>What was there and no longer shows up.</p></div>
+    <div class="tarjeta c-naranja"><div class="ico">↗</div><h4>Evolution</h4><p>The main indicators of each run over time, with the link to each one's report.</p></div>
+  </div>
+  <div class="aviso info"><span class="ico">i</span><p>Every report (exploratory, accessibility, web performance, visual regression, cross-browser, failures, coverage, repairs, selection, email, translations, case review, charters, usability, forms and logs) includes the <b>Evolución de las corridas</b> (run evolution) section. To keep more runs: <code>HISTORIAL_CORRIDAS=10</code> in the k0lmena tools' environment.</p></div>
+</section>
+
+<section class="seccion" id="tablero">
+  <div class="kicker">Guides</div>
+  <h2>Quality dashboard and report portal</h2>
+  <div class="guia"><h4>tablero-calidad <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Armá el tablero de calidad del sprint 12 (del 1 al 14 de octubre).</div>
+    <p><i>Build the quality dashboard for sprint 12 (October 1 to 14).</i> It gathers what the tools already left (executions, <code>npm test</code> and its history, test cases, coverage, bugs, flaky tests, accessibility, web performance, load performance and security) and builds a dashboard with pass rate and trend, % automated, coverage, bugs by severity and story, manual execution minutes, alerts and a <b>management summary</b>. Whatever has no data says "Sin datos" (no data).</p></div>
+  <div class="codigo"><pre>npm run tablero -- --nombre sprint-12 --desde 2026-10-01 --hasta 2026-10-14
+npm run portal -- --abrir   <span class="c"># output/index.html</span></pre></div>
+  <p>The <b>report portal</b> (<code>output/index.html</code>) shows the latest report from each tool with its date, verdict and the previous run. It has a search box, filters by tool, story, status and date (remembered between visits) and a <b>by story</b> view, with all the reports for a story together, from any tool. It regenerates itself every time a report is built and opens with a double click.</p>
+</section>
+
+<section class="seccion" id="avisos">
+  <div class="kicker">Guides</div>
+  <h2>Notifications and synthetic monitoring</h2>
+  <h3>Notifications to Slack and Teams</h3>
+  <p><code>scripts/avisar.py</code> posts through a webhook (<code>SLACK_WEBHOOK_URL</code> with Block Kit and <code>TEAMS_WEBHOOK_URL</code> from Teams Workflows with an Adaptive Card). The triager (critical bug), the dashboard and the monitoring use it, and it can be called after <code>npm test</code>. With no webhook configured it doesn't send anything.</p>
+  <div class="codigo"><pre>npm run avisar -- --titulo "Regresión del sprint 12" --texto "3 fallidos" --nivel error --link https://…
+npm run avisar -- --desde-cucumber herramientas/k0lmena/reports/web/cucumber-report.json</pre></div>
+  <h3>Synthetic monitoring</h3>
+  <p><code>npm run monitorear</code> runs a <b>read-only</b> smoke check against any environment: status and time of each URL, expected text, TLS certificate about to expire and, if you want, k0lmena scenarios tagged <code>@sintetico</code>. It compares with the previous run and <b>notifies only when something breaks or recovers</b>. It's scheduled with <code>.github/workflows/monitoreo.yml</code>, cron or the Windows Task Scheduler.</p>
+  <div class="codigo"><pre>npm run monitorear -- --urls https://tu-app.com,https://tu-app.com/login --nombre produccion</pre></div>
+</section>
+
+<section class="seccion" id="evals">
+  <div class="kicker">Guides</div>
+  <h2>Agent evals</h2>
+  <p class="bajada">The tests cover the scripts; the <b>evals</b> measure the quality of what the agents generate.</p>
+  <p>Each case in <code>evals/casos/</code> gives an agent a story, a contract, an observation or a repository with <b>deliberate traps</b> (ambiguities, a contradiction between description and comment, undefined messages, limits, a fake secret) and verifies with deterministic checks that it marks the Missing information, applies boundary values, respects the templates and doesn't make things up. It runs in an isolated workspace with <code>claude -p</code> and leaves a report with the score per agent and the <b>regressions</b> against the previous run.</p>
+  <div class="codigo"><pre>npm run evals -- --listar
+npm run evals -- --correr --agente generador-casos-manuales
+npm run evals -- --solo-verificar &lt;folder&gt; --caso casos-manuales-hu-registro   <span class="c"># without running the agent again</span></pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>Running the evals spends tokens (each case is a full conversation, with a cap per case). Use them before and after changing an agent or a skill.</p></div>
+</section>
+
+<section class="seccion" id="tokens">
+  <div class="kicker">Guides</div>
+  <h2>Token usage</h2>
+  <p class="bajada">How much each agent spends and where it pays to automate.</p>
+  <p><code>scripts/metricas_tokens.py</code> reads this project's Claude Code transcripts (<code>~/.claude/projects/</code>): from each model response it takes the input, output and cache tokens and the model, <b>never the text</b>. It attributes usage to each agent (subagents by their type; the rest is the main conversation) and builds a report with the estimated cost per agent, day and model, the percentage read from cache and <b>opportunities</b>: the agents that spend the most, the ones used many times for the same thing (candidates for automation in k0lmena, which then runs without tokens) and low caching. It also adds the cost of the evals. The quality dashboard shows the summary.</p>
+  <div class="codigo"><pre>npm run metricas                                          <span class="c"># the whole history</span>
+npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one period</span></pre></div>
+  <div class="aviso"><span class="ico">i</span><p>The cost is an estimate based on the script's per-million-token price table (<code>PRECIOS</code>, with its date and source); it doesn't replace actual billing. Models not in the table are reported as "sin precio" (no price).</p></div>
+</section>
+
+<section class="seccion" id="onboarding">
+  <div class="kicker">Guides</div>
+  <h2>Onboarding</h2>
+  <p class="bajada">So that someone who just joined becomes productive in this project quickly.</p>
+  <div class="guia"><h4>guia-onboarding <span class="etiqueta tok">uses tokens</span></h4>
+    <div class="pedido">Armá el onboarding de Ana, que entra como QA manual.</div>
+    <p><i>Build the onboarding for Ana, who's joining as a manual QA.</i> It reads the project documentation (starting with the index built by the documentador), runs <code>npm run doctor</code>, looks at the active connectors and what already exists (stories, test cases, automation, reports) and builds a plan: the product with its modules, flows, roles and glossary (with the source of every fact), the state of their environment, the agents that suit their role with <b>example requests from this project</b>, the tasks for the first weeks with their definition of done, the questions for the team about what isn't documented and a <b>checklist</b> that gets ticked in the browser. It comes out in <code>output/onboarding/&lt;person&gt;/</code> as HTML and Markdown.</p></div>
+</section>
+
+<section class="seccion" id="seguridad">
+  <div class="kicker">Guides</div>
+  <h2>Web security</h2>
+  <p class="bajada"><b>analista-seguridad</b> reviews your application's security with <b>OWASP ZAP</b> (free and open source) in <b>passive</b> mode: it walks the site and analyzes the responses without sending attacks or modifying data.</p>
+  <div class="aviso warn"><span class="ico">!</span><p>Only your own sites or sites with written authorization are scanned, declared in <code>SEGURIDAD_URLS_AUTORIZADAS</code> in the <code>.env</code>. A passive scan doesn't replace a penetration test.</p></div>
+  <div class="guia"><h4>analista-seguridad</h4>
+    <div class="pedido">Revisá la seguridad de https://staging.mi-app.com para HU-001.</div>
+    <p><i>Review the security of https://staging.mi-app.com for HU-001.</i></p>
+    <ol>
+      <li><b>Confirms</b> the URL (it has to be authorized) and how long to crawl.</li>
+      <li><b>Scans</b> with the ZAP baseline in Docker (open Docker Desktop first).</li>
+      <li><b>Analyzes</b> the findings: prioritizes them, discards false positives with their reason and explains them in Spanish.</li>
+      <li><b>Builds the HTML report</b>: findings by risk, where each one appears, evidence, how to fix it and recommendations.</li>
+    </ol></div>
+  <div class="codigo"><pre>python herramientas/zap/escanear.py --url https://staging.mi-app.com --historia HU-001</pre></div>
+  <p>Output in <code>output/seguridad/&lt;HU or host&gt;/&lt;date&gt;/</code>. Details in <code>herramientas/zap/README.md</code>.</p>
+</section>
+
+<!-- ======================================================= 13 CONNECTORS -->
+<section class="seccion" id="conectores">
+  <div class="kicker">Guides</div>
+  <h2>MCP connectors</h2>
+  <p class="bajada">They connect Claude Code to external systems. Claude Code starts right away: Playwright and Atlassian (Jira and Confluence) come active, and each QA enables the rest with <code>npm run conector</code>. No secrets: credentials are read from the <code>.env</code>, and <code>.env.example</code> has a commented block per tool so you fill in only your team's.</p>
+  <div class="tabla"><table>
+    <tr><th style="width:22%">Connector</th><th>What for</th><th style="width:18%">Authentication</th></tr>
+    <tr><td><code>playwright</code></td><td>Browser for the E2E runner and the web-mapper (headed and headless).</td><td>Active</td></tr>
+    <tr><td><code>atlassian</code></td><td>Jira and Confluence: stories, criteria and functional documentation directly. With a token, Bitbucket Cloud too.</td><td>Active · OAuth or API token</td></tr>
+    <tr><td><code>figma</code></td><td>Designs from a link to a frame or file: texts, states and components. Requires a Full or Dev seat.</td><td>Account (OAuth)</td></tr>
+    <tr><td><code>appium-mcp</code></td><td>Used by mobile-mapper to walk the app.</td><td><code>ANDROID_HOME</code></td></tr>
+    <tr><td><code>qmetry</code> · <code>qtm4j</code></td><td>Query QMetry from the chat.</td><td>API key</td></tr>
+    <tr><td><code>aio-tests</code></td><td>Query AIO Tests from the chat.</td><td>Token</td></tr>
+    <tr><td><code>azure-devops</code></td><td>Azure DevOps: stories, Wiki, Azure Repos and Test Plans test cases.</td><td>PAT</td></tr>
+    <tr><td><code>linear</code> · <code>clickup</code> · <code>monday</code> · <code>asana</code> · <code>trello</code> · <code>notion</code> · <code>youtrack</code> · <code>shortcut</code></td><td>Stories and documentation if your team uses neither Jira nor Azure DevOps (official MCP servers).</td><td>Account (OAuth); YouTrack with a token; Asana with your own app</td></tr>
+    <tr><td><code>github</code> · <code>gitlab</code></td><td>The app repository for documentador-proyecto (code, PRs and commits, read-only).</td><td>Token (GitLab: OAuth too)</td></tr>
+    <tr><td><code>k0lmena-tmt</code></td><td>Upload and query test cases in k0lmenaTMT.</td><td>Personal token</td></tr>
+  </table></div>
+  <ol class="pasos">
+    <li><b>Fill in the .env</b>If it uses a token, put it in the <code>.env</code> at the root. Atlassian and Figma are authorized with your account from <code>/mcp</code>.</li>
+    <li><b>Enable it</b><code>npm run conector -- activar azure-devops</code> (only for you; <code>npm run conector</code> lists the available ones).</li>
+    <li><b>Verify</b>Restart Claude Code and check the connection with <code>/mcp</code>.</li>
+  </ol>
+  <div class="pedido">Generá los casos de PROJ-12 usando la página de Confluence 'Reglas de facturación' y este diseño de Figma.</div>
+  <p class="nota-en">Generate the PROJ-12 test cases using the Confluence page 'Reglas de facturación' and this Figma design.</p>
+  <p>Xray doesn't need MCP: it uses <code>scripts/gestion/</code>. Full guide in <code>CONECTORES.md</code> (in Spanish).</p>
+</section>
+
+<!-- ======================================================= 13 CONVENTIONS -->
+<section class="seccion" id="convenciones">
+  <div class="kicker">Reference</div>
+  <h2>Conventions</h2>
+  <div class="dos-col">
+    <div class="tabla"><table>
+      <tr><th>Element</th><th>Format</th></tr>
+      <tr><td>Stories</td><td><code>HU-001</code></td></tr>
+      <tr><td>Acceptance criteria</td><td><code>CA1</code> · <code>CA2</code></td></tr>
+      <tr><td>Manual test cases</td><td><code>CP-001</code></td></tr>
+      <tr><td>API test cases</td><td><code>CP-API-001</code></td></tr>
+      <tr><td>Bugs</td><td><code>BUG-001</code></td></tr>
+      <tr><td>Missing information</td><td><code>FI-01</code> · <code>@falta-info @FI-01</code></td></tr>
+    </table></div>
+    <div class="tabla"><table>
+      <tr><th>Scale</th><th>Values (in Spanish)</th></tr>
+      <tr><td>Severity and priority</td><td>Crítica · Alta · Media · Baja (critical, high, medium, low)</td></tr>
+      <tr><td>Test case status</td><td>N/A · Pendiente · En ejecución · Aprobado · Fallido · Bloqueado (pending, in progress, passed, failed, blocked)</td></tr>
+    </table></div>
+  </div>
+  <h3>Tags in k0lmena</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:22%">Where</th><th>Tags</th></tr>
+    <tr><td>Feature</td><td>The story and the type: <code>@HU-001 @web</code> · <code>@api</code> · <code>@mobile</code></td></tr>
+    <tr><td>Scenario</td><td>The test case ID (<code>@CP-001</code>, <code>@CP-API-001</code>) and <code>@smoke</code> if it's critical</td></tr>
+    <tr><td>Exclude</td><td><code>@bloqueado</code>: a step couldn't be verified and the scenario doesn't run</td></tr>
+  </table></div>
+  <h3>File names</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:24%">Artifact</th><th>Name</th></tr>
+    <tr><td>Analysis</td><td><code>analisis-HU-001.md</code></td></tr>
+    <tr><td>Manual test cases</td><td><code>casos-HU-001.xlsx</code> + <code>.md</code> + <code>-cobertura.md</code></td></tr>
+    <tr><td>BDD test cases</td><td><code>HU-001-registro.feature</code> + <code>HU-001-cobertura.md</code></td></tr>
+    <tr><td>Bug</td><td><code>BUG-001.md</code></td></tr>
+    <tr><td>Automation</td><td><code>&lt;type&gt;/features/HU-001-&lt;slug&gt;.feature</code> · <code>steps/HU-001.steps.ts</code> · <code>locators/HU-001.locators.ts</code></td></tr>
+    <tr><td>Performance</td><td><code>performance/k6/http/HU-001-&lt;slug&gt;.ts</code> · <code>performance/artillery/HU-001-&lt;slug&gt;.yaml</code> · <code>performance/jmeter/HU-001-&lt;slug&gt;.jmx</code></td></tr>
+    <tr><td>Mapping</td><td><code>output/mapeos/mapeo-HU-001-&lt;type&gt;.md</code></td></tr>
+    <tr><td>Exploratory</td><td><code>output/exploratorias/&lt;HU or site&gt;/informe-exploratorio.html</code> + <code>exploracion.json</code> · <code>capturas/</code> · <code>videos/</code> · <code>historial/</code> (last 5)</td></tr>
+    <tr><td>Web performance</td><td><code>output/rendimiento/&lt;HU or site&gt;/informe-rendimiento.html</code> + <code>rendimiento.json</code> · <code>capturas/</code> · <code>lighthouse/</code></td></tr>
+    <tr><td>Failure analysis</td><td><code>output/fallos/&lt;HU or suite&gt;/informe-fallos.html</code> + <code>fallos.json</code> · <code>corridas/</code> · <code>evidencia/</code></td></tr>
+    <tr><td>Coverage</td><td><code>output/cobertura/&lt;HU or todas&gt;/informe-cobertura.html</code> + <code>cobertura.json</code></td></tr>
+    <tr><td>Visual regression</td><td><code>output/pixel-perfect/&lt;HU or site&gt;/informe-pixel-perfect.html</code> + <code>pixel-perfect.json</code> · <code>referencia/</code> (kept) · <code>actual/</code> · <code>diferencias/</code> · <code>recortes/</code></td></tr>
+    <tr><td>Cross-browser</td><td><code>output/cross-browser/&lt;HU, site or suite&gt;/informe-cross-browser.html</code> + <code>cross-browser.json</code> · <code>capturas/</code> · <code>suite/</code></td></tr>
+    <tr><td>Repairs</td><td><code>output/reparaciones/&lt;HU or suite&gt;/informe-reparacion.html</code> + <code>reparaciones.json</code> · <code>cambios.diff</code> · <code>respaldo/</code></td></tr>
+    <tr><td>Test case selection</td><td><code>output/seleccion-casos/&lt;name&gt;/informe-seleccion.html</code> + <code>seleccion.json</code> · <code>seleccion.csv</code></td></tr>
+    <tr><td>Accessibility</td><td><code>output/accesibilidad/&lt;HU or site&gt;/informe-accesibilidad.html</code> + <code>auditoria.json</code> · <code>capturas/</code> · <code>videos/</code> · <code>historial/</code> (last 5)</td></tr>
+    <tr><td>Email</td><td><code>output/correos/&lt;HU or mailbox&gt;/informe-correos.html</code> + <code>correos.json</code> · <code>capturas/</code> · <code>eml/</code></td></tr>
+    <tr><td>Translations</td><td><code>output/traductor/&lt;HU or site&gt;/informe-traductor.html</code> + <code>traductor.json</code> · <code>capturas/</code> · <code>recortes/</code></td></tr>
+    <tr><td>Case review</td><td><code>output/revision-casos/&lt;HU or name&gt;/informe-revision.html</code> + <code>revision.json</code></td></tr>
+    <tr><td>Charters</td><td><code>output/charters/&lt;HU or name&gt;/charters.html</code> + <code>charters.md</code> · <code>sesiones/CH-XX.md</code> · <code>informe-sesiones.html</code></td></tr>
+    <tr><td>Usability</td><td><code>output/ux/&lt;HU or site&gt;/informe-ux.html</code> + <code>ux.json</code> · <code>capturas/</code> · <code>recortes/</code></td></tr>
+    <tr><td>Forms</td><td><code>output/formularios/&lt;HU or site&gt;/informe-formularios.html</code> + <code>formularios.json</code> · <code>capturas/</code></td></tr>
+    <tr><td>Logs</td><td><code>output/logs/&lt;name&gt;/informe-logs.html</code> + <code>logs.json</code></td></tr>
+    <tr><td>History</td><td><code>&lt;each tool's folder&gt;/historial/&lt;date-time&gt;/</code> (last 5, with their evidence) · <code>herramientas/k0lmena/reports/&lt;suite&gt;/historial/</code> for <code>npm test</code></td></tr>
+  </table></div>
+</section>
+
+<!-- ======================================================= 14 STRUCTURE -->
+<section class="seccion" id="estructura">
+  <div class="kicker">Reference</div>
+  <h2>Repository structure</h2>
+  <div class="codigo arbol"><pre>k0lmenIA/
+├── CLAUDE.md               <span class="c">Context and standards (Claude Code always reads it)</span>
+├── ARQUITECTURA.md         <span class="c">How the repo grows</span>
+├── CONECTORES.md           <span class="c">How to enable the MCP connectors</span>
+├── CHANGELOG.md            <span class="c">Changes in each version</span>
+├── LICENSE                 <span class="c">MIT license</span>
+├── .env.example            <span class="c">Variables template (copy to .env)</span>
+├── .mcp.json               <span class="c">MCP connectors (no secrets; enabled per settings)</span>
+├── package.json            <span class="c">Shortcuts to run k0lmena from the root (npm test…)</span>
+├── docs/                   <span class="c">This site, the PDFs and the diagrams (en/ for English)</span>
+├── tests/                  <span class="c">Script tests (pytest and node --test)</span>
+├── evals/                  <span class="c">Agent evals: cases with traps and checks</span>
+├── .github/workflows/      <span class="c">CI (tests), synthetic monitoring and evals (manual)</span>
+├── .claude/
+│   ├── agents/             <span class="c">The 42 agents</span>
+│   ├── skills/             <span class="c">Context, design, performance guide, execution, k0lmena</span>
+│   └── settings.json       <span class="c">Enabled connectors and permissions</span>
+├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>
+├── output/                 <span class="c">What the agents generate</span>
+├── plantillas/             <span class="c">Bug, test case spreadsheet, coverage, estimated time</span>
+├── scripts/                <span class="c">Test cases, estimated time, review, charters, logs, documentation index, reports and doctor</span>
+│   ├── gestion/            <span class="c">Xray, QMetry (QTM4J), AIO Tests and test cases for Azure DevOps</span>
+│   └── mcp/                <span class="c">MCP connector launchers (they read the .env)</span>
+└── herramientas/
+    ├── newman/             <span class="c">Postman collections</span>
+    ├── zap/                <span class="c">OWASP ZAP: web security (passive)</span>
+    ├── mailpit/            <span class="c">Mailpit: test mailbox for the emails</span>
+    └── k0lmena/
+        ├── web/            <span class="c">features/ steps/ locators/ + framework</span>
+        ├── api/            <span class="c">features/ steps/ (generic steps)</span>
+        ├── mobile/         <span class="c">features/ steps/ locators/ support/ apps/</span>
+        ├── performance/    <span class="c">k6/http/, artillery/ and jmeter/</span>
+        ├── reports/        <span class="c">HTML reports</span>
+        ├── run-tests.js    <span class="c">npm test runner</span>
+        └── run-perf.js     <span class="c">npm run perf runner</span></pre></div>
+</section>
+
+<!-- ======================================================= 15 FAQ -->
+<section class="seccion" id="faq">
+  <div class="kicker">Reference</div>
+  <h2>Troubleshooting</h2>
+  <details class="faq"><summary>What happens if the story is missing information?</summary><div>The agents first look for it in the comments, subtasks, epic, linked issues, Confluence and Figma. Whatever they don't find is recorded as <b>Missing information</b> (<code>FI-01</code>) with the question for the PO, and it's marked in the test cases, the <code>.feature</code> files and every report. It's never filled in with what the app does.</div></details>
+  <details class="faq"><summary>I don't know what I'm missing to install or configure</summary><div>Run <code>npm run doctor</code>: it checks, section by section, Python, Node, k0lmena, Playwright, Newman, Java, Docker, the fonts, the <code>.env</code> (including that each integration is complete and consistent, without showing secrets), the enabled connectors, git and what the portal, the monitoring and the evals need, and tells you how to fix what's missing. With <code>--seccion</code> it checks only one part and with <code>--rapido</code> it skips the slow checks.</div></details>
+  <details class="faq"><summary>An agent returns "Necesito que confirmes" (I need you to confirm)</summary><div>That's on purpose: the agents run as subagents and can't ask you mid-task. Answer the questions and Claude resumes the same agent with your answers.</div></details>
+  <details class="faq"><summary>A new agent doesn't show up</summary><div>Restart Claude Code: agents are loaded when the session starts.</div></details>
+  <details class="faq"><summary>The web suite fails without a URL or clicks say "outside of the viewport"</summary><div>No URL: the root <code>.env</code> is missing (<code>cp .env.example .env</code>) or <code>BASEURL</code>/<code>APP_URL</code> is. The viewport issue is already fixed: if <code>VIEWPORT_WIDTH</code> and <code>VIEWPORT_HEIGHT</code> are empty, the window uses 1366x768. If a test fails because a locator changed, ask <b>reparador-automatizacion</b> to fix it.</div></details>
+  <details class="faq"><summary><code>npm test</code> runs 0 scenarios</summary><div>You haven't automated anything yet (the folders ship empty) or the <code>TAGS</code> filter doesn't match any scenario.</div></details>
+  <details class="faq"><summary>A scenario never runs</summary><div>It has the <code>@bloqueado</code> tag: the mapper couldn't verify a step. The reason is in a comment above the scenario.</div></details>
+  <details class="faq"><summary>"No encuentro k6" (k6 not found)</summary><div>Run <code>npm run bootstrap:k6</code> in <code>herramientas/k0lmena/</code> or install k6 on the PATH.</div></details>
+  <details class="faq"><summary>"No encuentro JMeter" or "JMeter necesita Java"</summary><div>Run <code>npm run bootstrap:jmeter</code> (or set <code>JMETER_HOME</code>) and install Java 8 or later on the PATH (or set <code>JAVA_HOME</code>).</div></details>
+  <details class="faq"><summary><code>npm run perf</code> doesn't run a load profile from the agent</summary><div>That's on purpose: outside an interactive terminal it needs <code>--confirmar</code>, which the agent adds only after your confirmation.</div></details>
+  <details class="faq"><summary>An Xray/QMetry/AIO folder shows up as <code>C:/Program Files/Git/…</code></summary><div>In Git Bash write the folders without a leading <code>/</code>: <code>"HU-001 Registro"</code>.</div></details>
+  <details class="faq"><summary>An MCP connector doesn't connect</summary><div>The variables have to be in the environment where you launch <code>claude</code> (not in the <code>.env</code>). Atlassian and Figma are authorized from <code>/mcp</code>.</div></details>
+  <details class="faq"><summary>Do the tests always check the database?</summary><div>No. Database checks are added to a <code>.feature</code> only when you ask, and without <code>DB_CONEXIONES</code> in the <code>.env</code> the suite runs as always.</div></details>
+  <details class="faq"><summary>A Python library is missing</summary><div><code>pip install -r requirements.txt</code></div></details>
+</section>
+
+<!-- ======================================================= 16 EXTEND -->
+<section class="seccion" id="extender">
+  <div class="kicker">Reference</div>
+  <h2>Extending the project</h2>
+  <h3>Adding an agent</h3>
+  <ol class="pasos">
+    <li><b>Create the file</b><code>.claude/agents/mi-agente.md</code> with <code>name</code> and <code>description</code> frontmatter. The description is what Claude Code uses to decide when to invoke it.</li>
+    <li><b>Write the body</b>In Spanish, like the rest: role, inputs, process, output and rules.</li>
+    <li><b>Define the format</b>If it generates its own format, add its template in <code>plantillas/</code> or its script in <code>scripts/</code>, and its folder in <code>output/</code>.</li>
+    <li><b>Normalize the tables</b>If it generates tables in a <code>.md</code>, run them through <code>scripts/formatear_tablas.py</code>.</li>
+    <li><b>If it needs an answer from the person</b>Copy the "Cuando te falta un dato o una confirmación" section from any agent: subagents can't ask mid-task, so they return "Necesito que confirmes".</li>
+  </ol>
+  <h3>Skills, connectors and tools</h3>
+  <div class="tarjetas">
+    <div class="tarjeta"><h4>Skill</h4><p>A folder in <code>.claude/skills/</code> with its <code>SKILL.md</code>; it's loaded only when needed.</p></div>
+    <div class="tarjeta"><h4>MCP connector</h4><p>An entry in <code>.mcp.json</code>, without secrets; tokens are read from the <code>.env</code> by a script in <code>scripts/mcp/</code>.</p></div>
+    <div class="tarjeta"><h4>Tool</h4><p>A subfolder in <code>herramientas/</code> with its README.</p></div>
+    <div class="tarjeta"><h4>Repo tests</h4><p><code>python -m pytest tests</code> and <code>npm run test:repo</code>; they run in CI (Ubuntu and Windows) on every change. Add a test when you change a script.</p></div>
+  </div>
+  <h3>Regenerating this documentation</h3>
+  <div class="codigo"><pre>node docs/generar.js        <span class="c"># diagrams (PNG) and PDFs in both languages, with k0lmena's Playwright</span></pre></div>
+  <p>The site is <code>docs/index.html</code> in Spanish and <code>docs/en/index.html</code> in English (published with GitHub Pages at <a href="https://underc0delabs.github.io/k0lmenIA/en/">underc0delabs.github.io/k0lmenIA/en</a>); the PDF comes out of the same HTML with print styles, and the diagrams from <code>docs/diagramas/en/</code>. When the Spanish page changes, update this one too: both keep the same section <code>id</code>s.</p>
+  <h3>License</h3>
+  <p><b>MIT</b> license — © 2026 <b>QARMY</b>. k0lmena is an open source project by <b>Danilo Vezzoni</b>. Made by the <b>Underc0de</b> community.</p>
+</section>
+
+<footer class="pie">
+  <span>k0lmenIA · QARMY · Underc0de · MIT</span>
+  <span><a href="https://qarmy.ar" target="_blank" rel="noopener">qarmy.ar</a> · <a href="https://www.youtube.com/@QARMY-UC" target="_blank" rel="noopener">YouTube</a> · <a href="https://github.com/underc0delabs/k0lmenIA" target="_blank" rel="noopener">GitHub</a></span>
+</footer>
+
+</main>
+</div>
+</body>
+</html>

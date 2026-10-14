@@ -75,6 +75,12 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | documentación del proyecto, citando la   | `output/consultas/`)                  |
 |                            | fuente de cada dato                      |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `guia-onboarding`          | Plan de incorporación de un QA nuevo:    | `output/onboarding/`                  |
+|                            | recorrido del producto con fuentes,      |                                       |
+|                            | entorno, agentes para su rol, plan de    |                                       |
+|                            | las primeras semanas, preguntas y        |                                       |
+|                            | checklist; HTML y Markdown               |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `generador-datos-prueba`   | Datos de prueba realistas (Markdown o    | `output/datos-de-prueba/`             |
 |                            | CSV)                                     |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
@@ -335,7 +341,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/formatear_tablas.py` → alinea las tablas de cualquier `.md` (lo usan todos los agentes que generan informes).
 - `scripts/correr_newman.py` → corre una colección de Postman con el token y la URL del `.env` y genera su reporte (`ejecutor-api`).
 - `scripts/recolectar_resultados.py` → junta los resultados de una historia (ejecuciones en vivo, `npm test`, bugs, performance y seguridad) para el informe de cierre.
-- `scripts/doctor.py` → revisa el entorno y la configuración.
+- `scripts/doctor.py` → revisa el entorno y la configuración por secciones (Python, Node y k0lmena, herramientas, fuentes, `.env`, integraciones, conectores, git y extras), sin mostrar secretos. `--seccion env,integraciones`, `--rapido` (sin red ni Docker) y `--json`.
 - `scripts/generar_informe_exploratorio.py` → arma el informe HTML de pruebas exploratorias desde el `exploracion.json` de `npm run explorar` (`explorador-web`).
 - `scripts/generar_informe_accesibilidad.py` → arma el informe HTML de accesibilidad desde el `auditoria.json` de `npm run accesibilidad` (`analista-accesibilidad`).
 - `scripts/generar_informe_rendimiento.py` → arma el informe HTML de rendimiento web desde el `rendimiento.json` de `npm run rendimiento` (`auditor-rendimiento-web`).
@@ -349,8 +355,10 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/cambios_documentacion.py` → documentación incremental: guarda en `input/documentacion/.estado.json` qué se documentó (commit por repositorio, fuentes de cada documento, fecha de cada historia) y, con los archivos que cambiaron, dice qué documentos rehacer y qué casos revisar (`cambios.md`).
 - `scripts/generar_informe_permisos.py` y `generar_informe_resiliencia.py` → los informes de `npm run permisos` y `npm run resiliencia` (`probador-permisos`, `probador-resiliencia`).
 - `scripts/buscar_duplicados.py` → similitud entre bugs para el `triador-bugs` (duplicados, regresiones, relacionados).
+- `scripts/metricas_tokens.py` → **uso de tokens** de los agentes: lee las transcripciones de Claude Code del proyecto (solo conteos, nunca el texto), atribuye el uso a cada agente y estima el costo por agente, día y modelo con oportunidades (qué conviene automatizar en k0lmena); lo suma el tablero de calidad.
+- `scripts/generar_onboarding.py` → el plan de onboarding del `guia-onboarding` (HTML con checklist y Markdown).
 - `scripts/tablero_calidad.py` → tablero de calidad por sprint o release (`tablero-calidad`).
-- `scripts/portal_informes.py` → `output/index.html` con el último informe de cada herramienta; se regenera solo al terminar cualquier informe (`K0LMENIA_PORTAL=0` lo desactiva).
+- `scripts/portal_informes.py` → `output/index.html` con el último informe de cada herramienta, buscador y filtros por herramienta, historia, estado y fecha, y vista por herramienta o por historia; se regenera solo al terminar cualquier informe (`K0LMENIA_PORTAL=0` lo desactiva).
 - `scripts/avisar.py` → avisos a Slack y Teams por webhook (`SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`); `--desde-cucumber` resume un `npm test`. Sin webhook no manda nada.
 - `npm run monitorear` (k0lmena `tools/monitoreo`) y `scripts/generar_informe_monitoreo.py` → monitoreo sintético de solo lectura (URLs, textos, tiempos, certificado y escenarios `@sintetico`); avisa solo cuando algo se rompe o se recupera. Se programa con `.github/workflows/monitoreo.yml`, cron o el Programador de tareas.
 - `scripts/convertir_coleccion.py` → convierte colecciones de Bruno (carpeta con `bruno.json`) e Insomnia (v4 `.json` / v5 `.yaml`) a Postman v2.1, con las advertencias de lo que no se pudo convertir (`correr_newman.py` lo usa solo). `scripts/resumir_graphql.py` → resume un schema GraphQL (introspección por URL, SDL o JSON).
@@ -392,6 +400,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Tablero de calidad: `output/tablero/<nombre>/` con `tablero.json`, `analisis.json` e `informe-tablero.html`. Portal de informes: `output/index.html`.
 - Monitoreo sintético: `output/monitoreo/<nombre>/` con `monitoreo.json`, `informe-monitoreo.html` e `historial/` (30 corridas).
 - Evals: `evals/resultados/<fecha>/` con `resultados.json` e `informe-evals.html` (no se versiona).
+- Uso de tokens: `output/metricas-tokens/<nombre>/` con `metricas.json` e `informe-metricas.html`. Onboarding: `output/onboarding/<persona>/` con `plan.json`, `plan-onboarding.html` y `plan-onboarding.md`.
 - Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`

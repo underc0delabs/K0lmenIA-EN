@@ -44,6 +44,8 @@ Actuales:
 - `cambios_documentacion.py` — documentación incremental del `documentador-proyecto`: estado de lo documentado y qué documentos y casos afecta un cambio.
 - `convertir_coleccion.py` — Bruno e Insomnia a Postman v2.1 (lo usa `correr_newman.py`); `resumir_graphql.py` — resumen de un schema GraphQL (introspección, SDL o JSON).
 - `evaluar_agentes.py` — evals de los agentes (`evals/`): preparar el workspace aislado, correr con `claude -p`, verificar y armar el informe con regresiones.
+- `metricas_tokens.py` — uso de tokens y costo estimado por agente a partir de las transcripciones de Claude Code (solo conteos).
+- `generar_onboarding.py` — plan de onboarding del `guia-onboarding` (HTML con checklist y Markdown).
 - `doctor.py` — revisa el entorno (Python, Node, k0lmena, Playwright, Newman, Java, Docker, `.env` y conectores) y dice qué falta. También: `npm run doctor`.
 - `_env.py` — lectura del `.env` de la raíz con las mismas reglas que k0lmena y `scripts/mcp/leer-env.js` (la usan los scripts de Python).
 - `_estilos_reporte.py` — sistema de diseño de todos los reportes HTML (plan, ejecución, cierre, performance y seguridad): modo oscuro, paleta categórica y de estado validadas para daltonismo y contraste, indicadores, pastillas con ícono, tooltips y gráficos (dona, barras, barras apiladas, columnas agrupadas y líneas con crosshair, siempre con un solo eje). Los reportes de k0lmena usan los mismos colores (`herramientas/k0lmena/reports/tema-oscuro.js` y el reporte de performance).

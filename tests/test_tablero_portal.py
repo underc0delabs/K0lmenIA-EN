@@ -196,3 +196,20 @@ def test_portal_no_se_programa_en_los_tests(monkeypatch):
 def test_el_portal_no_se_versiona():
     reglas = (RAIZ_REAL / ".gitignore").read_text(encoding="utf-8")
     assert "/output/**" in reglas and "!/output/**/.gitkeep" in reglas
+
+
+def test_portal_historia_y_filtros(tmp_path):
+    from pathlib import Path as P
+    assert portal.historia_de({"unidad": "HU-001", "html": P("x/informe.html")}) == "HU-001"
+    assert portal.historia_de({"unidad": "web", "html": P("output/ejecuciones/reporte-PROJ-12-20261014.html")}) == "PROJ-12"
+    assert portal.historia_de({"unidad": "sprint-12", "html": P("tablero/sprint-12/informe.html")}) == "sprint-12"
+    assert portal.historia_de({"unidad": "qarmy.ar", "html": P("a/qarmy.ar/i.html")}) == "qarmy.ar"
+    d = tmp_path / "output" / "permisos" / "HU-002"
+    d.mkdir(parents=True)
+    (d / "informe-permisos.html").write_text("<html></html>", encoding="utf-8")
+    (d / "analisis.json").write_text('{"veredicto": "Hay accesos indebidos: crítico"}', encoding="utf-8")
+    destino, _ = portal.generar(tmp_path / "output", tmp_path / "reports")
+    html = destino.read_text(encoding="utf-8")
+    assert 'id="filtros"' in html and 'data-vista="hist"' in html
+    assert 'data-herr="permisos" data-hist="HU-002" data-tono="bad"' in html
+    assert html.count('data-nav="HU-002"') == 0  # la vista por historia no duplica el índice

@@ -40,6 +40,7 @@
     "tablero": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/tablero_calidad.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "avisar": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/avisar.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "evals": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/evaluar_agentes.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
+    "metricas": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/metricas_tokens.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

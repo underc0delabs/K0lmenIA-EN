@@ -227,6 +227,15 @@ def extras():
         if r.get("rendimiento_mobile") is not None or r.get("rendimiento_desktop") is not None:
             out["rendimiento"].append({"sitio": Path(arch).parent.name, "mobile": r.get("rendimiento_mobile"),
                                        "desktop": r.get("rendimiento_desktop")})
+    # Uso de tokens (scripts/metricas_tokens.py): el informe más reciente de cada nombre.
+    out["tokens"] = []
+    for arch in sorted(glob.glob(str(RAIZ / "output" / "metricas-tokens" / "*" / "metricas.json"))):
+        d = _json(arch) or {}
+        r = d.get("resumen") or {}
+        if r.get("llamadas"):
+            top = (d.get("agentes") or [{}])[0]
+            out["tokens"].append({"nombre": Path(arch).parent.name, "periodo": d.get("periodo", ""), "costo_usd": r.get("costo_usd", 0),
+                                  "pct_cache": r.get("pct_cache", 0), "agente_top": top.get("agente", "—")})
     return out
 
 
@@ -414,6 +423,10 @@ def build_html(datos, analisis=None, hist_html=""):
         otros.append(section("Seguridad (ZAP)", table(["Escaneo", "Alto", "Medio", "Bajo"],
                                                        [[e(x["escaneo"]), x["hallazgos"]["Alto"], x["hallazgos"]["Medio"], x["hallazgos"]["Bajo"]]
                                                         for x in ex["seguridad"]]), ancho=6))
+    if ex.get("tokens"):
+        otros.append(section("Uso de tokens", table(["Métricas", "Período", "Costo estimado", "Caché", "Agente que más gasta"],
+                                                     [[e(x["nombre"]), e(x["periodo"]), f'${x["costo_usd"]:,.2f}', f'{x["pct_cache"]:.0f} %',
+                                                       e(x["agente_top"])] for x in ex["tokens"]]), "scripts/metricas_tokens.py", ancho=6))
     for i in range(0, len(otros), 2):
         body.append(two_col(*otros[i:i + 2]) if i + 1 < len(otros) else otros[i])
 

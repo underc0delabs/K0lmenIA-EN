@@ -55,7 +55,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 
 <br>
 
-[**📖 Documentación web**](https://underc0delabs.github.io/k0lmenIA/) · [**📄 Documentación en PDF**](docs/k0lmenIA-documentacion.pdf) · [**🚀 Empezar**](#-instalación) · [**🌐 qarmy.ar**](https://qarmy.ar) · [**▶️ YouTube**](https://www.youtube.com/@QARMY-UC?sub_confirmation=1) · [**💬 WhatsApp**](https://whatsapp.com/channel/0029VaSzkgD1CYoTmiX8Uv26)
+[**📖 Documentación web**](https://underc0delabs.github.io/k0lmenIA/) · [**📄 Documentación en PDF**](docs/k0lmenIA-documentacion.pdf) · [**🇬🇧 English**](https://underc0delabs.github.io/k0lmenIA/en/) ([PDF](docs/k0lmenIA-documentation.pdf)) · [**🚀 Empezar**](#-instalación) · [**🌐 qarmy.ar**](https://qarmy.ar) · [**▶️ YouTube**](https://www.youtube.com/@QARMY-UC?sub_confirmation=1) · [**💬 WhatsApp**](https://whatsapp.com/channel/0029VaSzkgD1CYoTmiX8Uv26)
 
 </div>
 
@@ -126,6 +126,8 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Tablero de calidad y portal de informes](#-tablero-de-calidad-y-portal-de-informes)
 - [Avisos y monitoreo sintético](#-avisos-y-monitoreo-sintético)
 - [Evals de los agentes](#-evals-de-los-agentes)
+- [Uso de tokens](#-uso-de-tokens)
+- [Onboarding](#-onboarding)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -139,7 +141,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 
 <table>
 <tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="13"><b>🧠 Análisis<br>y diseño</b></td>
+<tr><td rowspan="14"><b>🧠 Análisis<br>y diseño</b></td>
   <td><code>documentador-proyecto</code></td><td>Arma la documentación del proyecto en <code>input/documentacion/</code>: lee el repositorio (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura), las historias con sus comentarios, PRs y links, y hace un mapa funcional de la web</td></tr>
 <tr><td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
 <tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
@@ -150,6 +152,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
 <tr><td><code>triador-bugs</code></td><td>Antes de cargar un bug, busca si ya existe en Jira, Azure DevOps o los bugs locales, detecta regresiones de bugs cerrados y sugiere severidad, componente, responsable e historia</td></tr>
 <tr><td><code>consultor-proyecto</code></td><td>Preguntale cómo funciona cualquier parte del producto: responde con la documentación del proyecto, citando de dónde sale cada dato o diciendo que no está documentado</td></tr>
+<tr><td><code>guia-onboarding</code></td><td>Plan de incorporación para un QA nuevo: el producto, su entorno, los agentes para su rol, las primeras tareas y un checklist</td></tr>
 <tr><td><code>revisor-casos</code></td><td>Revisa la calidad de los casos existentes: puntaje, problemas, duplicados, tiempo de ejecución manual y la versión mejorada</td></tr>
 <tr><td><code>generador-charters</code></td><td>Charters de exploración por sesiones (hojas y plantilla de notas) y el informe de las sesiones</td></tr>
 <tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
@@ -703,7 +706,7 @@ Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `histori
 ## 📊 Tablero de calidad y portal de informes
 
 - **Tablero de calidad**: *"Armá el tablero del sprint 12"* junta lo que ya dejaron las herramientas (corridas, casos, cobertura, bugs, inestables) y arma un dashboard con la tendencia y un resumen para gerencia en `output/tablero/<nombre>/` (`npm run tablero -- --nombre sprint-12 --desde 2026-10-01 --hasta 2026-10-14`).
-- **Portal de informes**: `output/index.html` muestra el último informe de cada herramienta, con su fecha, veredicto y la corrida anterior. Se actualiza solo cada vez que se arma un informe y se abre con doble clic (`npm run portal -- --abrir`).
+- **Portal de informes**: `output/index.html` muestra el último informe de cada herramienta, con su fecha, veredicto y la corrida anterior, un buscador, filtros por herramienta, historia, estado y fecha, y una vista por historia (todos los informes de una HU juntos). Se actualiza solo cada vez que se arma un informe y se abre con doble clic (`npm run portal -- --abrir`).
 
 ---
 
@@ -724,6 +727,24 @@ npm run evals -- --correr --agente generador-casos-manuales
 ```
 
 **Gastan tokens**: cada caso es una conversación completa, con un tope por caso (`--presupuesto-usd`). `--solo-verificar` revisa salidas ya generadas sin volver a correr el agente.
+
+---
+
+## 🪙 Uso de tokens
+
+`npm run metricas` lee las transcripciones de Claude Code de este proyecto (solo los conteos, **nunca el texto**), atribuye el uso a cada agente y arma un informe con el costo estimado por agente, día y modelo, el % leído desde caché y **oportunidades**: los agentes que más gastan y los que se usan muchas veces para lo mismo (candidatos a automatizar en k0lmena, que después corre sin tokens). El tablero de calidad lo suma.
+
+```bash
+npm run metricas -- --nombre octubre --desde 2026-10-01
+```
+
+---
+
+## 🧭 Onboarding
+
+El **guia-onboarding** arma el plan de incorporación de un QA nuevo: qué es el producto (con la documentación y sus fuentes), cómo está su entorno (el doctor), qué agentes le sirven según su rol con pedidos de ejemplo de este proyecto, las tareas de las primeras semanas con su criterio de "hecho", las preguntas para el equipo y un checklist que se tilda en el navegador.
+
+> *"Armá el onboarding de Ana, que entra como QA manual"*
 
 ---
 
@@ -857,7 +878,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 41 agentes
+│   ├── agents/             Los 42 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)
@@ -889,7 +910,7 @@ k0lmenIA/
 | Una carpeta de Xray/QMetry/AIO sale como `C:/Program Files/Git/…` | En Git Bash escribí las carpetas sin `/` inicial.                                                                         |
 | ¿Los tests verifican la base de datos siempre?                    | No: las verificaciones de BD se agregan a un `.feature` solo cuando las pedís; sin `DB_CONEXIONES`, la suite corre igual. |
 | Un conector MCP no conecta                                        | Corré `npm run doctor`: dice qué variable falta en el `.env`. Atlassian y Figma se autorizan desde `/mcp`.                |
-| No sé qué me falta instalar                                       | `npm run doctor` revisa Python, Node, k0lmena, Playwright, Newman, Java, Docker, el `.env` y los conectores.              |
+| No sé qué me falta instalar                                       | `npm run doctor` revisa Python, Node, k0lmena, Playwright, Newman, Java, Docker, las fuentes, el `.env`, las integraciones, los conectores y git (`--seccion env` para revisar solo una parte). |
 | Un agente devuelve "Necesito que confirmes"                       | Es a propósito: los agentes no pueden preguntar a mitad del trabajo. Respondé y Claude lo continúa.                       |
 </details>
 
@@ -901,7 +922,7 @@ k0lmenIA/
 - **Conector**: una entrada en `.mcp.json`, sin secretos; los tokens se leen del `.env` con un script de `scripts/mcp/`.
 - **Herramienta**: una subcarpeta en `herramientas/` con su README.
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (corren también en CI, en Ubuntu y Windows). Sumá un test cuando cambies un script.
-- **Documentación**: el sitio es [`docs/index.html`](docs/index.html), publicado en https://underc0delabs.github.io/k0lmenIA/ (GitHub Pages desde `docs/`); `node docs/generar.js` regenera los diagramas y el PDF.
+- **Documentación**: el sitio es [`docs/index.html`](docs/index.html), publicado en https://underc0delabs.github.io/k0lmenIA/ (GitHub Pages desde `docs/`), con su versión en inglés en [`docs/en/index.html`](docs/en/index.html) (mismos `id` de sección; los diagramas en inglés están en `docs/diagramas/en/`). `node docs/generar.js` regenera los diagramas y los dos PDF. Si cambiás la página en español, actualizá también la inglesa.
 
 Más detalle en [`ARQUITECTURA.md`](ARQUITECTURA.md).
 </details>

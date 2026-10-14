@@ -9,6 +9,14 @@ Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada un
 - La web arranca en oscuro (tema claro cálido opcional) y el PDF sale con el mismo estilo oscuro.
 - Diagrama nuevo `docs/assets/img/relaciones.png`: cómo se relacionan agentes, skills, plantillas, scripts, herramientas y conectores MCP (en el README, la web y `ARQUITECTURA.md`).
 
+## 2026-10-14 (3) — Buscador, versión en inglés, portal con filtros, doctor, onboarding y uso de tokens
+- **Web con buscador** (Ctrl K o /): resultados por sección con el término resaltado, sin importar acentos, navegación con el teclado y salto al lugar exacto.
+- **Versión en inglés** de la web (`docs/en/`), de los diagramas y del PDF (`docs/k0lmenIA-documentation.pdf`), con selector de idioma.
+- **Portal de informes con filtros**: buscador, filtros por herramienta, historia, estado y fecha, y vista por historia.
+- **`npm run doctor` más completo**: por secciones (también fuentes, integraciones del `.env`, git, workflows y la CLI de Claude), con `--seccion`, `--rapido` y `--json`; nunca muestra secretos.
+- Nuevo agente `guia-onboarding`: plan de incorporación de un QA nuevo con el producto, su entorno, los agentes para su rol, las primeras tareas, preguntas y un checklist (`scripts/generar_onboarding.py`).
+- **Uso de tokens** (`npm run metricas`, `scripts/metricas_tokens.py`): costo estimado por agente, día y modelo desde las transcripciones de Claude Code, con oportunidades de ahorro; el tablero de calidad lo suma.
+
 ## 2026-10-14 (2) — Permisos, resiliencia, triage, consultas, tablero, avisos, monitoreo, evals y más fuentes
 - Nuevo agente `probador-permisos`: `npm run permisos` inicia sesión con cada rol (más el anónimo) y arma la matriz rol × ruta y rol × endpoint, con acceso por URL directa, menús y botones visibles por rol y diferencias con la regla documentada. Solo GET.
 - Nuevo agente `probador-resiliencia`: `npm run resiliencia` intercepta la red desde el navegador (API con 500/503/404, timeout, red lenta, sin conexión, respuestas vacías, rotas o con nulos, estáticos que no cargan) y revisa pantallas en blanco, fallas silenciosas, spinners infinitos, mensajes técnicos, reintentos y recuperación.
