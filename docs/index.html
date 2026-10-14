@@ -73,7 +73,13 @@
   <a href="#traductor">Traducciones e idiomas</a>
   <a href="#ux">Usabilidad</a>
   <a href="#formularios">Formularios</a>
+  <a href="#permisos">Permisos por rol</a>
+  <a href="#resiliencia">Resiliencia</a>
+  <a href="#triage">Triage de bugs y consultas</a>
   <a href="#historial">Historial de corridas</a>
+  <a href="#tablero">Tablero y portal</a>
+  <a href="#avisos">Avisos y monitoreo</a>
+  <a href="#evals">Evals de los agentes</a>
   <a href="#seguridad">Seguridad web</a>
   <a href="#conectores">Conectores MCP</a>
   <div class="grupo">Referencia</div>
@@ -91,14 +97,14 @@
     <div class="k">Documentación del proyecto</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">Agentes de QA para Claude Code: diseño de pruebas, automatización con k0lmena e integración con Xray, QMetry, AIO Tests y Azure DevOps — todo en español.</div>
-    <div class="chips"><span>36 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
+    <div class="chips"><span>41 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>Licencia MIT</span></div>
 </section>
 <section class="solo-impresion indice">
   <h2>Contenido</h2>
   <ol>
-    <li><span>1</span>Qué es k0lmenIA</li><li><span>2</span>Arquitectura</li><li><span>3</span>Cómo se usa</li><li><span>4</span>Agentes</li><li><span>5</span>Requisitos</li><li><span>6</span>Instalación</li><li><span>7</span>Configuración: el archivo .env</li><li><span>8</span>Documentación del proyecto</li><li><span>9</span>Investigación de contexto y falta información</li><li><span>10</span>Guía por tarea: diseño y ejecución</li><li><span>11</span>Automatización con k0lmena</li><li><span>12</span>Pruebas de performance</li><li><span>13</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>14</span>Verificación en base de datos</li><li><span>15</span>Pruebas exploratorias</li><li><span>16</span>Accesibilidad</li><li><span>17</span>Rendimiento web</li><li><span>18</span>Análisis de fallos</li><li><span>19</span>Logs del servidor</li><li><span>20</span>Cobertura y trazabilidad</li><li><span>21</span>Regresión visual (pixel perfect)</li><li><span>22</span>Cross-browser</li><li><span>23</span>Reparación de la automatización</li><li><span>24</span>Selección de casos para un cambio</li><li><span>25</span>Revisión de casos y tiempo estimado</li><li><span>26</span>Charters y sesiones exploratorias</li><li><span>27</span>Correos</li><li><span>28</span>Traducciones e idiomas</li><li><span>29</span>Usabilidad</li><li><span>30</span>Formularios</li><li><span>31</span>Historial de corridas</li><li><span>32</span>Seguridad web</li><li><span>33</span>Conectores MCP</li><li><span>34</span>Convenciones</li><li><span>35</span>Estructura del repositorio</li><li><span>36</span>Problemas frecuentes</li><li><span>37</span>Extender el proyecto</li>
+    <li><span>1</span>Qué es k0lmenIA</li><li><span>2</span>Arquitectura</li><li><span>3</span>Cómo se usa</li><li><span>4</span>Agentes</li><li><span>5</span>Requisitos</li><li><span>6</span>Instalación</li><li><span>7</span>Configuración: el archivo .env</li><li><span>8</span>Documentación del proyecto</li><li><span>9</span>Investigación de contexto y falta información</li><li><span>10</span>Guía por tarea: diseño y ejecución</li><li><span>11</span>Automatización con k0lmena</li><li><span>12</span>Pruebas de performance</li><li><span>13</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>14</span>Verificación en base de datos</li><li><span>15</span>Pruebas exploratorias</li><li><span>16</span>Accesibilidad</li><li><span>17</span>Rendimiento web</li><li><span>18</span>Análisis de fallos</li><li><span>19</span>Logs del servidor</li><li><span>20</span>Cobertura y trazabilidad</li><li><span>21</span>Regresión visual (pixel perfect)</li><li><span>22</span>Cross-browser</li><li><span>23</span>Reparación de la automatización</li><li><span>24</span>Selección de casos para un cambio</li><li><span>25</span>Revisión de casos y tiempo estimado</li><li><span>26</span>Charters y sesiones exploratorias</li><li><span>27</span>Correos</li><li><span>28</span>Traducciones e idiomas</li><li><span>29</span>Usabilidad</li><li><span>30</span>Formularios</li><li><span>31</span>Permisos por rol</li><li><span>32</span>Resiliencia</li><li><span>33</span>Triage de bugs y consultas</li><li><span>34</span>Historial de corridas</li><li><span>35</span>Tablero de calidad y portal de informes</li><li><span>36</span>Avisos y monitoreo sintético</li><li><span>37</span>Evals de los agentes</li><li><span>38</span>Seguridad web</li><li><span>39</span>Conectores MCP</li><li><span>40</span>Convenciones</li><li><span>41</span>Estructura del repositorio</li><li><span>42</span>Problemas frecuentes</li><li><span>43</span>Extender el proyecto</li>
   </ol>
 </section>
 
@@ -130,6 +136,9 @@
     <span class="tec"><i style="background:#0052cc"></i>Jira · Confluence</span>
     <span class="tec"><i style="background:#a259ff"></i>Figma</span>
     <span class="tec"><i style="background:#6e5494"></i>GitHub · GitLab · Bitbucket</span>
+    <span class="tec"><i style="background:#5e6ad2"></i>Linear · ClickUp · monday · Asana · Trello · Notion · YouTrack · Shortcut</span>
+    <span class="tec"><i style="background:#e01e5a"></i>Slack · Teams</span>
+    <span class="tec"><i style="background:#e10098"></i>GraphQL · Bruno · Insomnia</span>
     <span class="tec"><i style="background:#00c7b1"></i>Xray · QMetry · AIO Tests · Azure DevOps</span>
     <span class="tec"><i style="background:#4169e1"></i>PostgreSQL</span>
     <span class="tec"><i style="background:#4479a1"></i>MySQL · MariaDB</span>
@@ -137,7 +146,7 @@
     <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
   </div>
   <div class="metricas">
-    <div class="metrica"><div class="n">36</div><div class="t">agentes especializados</div></div>
+    <div class="metrica"><div class="n">41</div><div class="t">agentes especializados</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">tipos de automatización</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">herramientas de gestión</div></div>
     <div class="metrica"><div class="n">0</div><div class="t">tokens para correr las suites</div></div>
@@ -187,7 +196,7 @@
     <tr><td>Skills</td><td>El "cómo": conocimiento que se carga cuando hace falta (técnicas de diseño, ejecución E2E y de API, convenciones de k0lmena).</td><td><code>.claude/skills/</code></td></tr>
     <tr><td>Plantillas y scripts</td><td>Formato de salida (planilla de casos, cobertura, bug) y reportes HTML determinísticos.</td><td><code>plantillas/</code> · <code>scripts/</code></td></tr>
     <tr><td>Integración de gestión</td><td><code>gestion.py</code> con un adaptador por herramienta: Xray Cloud, Xray Server/DC, QTM4J y AIO Tests. Azure DevOps va por su conector MCP.</td><td><code>scripts/gestion/</code></td></tr>
-    <tr><td>Conectores MCP</td><td>Playwright y Atlassian (Jira y Confluence) activos; Azure DevOps, Figma, GitHub, GitLab, Appium, QMetry, AIO Tests y k0lmenaTMT listos para habilitar. Versiones fijas, sin secretos en el archivo.</td><td><code>.mcp.json</code></td></tr>
+    <tr><td>Conectores MCP</td><td>Playwright y Atlassian (Jira y Confluence) activos; Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, Appium, QMetry, AIO Tests y k0lmenaTMT listos para habilitar. Versiones fijas, sin secretos en el archivo.</td><td><code>.mcp.json</code></td></tr>
     <tr><td>Herramientas</td><td>Newman para colecciones de Postman y k0lmena para web, API, mobile y performance.</td><td><code>herramientas/</code></td></tr>
     <tr><td>Entrada y salida</td><td>Insumos del usuario y artefactos generados, ordenados por tipo.</td><td><code>input/</code> · <code>output/</code></td></tr>
   </table></div>
@@ -225,7 +234,10 @@
     <tr><td>11</td><td>"Corré una regresión visual de https://tu-app.com" · "Probá HU-003 en Chrome, Firefox y Safari"</td><td>Qué se corrió y cuántos px · matriz por navegador</td></tr>
     <tr><td>12</td><td>"Repará los tests que fallaron por locators"</td><td>Locators nuevos aplicados y verificados</td></tr>
     <tr><td>13</td><td>"Verificá que llegue el mail de bienvenida a ana@test.com" · "Revisá las traducciones del sitio en inglés y portugués"</td><td>Correos revisados contra lo esperado · porcentaje traducido por idioma</td></tr>
-    <tr><td>14</td><td>"Armá el informe de cierre de HU-001"</td><td>Go / no-go</td></tr>
+    <tr><td>14</td><td>"¿Este bug ya está cargado en Jira?" · "¿Qué pasa si un usuario bloqueado intenta pagar?"</td><td>Duplicados y regresiones · respuesta con su fuente</td></tr>
+    <tr><td>15</td><td>"Probá los permisos de admin, operador e invitado" · "¿Qué ve el usuario si la API se cae?"</td><td>Matriz rol × ruta · matriz página × escenario</td></tr>
+    <tr><td>16</td><td>"Armá el informe de cierre de HU-001"</td><td>Go / no-go</td></tr>
+    <tr><td>17</td><td>"Armá el tablero del sprint 12" · "Avisá en Slack el resultado"</td><td>Tendencia y resumen para gerencia · aviso en Slack o Teams</td></tr>
   </table></div>
 </section>
 
@@ -247,13 +259,15 @@
     <div class="tarjeta c-violeta"><h4>selector-casos-de-prueba</h4><p>¿Qué pruebo con este cambio? Cruza un diff, un PR, issues o notas de la release con todos los casos y arma una selección por riesgo, con el comando <code>npm test</code> listo.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Usa</b> seleccionar_casos.py, generar_informe_seleccion.py<br><b>Conectores</b> atlassian, azure-devops</div><div class="salida"><code>output/seleccion-casos/</code></div></div>
     <div class="tarjeta c-violeta"><h4>revisor-casos</h4><p>Revisa casos que ya existen: pasos ambiguos o sin resultado esperado, duplicados, historias sin negativos, puntaje por caso y cuánto lleva ejecutarlos a mano.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno<br><b>Usa</b> revisar_casos.py, generar_informe_revision.py, estimacion.py<br><b>Conectores</b> atlassian, azure-devops</div><div class="salida"><code>output/revision-casos/</code></div></div>
     <div class="tarjeta c-violeta"><h4>generador-charters</h4><p>Pruebas exploratorias por sesiones: charters con misión, foco, heurísticas y tiempo, y el informe de las sesiones a partir de las notas.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno, ejecucion-e2e<br><b>Usa</b> generar_charters.py<br><b>Conectores</b> atlassian, azure-devops, playwright</div><div class="salida"><code>output/charters/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>triador-bugs</h4><p>Antes de cargar un bug busca duplicados y posibles regresiones (Jira, Azure DevOps, bugs locales, issues del repo) y sugiere severidad, componente, responsable e historia.</p><div class="usa"><b>Usa</b> buscar_duplicados.py, avisar.py<br><b>Conectores</b> atlassian, azure-devops, github, gitlab</div><div class="salida"><code>output/triage/</code></div></div>
+    <div class="tarjeta c-violeta"><h4>consultor-proyecto</h4><p>Responde preguntas del producto con la documentación del proyecto, citando la fuente de cada dato o diciendo que no está documentado.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Usa</b> input/documentacion/</div><div class="salida"><code>chat · output/consultas/</code></div></div>
     <div class="tarjeta c-violeta"><h4>generador-reportes-bug</h4><p>Reporte de bug profesional según la plantilla, con severidad y prioridad justificadas.</p><div class="usa"><b>Usa</b> plantilla de bug, formatear_tablas.py<br><b>Conectores</b> atlassian, azure-devops</div><div class="salida"><code>output/reportes-bug/</code></div></div>
   </div>
 
   <div class="subtitulo-grupo"><h3>Ejecución en vivo</h3><span class="etiqueta tok">usa tokens en cada corrida</span></div>
   <div class="tarjetas">
     <div class="tarjeta c-naranja"><h4>ejecutor-e2e</h4><p>Ejecuta casos en un navegador real con Playwright MCP (headed o headless), con evidencia.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> generar_reporte.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/ejecuciones/</code></div></div>
-    <div class="tarjeta c-naranja"><h4>ejecutor-api</h4><p>Corre una colección de Postman con Newman.</p><div class="usa"><b>Skills</b> ejecucion-api<br><b>Usa</b> Newman, correr_newman.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>ejecutor-api</h4><p>Corre una colección de Postman, Bruno o Insomnia con Newman (REST y GraphQL).</p><div class="usa"><b>Skills</b> ejecucion-api<br><b>Usa</b> Newman, correr_newman.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>explorador-web</h4><p>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, y responsive en varias resoluciones, con capturas e informe.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> npm run explorar, generar_informe_exploratorio.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/exploratorias/</code></div></div>
     <div class="tarjeta c-naranja"><h4>analista-accesibilidad</h4><p>Auditoría WCAG 2.2 con axe-core, teclado y reflow, más revisión manual: criterios incumplidos, capturas y cómo corregir.</p><div class="usa"><b>Skills</b> ejecucion-e2e<br><b>Usa</b> npm run accesibilidad, generar_informe_accesibilidad.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/accesibilidad/</code></div></div>
     <div class="tarjeta c-naranja"><h4>auditor-rendimiento-web</h4><p>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades con el ahorro estimado y secuencia de carga.</p><div class="usa"><b>Usa</b> npm run rendimiento (Lighthouse), generar_informe_rendimiento.py</div><div class="salida"><code>output/rendimiento/</code></div></div>
@@ -262,9 +276,12 @@
     <div class="tarjeta c-naranja"><h4>verificador-correos</h4><p>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, sin variables sin reemplazar, con links e imágenes bien, compatible con Outlook y Gmail, y cómo se ve en desktop y mobile.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e, automatizacion-k0lmena<br><b>Usa</b> Mailpit, npm run correos, generar_informe_correos.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/correos/</code></div></div>
     <div class="tarjeta c-naranja"><h4>analista-traductor</h4><p>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de número y fecha de otra región, con la traducción propuesta.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e<br><b>Usa</b> npm run traductor, generar_informe_traductor.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/traductor/</code></div></div>
     <div class="tarjeta c-naranja"><h4>evaluador-ux</h4><p>Usabilidad con las 10 heurísticas de Nielsen: puntaje por heurística, hallazgos automáticos y del recorrido manual con captura, la página 404, desktop y mobile.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Usa</b> npm run ux, generar_informe_ux.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/ux/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-permisos</h4><p>Inicia sesión con cada rol y arma la matriz de qué ve y qué abre cada uno (también por URL directa y en la API), comparada con la regla documentada.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e<br><b>Usa</b> npm run permisos, generar_informe_permisos.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/permisos/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-resiliencia</h4><p>Simula API caída o lenta, sin conexión, respuestas rotas y estáticos que no cargan, y revisa pantallas en blanco, spinners infinitos y recuperación.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Usa</b> npm run resiliencia, generar_informe_resiliencia.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/resiliencia/</code></div></div>
     <div class="tarjeta c-naranja"><h4>probador-formularios</h4><p>Validaciones de cada campo sin enviar el formulario: obligatorios, largos, formatos y límites, valores inválidos aceptados y válidos rechazados, con el mensaje y la captura.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Usa</b> npm run formularios, generar_informe_formularios.py<br><b>Conectores</b> playwright, playwright-headless</div><div class="salida"><code>output/formularios/</code></div></div>
     <div class="tarjeta c-naranja"><h4>generador-reporte-html</h4><p>Dashboard HTML de los resultados de una ejecución.</p><div class="usa"><b>Usa</b> generar_reporte.py</div><div class="salida"><code>output/ejecuciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>generador-reporte-cierre</h4><p>Informe de cierre de la ronda con recomendación go/no-go.</p><div class="usa"><b>Usa</b> recolectar_resultados.py, generar_informe_cierre.py</div><div class="salida"><code>output/informes-cierre/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>tablero-calidad</h4><p>Tablero por sprint o release: aprobados y tendencia, % automatizado, cobertura, bugs, inestables y resumen para gerencia.</p><div class="usa"><b>Usa</b> tablero_calidad.py, portal_informes.py</div><div class="salida"><code>output/tablero/</code></div></div>
     <div class="tarjeta c-naranja"><h4>analista-cobertura</h4><p>Matriz de trazabilidad (HU → criterios → casos → automatización → resultados) y qué falta probar.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Usa</b> analizar_cobertura.py, generar_informe_cobertura.py<br><b>Conectores</b> atlassian, azure-devops</div><div class="salida"><code>output/cobertura/</code></div></div>
   </div>
 
@@ -289,9 +306,9 @@
   <div class="subtitulo-grupo"><h3>Skills: el cómo que usan los agentes</h3></div>
   <div class="tabla"><table>
     <tr><th style="width:24%">Skill</th><th>Qué enseña</th><th style="width:30%">Lo usan</th></tr>
-    <tr><td><code>investigacion-contexto</code></td><td>Investigar la historia completa (documentación del proyecto, comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper, analista-cobertura, selector-casos-de-prueba, verificador-correos, analista-traductor, revisor-casos, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto</td></tr>
+    <tr><td><code>investigacion-contexto</code></td><td>Investigar la historia completa (documentación del proyecto, comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper, analista-cobertura, selector-casos-de-prueba, verificador-correos, analista-traductor, revisor-casos, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto, probador-permisos, probador-resiliencia, consultor-proyecto</td></tr>
     <tr><td><code>tecnicas-de-diseno</code></td><td>Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise</td><td>generadores de casos manuales, BDD y API; api-mapper, revisor-casos, generador-charters</td></tr>
-    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos, pixel-perfect, cross-browser, reparador-automatizacion, verificador-correos, analista-traductor, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto</td></tr>
+    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos, pixel-perfect, cross-browser, reparador-automatizacion, verificador-correos, analista-traductor, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto, probador-permisos, probador-resiliencia</td></tr>
     <tr><td><code>ejecucion-api</code></td><td>Correr colecciones con Newman: base_url, token, validaciones y resultados</td><td>ejecutor-api</td></tr>
     <tr><td><code>automatizacion-k0lmena</code></td><td>Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance</td><td>los mappers, verificador-datos, reparador-automatizacion y verificador-correos</td></tr>
     <tr><td><code>guia-performance</code></td><td>Planificar con la persona una prueba de performance paso a paso</td><td>la conversación principal y performance-mapper</td></tr>
@@ -359,7 +376,7 @@ npm run bootstrap:jmeter                           <span class="c"># performance
   <div class="tabla"><table>
     <tr><th style="width:18%">Grupo</th><th style="width:47%">Variables</th><th>Para qué</th></tr>
     <tr><td>App bajo prueba</td><td><code>APP_URL</code> <code>APP_USER</code> <code>APP_PASSWORD</code></td><td>Ejecución E2E y logins</td></tr>
-    <tr><td>API</td><td><code>API_TOKEN</code> <code>API_BASEURL</code></td><td>Newman, suite de API y k6</td></tr>
+    <tr><td>API</td><td><code>API_TOKEN</code> <code>API_BASEURL</code> <code>GRAPHQL_URL</code></td><td>Newman, suite de API y k6</td></tr>
     <tr><td>Web</td><td><code>BASEURL</code> <code>BROWSER</code> <code>HEADLESS</code> <code>VIEWPORT_WIDTH</code> <code>VIEWPORT_HEIGHT</code> <code>LOCALE</code> <code>TIMEZONE</code></td><td>Navegador de la suite web (vacías: Chromium, Firefox y WebKit a 1366x768)</td></tr>
     <tr><td>Ejecución</td><td><code>TAGS</code> <code>PARALLEL</code></td><td>Qué escenarios y cómo se corren</td></tr>
     <tr><td>Evidencias</td><td><code>EVIDENCE</code> (<code>captura</code> · <code>ambos</code> · <code>off</code>) <code>VIDEO</code> <code>TRACE</code></td><td>Qué se adjunta al reporte</td></tr>
@@ -369,6 +386,9 @@ npm run bootstrap:jmeter                           <span class="c"># performance
     <tr><td>Bases de datos</td><td><code>DB_CONEXIONES</code> + <code>DB_&lt;NOMBRE&gt;_MOTOR</code> <code>_HOST</code> <code>_PUERTO</code> <code>_BASE</code> <code>_USUARIO</code> <code>_CLAVE</code> (o <code>_URL</code>) <code>_ESCRITURA</code> <code>_PRODUCCION</code></td><td>Verificación en base de datos</td></tr>
     <tr><td>Gestión</td><td><code>GESTION_HERRAMIENTA</code> <code>GESTION_PROYECTO</code> + credenciales de la herramienta</td><td>Xray, QMetry y AIO Tests</td></tr>
     <tr><td>Azure DevOps (MCP)</td><td><code>ADO_ORGANIZACION</code> <code>ADO_PAT</code> <code>ADO_PROYECTO</code></td><td>Boards, Wiki, Repos y Test Plans</td></tr>
+    <tr><td>Permisos por rol</td><td><code>PERMISOS_ROLES</code> <code>PERMISOS_&lt;ROL&gt;_USUARIO</code> <code>_CLAVE</code> <code>_TOKEN</code> <code>PERMISOS_LOGIN_URL</code></td><td>Roles que prueba el probador-permisos</td></tr>
+    <tr><td>Avisos</td><td><code>SLACK_WEBHOOK_URL</code> <code>TEAMS_WEBHOOK_URL</code></td><td>Avisos a Slack y Teams (scripts/avisar.py)</td></tr>
+    <tr><td>Monitoreo</td><td><code>MONITOREO_URLS</code> <code>MONITOREO_LINK</code></td><td>Monitoreo sintético (npm run monitorear)</td></tr>
     <tr><td>Repositorio de la app</td><td><code>REPO_PROVEEDOR</code> <code>REPO_NOMBRE</code> <code>REPO_RAMA</code> <code>REPO_RUTA_LOCAL</code> <code>GITHUB_TOKEN</code> <code>GITLAB_URL</code> <code>GITLAB_TOKEN</code></td><td>Lo lee el documentador-proyecto (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura)</td></tr>
     <tr><td>Correos</td><td><code>MAILPIT_URL</code> <code>MAILPIT_USUARIO</code> <code>MAILPIT_CLAVE</code> <code>CORREO_TIMEOUT_S</code></td><td>Buzón de prueba Mailpit (verificador-correos y steps de correo)</td></tr>
     <tr><td>Idiomas</td><td><code>TRADUCTOR_IDIOMAS</code> <code>TRADUCTOR_URL_IDIOMA</code></td><td>Idiomas a revisar y cómo se cambia de idioma (analista-traductor)</td></tr>
@@ -554,6 +574,9 @@ npm run report:web                        <span class="c"># también: report:api
     <tr><td><code>npm run traductor</code></td><td>Cada página en cada idioma: textos sin traducir, cortados y formatos, con informe HTML (lo usa el <b>analista-traductor</b>).</td></tr>
     <tr><td><code>npm run ux</code></td><td>Usabilidad con las 10 heurísticas de Nielsen en desktop y mobile, con la página 404, capturas e informe HTML (lo usa el <b>evaluador-ux</b>).</td></tr>
     <tr><td><code>npm run formularios</code></td><td>Validaciones de cada campo sin enviar el formulario, con matriz campo × prueba, capturas e informe HTML (lo usa el <b>probador-formularios</b>).</td></tr>
+    <tr><td><code>npm run permisos</code></td><td>Matriz rol × ruta y rol × endpoint con capturas e informe HTML (lo usa el <b>probador-permisos</b>).</td></tr>
+    <tr><td><code>npm run resiliencia</code></td><td>Fallas simuladas de API, red y recursos desde el navegador, con matriz página × escenario e informe HTML (lo usa el <b>probador-resiliencia</b>).</td></tr>
+    <tr><td><code>npm run monitorear</code></td><td>Monitoreo sintético de solo lectura con historial, informe y aviso a Slack o Teams cuando algo se rompe o se recupera.</td></tr>
     <tr><td><code>npm run mapa-funcional</code></td><td>Mapa funcional del sitio: páginas, menús, formularios con cada campo, botones y mensajes, sin enviar nada (lo usa el <b>documentador-proyecto</b>, en <code>input/documentacion/</code>).</td></tr>
     <tr><td><code>npm run record</code></td><td>Graba un flujo con Playwright codegen.</td></tr>
     <tr><td><code>npm run debug</code></td><td>Corre la suite web en modo debug.</td></tr>
@@ -976,6 +999,39 @@ npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio 
   <div class="aviso warn"><span class="ico">!</span><p>Nunca envía un formulario con datos: bloquea los envíos que no son GET. Lo único que puede enviar, con confirmación, es el formulario vacío (<code>--enviar-vacio</code>). Salida en <code>output/formularios/&lt;HU o sitio&gt;/</code>.</p></div>
 </section>
 
+<section class="seccion" id="permisos">
+  <div class="kicker">Guías</div>
+  <h2>Permisos por rol</h2>
+  <p class="bajada">El <b>probador-permisos</b> verifica que cada rol vea y pueda hacer solo lo que le corresponde.</p>
+  <div class="guia"><h4>probador-permisos <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">Probá los permisos de admin, operador e invitado en https://staging.tu-app.com.</div>
+    <p>Inicia sesión con cada rol del <code>.env</code> (<code>PERMISOS_ROLES</code>, <code>PERMISOS_&lt;ROL&gt;_USUARIO</code>/<code>_CLAVE</code>/<code>_TOKEN</code>) más el anónimo, recorre el sitio, abre cada ruta con cada rol <b>por URL directa</b> y pide los endpoints con la sesión y el token de cada uno. Arma la matriz rol × ruta y rol × endpoint (abre, niega, pide login), qué menús y botones ve cada rol y las diferencias con la regla esperada (<code>estados-y-permisos.md</code> del documentador o la historia). Hallazgos típicos: rutas protegidas abiertas sin login, URLs de otro rol, botones visibles que después niegan el acceso y APIs sin autenticación.</p></div>
+  <div class="codigo"><pre>npm run permisos -- --url https://staging.tu-app.com --endpoints "GET /api/usuarios"</pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>Solo GET: no hace clics con efecto ni envía formularios sin confirmación. No guarda credenciales. Salida en <code>output/permisos/&lt;HU o sitio&gt;/</code>.</p></div>
+</section>
+
+<section class="seccion" id="resiliencia">
+  <div class="kicker">Guías</div>
+  <h2>Resiliencia</h2>
+  <p class="bajada">El <b>probador-resiliencia</b> responde qué ve la persona cuando algo falla abajo.</p>
+  <div class="guia"><h4>probador-resiliencia <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">Probá qué pasa en el listado de productos si la API se cae o la red está lenta.</div>
+    <p>Desde el navegador intercepta la red y simula, página por página: API con 500, 503 o 404, timeout, red lenta, sin conexión, respuestas vacías, JSON roto o campos en null, y estáticos (CSS, JS, imágenes, fuentes) que no cargan. Detecta pantallas en blanco, fallas silenciosas, spinners infinitos, mensajes técnicos, errores de JavaScript, reintentos y si la página se recupera cuando vuelve la red. Entrega la matriz página × escenario con captura de cada uno.</p></div>
+  <div class="codigo"><pre>npm run resiliencia -- --url https://staging.tu-app.com/productos --escenarios api-500,timeout,offline</pre></div>
+  <div class="aviso"><span class="ico">i</span><p>No genera carga ni ataca el servidor: solo intercepta lo que pide el navegador. Salida en <code>output/resiliencia/&lt;HU o sitio&gt;/</code>.</p></div>
+</section>
+
+<section class="seccion" id="triage">
+  <div class="kicker">Guías</div>
+  <h2>Triage de bugs y consultas</h2>
+  <div class="guia"><h4>triador-bugs <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">¿BUG-008 ya está cargado en Jira? · Triá los bugs de output/reportes-bug.</div>
+    <p>Antes de cargar un bug busca candidatos en Jira (JQL), Azure DevOps (WIQL), los bugs locales y los issues del repositorio, incluidos los cerrados, y con <code>scripts/buscar_duplicados.py</code> los clasifica en duplicado, <b>posible regresión</b>, relacionado o distinto. Sugiere severidad y prioridad con su criterio, componente, responsable (por <code>CODEOWNERS</code> y commits) e historia a vincular. Crear, vincular o comentar en la herramienta, solo con tu confirmación. Salida en <code>output/triage/</code>.</p></div>
+  <div class="guia"><h4>consultor-proyecto <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">¿Qué pasa si un usuario bloqueado intenta pagar?</div>
+    <p>Responde preguntas del producto solo con la documentación del proyecto (<code>input/documentacion/</code>, fichas de contexto y artefactos), citando la fuente original de cada dato y separando lo que dice la historia de lo que hace hoy el código. Si no está documentado lo dice y propone el <code>FI-XX</code>.</p></div>
+</section>
+
 <section class="seccion" id="historial">
   <div class="kicker">Guías</div>
   <h2>Historial de corridas</h2>
@@ -991,6 +1047,40 @@ npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio 
     <div class="tarjeta c-naranja"><div class="ico">↗</div><h4>Evolución</h4><p>Los indicadores principales de cada corrida en el tiempo, con el link al informe de cada una.</p></div>
   </div>
   <div class="aviso info"><span class="ico">i</span><p>Cada informe (exploratorias, accesibilidad, rendimiento, regresión visual, cross-browser, fallos, cobertura, reparaciones, selección, correos, traducciones, revisión de casos, charters, usabilidad, formularios y logs) trae la sección <b>Evolución de las corridas</b>. Para guardar más corridas: <code>HISTORIAL_CORRIDAS=10</code> en el entorno de las herramientas de k0lmena.</p></div>
+</section>
+
+<section class="seccion" id="tablero">
+  <div class="kicker">Guías</div>
+  <h2>Tablero de calidad y portal de informes</h2>
+  <div class="guia"><h4>tablero-calidad <span class="etiqueta tok">usa tokens</span></h4>
+    <div class="pedido">Armá el tablero de calidad del sprint 12 (del 1 al 14 de octubre).</div>
+    <p>Junta lo que ya dejaron las herramientas (ejecuciones, <code>npm test</code> y su historial, casos, cobertura, bugs, inestables, accesibilidad, rendimiento, performance y seguridad) y arma un dashboard con aprobados y tendencia, % automatizado, cobertura, bugs por severidad e historia, minutos de ejecución manual, alertas y un <b>resumen para gerencia</b>. Lo que no tiene datos dice "Sin datos".</p></div>
+  <div class="codigo"><pre>npm run tablero -- --nombre sprint-12 --desde 2026-10-01 --hasta 2026-10-14
+npm run portal -- --abrir   <span class="c"># output/index.html</span></pre></div>
+  <p>El <b>portal de informes</b> (<code>output/index.html</code>) muestra el último informe de cada herramienta con su fecha, veredicto y la corrida anterior. Se regenera solo cada vez que se arma un informe y se abre con doble clic.</p>
+</section>
+
+<section class="seccion" id="avisos">
+  <div class="kicker">Guías</div>
+  <h2>Avisos y monitoreo sintético</h2>
+  <h3>Avisos a Slack y Teams</h3>
+  <p><code>scripts/avisar.py</code> publica por webhook (<code>SLACK_WEBHOOK_URL</code> con Block Kit y <code>TEAMS_WEBHOOK_URL</code> de Teams Workflows con una Adaptive Card). Lo usan el triador (bug crítico), el tablero y el monitoreo, y se puede llamar después de <code>npm test</code>. Sin webhook configurado no manda nada.</p>
+  <div class="codigo"><pre>npm run avisar -- --titulo "Regresión del sprint 12" --texto "3 fallidos" --nivel error --link https://…
+npm run avisar -- --desde-cucumber herramientas/k0lmena/reports/web/cucumber-report.json</pre></div>
+  <h3>Monitoreo sintético</h3>
+  <p><code>npm run monitorear</code> hace un smoke de <b>solo lectura</b> contra cualquier ambiente: estado y tiempo de cada URL, texto esperado, certificado TLS por vencer y, si querés, escenarios de k0lmena con <code>@sintetico</code>. Compara con la corrida anterior y <b>avisa solo cuando algo se rompe o se recupera</b>. Se programa con <code>.github/workflows/monitoreo.yml</code>, cron o el Programador de tareas de Windows.</p>
+  <div class="codigo"><pre>npm run monitorear -- --urls https://tu-app.com,https://tu-app.com/login --nombre produccion</pre></div>
+</section>
+
+<section class="seccion" id="evals">
+  <div class="kicker">Guías</div>
+  <h2>Evals de los agentes</h2>
+  <p class="bajada">Los tests cubren los scripts; los <b>evals</b> miden la calidad de lo que generan los agentes.</p>
+  <p>Cada caso de <code>evals/casos/</code> le da a un agente una historia, un contrato, una observación o un repositorio con <b>trampas deliberadas</b> (ambigüedades, contradicción entre descripción y comentario, mensajes sin definir, límites, un secreto falso) y verifica con chequeos determinísticos que marque la Falta información, aplique valores límite, respete las plantillas y no invente. Corre en un workspace aislado con <code>claude -p</code> y deja un informe con el puntaje por agente y las <b>regresiones</b> contra la corrida anterior.</p>
+  <div class="codigo"><pre>npm run evals -- --listar
+npm run evals -- --correr --agente generador-casos-manuales
+npm run evals -- --solo-verificar &lt;carpeta&gt; --caso casos-manuales-hu-registro   <span class="c"># sin volver a correr el agente</span></pre></div>
+  <div class="aviso warn"><span class="ico">!</span><p>Correr los evals gasta tokens (cada caso es una conversación completa, con un tope por caso). Usalos antes y después de cambiar un agente o un skill.</p></div>
 </section>
 
 <section class="seccion" id="seguridad">
@@ -1024,6 +1114,7 @@ npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio 
     <tr><td><code>qmetry</code> · <code>qtm4j</code></td><td>Consultar QMetry desde el chat.</td><td>API key</td></tr>
     <tr><td><code>aio-tests</code></td><td>Consultar AIO Tests desde el chat.</td><td>Token</td></tr>
     <tr><td><code>azure-devops</code></td><td>Azure DevOps: historias, Wiki, Azure Repos y casos en Test Plans.</td><td>PAT</td></tr>
+    <tr><td><code>linear</code> · <code>clickup</code> · <code>monday</code> · <code>asana</code> · <code>trello</code> · <code>notion</code> · <code>youtrack</code> · <code>shortcut</code></td><td>Historias y documentación si tu equipo no usa Jira ni Azure DevOps (servers MCP oficiales).</td><td>Cuenta (OAuth); YouTrack con token; Asana con app propia</td></tr>
     <tr><td><code>github</code> · <code>gitlab</code></td><td>Repositorio de la app para el documentador-proyecto (código, PRs y commits, solo lectura).</td><td>Token (GitLab: también OAuth)</td></tr>
     <tr><td><code>k0lmena-tmt</code></td><td>Cargar y consultar casos en k0lmenaTMT.</td><td>Token personal</td></tr>
   </table></div>
@@ -1108,9 +1199,10 @@ npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio 
 ├── package.json            <span class="c">Atajos para correr k0lmena desde la raíz (npm test…)</span>
 ├── docs/                   <span class="c">Este sitio, el PDF y los diagramas</span>
 ├── tests/                  <span class="c">Tests de los scripts (pytest y node --test)</span>
-├── .github/workflows/      <span class="c">CI: los tests en Ubuntu y Windows</span>
+├── evals/                  <span class="c">Evals de los agentes: casos con trampas y chequeos</span>
+├── .github/workflows/      <span class="c">CI (tests), monitoreo sintético y evals (manuales)</span>
 ├── .claude/
-│   ├── agents/             <span class="c">Los 36 agentes</span>
+│   ├── agents/             <span class="c">Los 41 agentes</span>
 │   ├── skills/             <span class="c">Contexto, diseño, guía de performance, ejecución, k0lmena</span>
 │   └── settings.json       <span class="c">Conectores habilitados y permisos</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>

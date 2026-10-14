@@ -47,3 +47,6 @@ venv/
 
 # Logs sueltos
 *.log
+
+# Resultados de los evals de los agentes (scripts/evaluar_agentes.py): se regeneran
+/evals/resultados/

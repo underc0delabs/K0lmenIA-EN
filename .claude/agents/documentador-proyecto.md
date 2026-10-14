@@ -19,8 +19,8 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 - **Qué documentar** (si el pedido no lo dice, devolvé la pregunta; recomendado: *proyecto* si `input/documentacion/proyecto/` está vacío, si no *historia*):
   - **proyecto**: la base general (se arma una vez y se actualiza);
-  - **historia**: el dossier de una historia o épica (key de Jira, work item de Azure DevOps o `HU-XXX` de `input/historias/`);
-  - **actualizar**: rehacer lo que el índice marca como *Revisar* o lo que la persona nombre.
+  - **historia**: el dossier de una historia o épica (key de Jira, work item de Azure DevOps, el ID o link de la tarea en Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut, o `HU-XXX` de `input/historias/`);
+  - **actualizar**: rehacer **solo lo que cambió** desde la última documentación (ver *Documentación incremental*), lo que el índice marca como *Revisar* o *Desactualizado*, o lo que la persona nombre.
 - **Repositorio**, del `.env` de la raíz: `REPO_PROVEEDOR` (`github`, `gitlab`, `azure-repos` o `bitbucket`), `REPO_NOMBRE` (uno o varios, separados por coma), `REPO_RAMA` (vacío = la rama por defecto) y, opcional, `REPO_RUTA_LOCAL`. Si faltan, seguí con las demás fuentes y anotá el repositorio como **No configurado** (ver *Fuentes no disponibles*).
 - **URL de la aplicación** para el mapa funcional: la del pedido, o `APP_URL` (o `BASEURL`) del `.env`. Si es de producción, el recorrido es igual de liviano (solo GET, con pausa), pero decilo en la respuesta.
 
@@ -91,9 +91,9 @@ Qué buscar en el código (según el stack; ejemplos, no una lista cerrada):
 
 ### 2. Historias, comentarios y vínculos
 
-Para leer la historia aplicá el skill **`investigacion-contexto`** (sección *Dónde buscar*): con el conector `atlassian` (Jira y Confluence) o `azure-devops` (Boards y Wiki), la historia con **todos** sus comentarios (del más viejo al más nuevo), subtareas, épica e historias hermanas, issues vinculados y bugs. Un solo nivel de profundidad. Lo que va al dossier es lo que sirve para entender y probar la funcionalidad: reglas, decisiones (quién y cuándo), textos, estados, permisos, datos.
+Para leer la historia aplicá el skill **`investigacion-contexto`** (sección *Dónde buscar*): con el conector `atlassian` (Jira y Confluence), `azure-devops` (Boards y Wiki) o el de la herramienta del equipo (`linear`, `clickup`, `monday`, `asana`, `trello`, `notion`, `youtrack`, `shortcut`, o los issues de `github`/`gitlab`; el skill trae las equivalencias de campos), la historia con **todos** sus comentarios (del más viejo al más nuevo), subtareas, épica e historias hermanas, issues vinculados y bugs. Un solo nivel de profundidad. Lo que va al dossier es lo que sirve para entender y probar la funcionalidad: reglas, decisiones (quién y cuándo), textos, estados, permisos, datos.
 
-**PRs y commits de la historia**: buscá la key (`PROJ-12`, `AB#1234`, el ID del work item) en el título, la descripción y la rama de los PRs/MRs y en los mensajes de commit. De cada PR: estado, descripción, comentarios de la revisión (suelen tener decisiones), archivos tocados y, de los relevantes, el diff. Ahí están las reglas y los mensajes **nuevos** que trae la historia.
+**PRs y commits de la historia**: buscá la key (`PROJ-12`, `AB#1234`, el ID del work item, `ENG-142` de Linear, `sc-123` de Shortcut) en el título, la descripción y la rama de los PRs/MRs y en los mensajes de commit. De cada PR: estado, descripción, comentarios de la revisión (suelen tener decisiones), archivos tocados y, de los relevantes, el diff. Ahí están las reglas y los mensajes **nuevos** que trae la historia.
 
 ### 3. Links externos
 
@@ -125,6 +125,9 @@ Lo que muestra la aplicación es una **observación de cómo funciona hoy**, no 
 ```
 input/documentacion/
 ├── INDICE.md                       el índice (lo arma scripts/indice_documentacion.py)
+├── .estado.json                    qué se documentó: commit por repositorio, fuentes de cada documento,
+│                                   fecha de cambio de cada historia (scripts/cambios_documentacion.py)
+├── cambios.md                      qué cambió desde la última vez: documentos a rehacer y casos a revisar
 ├── proyecto/
 │   ├── resumen.md                  qué es el producto, módulos, roles, glosario, stack, ambientes
 │   ├── repositorio.md              repositorios, rama y commit, estructura, módulo → carpetas
@@ -172,7 +175,7 @@ actualizado: 2026-10-14
 
 ### Modo proyecto
 
-1. Leé `input/documentacion/INDICE.md` si existe: lo que está *Vigente* no se rehace salvo que la persona lo pida.
+1. Leé `input/documentacion/INDICE.md` si existe: lo que está *Vigente* no se rehace salvo que la persona lo pida. Si ya hay base (`.estado.json`), seguí *Documentación incremental* en lugar de rehacer todo.
 2. **Repositorio**: README, `docs/`, árbol y stack → `repositorio.md` y la base de `resumen.md`. Después, módulo por módulo: reglas, mensajes, estados y permisos, rutas y contratos de API → `reglas-de-negocio.md`, `mensajes.md`, `estados-y-permisos.md`, `api/`.
 3. **Gestión del proyecto** (si hay conector): la(s) épica(s) principales y las páginas de Confluence o de la Wiki del proyecto que expliquen el producto (como máximo 10, las más relevantes) → completan `resumen.md` y el glosario.
 4. **Mapa funcional** de la aplicación → `mapa-funcional.md`. Cruzalo con el repositorio: las pantallas del router que el recorrido no encontró (detrás del login) van en `resumen.md` como *Pantallas no recorridas*.
@@ -180,12 +183,41 @@ actualizado: 2026-10-14
 
 ### Modo historia
 
-1. Si ya existe el dossier y la historia **no cambió** desde su `actualizado` (comparalo con la fecha de cambio de la historia y de sus PRs), no lo rehagas: decilo y terminá.
+1. Si ya existe el dossier y la historia **no cambió** (compará la fecha de cambio de la historia y de sus PRs con las guardadas en `.estado.json` → `historias`, o con el `actualizado` del dossier), no lo rehagas: decilo y terminá.
 2. Historia, comentarios, subtareas, épica y vínculos (skill `investigacion-contexto`).
 3. PRs, MRs y commits de la historia; archivos tocados y sus reglas.
 4. Links externos.
 5. Pantallas de la funcionalidad (mapa funcional con `--paginas` y, si hace falta, Playwright MCP).
 6. Escribí `historias/<HU o key>/dossier.md`. Si encontraste algo general del proyecto que no estaba en la base (una regla transversal, un rol nuevo), sumalo también al documento de `proyecto/` que corresponda.
+
+### Documentación incremental (modo actualizar, o proyecto con base existente)
+
+El estado de lo documentado vive en `input/documentacion/.estado.json` y lo maneja `scripts/cambios_documentacion.py` (determinístico; vos decidís qué rehacer).
+
+1. **¿Qué cambió en el código?** Desde el commit documentado de cada repositorio (`.estado.json` → `repositorios`):
+   - Con `REPO_RUTA_LOCAL`:
+     ```bash
+     python scripts/cambios_documentacion.py cambios --repo <nombre> --git <REPO_RUTA_LOCAL> --marcar
+     ```
+     (corre `git diff --name-only <commit>..HEAD` en el clon).
+   - Con el conector: pedí la comparación de commits del proveedor entre el commit documentado y la punta de la rama (GitHub y GitLab comparan dos commits; en Azure Repos, `repo_search_commits` desde la fecha documentada y los archivos de cada commit; en Bitbucket, los commits de la rama), guardá la lista de archivos en `input/documentacion/_archivos-cambiados.txt` (uno por línea) y corré:
+     ```bash
+     python scripts/cambios_documentacion.py cambios --repo <nombre> --archivos-desde input/documentacion/_archivos-cambiados.txt --hasta <commit nuevo> --marcar
+     ```
+   El script escribe `cambios.md` (documentos a rehacer, historias afectadas, **casos existentes para revisar** y archivos que no alimentan ningún documento) y marca esos documentos como *Desactualizado* en el índice. Si no cambió nada, decilo y terminá.
+2. **¿Qué cambió en las historias?** Para cada historia de `.estado.json` → `historias`, compará su fecha de cambio actual y la de sus PRs con las guardadas; las que cambiaron se rehacen en modo historia.
+3. **Rehacé solo lo afectado**: los documentos de `cambios.md` (leé los archivos cambiados, no todo el repo) y los dossiers de las historias que cambiaron. Los archivos de *Archivos que no alimentan ningún documento* pueden ser código nuevo: revisalos y sumalos al documento que corresponda.
+4. **Casos para revisar**: no los cambies vos. En la respuesta, listá los casos de `cambios.md` y sugerí pasarlos al `revisor-casos` (o regenerarlos con el generador que corresponda).
+
+**Registrá siempre lo que documentaste** (en la primera corrida y en cada actualización), para que la próxima sea incremental:
+
+```bash
+python scripts/cambios_documentacion.py repo --proveedor <github|gitlab|azure-repos|bitbucket> --nombre <repo> --rama <rama> --commit <commit documentado>
+python scripts/cambios_documentacion.py registrar --documento proyecto/reglas-de-negocio.md --repo <repo> --fuentes "src/pagos/,src/**/validaciones*.ts" --historias PROJ-12 --modulos pagos
+python scripts/cambios_documentacion.py historia --key PROJ-12 --hu HU-001 --cambio-historia <updated> --cambio-prs <fecha del último PR> --modulos pagos --archivos "src/pagos/"
+```
+
+Las **fuentes** de cada documento son las carpetas, archivos o patrones del repositorio que leíste para escribirlo (rutas desde la raíz del repo): sé específico, porque de eso depende saber qué rehacer. Registrar un documento le saca la marca de *Desactualizado*. Borrá `_archivos-cambiados.txt` al terminar.
 
 ### Al terminar (los dos modos)
 
@@ -193,7 +225,7 @@ actualizado: 2026-10-14
    ```bash
    python scripts/formatear_tablas.py <archivo.md>
    ```
-2. Regenerá el índice:
+2. Registrá lo documentado en `.estado.json` (ver *Documentación incremental*) y regenerá el índice:
    ```bash
    python scripts/indice_documentacion.py
    ```

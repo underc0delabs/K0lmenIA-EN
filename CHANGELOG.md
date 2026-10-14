@@ -2,6 +2,21 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-14 (2) — Permisos, resiliencia, triage, consultas, tablero, avisos, monitoreo, evals y más fuentes
+- Nuevo agente `probador-permisos`: `npm run permisos` inicia sesión con cada rol (más el anónimo) y arma la matriz rol × ruta y rol × endpoint, con acceso por URL directa, menús y botones visibles por rol y diferencias con la regla documentada. Solo GET.
+- Nuevo agente `probador-resiliencia`: `npm run resiliencia` intercepta la red desde el navegador (API con 500/503/404, timeout, red lenta, sin conexión, respuestas vacías, rotas o con nulos, estáticos que no cargan) y revisa pantallas en blanco, fallas silenciosas, spinners infinitos, mensajes técnicos, reintentos y recuperación.
+- Nuevo agente `triador-bugs`: busca duplicados y posibles regresiones en Jira, Azure DevOps, los bugs locales y los issues del repositorio (`scripts/buscar_duplicados.py`) y sugiere severidad, componente, responsable e historia. El `generador-reportes-bug` lo sugiere antes de cargar un bug.
+- Nuevo agente `consultor-proyecto`: responde preguntas del producto solo con la documentación del proyecto, citando la fuente o diciendo que no está documentado.
+- Nuevo agente `tablero-calidad`: tablero por sprint o release (aprobados y tendencia, % automatizado, cobertura, bugs, inestables, tiempo manual) con resumen para gerencia.
+- **Portal de informes**: `output/index.html` con el último informe de cada herramienta; se regenera solo al terminar cualquier informe.
+- **Documentación incremental**: el `documentador-proyecto` guarda el estado de lo documentado (`.estado.json`), rehace solo lo que cambió y deja en `cambios.md` los casos a revisar (`scripts/cambios_documentacion.py`).
+- **Avisos a Slack y Teams** por webhook (`scripts/avisar.py`, `npm run avisar`), con resumen de `npm test`.
+- **Monitoreo sintético** de solo lectura (`npm run monitorear`): URLs, textos, tiempos, certificado y escenarios `@sintetico`; avisa cuando algo se rompe o se recupera; workflow programable `.github/workflows/monitoreo.yml`.
+- **Evals de los agentes** (`evals/`, `scripts/evaluar_agentes.py`, `npm run evals`): casos con trampas deliberadas, chequeos determinísticos, workspace aislado con `claude -p` e informe con regresiones; workflow manual `.github/workflows/evals.yml`.
+- **APIs**: GraphQL (steps genéricos en k0lmena, `scripts/resumir_graphql.py`, casos GraphQL en el generador) y colecciones de Bruno e Insomnia (`scripts/convertir_coleccion.py`, que `correr_newman.py` usa solo), con demos en `input/api/`.
+- **Más herramientas de gestión**: conectores MCP oficiales de Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack y Shortcut como fuente de historias; el skill `investigacion-contexto` trae las equivalencias de campos de cada herramienta.
+- Los tests no tocan el portal (`K0LMENIA_PORTAL=0`).
+
 ## 2026-10-14 — Documentador del proyecto y conexión al repositorio
 - Nuevo agente `documentador-proyecto`: arma la documentación del proyecto en `input/documentacion/` para que el resto de los agentes trabaje con contexto real. Lee el repositorio de la aplicación en solo lectura (README y docs, validaciones y límites, mensajes, estados, roles y permisos, rutas, contratos de API y los PRs y commits de cada historia), las historias de Jira o Azure DevOps con sus comentarios, subtareas, épica, vínculos y links (Confluence, Wiki, Figma y páginas públicas; los privados quedan como *No accesible*) y la web. Deja una base del proyecto, un dossier por historia y un índice; cada dato con su fuente.
 - **Repositorio de la aplicación** en el `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, `REPO_RAMA`, `REPO_RUTA_LOCAL`) con los servers MCP oficiales de cada proveedor: conectores nuevos `github` (remoto, modo solo lectura, `GITHUB_TOKEN`) y `gitlab` (`/api/v4/mcp`, OAuth o `GITLAB_TOKEN`) en el catálogo; Azure Repos con el dominio `repositories`, que ahora viene por defecto en `azure-devops`; Bitbucket Cloud con el conector `atlassian` y autenticación por token.

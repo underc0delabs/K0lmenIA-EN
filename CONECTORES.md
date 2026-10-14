@@ -1,6 +1,6 @@
 # Conectores MCP
 
-Cómo conectar k0lmenIA por MCP a **Jira y Confluence** (Atlassian), **Figma**, el **repositorio de la aplicación** (GitHub, GitLab, Azure Repos o Bitbucket), **QMetry**, **AIO Tests**, **k0lmenaTMT**, **Azure DevOps** y **Appium**. Xray se integra sin MCP (ver abajo).
+Cómo conectar k0lmenIA por MCP a **Jira y Confluence** (Atlassian), **Figma**, el **repositorio de la aplicación** (GitHub, GitLab, Azure Repos o Bitbucket), **otras herramientas de gestión de proyecto** (Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack y Shortcut), **QMetry**, **AIO Tests**, **k0lmenaTMT**, **Azure DevOps** y **Appium**. Xray se integra sin MCP (ver abajo).
 
 Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae solo los que vienen habilitados para todos (Playwright y **Atlassian: Jira y Confluence**). Los demás están en un catálogo (`scripts/mcp/catalogo.json`) y cada persona activa los que usa con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: las credenciales se leen del `.env` de la raíz o se autorizan con tu cuenta (OAuth).
 
@@ -25,6 +25,23 @@ Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae 
 | github                           | GitHub (repositorio de la app)          | GitHub MCP Server remoto (solo lectura) | Oficial | http         | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | gitlab                           | GitLab (repositorio de la app)          | GitLab MCP Server (/api/v4/mcp)         | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| linear                           | Linear (historias)                      | Linear MCP Server (remoto, solo         | Oficial | http         | No                       |
+|                                  |                                         | lectura)                                |         |              |                          |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| clickup                          | ClickUp (historias)                     | ClickUp MCP Server (remoto)             | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| monday                           | monday.com (historias)                  | monday.com MCP Server (remoto)          | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| asana                            | Asana (historias)                       | Asana MCP Server V2 (remoto)            | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| trello                           | Trello (historias)                      | Trello MCP Server (remoto, Atlassian)   | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| notion                           | Notion (documentación y backlogs)       | Notion MCP Server (remoto)              | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| youtrack                         | YouTrack (historias)                    | MCP integrado de YouTrack (tu sitio)    | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| shortcut                         | Shortcut (historias)                    | Shortcut MCP Server (remoto)            | Oficial | http         | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | qmetry                           | QMetry Test Management                  | @smartbear/mcp                          | Oficial | stdio        | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
@@ -75,6 +92,25 @@ Todos los conectores ya están en `.mcp.json` y todas las variables, en `.env.ex
 |                           |                                       | `ATLASSIAN_MCP_AUTENTICACION=token` +    |                                 |
 |                           |                                       | las de Jira                              |                                 |
 +---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Linear                    | `linear` (MCP)                        | Ninguna (OAuth); opcional                | No                              |
+|                           |                                       | `LINEAR_API_KEY`                         |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| ClickUp                   | `clickup` (MCP)                       | Ninguna (OAuth)                          | No                              |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| monday.com                | `monday` (MCP)                        | Ninguna (OAuth); opcional                | No                              |
+|                           |                                       | `MONDAY_API_TOKEN`                       |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Asana                     | `asana` (MCP)                         | `ASANA_CLIENT_ID`, `ASANA_CLIENT_SECRET` | No                              |
+|                           |                                       | (app MCP propia)                         |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Trello                    | `trello` (MCP)                        | Ninguna (OAuth)                          | No                              |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Notion                    | `notion` (MCP)                        | Ninguna (OAuth)                          | No                              |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| YouTrack                  | `youtrack` (MCP)                      | `YOUTRACK_URL`, `YOUTRACK_TOKEN`         | No                              |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Shortcut                  | `shortcut` (MCP)                      | Ninguna (OAuth)                          | No                              |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
 | Xray Cloud                | `scripts/gestion` (sin MCP)           | `GESTION_HERRAMIENTA=xray-cloud`,        | Listo al completar el `.env`    |
 |                           |                                       | `GESTION_PROYECTO`,                      |                                 |
 |                           |                                       | `XRAY_CLOUD_CLIENT_ID`,                  |                                 |
@@ -98,7 +134,7 @@ Todos los conectores ya están en `.mcp.json` y todas las variables, en `.env.ex
 +---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
 ```
 
-**Activar los opcionales** (Azure DevOps, Figma, GitHub, GitLab, QMetry, AIO Tests, k0lmenaTMT, Appium):
+**Activar los opcionales** (Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, QMetry, AIO Tests, k0lmenaTMT, Appium):
 
 ```bash
 npm run conector                              # lista los conectores y cuáles tenés activos
@@ -150,6 +186,10 @@ npm run conector -- desactivar azure-devops
 | `gitlab-headers.js`      | gitlab                          | Elige los toolsets y, si hay             |
 |                          |                                 | `GITLAB_TOKEN`, agrega el `Bearer`; sin  |
 |                          |                                 | token, OAuth desde `/mcp`                |
++--------------------------+---------------------------------+------------------------------------------+
+| `bearer-headers.js`      | linear, monday, youtrack        | Manda el token del `.env` como `Bearer`; |
+|                          |                                 | en linear y monday es opcional (sin      |
+|                          |                                 | token, OAuth)                            |
 +--------------------------+---------------------------------+------------------------------------------+
 | `lanzar.js`              | todos los de `npx`              | Versiones fijas de cada paquete,         |
 |                          |                                 | lanzamiento en Windows y cierre del      |
@@ -426,6 +466,68 @@ Ejemplos de uso:
 
 ---
 
+## Otras herramientas de gestión de proyecto
+
+Si tu equipo no trabaja con Jira ni con Azure DevOps, las historias se leen igual desde su herramienta: cada una tiene su server MCP **oficial** y el skill `investigacion-contexto` recorre las mismas fuentes (descripción, criterios, comentarios, subtareas o checklists, padre, vínculos) con los nombres de cada herramienta. Así lo aprovechan el analista, el estratega, los generadores de casos, los mappers y el `documentador-proyecto`.
+
+```
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| Conector  | Server                              | Autenticación                      | Qué da                                  |
++===========+=====================================+====================================+=========================================+
+| linear    | https://mcp.linear.app/mcp/readonly | OAuth, o `LINEAR_API_KEY` (key de  | Issues, comentarios, sub-issues,        |
+|           |                                     | solo lectura)                      | proyectos, ciclos y relaciones. Solo    |
+|           |                                     |                                    | lectura                                 |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| clickup   | https://mcp.clickup.com/mcp         | Solo OAuth                         | Tareas, subtareas, checklists,          |
+|           |                                     |                                    | comentarios y Docs                      |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| monday    | https://mcp.monday.com/mcp          | OAuth, o `MONDAY_API_TOKEN` (token | Ítems de los tableros, subítems,        |
+|           |                                     | personal)                          | updates (comentarios) y docs            |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| asana     | https://mcp.asana.com/v2/mcp        | OAuth con una app MCP propia       | Tareas, subtareas, comentarios,         |
+|           |                                     | (`ASANA_CLIENT_ID`,                | proyectos y secciones                   |
+|           |                                     | `ASANA_CLIENT_SECRET`)             |                                         |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| trello    | https://mcp.trello.com/v1           | Solo OAuth                         | Tarjetas, listas, checklists y          |
+|           |                                     |                                    | comentarios                             |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| notion    | https://mcp.notion.com/mcp          | Solo OAuth                         | Páginas, bases de datos (backlogs) y    |
+|           |                                     |                                    | wikis                                   |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| youtrack  | `<YOUTRACK_URL>/mcp`                | `YOUTRACK_TOKEN` (permanent token) | Issues, comentarios, vínculos, tags y   |
+|           |                                     |                                    | artículos de la base de conocimiento    |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+| shortcut  | https://mcp.shortcut.com/mcp        | Solo OAuth                         | Stories, epics, comentarios, tareas y   |
+|           |                                     |                                    | documentos                              |
++-----------+-------------------------------------+------------------------------------+-----------------------------------------+
+```
+
+Para activar cualquiera:
+
+1. Si usa variables, completalas en el bloque *Otras herramientas de gestión de proyecto* del `.env` (ver `.env.example`).
+2. `npm run conector -- activar <nombre>` (por ejemplo `linear`).
+3. Reiniciá Claude Code, entrá a `/mcp` y, si es OAuth, autorizá con tu cuenta.
+
+Detalles por herramienta:
+
+- **Linear**: el conector apunta al endpoint **de solo lectura** (`/mcp/readonly`), que alcanza para leer historias. Con `LINEAR_API_KEY` (una key con permiso *Read*) se salta el OAuth.
+- **ClickUp**: solo OAuth; al autorizar elegís el Workspace. ClickUp no acepta API tokens en su server MCP.
+- **monday.com**: con OAuth puede hacer falta que un admin de la cuenta apruebe la conexión; con `MONDAY_API_TOKEN` (tu token personal, sin aprobación de admin) el `headersHelper` lo manda como `Bearer`.
+- **Asana**: el server V2 **no acepta el registro automático de clientes OAuth**, así que hace falta una app propia: en https://app.asana.com/0/my-apps, *Create new app* > *MCP app*, redirect URL `http://localhost:8080/callback`, y en *Manage distribution* los workspaces. Copiá el Client ID y el Client secret al `.env`; `npm run conector -- activar asana` lo registra con `claude mcp add --client-id … --client-secret --callback-port 8080`. El secret se guarda en el llavero del sistema (si Claude Code no lo toma de la variable, te lo pide oculto en la terminal). El server viejo (`/sse`, V1) ya no está disponible.
+- **Trello**: es el server oficial de Trello (separado del Rovo MCP Server de Atlassian). Al autorizar elegís los workspaces y los permisos (*Read*, *Write*, *Search*); no borra nada (solo archiva). En organizaciones Enterprise, un admin puede limitarlo desde *Atlassian Administration > Connectors*.
+- **Notion**: solo OAuth (no acepta tokens). Lee lo que la conexión puede ver en tu workspace; sirve para backlogs armados como base de datos y para la documentación del proyecto.
+- **YouTrack**: el server MCP viene integrado en YouTrack Cloud y en YouTrack Server reciente, en `<tu sitio>/mcp`. YouTrack no acepta el registro dinámico de clientes OAuth, así que el conector usa un *permanent token* (Perfil > *Account Security* > *New token*, con el scope YouTrack) que `bearer-headers.js` lee del `.env`. La URL se toma del `.env` al activarlo.
+- **Shortcut**: el server remoto oficial (el paquete `@shortcut/mcp` por npx quedó archivado); solo OAuth.
+- **GitHub Issues y Projects, GitLab Issues y work items**: no necesitan otro conector, los leen `github` y `gitlab` (ver [Repositorio de la aplicación](#repositorio-de-la-aplicación)).
+
+**Las herramientas de escritura modifican datos compartidos**: salvo Linear (solo lectura), estos servers también pueden crear o editar tareas. Los agentes de k0lmenIA solo las leen, y Claude Code pide confirmación antes de cada acción de escritura.
+
+Ejemplos de uso:
+
+> *"Analizá la historia ENG-142 de Linear"* · *"Generá los casos de la tarjeta 'Checkout con cupones' de Trello"* · *"Juntá el contexto de la tarea de Asana 'Alta de clientes' antes de escribir los casos"*
+
+---
+
 ## Appium (para el mobile-mapper)
 
 No es una herramienta de gestión de pruebas: es el server MCP **oficial de Appium**, [`appium-mcp`](https://github.com/appium/appium-mcp), que usa el agente `mobile-mapper` para recorrer una app en un dispositivo o emulador. Requiere **Node.js 22+**, JDK y, para Android, el Android SDK (los drivers UiAutomator2 y XCUITest vienen incluidos). Para iOS hace falta macOS con Xcode.
@@ -461,6 +563,14 @@ Se activa con `npm run conector -- activar appium-mcp`. `ANDROID_HOME` se toma d
 - Xray Server/DC REST API (integración propia): https://docs.getxray.app/display/XRAY/REST+API
 - Appium MCP (oficial): https://github.com/appium/appium-mcp
 - Azure DevOps MCP Server (oficial): https://github.com/microsoft/azure-devops-mcp
+- Linear MCP Server: https://linear.app/docs/mcp
+- ClickUp MCP Server: https://developer.clickup.com/docs/connect-an-ai-assistant-to-clickups-mcp-server-1
+- monday.com MCP: https://developer.monday.com/api-reference/docs/integrate-with-monday-mcp
+- Asana MCP Server V2: https://developers.asana.com/docs/integrating-with-asanas-mcp-server · con Claude Code: https://developers.asana.com/docs/connecting-mcp-clients-to-asanas-v2-server
+- Trello MCP: https://support.atlassian.com/trello/docs/connect-trello-to-ai-assistants-with-trello-mcp/
+- Notion MCP: https://developers.notion.com/docs/get-started-with-mcp
+- YouTrack MCP Server: https://www.jetbrains.com/help/youtrack/cloud/model-context-protocol-server.html · Server: https://www.jetbrains.com/help/youtrack/server/model-context-protocol-server.html
+- Shortcut MCP: https://www.shortcut.com/help/integrations/mcp-server
 - Azure DevOps MCP, herramientas por dominio: https://github.com/microsoft/azure-devops-mcp/blob/main/docs/TOOLSET.md
 - GitHub MCP Server: https://github.com/github/github-mcp-server (server remoto: https://github.com/github/github-mcp-server/blob/main/docs/remote-server.md)
 - GitLab MCP Server: https://docs.gitlab.com/user/model_context_protocol/mcp_server/

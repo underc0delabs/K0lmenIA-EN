@@ -28,6 +28,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 3. Reescribí lo que SÍ está, ordenado y claro, en los campos de la plantilla.
 4. Identificá qué campos de la plantilla **no** se pueden completar con la información disponible.
 5. Asigná severidad y prioridad **con una breve justificación**.
+6. Antes de cargar el bug en Jira o Azure DevOps, sugerí en la respuesta pasarlo por el `triador-bugs`: busca duplicados y regresiones de bugs cerrados, y propone componente, responsable e historia a vincular.
 
 # Salida
 

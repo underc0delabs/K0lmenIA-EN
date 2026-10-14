@@ -69,11 +69,11 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 🧠 **Diseño de pruebas**              | Analiza historias, arma el plan, escribe casos manuales (Excel), BDD (Gherkin) y de API, genera datos y redacta bugs.                                                                 |
 | 🤖 **Automatización sin tokens**      | Los agentes *mapper* recorren tu app **una sola vez** y escriben la automatización en k0lmena. Después corre con `npm test`, sin agentes.                                             |
-| 🌐 **Web, API, mobile y performance** | Playwright + Cucumber, axios + Cucumber, WebdriverIO + Appium (dispositivo, emulador o BrowserStack), k6, Artillery y JMeter.                                                         |
+| 🌐 **Web, API, mobile y performance** | Playwright + Cucumber, axios + Cucumber (REST y GraphQL; colecciones de Postman, Bruno o Insomnia), WebdriverIO + Appium (dispositivo, emulador o BrowserStack), k6, Artillery y JMeter.                                                         |
 | 📸 **Evidencia completa**             | Captura (y GIF) de cada test que pasa; video, logs, trace y error de cada test que falla, en reportes HTML.                                                                           |
 | 🗂️ **Gestión de pruebas**             | Carpetas, casos, ciclos y resultados con evidencias en **Xray** (Cloud y Server/DC), **QMetry (QTM4J)** y **AIO Tests**; casos y suites en **Azure DevOps Test Plans**.               |
 | 🗄️ **Verificación en base de datos**  | Revisa lo que dejaron guardado tus pruebas en **PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB**, a pedido o, si lo pedís, como steps dentro de los tests. Solo lectura por defecto. |
-| 🔌 **Conectado**                      | Lee historias de **Jira** o **Azure DevOps**, documentación de **Confluence** o de la Wiki de Azure DevOps y diseños de **Figma** por MCP.                                            |
+| 🔌 **Conectado**                      | Lee historias de **Jira**, **Azure DevOps**, **Linear**, **ClickUp**, **monday.com**, **Asana**, **Trello**, **Notion**, **YouTrack** o **Shortcut**, el repositorio de **GitHub, GitLab, Azure Repos o Bitbucket**, documentación de **Confluence** o de la Wiki de Azure DevOps y diseños de **Figma** por MCP.                                            |
 | 🔎 **Investiga antes de suponer**     | Lee la historia de Jira con **todos sus comentarios, subtareas, épica e issues vinculados**, más Confluence y Figma, y arma una ficha de contexto.                                    |
 | 🛡️ **No inventa**                     | Lo que no está en ninguna fuente queda marcado como **Falta información** (`FI-01`) en todos los reportes, con la pregunta para el PO.                                                |
 
@@ -113,9 +113,15 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Exploratorias por sesiones](#-exploratorias-por-sesiones)
 - [Usabilidad (heurísticas de Nielsen)](#-usabilidad-heurísticas-de-nielsen)
 - [Formularios](#-formularios)
+- [Permisos por rol](#-permisos-por-rol)
+- [Resiliencia](#-resiliencia)
+- [Triage de bugs y consultas](#-triage-de-bugs-y-consultas)
 - [Logs](#-logs)
 - [Traducciones e idiomas](#-traducciones-e-idiomas)
 - [Historial de corridas](#-historial-de-corridas)
+- [Tablero de calidad y portal de informes](#-tablero-de-calidad-y-portal-de-informes)
+- [Avisos y monitoreo sintético](#-avisos-y-monitoreo-sintético)
+- [Evals de los agentes](#-evals-de-los-agentes)
 - [Seguridad web](#️-seguridad-web)
 - [Verificación en base de datos](#️-verificación-en-base-de-datos)
 - [Conectores MCP](#-conectores-mcp)
@@ -129,7 +135,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 
 <table>
 <tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="11"><b>🧠 Análisis<br>y diseño</b></td>
+<tr><td rowspan="13"><b>🧠 Análisis<br>y diseño</b></td>
   <td><code>documentador-proyecto</code></td><td>Arma la documentación del proyecto en <code>input/documentacion/</code>: lee el repositorio (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura), las historias con sus comentarios, PRs y links, y hace un mapa funcional de la web</td></tr>
 <tr><td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
 <tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
@@ -138,23 +144,28 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
 <tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
 <tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
+<tr><td><code>triador-bugs</code></td><td>Antes de cargar un bug, busca si ya existe en Jira, Azure DevOps o los bugs locales, detecta regresiones de bugs cerrados y sugiere severidad, componente, responsable e historia</td></tr>
+<tr><td><code>consultor-proyecto</code></td><td>Preguntale cómo funciona cualquier parte del producto: responde con la documentación del proyecto, citando de dónde sale cada dato o diciendo que no está documentado</td></tr>
 <tr><td><code>revisor-casos</code></td><td>Revisa la calidad de los casos existentes: puntaje, problemas, duplicados, tiempo de ejecución manual y la versión mejorada</td></tr>
 <tr><td><code>generador-charters</code></td><td>Charters de exploración por sesiones (hojas y plantilla de notas) y el informe de las sesiones</td></tr>
 <tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
-<tr><td rowspan="14"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="17"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
-<tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman con Newman</td></tr>
+<tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman, Bruno o Insomnia con Newman (REST y GraphQL)</td></tr>
 <tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
 <tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
 <tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
 <tr><td><code>pixel-perfect</code></td><td>Regresión visual contra una referencia (o el diseño): qué se corrió y cuántos píxeles, qué falta, qué es nuevo y qué cambió de estilo, con comparador deslizable</td></tr>
 <tr><td><code>evaluador-ux</code></td><td>Usabilidad con las 10 heurísticas de Nielsen: medición automática en desktop y mobile más la revisión manual de los flujos</td></tr>
 <tr><td><code>probador-formularios</code></td><td>Valida cada campo de los formularios sin enviarlos: obligatorios, largos, formatos, límites y mensajes</td></tr>
+<tr><td><code>probador-permisos</code></td><td>Inicia sesión con cada rol y arma la matriz de qué ve y qué abre cada uno (también por URL directa y en la API), comparada con la regla documentada</td></tr>
+<tr><td><code>probador-resiliencia</code></td><td>Simula que la API falla o tarda, que la red se corta y que no cargan los recursos, y revisa qué ve la persona: pantallas en blanco, errores sin aviso, spinners infinitos, recuperación</td></tr>
 <tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
 <tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
 <tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
 <tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
+<tr><td><code>tablero-calidad</code></td><td>Tablero de calidad por sprint o release: aprobados y tendencia, % automatizado, cobertura, bugs, inestables y resumen para gerencia</td></tr>
 <tr><td><code>analista-cobertura</code></td><td>Matriz de trazabilidad (HU → criterios → casos → automatización → resultados) y qué falta probar</td></tr>
 <tr><td rowspan="9"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
   <td><code>web-mapper</code></td><td>Recorre la web siguiendo tus casos y genera <code>.feature</code>, steps y locators</td></tr>
@@ -253,27 +264,34 @@ Hay **un solo `.env`, en la raíz**. Lo usan los agentes, k0lmena y los scripts 
 
 ## 💬 Cómo se usa
 
-1. Poné tus insumos en `input/` (`historias/`, `documentacion/`, `api/`, `bugs/`), o pasá una key de Jira, una página de Confluence o un link de Figma.
+1. Pedí *"Documentá el proyecto"* para juntar el contexto (repositorio, historias, links y web) en `input/documentacion/`; poné tus insumos en `input/` (`historias/`, `api/`, `bugs/`), o pasá una key de Jira, Azure DevOps, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut, una página de Confluence o un link de Figma.
 2. Pedí lo que necesitás en lenguaje natural.
 3. Revisá el resultado en `output/` o en `herramientas/k0lmena/`.
 
-| Le pedís                                                                            | Obtenés                                                      |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| *"Investigá el contexto de PROJ-12"*                                                | Ficha de contexto con fuentes, hallazgos y Falta información |
-| *"Analizá la historia HU-001"*                                                      | Ambigüedades y preguntas para el PO                          |
-| *"Armá el plan de pruebas de HU-001"*                                               | Plan HTML                                                    |
-| *"Generá los casos de HU-001"*                                                      | `casos-HU-001.xlsx` + `.md` + cobertura                      |
-| *"Pasá la historia HU-001 a escenarios BDD"*                                        | `HU-001-<slug>.feature` + cobertura                          |
-| *"Generá los casos de la API de autenticación"*                                     | Casos de API con sus JSON                                    |
-| *"Tomá la observación de input/bugs/ y armá el reporte"*                            | `BUG-001.md`                                                 |
-| *"Ejecutá el escenario de registro válido contra https://tu-app.com"*               | Reporte HTML de la corrida con evidencia                     |
-| *"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com"*             | `.feature` + steps + locators                                |
-| *"Armá una prueba de carga del login para 20 usuarios"*                             | Script k6/Artillery/JMeter + reporte HTML                    |
-| *"Verificá en la base si se creó el usuario ana@test.com y en qué estado quedó"*    | Consulta y resultado (solo lectura)                          |
-| *"Sumá al test de registro la verificación en la base de datos"*                    | Steps de BD en el `.feature`                                 |
-| *"Subí los casos de HU-001 a Xray, vinculados a PROJ-12, y creá el ciclo Sprint 5"* | Casos y ciclo en Xray                                        |
-| *"Subí los resultados de la última corrida al ciclo PROJ-60"*                       | Estados y evidencias en el ciclo                             |
-| *"Armá el informe de cierre de HU-001"*                                             | Resultados, bugs y go/no-go                                  |
+| Le pedís                                                                            | Obtenés                                                              |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| *"Documentá el proyecto"* · *"Juntá el contexto de PROJ-12"*                        | Base del proyecto + dossier de la historia en `input/documentacion/` |
+| *"Investigá el contexto de PROJ-12"*                                                | Ficha de contexto con fuentes, hallazgos y Falta información         |
+| *"Analizá la historia HU-001"*                                                      | Ambigüedades y preguntas para el PO                                  |
+| *"Armá el plan de pruebas de HU-001"*                                               | Plan HTML                                                            |
+| *"Generá los casos de HU-001"*                                                      | `casos-HU-001.xlsx` + `.md` + cobertura                              |
+| *"Pasá la historia HU-001 a escenarios BDD"*                                        | `HU-001-<slug>.feature` + cobertura                                  |
+| *"Generá los casos de la API de autenticación"*                                     | Casos de API con sus JSON                                            |
+| *"Tomá la observación de input/bugs/ y armá el reporte"*                            | `BUG-001.md`                                                         |
+| *"¿Este bug ya está cargado en Jira?"*                                              | Duplicados, posibles regresiones y severidad sugerida                |
+| *"¿Qué pasa si un usuario bloqueado intenta pagar?"*                                | Respuesta con la fuente de cada dato                                 |
+| *"Ejecutá el escenario de registro válido contra https://tu-app.com"*               | Reporte HTML de la corrida con evidencia                             |
+| *"Probá los permisos de admin, operador e invitado"*                                | Matriz rol × ruta y rol × endpoint                                   |
+| *"¿Qué ve el usuario si la API se cae o la red está lenta?"*                        | Matriz página × escenario con capturas                               |
+| *"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com"*             | `.feature` + steps + locators                                        |
+| *"Armá una prueba de carga del login para 20 usuarios"*                             | Script k6/Artillery/JMeter + reporte HTML                            |
+| *"Verificá en la base si se creó el usuario ana@test.com y en qué estado quedó"*    | Consulta y resultado (solo lectura)                                  |
+| *"Sumá al test de registro la verificación en la base de datos"*                    | Steps de BD en el `.feature`                                         |
+| *"Subí los casos de HU-001 a Xray, vinculados a PROJ-12, y creá el ciclo Sprint 5"* | Casos y ciclo en Xray                                                |
+| *"Subí los resultados de la última corrida al ciclo PROJ-60"*                       | Estados y evidencias en el ciclo                                     |
+| *"Armá el informe de cierre de HU-001"*                                             | Resultados, bugs y go/no-go                                          |
+| *"Armá el tablero de calidad del sprint 12"*                                        | Tendencia y resumen para gerencia                                    |
+| *"Avisá en Slack el resultado de la última corrida"*                                | Mensaje en Slack o Teams                                             |
 
 ---
 
@@ -323,6 +341,8 @@ Deja una **base del proyecto** (resumen, reglas de negocio, mensajes, estados y 
 
 Para leer el repositorio, completá el bloque *Repositorio de la aplicación* del `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, …) y activá su conector: `github` o `gitlab` con `npm run conector`, `azure-devops` para Azure Repos o `atlassian` (con token) para Bitbucket Cloud. Detalle en [`CONECTORES.md`](CONECTORES.md#repositorio-de-la-aplicación).
 
+**Incremental**: el documentador guarda qué documentó (commit de cada repositorio, fuentes de cada documento, fecha de cada historia) en `input/documentacion/.estado.json`. Al pedirle *"Actualizá la documentación"* rehace solo lo que cambió y deja en `cambios.md` los casos que conviene pasar al `revisor-casos`.
+
 > *"Documentá el proyecto"* · *"Juntá todo el contexto de PROJ-12 antes de escribir los casos"*
 
 ---
@@ -348,7 +368,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run mapa-funcional` (páginas, formularios y mensajes, para la documentación), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run mapa-funcional` (páginas, formularios y mensajes, para la documentación), `npm run permisos` (matriz por rol), `npm run resiliencia` (fallas simuladas), `npm run monitorear` (monitoreo sintético), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -604,6 +624,33 @@ npm run formularios -- --url https://staging.mi-app.com/registro
 
 ---
 
+## 🔐 Permisos por rol
+
+El **probador-permisos** inicia sesión con cada rol del `.env` (más el anónimo), abre cada ruta y endpoint con cada uno y marca los accesos indebidos: rutas protegidas abiertas sin login, URLs de otro rol, links que después niegan el acceso y APIs sin autenticación. Compara contra la regla documentada (`estados-y-permisos.md` del documentador o la historia); lo que no está definido queda como Falta información. Solo GET: no hace acciones con efecto.
+
+```bash
+npm run permisos -- --url https://staging.mi-app.com --endpoints "GET /api/usuarios"
+```
+
+---
+
+## 🌩️ Resiliencia
+
+El **probador-resiliencia** simula desde el navegador que la API responde con error o no responde, que la red está lenta o se corta, que llegan respuestas vacías o rotas y que no cargan los estilos ni los scripts. Después mira qué ve la persona: pantallas en blanco, errores sin aviso, spinners infinitos, mensajes técnicos y si la página se recupera cuando vuelve la red. No genera carga contra el servidor: solo intercepta.
+
+```bash
+npm run resiliencia -- --url https://staging.mi-app.com/productos
+```
+
+---
+
+## 🐞 Triage de bugs y consultas
+
+- El **triador-bugs**, antes de cargar un bug, busca si ya existe en Jira, Azure DevOps, los bugs locales o los issues del repositorio, detecta **regresiones** de bugs cerrados y sugiere severidad, prioridad, componente, responsable e historia (`scripts/buscar_duplicados.py`). Crear o vincular en la herramienta, solo con tu confirmación.
+- El **consultor-proyecto** responde preguntas del producto (*"¿qué pasa si un usuario bloqueado intenta pagar?"*) con la documentación del proyecto, citando de dónde sale cada dato o diciendo que no está documentado.
+
+---
+
 ## 🪵 Logs
 
 El **analista-logs** lee los logs de la aplicación (app, nginx, Apache, JSON, syslog), agrupa los errores por firma, arma la línea de tiempo y los cruza con los escenarios que fallaron en `npm test` (cada escenario guarda su inicio y fin) para encontrar el error del servidor detrás de cada falla.
@@ -646,6 +693,33 @@ Queda en `output/traductor/<HU o sitio>/`, con el porcentaje traducido por idiom
 ## 🕒 Historial de corridas
 
 Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida. Así podés comparar, por ejemplo, la accesibilidad antes y después de un arreglo, o si una regresión visual ya se resolvió, sin perder la evidencia de la corrida anterior.
+
+---
+
+## 📊 Tablero de calidad y portal de informes
+
+- **Tablero de calidad**: *"Armá el tablero del sprint 12"* junta lo que ya dejaron las herramientas (corridas, casos, cobertura, bugs, inestables) y arma un dashboard con la tendencia y un resumen para gerencia en `output/tablero/<nombre>/` (`npm run tablero -- --nombre sprint-12 --desde 2026-10-01 --hasta 2026-10-14`).
+- **Portal de informes**: `output/index.html` muestra el último informe de cada herramienta, con su fecha, veredicto y la corrida anterior. Se actualiza solo cada vez que se arma un informe y se abre con doble clic (`npm run portal -- --abrir`).
+
+---
+
+## 📣 Avisos y monitoreo sintético
+
+- **Avisos a Slack y Teams**: `npm run avisar -- --titulo "…" --texto "…" --nivel error` publica por webhook (`SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL` en el `.env`); `--desde-cucumber herramientas/k0lmena/reports/web/cucumber-report.json` resume un `npm test`. Lo usan el triador, el tablero y el monitoreo cuando se pide.
+- **Monitoreo sintético**: `npm run monitorear` hace un smoke de **solo lectura** (URLs, textos esperados, tiempos, certificado TLS y, si querés, escenarios `@sintetico` de k0lmena) contra cualquier ambiente, guarda la disponibilidad en `output/monitoreo/<nombre>/` y **avisa solo cuando algo se rompe o se recupera**. Se programa con `.github/workflows/monitoreo.yml`, cron o el Programador de tareas de Windows.
+
+---
+
+## 🧪 Evals de los agentes
+
+Los tests cubren los scripts; los **evals** (`evals/`) miden la calidad de lo que generan los agentes. Cada caso les da una historia, un contrato, una observación o un repositorio con **trampas deliberadas** (ambigüedades, contradicciones, mensajes sin definir, límites, secretos) y verifica con chequeos determinísticos que marquen la Falta información, apliquen valores límite, respeten las plantillas y no inventen. Corren en un workspace aislado con `claude -p` y dejan un informe con el puntaje por agente y las **regresiones** contra la corrida anterior. Usalos antes y después de cambiar un agente o un skill:
+
+```bash
+npm run evals -- --listar
+npm run evals -- --correr --agente generador-casos-manuales
+```
+
+**Gastan tokens**: cada caso es una conversación completa, con un tope por caso (`--presupuesto-usd`). `--solo-verificar` revisa salidas ya generadas sin volver a correr el agente.
 
 ---
 
@@ -702,6 +776,9 @@ También se usa sin agente: `npm run bd -- conexiones | esquema | existe | consu
 | `azure-devops`                   | **Azure DevOps**: historias, Wiki y casos en Test Plans     | PAT                                               |
 | `k0lmena-tmt`                    | Cargar y consultar casos en k0lmenaTMT                      | Token personal                                    |
 | `github` · `gitlab`              | Repositorio de la app para el documentador-proyecto         | Token de solo lectura (GitLab: también OAuth)     |
+| `linear` · `clickup` · `monday` · `asana` · `trello` · `notion` · `youtrack` · `shortcut` | Historias y documentación si tu equipo no usa Jira ni Azure DevOps | Tu cuenta (OAuth); YouTrack con token; Asana con app propia |
+
+¿Tu equipo no usa Jira? Las historias se leen igual desde Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut con su conector MCP oficial (`npm run conector -- activar linear`), y desde GitHub o GitLab Issues con los conectores del repositorio.
 
 Claude Code arranca directo, sin pedir aprobar conectores: vienen activos Playwright y Atlassian (Jira y Confluence). Los demás los activa cada QA según su equipo, con un comando. Ninguno lleva secretos: las credenciales se leen del `.env`, que trae un bloque comentado por herramienta. Guía completa en [`CONECTORES.md`](CONECTORES.md).
 
@@ -773,9 +850,10 @@ k0lmenIA/
 ├── package.json            Atajos para correr k0lmena desde la raíz (npm test…)
 ├── docs/                   Documentación web, PDF y diagramas
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
-├── .github/workflows/      CI: los tests en Ubuntu y Windows
+├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
+├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 36 agentes
+│   ├── agents/             Los 41 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

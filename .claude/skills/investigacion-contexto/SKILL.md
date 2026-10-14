@@ -1,6 +1,6 @@
 ---
 name: investigacion-contexto
-description: Cómo investigar a fondo una historia o funcionalidad antes de analizarla, planificarla, escribir casos o automatizarla — la documentación del proyecto que arma el documentador-proyecto en input/documentacion/ (índice, dossier de la historia, reglas del código, mensajes, mapa funcional), la historia de Jira o de Azure DevOps (Azure Boards) con sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence relacionadas, los diseños de Figma, contratos de API y documentación local — y cómo registrar lo que falta como "Falta información" (FI-XX) en una ficha de contexto reutilizable. Úsalo en analista-historias, estratega-pruebas, los generadores de casos y los mappers cuando trabajen sobre una historia.
+description: Cómo investigar a fondo una historia o funcionalidad antes de analizarla, planificarla, escribir casos o automatizarla — la documentación del proyecto que arma el documentador-proyecto en input/documentacion/ (índice, dossier de la historia, reglas del código, mensajes, mapa funcional), la historia de Jira, Azure DevOps (Azure Boards) u otra herramienta de gestión (Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, GitHub o GitLab Issues) con sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence relacionadas, los diseños de Figma, contratos de API y documentación local — y cómo registrar lo que falta como "Falta información" (FI-XX) en una ficha de contexto reutilizable. Úsalo en analista-historias, estratega-pruebas, los generadores de casos y los mappers cuando trabajen sobre una historia.
 ---
 
 # Investigación de contexto
@@ -11,7 +11,7 @@ Antes de suponer, **buscar**. Una historia casi nunca tiene toda la información
 
 Buscá `output/contexto/contexto-<HU>.md`.
 
-- Si existe y la historia **no cambió** desde entonces (compará el campo `updated` de Jira con la fecha de la ficha), **reusala** y no vuelvas a investigar: ahorra tokens.
+- Si existe y la historia **no cambió** desde entonces (compará la fecha de última modificación de la historia —`updated` en Jira; las demás herramientas, en la tabla de equivalencias— con la fecha de la ficha), **reusala** y no vuelvas a investigar: ahorra tokens.
 - Si cambió, o la persona pide actualizarla, investigá de nuevo y reemplazá la ficha (conservá los `FI-XX` que sigan abiertos, con el mismo ID).
 
 ## 2. Primero, la documentación del proyecto
@@ -87,9 +87,54 @@ Si existe `input/documentacion/INDICE.md` (lo arma el agente `documentador-proye
 
 **Si la historia está en Azure DevOps** (Azure Boards, conector `azure-devops`), se recorren las mismas fuentes con sus equivalentes: el work item (*User Story* / *Product Backlog Item*) con `wit_work_item` (`get`, campos de descripción y *Acceptance Criteria*), sus comentarios (`list_comments`), las *Tasks* hijas, el padre (*Feature* / *Epic*), los vínculos (*Related*, *Predecessor/Successor*, *Tested By*, bugs) y la **Wiki** del proyecto en lugar de Confluence (`wiki`, `search_wiki`). La fecha de cambio para reusar la ficha es `System.ChangedDate`.
 
+**Si la historia está en otra herramienta de gestión**, se recorre igual, con el conector de esa herramienta (ver `CONECTORES.md`) y estas equivalencias:
+
+```
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| Herramienta      | Historia y criterios   | Comentarios      | Subtareas /          | Padre                | Vínculos · fecha de cambio |
+|                  |                        |                  | checklist            |                      |                            |
++==================+========================+==================+======================+======================+============================+
+| Linear           | Issue: descripción     | Comentarios del  | Sub-issues           | Proyecto, ciclo,     | Relations (blocks,         |
+| (`linear`)       |                        | issue            |                      | issue padre          | related, duplicate) ·      |
+|                  |                        |                  |                      |                      | `updatedAt`                |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| ClickUp          | Tarea: descripción y   | Comentarios de   | Subtareas y          | Lista, carpeta,      | Relaciones y dependencias  |
+| (`clickup`)      | campos personalizados  | la tarea         | checklists           | espacio, tarea padre | · `date_updated`           |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| monday.com       | Ítem: columnas y       | Updates del ítem | Subítems             | Tablero y grupo      | Columnas de conexión ·     |
+| (`monday`)       | descripción            |                  |                      |                      | última actualización       |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| Asana (`asana`)  | Tarea: descripción y   | Comentarios de   | Subtareas            | Proyecto, sección,   | Dependencias ·             |
+|                  | campos personalizados  | la tarea         |                      | tarea padre          | `modified_at`              |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| Trello           | Tarjeta: descripción   | Comentarios de   | Checklists           | Lista y tablero      | Tarjetas adjuntas como     |
+| (`trello`)       |                        | la tarjeta       |                      |                      | link · última actividad    |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| Notion           | Página de la base de   | Comentarios de   | Listas de tareas o   | Base de datos y      | Relaciones de la base ·    |
+| (`notion`)       | datos (propiedades y   | la página        | subpáginas           | página padre         | `last_edited_time`         |
+|                  | contenido)             |                  |                      |                      |                            |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| YouTrack         | Issue: descripción y   | Comentarios del  | Subtareas (vínculo   | Proyecto e issue     | Links (relates, depends,   |
+| (`youtrack`)     | campos                 | issue            | subtask)             | padre (épica)        | duplicates) · `updated`.   |
+|                  |                        |                  |                      |                      | Artículos de la base de    |
+|                  |                        |                  |                      |                      | conocimiento en lugar de   |
+|                  |                        |                  |                      |                      | Confluence                 |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| Shortcut         | Story: descripción     | Comentarios de   | Tareas de la story   | Epic, iteración,     | Story links · `updated_at` |
+| (`shortcut`)     |                        | la story         |                      | objetivo             |                            |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+| GitHub / GitLab  | Issue: cuerpo          | Comentarios del  | Task lists y sub-    | Milestone, épica     | Issues y PRs vinculados ·  |
+| Issues           |                        | issue            | issues (GitHub),     | (GitLab), proyecto   | `updated_at`               |
+| (`github`,       |                        |                  | tareas hijas         |                      |                            |
+| `gitlab`)        |                        |                  | (GitLab)             |                      |                            |
++------------------+------------------------+------------------+----------------------+----------------------+----------------------------+
+```
+
+En estas herramientas los criterios de aceptación casi nunca tienen un campo propio: buscalos en la descripción (una sección *Criterios*, un checklist, una lista numerada) y, si no están, es un `FI-XX`. Si la herramienta no tiene wiki propia, la documentación suele estar en Notion, Confluence o el repositorio. Para la trazabilidad se usa el ID de la herramienta (`ENG-142`, `#1234`, el link de la tarjeta), igual que una key de Jira.
+
 Límites para no gastar tokens de más: un solo nivel de profundidad desde la historia (sus vínculos directos, no los vínculos de los vínculos), y de cada fuente extraé solo lo que sirve para probar (reglas, validaciones, textos, estados, permisos, datos). No copies páginas enteras.
 
-**Si un conector no está activo** (por ejemplo, no hay `atlassian` o `azure-devops`), no lo reemplaces con suposiciones: anotá la fuente como **No disponible** en la ficha y seguí con las demás. Si la historia vino pegada en el chat o en `input/`, avisá que los comentarios, subtareas y la épica no se pudieron revisar.
+**Si un conector no está activo** (por ejemplo, no hay `atlassian`, `azure-devops` o el de la herramienta del equipo), no lo reemplaces con suposiciones: anotá la fuente como **No disponible** en la ficha y seguí con las demás. Si la historia vino pegada en el chat o en `input/`, avisá que los comentarios, subtareas y la épica no se pudieron revisar.
 
 ## 4. Cómo interpretar lo que encontrás
 

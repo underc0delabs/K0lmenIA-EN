@@ -65,6 +65,16 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 | `generador-reportes-bug`   | Reportes de bug, siguiendo               | `output/reportes-bug/`                |
 |                            | `plantillas/plantilla-reporte-bug.md`    |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `triador-bugs`             | Busca duplicados y regresiones (Jira,    | `output/triage/`                      |
+|                            | Azure DevOps, bugs locales, issues del   |                                       |
+|                            | repositorio) y sugiere severidad,        |                                       |
+|                            | prioridad, componente, responsable e     |                                       |
+|                            | historia                                 |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `consultor-proyecto`       | Responde preguntas del producto con la   | Respuesta en el chat (+               |
+|                            | documentación del proyecto, citando la   | `output/consultas/`)                  |
+|                            | fuente de cada dato                      |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `generador-datos-prueba`   | Datos de prueba realistas (Markdown o    | `output/datos-de-prueba/`             |
 |                            | CSV)                                     |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
@@ -174,6 +184,11 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | los huecos (qué falta probar); informe   |                                       |
 |                            | HTML                                     |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `tablero-calidad`          | Tablero de calidad por sprint o release  | `output/tablero/`                     |
+|                            | (aprobados y tendencia, automatizado,    |                                       |
+|                            | cobertura, bugs, inestables) con resumen |                                       |
+|                            | para gerencia; informe HTML              |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `pixel-perfect`            | Regresión visual: compara cada página    | `output/pixel-perfect/`               |
 |                            | contra su referencia (o el diseño) píxel |                                       |
 |                            | a píxel y por elemento; dice qué se      |                                       |
@@ -233,6 +248,17 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | los formularios sin enviarlos            |                                       |
 |                            | (obligatorios, largos, formatos,         |                                       |
 |                            | límites, mensajes); informe HTML         |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-permisos`        | Inicia sesión con cada rol (más el       | `output/permisos/`                    |
+|                            | anónimo) y arma la matriz rol × ruta y   |                                       |
+|                            | rol × endpoint: qué abre, qué niega,     |                                       |
+|                            | acceso por URL directa; compara con la   |                                       |
+|                            | regla esperada; informe HTML             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-resiliencia`     | Simula fallas desde el navegador (API    | `output/resiliencia/`                 |
+|                            | caída o lenta, sin conexión, respuestas  |                                       |
+|                            | rotas, estáticos que no cargan) y revisa |                                       |
+|                            | cómo reacciona la interfaz; informe HTML |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
 | `analista-logs`            | Analiza los logs de la app: agrupa       | `output/logs/`                        |
 |                            | errores, arma la línea de tiempo y los   |                                       |
@@ -320,6 +346,15 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/revisar_casos.py`, `generar_charters.py` y `analizar_logs.py` (con sus `generar_informe_*`) → revisión de casos, charters exploratorios y análisis de logs; `generar_informe_ux.py` y `generar_informe_formularios.py` → los informes de `npm run ux` y `npm run formularios`.
 - `scripts/_historial.py` (y `herramientas/k0lmena/tools/historial/`) → guardan las últimas 5 corridas de cada herramienta y arman la sección de evolución de los informes.
 - `scripts/indice_documentacion.py` → arma `input/documentacion/INDICE.md` (qué documentación hay, sus fuentes y si está vigente); `npm run mapa-funcional`, el mapa funcional de la web (`documentador-proyecto`).
+- `scripts/cambios_documentacion.py` → documentación incremental: guarda en `input/documentacion/.estado.json` qué se documentó (commit por repositorio, fuentes de cada documento, fecha de cada historia) y, con los archivos que cambiaron, dice qué documentos rehacer y qué casos revisar (`cambios.md`).
+- `scripts/generar_informe_permisos.py` y `generar_informe_resiliencia.py` → los informes de `npm run permisos` y `npm run resiliencia` (`probador-permisos`, `probador-resiliencia`).
+- `scripts/buscar_duplicados.py` → similitud entre bugs para el `triador-bugs` (duplicados, regresiones, relacionados).
+- `scripts/tablero_calidad.py` → tablero de calidad por sprint o release (`tablero-calidad`).
+- `scripts/portal_informes.py` → `output/index.html` con el último informe de cada herramienta; se regenera solo al terminar cualquier informe (`K0LMENIA_PORTAL=0` lo desactiva).
+- `scripts/avisar.py` → avisos a Slack y Teams por webhook (`SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`); `--desde-cucumber` resume un `npm test`. Sin webhook no manda nada.
+- `npm run monitorear` (k0lmena `tools/monitoreo`) y `scripts/generar_informe_monitoreo.py` → monitoreo sintético de solo lectura (URLs, textos, tiempos, certificado y escenarios `@sintetico`); avisa solo cuando algo se rompe o se recupera. Se programa con `.github/workflows/monitoreo.yml`, cron o el Programador de tareas.
+- `scripts/convertir_coleccion.py` → convierte colecciones de Bruno (carpeta con `bruno.json`) e Insomnia (v4 `.json` / v5 `.yaml`) a Postman v2.1, con las advertencias de lo que no se pudo convertir (`correr_newman.py` lo usa solo). `scripts/resumir_graphql.py` → resume un schema GraphQL (introspección por URL, SDL o JSON).
+- `scripts/evaluar_agentes.py` → **evals de los agentes** (`evals/`): casos con trampas deliberadas que corren en un workspace aislado con `claude -p` y se verifican con chequeos determinísticos; informe con el puntaje por agente y las regresiones. **Gastan tokens** (tope por caso); `--solo-verificar` revisa salidas ya generadas.
 - `scripts/seleccionar_casos.py` → elige y prioriza los casos a correr para un cambio y genera el informe (`selector-casos-de-prueba`).
 - `scripts/generar_informe_pixel_perfect.py`, `generar_informe_cross_browser.py` y `generar_informe_reparacion.py` → los informes HTML de `npm run pixel-perfect`, `npm run cross-browser` y `npm run reparar` (`pixel-perfect`, `cross-browser`, `reparador-automatizacion`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
@@ -351,6 +386,12 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Correos: `output/correos/<HU o buzón>/` con `correos.json`, `informe-correos.html`, `capturas/` (desktop y mobile) y `eml/`.
 - Traducciones: `output/traductor/<HU o host>/` con `traductor.json`, `informe-traductor.html`, `capturas/` y `recortes/`.
 - **Historial**: Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida.
+- Permisos por rol: `output/permisos/<HU o host>/` con `permisos.json`, `analisis.json`, `informe-permisos.html` y `capturas/`. La corrida anterior pasa a `historial/` (últimas 5).
+- Resiliencia: `output/resiliencia/<HU o host>/` con `resiliencia.json`, `informe-resiliencia.html` y `capturas/`. La corrida anterior pasa a `historial/` (últimas 5).
+- Triage de bugs: `output/triage/<bug o lote>/` con `candidatos.json`, `triage.json` y `triage.md`. Consultas: `output/consultas/<tema>.md` (opcional).
+- Tablero de calidad: `output/tablero/<nombre>/` con `tablero.json`, `analisis.json` e `informe-tablero.html`. Portal de informes: `output/index.html`.
+- Monitoreo sintético: `output/monitoreo/<nombre>/` con `monitoreo.json`, `informe-monitoreo.html` e `historial/` (30 corridas).
+- Evals: `evals/resultados/<fecha>/` con `resultados.json` e `informe-evals.html` (no se versiona).
 - Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`.
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-auth.md`
@@ -369,6 +410,16 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena** y OWASP ZAP) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
+## APIs: REST y GraphQL; Postman, Bruno e Insomnia
+
+`ejecutor-api` corre colecciones de **Postman, Bruno o Insomnia** con Newman (`correr_newman.py` convierte Bruno e Insomnia con `scripts/convertir_coleccion.py` y avisa lo que no tiene equivalente). `api-mapper` automatiza también **GraphQL** en k0lmena, con steps genéricos (`envío la consulta GraphQL:`, `la respuesta GraphQL no tiene errores`, …) y el schema resumido por `scripts/resumir_graphql.py`; `generador-casos-api` incluye casos GraphQL (variables inválidas, campos inexistentes, autorización por campo, errores parciales, profundidad y paginación).
+
+## Avisos, portal y monitoreo
+
+- **Avisos**: `scripts/avisar.py` publica en Slack y Teams por webhook del `.env`. Lo usan el triador (bug crítico), el tablero de calidad y el monitoreo, siempre que se pida o esté configurado.
+- **Portal**: `output/index.html` muestra el último informe de cada herramienta y se regenera solo.
+- **Monitoreo sintético**: `npm run monitorear`, de solo lectura, contra cualquier ambiente; avisa cuando algo se rompe o se recupera.
+
 ## Herramientas de gestión de pruebas
 
 `scripts/gestion/gestion.py` integra **Xray Cloud, Xray Server/DC, QTM4J y AIO Tests** con los mismos comandos (configurados en el `.env` de la raíz con `GESTION_HERRAMIENTA` y `GESTION_PROYECTO`). **Azure DevOps** (Boards y Test Plans) se integra por el conector MCP `azure-devops`, configurado también en el `.env` (`ADO_ORGANIZACION`, `ADO_PAT`, `ADO_PROYECTO`); los pasos de los casos los arma `scripts/gestion/para_azure_devops.py`. La trazabilidad local `output/gestion/<HU>-<herramienta>.json` guarda qué `CP-XXX` es qué key remota. Detalle en `scripts/gestion/README.md`.
@@ -377,8 +428,8 @@ El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **
 
 `herramientas/k0lmena/` es el framework de automatización (web, api, mobile y performance). Los agentes **mapper** escriben la automatización **una sola vez** (skill `automatizacion-k0lmena`); después la suite corre **sin agentes ni tokens** con `cd herramientas/k0lmena && npm test` (performance: `npm run perf -- <script> <perfil>`). Para correr pruebas ya automatizadas, preferí `npm test` antes que los ejecutores en vivo (`ejecutor-e2e` / `ejecutor-api`), que gastan tokens en cada corrida.
 
-Secretos (tokens, credenciales): van en el `.env` local (gitignored) o en variables de entorno, **nunca** commiteados; hay una plantilla `.env.example`. El `.mcp.json` está versionado con los conectores que vienen activos para todos (Playwright y Atlassian: Jira y Confluence), así Claude Code arranca sin pedir aprobaciones. Los opcionales (Azure DevOps, Figma, GitHub, GitLab, QMetry/QTM4J, AIO Tests, k0lmenaTMT, Appium) los activa cada persona con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: los que piden token lo leen del `.env` con los scripts de `scripts/mcp/`. Si un agente necesita un conector que no está activo, decí cuál y cómo activarlo. Detalle en `CONECTORES.md`.
+Secretos (tokens, credenciales): van en el `.env` local (gitignored) o en variables de entorno, **nunca** commiteados; hay una plantilla `.env.example`. El `.mcp.json` está versionado con los conectores que vienen activos para todos (Playwright y Atlassian: Jira y Confluence), así Claude Code arranca sin pedir aprobaciones. Los opcionales (Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, QMetry/QTM4J, AIO Tests, k0lmenaTMT, Appium) los activa cada persona con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: los que piden token lo leen del `.env` con los scripts de `scripts/mcp/`. Si un agente necesita un conector que no está activo, decí cuál y cómo activarlo. Detalle en `CONECTORES.md`.
 
 **Repositorio de la aplicación:** el `documentador-proyecto` lo lee en solo lectura con el conector de su proveedor (`github`, `gitlab`, `azure-devops` para Azure Repos o `atlassian` para Bitbucket Cloud), configurado en el bloque *Repositorio de la aplicación* del `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, `REPO_RAMA`, `REPO_RUTA_LOCAL`).
 
-**Fuentes externas por MCP:** si la persona da una key de Jira, un work item de Azure DevOps, una página de Confluence o de la Wiki de Azure DevOps, o un link de Figma y el conector (`atlassian`, `azure-devops` o `figma`) está activo, cualquier agente puede leerlos como insumo, igual que un archivo de `input/` (trazabilidad: citá la key, la página o el link). Si el conector no está activo, pedí el contenido o indicá cómo activarlo (`CONECTORES.md`); no lo supongas.
+**Fuentes externas por MCP:** si la persona da una key de Jira, un work item de Azure DevOps, una tarea de Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut, una página de Confluence o de la Wiki de Azure DevOps, o un link de Figma y el conector (`atlassian`, `azure-devops` o `figma`) está activo, cualquier agente puede leerlos como insumo, igual que un archivo de `input/` (trazabilidad: citá la key, la página o el link). Si el conector no está activo, pedí el contenido o indicá cómo activarlo (`CONECTORES.md`); no lo supongas.

@@ -22,7 +22,12 @@ Cada .md que escribe el documentador lleva un encabezado (frontmatter) así:
 
 Los archivos sin encabezado (por ejemplo, un PDF o un .md que agregó una persona) también se listan,
 como "Agregado a mano", con la fecha del archivo.
+
+Documentación incremental: si existe input/documentacion/.estado.json (scripts/cambios_documentacion.py),
+los documentos que quedaron desactualizados por un cambio del código se muestran como "Desactualizado"
+con el commit desde el que cambió, y cambios.md (lo que cambió y qué casos revisar) va primero.
 """
+import json
 import argparse
 import datetime as dt
 import re
@@ -33,8 +38,9 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 INDICE = "INDICE.md"
 IGNORAR = {INDICE, ".gitkeep"}
-ORDEN_TIPOS = ["proyecto", "repositorio", "api", "web", "historia", "links"]
+ORDEN_TIPOS = ["cambios", "proyecto", "repositorio", "api", "web", "historia", "links"]
 NOMBRE_TIPO = {
+    "cambios": "Cambios desde la última documentación",
     "proyecto": "Proyecto",
     "repositorio": "Repositorio",
     "api": "Contratos de API",
@@ -78,7 +84,7 @@ def documentos(carpeta):
     docs = []
     for ruta in sorted(p for p in carpeta.rglob("*") if p.is_file()):
         # Los .json con su .md al lado (el mapa funcional) son los datos del mismo documento.
-        if ruta.name in IGNORAR or ruta.name.startswith("_") or (ruta.suffix == ".json" and ruta.with_suffix(".md").exists()):
+        if ruta.name in IGNORAR or ruta.name.startswith(("_", ".")) or (ruta.suffix == ".json" and ruta.with_suffix(".md").exists()):
             continue
         rel = ruta.relative_to(carpeta).as_posix()
         meta = {}
@@ -102,7 +108,18 @@ def documentos(carpeta):
     return sorted(docs, key=lambda d: (orden[d["tipo"]], d["historia"], d["ruta"]))
 
 
-def armar_indice(docs, hoy, dias):
+def desactualizados(carpeta):
+    """{documento: "desde <commit>"} de los documentos marcados por un cambio del código (.estado.json)."""
+    try:
+        estado = json.loads((Path(carpeta) / ".estado.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return {doc: f"desde {str((info.get('desactualizado') or {}).get('desde', '?'))[:10]}"
+            for doc, info in (estado.get("documentos") or {}).items() if info.get("desactualizado")}
+
+
+def armar_indice(docs, hoy, dias, marcados=None):
+    marcados = marcados or {}
     lineas = [
         "---",
         "titulo: Índice de la documentación del proyecto",
@@ -122,7 +139,8 @@ def armar_indice(docs, hoy, dias):
         lineas += ["Todavía no hay documentación. Pedile al `documentador-proyecto` que la arme.", ""]
         return "\n".join(lineas)
     viejos = [d for d in docs if (hoy - d["actualizado"]).days > dias]
-    lineas += [f"{len(docs)} documento(s) · {len(viejos)} para revisar (más de {dias} días sin actualizar).", ""]
+    lineas += [f"{len(docs)} documento(s) · {len(viejos)} para revisar (más de {dias} días sin actualizar)"
+               + (f" · {len(marcados)} desactualizado(s) por cambios del código (ver `cambios.md`)" if marcados else "") + ".", ""]
     for tipo in ORDEN_TIPOS + ["manual"]:
         grupo = [d for d in docs if d["tipo"] == tipo]
         if not grupo:
@@ -132,7 +150,7 @@ def armar_indice(docs, hoy, dias):
         cab = ["Documento", "Título"] + (["Historia"] if con_historia else []) + ["Fuentes", "Actualizado", "Estado"]
         lineas += ["| " + " | ".join(cab) + " |", "|" + "---|" * len(cab)]
         for d in grupo:
-            estado = "Revisar" if d in viejos else "Vigente"
+            estado = f"Desactualizado ({marcados[d['ruta']]})" if d["ruta"] in marcados else "Revisar" if d in viejos else "Vigente"
             fila = [f"`{d['ruta']}`", d["titulo"]] + ([d["historia"]] if con_historia else []) + [
                 d["fuentes"] or "-", d["actualizado"].isoformat(), estado]
             lineas.append("| " + " | ".join(str(c).replace("|", "/") for c in fila) + " |")
@@ -143,7 +161,7 @@ def armar_indice(docs, hoy, dias):
 def main(argv=None):
     for flujo in (sys.stdout, sys.stderr):
         flujo.reconfigure(encoding="utf-8")
-    ap =argparse.ArgumentParser(description="Arma input/documentacion/INDICE.md")
+    ap = argparse.ArgumentParser(description="Arma input/documentacion/INDICE.md")
     ap.add_argument("--carpeta", default=str(RAIZ / "input" / "documentacion"))
     ap.add_argument("--dias", type=int, default=30, help="días después de los que un documento se marca para revisar")
     a = ap.parse_args(argv)
@@ -151,7 +169,7 @@ def main(argv=None):
     carpeta.mkdir(parents=True, exist_ok=True)
     docs = documentos(carpeta)
     destino = carpeta / INDICE
-    destino.write_text(armar_indice(docs, dt.date.today(), a.dias), encoding="utf-8")
+    destino.write_text(armar_indice(docs, dt.date.today(), a.dias, desactualizados(carpeta)), encoding="utf-8")
     r = subprocess.run([sys.executable, str(RAIZ / "scripts" / "formatear_tablas.py"), str(destino)],
                        capture_output=True, text=True)
     if r.returncode != 0:

@@ -1,0 +1,10 @@
+{
+  "_info": "Ejemplo de configuración del monitoreo sintético (npm run monitorear). Copialo a input/monitoreo.json y adaptalo. Solo GET o HEAD: el monitoreo nunca cambia datos. Ver herramientas/k0lmena/tools/monitoreo/README.md.",
+  "nombre": "produccion",
+  "checks": [
+    { "nombre": "Inicio", "url": "https://qarmy.ar/practica/automation", "texto": "Crear cuenta", "max_ms": 3000 },
+    { "nombre": "Página que no existe", "url": "https://qarmy.ar/practica/no-existe", "status": 404, "max_ms": 3000 },
+    { "nombre": "Salud de la API", "url": "https://jsonplaceholder.typicode.com/posts/1", "texto": "\"id\": 1", "no_texto": "error", "max_ms": 2000 }
+  ],
+  "escenarios": { "correr": false, "tags": "@sintetico" }
+}

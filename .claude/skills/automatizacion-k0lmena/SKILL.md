@@ -129,6 +129,36 @@ Then la respuesta llega en menos de 2000 ms
 - Los campos usan notación de puntos (`data.items.0.id`).
 - La URL base sale de `API_BASEURL` y el token de `API_TOKEN` (`.env` de la raíz).
 
+### GraphQL
+
+Los mismos `comunes.steps.ts` traen steps de GraphQL. La query va en un docstring **tal cual** (sus llaves no se interpolan); los valores dinámicos van en las variables, que sí aceptan `{nombre}`:
+
+```gherkin
+Given el endpoint GraphQL es "/graphql"
+Given las variables GraphQL son:
+  """
+  { "code": "{codigoPais}" }
+  """
+When envío la consulta GraphQL:
+  """
+  query Pais($code: ID!) { country(code: $code) { name capital languages { code } } }
+  """
+Then el status de la respuesta es 200
+Then la respuesta GraphQL no tiene errores
+Then la respuesta GraphQL contiene el campo "country.capital"
+Then el campo GraphQL "country.name" es "Argentina"
+Then el campo GraphQL "country.population" es el número 46000000
+Then el campo GraphQL "country" es nulo
+Then el campo GraphQL "country.languages" es una lista con al menos 1 elemento
+Then la respuesta GraphQL tiene un error con el mensaje "Cannot query field"
+Then la respuesta GraphQL tiene un error con el código "GRAPHQL_VALIDATION_FAILED"
+When guardo el campo GraphQL "createPost.id" como "idPost"
+```
+
+- El endpoint sale de `el endpoint GraphQL es` (relativo a `API_BASEURL` o una URL completa) o, si no se dice, de `GRAPHQL_URL` del `.env` y, si tampoco está, de `API_BASEURL` + `/graphql`.
+- Los campos `GraphQL` se leen **dentro de `data`** (`country.name` es `data.country.name`); los steps comunes (`la respuesta contiene el campo "data.country"`, `el status de la respuesta es`, los headers y el token) también sirven.
+- Un escenario por operación y condición; las **mutations** son métodos con efecto (confirmación antes de verificarlas).
+
 ## Mobile — steps y locators
 
 Locators: un objeto por historia con selectores de WebdriverIO. Priorizá: accessibility id (`~Iniciar sesión`) → resource-id (`android=new UiSelector().resourceId("emailInput")` o `id=com.app:id/email`) → texto (`android=new UiSelector().text("Ingresar")`, `-ios predicate string:label == "Ingresar"`). Evitá XPath salvo que no haya alternativa.

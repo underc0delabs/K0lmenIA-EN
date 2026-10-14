@@ -1,0 +1,23 @@
+{
+  "agente": "consultor-proyecto",
+  "descripcion": "Preguntas sobre el producto contra input/documentacion/: una documentada (largo del usuario, con su fuente) y otra que no lo está (usuario bloqueado que intenta pagar). Tiene que citar la fuente y decir 'no está documentado' en vez de inventar.",
+  "pedido": "Usá el agente consultor-proyecto para responder: 1) ¿Cuántos caracteres puede tener el nombre de usuario? 2) ¿Cuántos cupones se pueden usar en una compra? 3) ¿Qué pasa si un usuario bloqueado intenta pagar?",
+  "requiere": [".claude/agents/consultor-proyecto.md"],
+  "insumos": [
+    {"desde": "insumos/documentacion-demo", "hacia": "input/documentacion"}
+  ],
+  "presupuesto_usd": 1,
+  "umbral": 80,
+  "chequeos": [
+    {"id": "usuario", "tipo": "contiene", "descripcion": "Responde el largo del usuario (4 a 20)",
+     "archivos": ["_eval/respuesta.txt", "output/consultas/**/*.md"], "patrones": ["\\b4\\b.{0,40}\\b20\\b"], "peso": 2},
+    {"id": "cupones", "tipo": "contiene", "descripcion": "Responde que se permite un solo cupón",
+     "archivos": ["_eval/respuesta.txt", "output/consultas/**/*.md"], "patrones": ["(un|1)\\s+(solo\\s+)?cup[óo]n|MAX_CUPONES_POR_COMPRA"], "peso": 2},
+    {"id": "cita-fuente", "tipo": "contiene", "descripcion": "Cita la fuente (archivo del código, documento o PROJ-40)",
+     "archivos": ["_eval/respuesta.txt", "output/consultas/**/*.md"], "modo": "alguno",
+     "patrones": ["validaciones\\.ts", "cupones\\.ts", "reglas-de-negocio", "PROJ-40"], "peso": 2},
+    {"id": "no-documentado", "tipo": "contiene", "descripcion": "Dice que lo del usuario bloqueado no está documentado",
+     "archivos": ["_eval/respuesta.txt", "output/consultas/**/*.md"],
+     "patrones": ["(no (est[áa]|figura|aparece|hay nada|se encuentra|encontr[ée])[^.\\n]{0,80}(document|informaci|mencion|defin)|sin documentar|no documentad)"], "peso": 3}
+  ]
+}

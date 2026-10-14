@@ -6,6 +6,11 @@
 // Variables en endpoints, headers y bodies: {nombre}
 //   - se reemplaza por un valor guardado con "guardo el campo ... como ..."
 //   - o, si no existe, por la variable de entorno del mismo nombre (.env)
+//
+// GraphQL: "envío la consulta GraphQL:" manda {query, variables} por POST al endpoint GraphQL
+// (el de "el endpoint GraphQL es ...", o GRAPHQL_URL del .env, o API_BASEURL + /graphql). La query
+// va tal cual (sus llaves no se interpolan): los valores dinámicos van en las variables GraphQL,
+// que sí aceptan {nombre}.
 import '../../env'; // .env único de la raíz de k0lmenIA
 import { Given, When, Then, Before, After, DataTable } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
@@ -14,6 +19,7 @@ import { variables, interpolar } from '../../tools/variables';
 
 type Estado = {
   headers: Record<string, string>;
+  graphql: { endpoint?: string; variables?: Record<string, unknown> };
   request?: { metodo: string; url: string; body?: unknown };
   response?: AxiosResponse;
   ms?: number;
@@ -22,7 +28,7 @@ type Estado = {
 let estado: Estado;
 
 Before(() => {
-  estado = { headers: { 'Content-Type': 'application/json' } };
+  estado = { headers: { 'Content-Type': 'application/json' }, graphql: {} };
 });
 
 
@@ -48,6 +54,30 @@ const enviar = async (metodo: string, endpoint: string, body?: string) => {
     validateStatus: () => true, // los 4xx/5xx se validan en los Then, no tiran excepción
   });
   estado.ms = Date.now() - inicio;
+};
+
+// GraphQL: POST con {query, variables, operationName} al endpoint GraphQL.
+const urlGraphQL = (): string => {
+  const destino = interpolar(estado.graphql.endpoint ?? process.env.GRAPHQL_URL ?? '/graphql');
+  return /^https?:\/\//.test(destino) ? destino : `${process.env.API_BASEURL ?? ''}${destino}`;
+};
+
+const enviarGraphQL = async (query: string) => {
+  const url = urlGraphQL();
+  const operacion = /^\s*(?:query|mutation|subscription)\s+([A-Za-z_]\w*)/.exec(query)?.[1];
+  const body = { query, variables: estado.graphql.variables ?? {}, ...(operacion ? { operationName: operacion } : {}) };
+  const inicio = Date.now();
+  estado.request = { metodo: 'POST', url, body };
+  estado.response = await axios.request({
+    method: 'POST', url, headers: estado.headers, data: body,
+    validateStatus: () => true,
+  });
+  estado.ms = Date.now() - inicio;
+};
+
+const erroresGraphQL = (): Array<{ message?: string; extensions?: Record<string, unknown> }> => {
+  const errores = respuesta().data?.errors;
+  return Array.isArray(errores) ? errores : [];
 };
 
 // Evidencia de cada escenario (pase o falle): último request y su response.
@@ -87,6 +117,14 @@ Given('el request no envía token de autenticación', () => {
   delete estado.headers.Authorization;
 });
 
+Given('el endpoint GraphQL es {string}', (endpoint: string) => {
+  estado.graphql.endpoint = endpoint;
+});
+
+Given('las variables GraphQL son:', (json: string) => {
+  estado.graphql.variables = JSON.parse(interpolar(json));
+});
+
 /* ---------- When ---------- */
 
 When('envío un {word} a {string}', async (metodo: string, endpoint: string) => {
@@ -95,6 +133,10 @@ When('envío un {word} a {string}', async (metodo: string, endpoint: string) => 
 
 When('envío un {word} a {string} con el body:', async (metodo: string, endpoint: string, body: string) => {
   await enviar(metodo, endpoint, body);
+});
+
+When('envío la consulta GraphQL:', async (query: string) => {
+  await enviarGraphQL(query);
 });
 
 When('guardo el campo {string} de la respuesta como {string}', (campo: string, nombre: string) => {
@@ -151,4 +193,46 @@ Then('el header {string} de la respuesta contiene {string}', (nombre: string, va
 
 Then('la respuesta llega en menos de {int} ms', (max: number) => {
   expect(estado.ms ?? Infinity).toBeLessThan(max);
+});
+
+/* ---------- Then de GraphQL (los campos se leen dentro de "data") ---------- */
+
+Then('la respuesta GraphQL no tiene errores', () => {
+  expect(erroresGraphQL().map((e) => e.message), 'La respuesta GraphQL trae errores').toEqual([]);
+});
+
+Then('la respuesta GraphQL tiene un error con el mensaje {string}', (mensaje: string) => {
+  const mensajes = erroresGraphQL().map((e) => String(e.message ?? ''));
+  expect(mensajes.some((m) => m.includes(interpolar(mensaje))), `Errores: ${JSON.stringify(mensajes)}`).toBe(true);
+});
+
+Then('la respuesta GraphQL tiene un error con el código {string}', (codigo: string) => {
+  const codigos = erroresGraphQL().map((e) => String(e.extensions?.code ?? ''));
+  expect(codigos, `Errores: ${JSON.stringify(erroresGraphQL())}`).toContain(codigo);
+});
+
+Then('la respuesta GraphQL contiene el campo {string}', (campo: string) => {
+  expect(leerCampo(respuesta().data?.data, campo), `Falta data.${campo}`).not.toBeUndefined();
+});
+
+Then('el campo GraphQL {string} es {string}', (campo: string, valor: string) => {
+  expect(String(leerCampo(respuesta().data?.data, campo))).toBe(interpolar(valor));
+});
+
+Then('el campo GraphQL {string} es el número {float}', (campo: string, valor: number) => {
+  expect(Number(leerCampo(respuesta().data?.data, campo))).toBe(valor);
+});
+
+Then('el campo GraphQL {string} es nulo', (campo: string) => {
+  expect(leerCampo(respuesta().data?.data, campo)).toBeNull();
+});
+
+Then('el campo GraphQL {string} es una lista con al menos {int} elemento(s)', (campo: string, min: number) => {
+  const v = leerCampo(respuesta().data?.data, campo);
+  expect(Array.isArray(v), `data.${campo} no es una lista`).toBe(true);
+  expect((v as unknown[]).length).toBeGreaterThanOrEqual(min);
+});
+
+When('guardo el campo GraphQL {string} como {string}', (campo: string, nombre: string) => {
+  variables[nombre] = leerCampo(respuesta().data?.data, campo);
 });

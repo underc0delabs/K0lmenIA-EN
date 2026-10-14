@@ -163,9 +163,13 @@ TIPOS = {
     "seleccion": {"archivo": "seleccion.json", "items": lambda d: [c for c in d.get("casos") or [] if c.get("grupo") != "No seleccionado"],
                   "clave": lambda c: c.get("clave"), "titulo": lambda c: f'{c.get("historia")} · {c.get("id")} {c.get("titulo")}',
                   "metricas": [("Seleccionados", _r("seleccionados"), ""), ("Minutos", _r("minutos_seleccion"), " min"), ("Cambios sin casos", _r("sin_cobertura"), "")]},
+    "tablero": {"archivo": "tablero.json", "items": lambda d: d.get("alertas") or [],
+                "clave": lambda a: f'{a.get("tipo")}|{_norm(a.get("titulo"))}', "titulo": lambda a: f'{a.get("tipo")} · {a.get("titulo")}',
+                "metricas": [("Aprobados", _r("pct_aprobados"), " %"), ("Automatizado", _r("pct_automatizado"), " %"),
+                             ("Cobertura", _r("cobertura_pct"), " %"), ("Bugs abiertos", _r("bugs_abiertos"), "")]},
 }
 
-ETIQUETA_ITEM = {"fallos": "escenarios con fallas", "cobertura": "huecos", "reparacion": "reparaciones", "seleccion": "casos seleccionados"}
+ETIQUETA_ITEM = {"tablero": "alertas", "fallos": "escenarios con fallas", "cobertura": "huecos", "reparacion": "reparaciones", "seleccion": "casos seleccionados"}
 
 
 def comparar(tipo, actual, anterior):

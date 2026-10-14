@@ -27,6 +27,8 @@ const REQUERIDAS = {
   'aio-tests': () => ['AIO_MCP_URL', 'AIO_API_TOKEN'],
   'k0lmena-tmt': () => ['K0LMENA_TMT_TOKEN'],
   github: () => ['GITHUB_TOKEN'],
+  asana: () => ['ASANA_CLIENT_ID', 'ASANA_CLIENT_SECRET'],
+  youtrack: () => ['YOUTRACK_URL', 'YOUTRACK_TOKEN'],
 };
 
 /**
@@ -50,6 +52,33 @@ function conRutasAbsolutas(servidor) {
   return s;
 }
 
+/**
+ * Cómo registrar un conector. Por defecto, `claude mcp add-json` con la entrada del catálogo.
+ * Los servers que no aceptan registro dinámico de clientes OAuth (Asana V2) traen en el catálogo
+ * "oauth": {clientId, clientSecret, callbackPort} con los NOMBRES de las variables del .env: se
+ * registran con `claude mcp add --client-id ... --client-secret --callback-port ...`. El secret va
+ * por la variable MCP_CLIENT_SECRET (si Claude Code no la toma, lo pide en la terminal, oculto) y se
+ * guarda en el llavero del sistema, nunca en un archivo.
+ */
+function comandoActivacion(nombre, entrada, servidor) {
+  if (!entrada.oauth) {
+    return { args: ['mcp', 'add-json', nombre, JSON.stringify(servidor), '--scope', 'local'] };
+  }
+  const { clientId, clientSecret, callbackPort } = entrada.oauth;
+  const id = variable(clientId);
+  if (!id) throw new Error(`falta ${clientId} en el .env de la raíz`);
+  if (!/^[\w.-]+$/.test(id)) throw new Error(`${clientId} tiene un valor inválido`);
+  const env = { ...process.env };
+  const secreto = clientSecret && variable(clientSecret);
+  if (secreto) env.MCP_CLIENT_SECRET = secreto;
+  return {
+    args: ['mcp', 'add', '--transport', servidor.type, '--client-id', id, '--client-secret',
+      '--callback-port', String(callbackPort), '--scope', 'local', nombre, servidor.url],
+    env,
+    interactivo: true,
+  };
+}
+
 /** Conectores registrados con alcance local para este proyecto (de ~/.claude.json; solo nombres). */
 function activosLocales() {
   try {
@@ -62,12 +91,14 @@ function activosLocales() {
   }
 }
 
-function claude(args) {
-  let r = spawnSync('claude', args, { encoding: 'utf8', cwd: RAIZ });
+// interactivo: la salida va a la terminal (por ejemplo, si Claude Code pide el client secret).
+function claude(args, { env, interactivo } = {}) {
+  const base = { encoding: 'utf8', cwd: RAIZ, env: env || process.env, ...(interactivo ? { stdio: 'inherit' } : {}) };
+  let r = spawnSync('claude', args, base);
   if (r.error && process.platform === 'win32') {
     // Instalado con npm: claude.cmd necesita shell (el JSON va con las comillas escapadas para cmd).
     const linea = ['claude', ...args.map((a) => (/[\s"{}]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a))].join(' ');
-    r = spawnSync(linea, { encoding: 'utf8', cwd: RAIZ, shell: true });
+    r = spawnSync(linea, { ...base, shell: true });
   }
   if (r.error) {
     console.error('No encuentro el comando "claude". Instalá Claude Code (ver README) y volvé a intentar.');
@@ -98,10 +129,21 @@ function activar(nombres) {
       process.exitCode = 1;
       continue;
     }
+    const servidor = conRutasAbsolutas(c.servidor);
+    let comando;
+    try {
+      comando = comandoActivacion(n, c, servidor);
+    } catch (e) {
+      console.error(`No se pudo activar ${n}: ${e.message} (ver .env.example y CONECTORES.md).`);
+      process.exitCode = 1;
+      continue;
+    }
+    const sinResolver = (servidor.url || '').match(/\$\{([A-Z_][A-Z0-9_]*)\}/);
+    if (sinResolver) console.log(`  Aviso: falta ${sinResolver[1]} en el .env; la URL queda como ${servidor.url} (completala y volvé a activar).`);
     if ((activosLocales() || []).includes(n)) claude(['mcp', 'remove', n, '--scope', 'local']); // se reemplaza
-    const r = claude(['mcp', 'add-json', n, JSON.stringify(conRutasAbsolutas(c.servidor)), '--scope', 'local']);
+    const r = claude(comando.args, comando);
     if (r.status !== 0) {
-      console.error(`No se pudo activar ${n}: ${(r.stderr || r.stdout).trim()}`);
+      console.error(`No se pudo activar ${n}: ${((r.stderr || r.stdout || '').trim()) || `claude terminó con código ${r.status}`}`);
       process.exitCode = 1;
       continue;
     }
@@ -119,11 +161,15 @@ function desactivar(nombres) {
   }
 }
 
-const [accion, ...nombres] = process.argv.slice(2);
-if (!accion || accion === 'listar') listar();
-else if (accion === 'activar' && nombres.length) activar(nombres);
-else if (accion === 'desactivar' && nombres.length) desactivar(nombres);
-else {
-  console.error('Uso: npm run conector -- [listar | activar <nombre> [...] | desactivar <nombre> [...]]');
-  process.exit(1);
+if (require.main === module) {
+  const [accion, ...nombres] = process.argv.slice(2);
+  if (!accion || accion === 'listar') listar();
+  else if (accion === 'activar' && nombres.length) activar(nombres);
+  else if (accion === 'desactivar' && nombres.length) desactivar(nombres);
+  else {
+    console.error('Uso: npm run conector -- [listar | activar <nombre> [...] | desactivar <nombre> [...]]');
+    process.exit(1);
+  }
 }
+
+module.exports = { comandoActivacion, conRutasAbsolutas, conVariablesDelEnv, CATALOGO };

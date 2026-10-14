@@ -46,6 +46,78 @@
         "headersHelper": "node scripts/mcp/gitlab-headers.js"
       }
     },
+    "linear": {
+      "descripcion": "Linear (solo lectura): issues, comentarios, proyectos y ciclos como fuente de historias",
+      "variables": "ninguna (OAuth desde /mcp) · opcional LINEAR_API_KEY",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.linear.app/mcp/readonly",
+        "headersHelper": "node scripts/mcp/bearer-headers.js linear LINEAR_API_KEY --opcional"
+      }
+    },
+    "clickup": {
+      "descripcion": "ClickUp: tareas, subtareas, checklists, comentarios y Docs como fuente de historias",
+      "variables": "ninguna (OAuth desde /mcp)",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.clickup.com/mcp"
+      }
+    },
+    "monday": {
+      "descripcion": "monday.com: ítems de los tableros, subítems, updates y docs como fuente de historias",
+      "variables": "ninguna (OAuth desde /mcp) · opcional MONDAY_API_TOKEN",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.monday.com/mcp",
+        "headersHelper": "node scripts/mcp/bearer-headers.js monday MONDAY_API_TOKEN --opcional"
+      }
+    },
+    "asana": {
+      "descripcion": "Asana (server V2): tareas, subtareas, comentarios y proyectos como fuente de historias",
+      "variables": "ASANA_CLIENT_ID, ASANA_CLIENT_SECRET (app MCP propia en Asana)",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.asana.com/v2/mcp"
+      },
+      "oauth": {
+        "clientId": "ASANA_CLIENT_ID",
+        "clientSecret": "ASANA_CLIENT_SECRET",
+        "callbackPort": 8080
+      }
+    },
+    "trello": {
+      "descripcion": "Trello: tarjetas, checklists, comentarios y listas como fuente de historias",
+      "variables": "ninguna (OAuth desde /mcp)",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.trello.com/v1"
+      }
+    },
+    "notion": {
+      "descripcion": "Notion: páginas, bases de datos (backlogs) y wikis del proyecto",
+      "variables": "ninguna (OAuth desde /mcp)",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.notion.com/mcp"
+      }
+    },
+    "youtrack": {
+      "descripcion": "YouTrack (Cloud o Server): issues, comentarios, vínculos y artículos de la base de conocimiento",
+      "variables": "YOUTRACK_URL, YOUTRACK_TOKEN",
+      "servidor": {
+        "type": "http",
+        "url": "${YOUTRACK_URL}/mcp",
+        "headersHelper": "node scripts/mcp/bearer-headers.js youtrack YOUTRACK_TOKEN"
+      }
+    },
+    "shortcut": {
+      "descripcion": "Shortcut: stories, epics, comentarios y documentos como fuente de historias",
+      "variables": "ninguna (OAuth desde /mcp)",
+      "servidor": {
+        "type": "http",
+        "url": "https://mcp.shortcut.com/mcp"
+      }
+    },
     "qtm4j": {
       "descripcion": "QMetry para Jira (QTM4J)",
       "variables": "QTM4J_API_KEY",

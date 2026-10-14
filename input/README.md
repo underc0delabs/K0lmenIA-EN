@@ -13,8 +13,10 @@
 |                  | que agregues a mano (manuales, actas)    |                                       |
 +------------------+------------------------------------------+---------------------------------------+
 | `api/`           | Contratos de API, colecciones y          | incluye `auth-endpoints.md` y         |
-|                  | environments de Postman, Swagger/OpenAPI | `demo.postman_collection.json`        |
-|                  |                                          | (JSONPlaceholder)                     |
+|                  | environments de Postman, Bruno (carpeta  | `demo.postman_collection.json`,       |
+|                  | con `bruno.json`) o Insomnia (export     | `demo-bruno/` y `demo.insomnia.json`  |
+|                  | `.json`/`.yaml`), Swagger/OpenAPI y      | (JSONPlaceholder), y una demo GraphQL |
+|                  | schemas GraphQL (`.graphql`)             | (`demo-graphql.postman_collection`)   |
 +------------------+------------------------------------------+---------------------------------------+
 | `bugs/`          | Observaciones sueltas de errores para    | `observacion-<tema>.md`               |
 |                  | convertir en reportes                    |                                       |

@@ -514,6 +514,11 @@ def _id_unico(titulo):
 
 def page(titulo, eyebrow, meta_html, body):
     _IDS.clear()
+    try:  # al terminar el proceso, el portal de informes (output/index.html) suma este informe
+        import portal_informes
+        portal_informes.programar()
+    except Exception:
+        pass
     return (f'<!doctype html>\n<html lang="es"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<meta name="color-scheme" content="dark">'

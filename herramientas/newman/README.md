@@ -27,9 +27,23 @@ python scripts/correr_newman.py input/api/demo.postman_collection.json --histori
 
 El script corre Newman (instalado o con `npx`), toma `API_TOKEN` del `.env`; la URL (`{{base_url}}`) sale de `--base-url`, del environment o de la colección, y solo si ninguno la define, de `API_BASEURL` del `.env`; convierte el resultado (`scripts/newman_a_resultados.py`) y genera el reporte (`scripts/generar_reporte.py`) en `output/ejecuciones/reporte-HU-001-<fecha-hora>.html`. Opciones: `--carpeta`, `--environment`, `--base-url` y `--titulo`. El agente `ejecutor-api` lo usa solo; normalmente no lo corrés a mano.
 
+## Bruno, Insomnia y GraphQL
+
+- **Bruno**: pasale la carpeta de la colección (la que tiene `bruno.json`) en lugar del `.json`:
+  `python scripts/correr_newman.py input/api/demo-bruno --environment JSONPlaceholder`.
+- **Insomnia**: pasale el export (v4 `.json` o v5 `.yaml`; el v5 necesita `pip install pyyaml`):
+  `python scripts/correr_newman.py input/api/demo.insomnia.json --environment JSONPlaceholder`.
+- Las dos se convierten antes a Postman con `scripts/convertir_coleccion.py` (en una carpeta temporal) y el
+  script muestra las **advertencias** de lo que no tiene equivalente en Postman (template tags de Insomnia,
+  OAuth2, archivos en multipart, `bru.runRequest`, …). `--environment` es el **nombre** del environment.
+  Para ver la conversión: `python scripts/convertir_coleccion.py <origen> --salida <carpeta>`.
+- **GraphQL**: los requests GraphQL (modo GraphQL de Postman, `body:graphql` de Bruno, `application/graphql`
+  de Insomnia) corren igual; el reporte suma la operación al título. Validá `data` y `errors`, no solo el status:
+  un error de GraphQL suele volver con 200. Ejemplo: `input/api/demo-graphql.postman_collection.json`.
+
 ## Dónde van las colecciones
 
-- Las **colecciones** y **environments** de Postman van en `input/api/` (hay un ejemplo: `demo.postman_collection.json` + `demo.postman_environment.json`, que apuntan a una API pública de demo). Exportá las tuyas desde Postman y dejalas ahí.
+- Las **colecciones** y **environments** van en `input/api/`. Hay ejemplos que apuntan a APIs públicas de demo: `demo.postman_collection.json` + `demo.postman_environment.json` (Postman), `demo-bruno/` (Bruno), `demo.insomnia.json` (Insomnia) y `demo-graphql.postman_collection.json` (GraphQL). Exportá las tuyas y dejalas ahí.
 - El **id** y la **prioridad** de cada caso se codifican (opcional) en el **nombre del request** en Postman: `CP-API-001 — Crear post (Alta)`; si depende de un dato que falta, sumale su ID: `CP-API-003 — Crear usuario [FI-01]`. El conversor los usa para el reporte. Si no los ponés, el id se autonumera y la prioridad queda vacía.
 
 ## Credenciales / token

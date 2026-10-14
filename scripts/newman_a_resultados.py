@@ -22,6 +22,9 @@ prioridad queda vacía.
 Falta información: si el request depende de un dato que falta, poné su ID en el nombre
 ("CP-API-003 — Crear usuario [FI-01]"): el caso se marca con ese FI en el reporte.
 La duración de cada caso es el tiempo de respuesta del request.
+
+GraphQL: si el request usa el modo GraphQL de Postman (o manda un body JSON con "query"), el título
+suma la operación ("[GraphQL query Pais]") para distinguir requests que van todos al mismo endpoint.
 """
 import sys
 import json
@@ -68,6 +71,26 @@ def fmt_request_error(err):
     return str(err)
 
 
+def operacion_graphql(ex):
+    """'query Pais' / 'mutation CrearPost' / 'query (anónima)' si el request es GraphQL; si no, ''."""
+    for fuente in (ex.get("request"), (ex.get("item") or {}).get("request")):
+        body = (fuente or {}).get("body") or {}
+        query = None
+        if body.get("mode") == "graphql":
+            query = (body.get("graphql") or {}).get("query")
+        elif body.get("mode") == "raw" and '"query"' in (body.get("raw") or ""):
+            try:
+                query = json.loads(body["raw"]).get("query")
+            except (ValueError, AttributeError):
+                query = None
+        if query:
+            m = re.match(r"\s*(query|mutation|subscription)\b\s*([A-Za-z_]\w*)?", query)
+            if m:
+                return f"{m.group(1)} {m.group(2) or '(anónima)'}"
+            return "query (anónima)"  # forma corta: { campo { ... } }
+    return ""
+
+
 def convertir(nm, titulo_arg=""):
     run = nm.get("run") or {}
     casos = []
@@ -78,6 +101,9 @@ def convertir(nm, titulo_arg=""):
         idv, titulo, prioridad = parse_nombre(nombre)
         if not idv:
             idv = f"API-{i:03d}"
+        operacion = operacion_graphql(ex)
+        if operacion and operacion.split()[-1] not in titulo:
+            titulo = f"{titulo} [GraphQL {operacion}]"
 
         if ex.get("requestError"):
             estado, motivo = "Bloqueado", fmt_request_error(ex.get("requestError"))

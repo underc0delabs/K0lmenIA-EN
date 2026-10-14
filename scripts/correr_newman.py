@@ -3,8 +3,15 @@
 Corre una colección de Postman con Newman y deja el reporte HTML de la corrida (agente ejecutor-api).
 
 Uso (desde la raíz del repo; en Mac/Linux, python3):
-    python scripts/correr_newman.py <coleccion.json> [--historia HU-001] [--titulo "Auth API"]
-                                    [--carpeta "Login"] [--environment env.json] [--base-url URL]
+    python scripts/correr_newman.py <coleccion> [--historia HU-001] [--titulo "Auth API"]
+                                    [--carpeta "Login"] [--environment env] [--base-url URL]
+
+<coleccion> puede ser una colección de Postman (.json), una carpeta de **Bruno** (con bruno.json) o un
+export de **Insomnia** (v4 .json o v5 .yaml): las de Bruno e Insomnia se convierten antes a Postman con
+scripts/convertir_coleccion.py (en una carpeta temporal que se borra al terminar) y se muestran las
+advertencias de lo que no se pudo convertir. Con Bruno e Insomnia, --environment es el NOMBRE del
+environment (Bruno: el archivo de environments/ sin .bru; Insomnia: el sub-environment); con Postman,
+el archivo .json del environment. Los requests GraphQL corren igual que los REST.
 
 Qué hace:
 1. Toma del .env de la raíz API_TOKEN (variable {{token}} de la colección). La URL ({{base_url}})
@@ -29,6 +36,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "scripts"))
 from _env import leer_env  # noqa: E402
+import convertir_coleccion  # noqa: E402
 
 SALIDA = RAIZ / "output" / "ejecuciones"
 
@@ -60,17 +68,21 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description="Corre una colección de Postman y genera el reporte HTML")
-    ap.add_argument("coleccion")
+    ap.add_argument("coleccion", help="colección de Postman (.json), carpeta de Bruno o export de Insomnia")
     ap.add_argument("--historia", help="HU-XXX: va en el nombre de los archivos y en el reporte")
     ap.add_argument("--titulo", help="título del reporte (por defecto, el nombre de la colección)")
     ap.add_argument("--carpeta", help="solo esta carpeta de la colección (--folder de Newman)")
-    ap.add_argument("--environment", help="environment de Postman (.json), si la colección lo usa")
+    ap.add_argument("--environment", help="Postman: archivo .json del environment; Bruno/Insomnia: nombre del environment")
     ap.add_argument("--base-url", help="pisa API_BASEURL del .env")
     a = ap.parse_args()
 
     coleccion = Path(a.coleccion)
     if not coleccion.exists():
         sys.exit(f"No existe la colección {coleccion}.")
+    formato = convertir_coleccion.detectar_formato(coleccion)
+    if formato is None:
+        sys.exit(f"No reconozco {coleccion}: tiene que ser una colección de Postman (.json), una carpeta de "
+                 "Bruno (con bruno.json) o un export de Insomnia (v4 .json o v5 .yaml).")
     if a.historia and not re.match(r"^HU-\d+$", a.historia, re.I):
         sys.exit("--historia tiene que ser un ID como HU-001.")
     env = leer_env()
@@ -80,7 +92,24 @@ def main():
     crudo = SALIDA / f"_newman-{prefijo}-{marca}.json"
     resultados = SALIDA / f"_resultados-{prefijo}-{marca}.json"
     reporte = SALIDA / f"reporte-{prefijo}-{marca}.html"
+    temporal = None
+    if formato != "postman":
+        conv = convertir_coleccion.convertir(coleccion, a.environment)
+        temporal = SALIDA / f"_conversion-{prefijo}-{marca}"
+        coleccion, env_convertido = convertir_coleccion.guardar(conv, temporal, "coleccion")
+        a.environment = str(env_convertido) if env_convertido else None
+        n = convertir_coleccion.contar_requests(conv.coleccion["item"])
+        print(f"Convertida desde {formato}: {n} request(s)" + (f" · environment {conv.environment['name']}" if conv.environment else ""))
+        for aviso in conv.advertencias:
+            print(f"  ! {aviso}")
+    try:
+        _correr(a, coleccion, env, crudo, resultados, reporte)
+    finally:
+        if temporal:
+            shutil.rmtree(temporal, ignore_errors=True)
 
+
+def _correr(a, coleccion, env, crudo, resultados, reporte):
     cmd = newman() + ["run", str(coleccion), "-r", "cli,json", "--reporter-json-export", str(crudo)]
     if a.environment:
         cmd += ["-e", a.environment]
@@ -94,7 +123,7 @@ def main():
     if env.get("API_TOKEN"):
         cmd += ["--env-var", f"token={env['API_TOKEN']}"]  # solo en la línea del proceso, nunca en archivos
 
-    print(f"Newman · {coleccion.name}" + (f" · carpeta {a.carpeta}" if a.carpeta else "") + (f" · {base}" if base else ""))
+    print(f"Newman · {Path(a.coleccion).name}" + (f" · carpeta {a.carpeta}" if a.carpeta else "") + (f" · {base}" if base else ""))
     r = subprocess.run(cmd, shell=(sys.platform == "win32"))
     if not crudo.exists():
         sys.exit(f"Newman no generó resultados (código {r.returncode}). Revisá la salida de arriba.")

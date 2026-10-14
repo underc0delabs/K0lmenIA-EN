@@ -5,5 +5,6 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const archivos = fs.readdirSync(__dirname).filter((f) => f.endsWith('.test.js')).map((f) => path.join(__dirname, f));
-const r = spawnSync(process.execPath, ['--test', ...archivos], { stdio: 'inherit' });
+// Los informes que arman los tests no tocan el portal output/index.html.
+const r = spawnSync(process.execPath, ['--test', ...archivos], { stdio: 'inherit', env: { ...process.env, K0LMENIA_PORTAL: '0' } });
 process.exit(r.status === null ? 1 : r.status);

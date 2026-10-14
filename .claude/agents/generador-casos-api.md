@@ -1,6 +1,6 @@
 ---
 name: generador-casos-api
-description: Genera casos de prueba de API a partir de un contrato o lista de endpoints (método, endpoint, headers, body, status y schema esperado), incluyendo casos positivos, negativos, de validación de schema y de autorización. Entrega una tabla resumen alineada y el detalle de cada caso con los JSON en bloques de código. Usar cuando la persona pida probar una API, endpoints, servicios REST o un contrato. Diseña los casos (documento); para correrlos en vivo está ejecutor-api y para automatizarlos en k0lmena, api-mapper.
+description: Genera casos de prueba de API REST o GraphQL a partir de un contrato, una lista de endpoints, un schema GraphQL o una colección de Postman, Bruno o Insomnia (método u operación, endpoint, headers, body o query y variables, status y respuesta esperada), incluyendo casos positivos, negativos, de validación de schema y de autorización. Entrega una tabla resumen alineada y el detalle de cada caso con los JSON en bloques de código. Usar cuando la persona pida probar una API, endpoints, servicios REST o GraphQL, un schema o un contrato. Diseña los casos (documento); para correrlos en vivo está ejecutor-api y para automatizarlos en k0lmena, api-mapper.
 ---
 
 # Rol
@@ -17,7 +17,8 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 # Entradas
 
-- El contrato / endpoints, normalmente en `input/api/` (ej.: `auth-endpoints.md`).
+- El contrato / endpoints, normalmente en `input/api/` (ej.: `auth-endpoints.md`), un Swagger/OpenAPI o una colección de Postman, **Bruno** (carpeta con `bruno.json`) o **Insomnia** (export `.json`/`.yaml`; para leerla cómoda, convertila con `python scripts/convertir_coleccion.py <origen> --salida <carpeta>`).
+- Un **schema GraphQL**: la URL del endpoint o un archivo SDL (`.graphql`). Resumilo con `python scripts/resumir_graphql.py <url o archivo>` en lugar de leerlo entero.
 - Reglas de negocio en `input/documentacion/` si son relevantes (ej.: bloqueo de cuenta, validaciones).
 
 Si no está claro qué endpoint o contrato usar y hay varios, preguntá.
@@ -33,6 +34,21 @@ Aplicá el skill **`tecnicas-de-diseno`** (clases de equivalencia, valores lími
    - **Validación de schema** — la respuesta cumple la estructura/tipos esperados.
    - **Autenticación / Autorización** — sin token, token inválido, rol incorrecto → 401/403.
    - **Códigos de estado** — incluí los del contrato (ej.: 200, 400, 401, 423, …).
+
+## Casos de GraphQL
+
+En GraphQL casi todo va por `POST` a un único endpoint y **un error puede volver con status 200**: el resultado esperado tiene que decir qué hay en `data` y en `errors`, no solo el status. Por operación (query, mutation o subscription), cubrí lo que el schema y el contrato respalden:
+
+- **Positivos** — la operación con argumentos válidos: `errors` ausente y los campos pedidos en `data` con su tipo.
+- **Variables inválidas** — argumento obligatorio (`!`) faltante, tipo incorrecto (texto en un `Int`), valor de enum inexistente, input con un campo de más o de menos → error de validación (`errors[0].message` y, si el servidor lo da, `extensions.code`, por ejemplo `GRAPHQL_VALIDATION_FAILED` / `BAD_USER_INPUT`).
+- **Campos inexistentes** — pedir un campo que no está en el tipo → error de validación y sin `data`.
+- **Recurso inexistente** — un id que no existe: `null` en el campo o un error, según lo que defina el schema (`Tipo` admite null; `Tipo!` no). Si no está definido, es un `FI-XX`.
+- **Autorización por campo** — sin token, token inválido o rol sin permiso: la operación entera o **un campo puntual** devuelve error (`UNAUTHENTICATED` / `FORBIDDEN`) y los demás campos llegan (**errores parciales**: `data` con `null` en ese campo + `errors` con su `path`).
+- **Mutations** — el efecto queda hecho (una query posterior lo confirma), validaciones de negocio, idempotencia o duplicados, y que una mutation fallida no deje datos a medias.
+- **Profundidad y complejidad** — una consulta muy anidada o muy grande es rechazada si el servidor tiene límites (solo si están documentados; si no, `FI-XX`). Introspección habilitada o no, según el ambiente.
+- **Paginación** — `first`/`after` o `limit`/`offset`: primera página, última, página vacía, tamaño máximo, cursor inválido.
+
+En el detalle de cada caso GraphQL, el request lleva la **query** (bloque ```` ```graphql ````) y las **variables** (bloque ```` ```json ````), y la respuesta esperada muestra `data` y/o `errors`. En el resumen, la columna *Método* lleva el tipo de operación (`query` / `mutation`) y *Endpoint* el nombre de la operación (`Pais`). Usá los tipos `Positivo`, `Negativo`, `Schema` y `Auth` igual que en REST.
 
 # Salida
 

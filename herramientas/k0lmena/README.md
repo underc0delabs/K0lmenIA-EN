@@ -248,6 +248,15 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 |                       | del sitio, para la documentación (agente |
 |                       | documentador-proyecto)                   |
 +-----------------------+------------------------------------------+
+| npm run permisos      | Matriz rol × ruta y rol × endpoint       |
+|                       | (agente probador-permisos)               |
++-----------------------+------------------------------------------+
+| npm run resiliencia   | Fallas simuladas de API, red y recursos  |
+|                       | (agente probador-resiliencia)            |
++-----------------------+------------------------------------------+
+| npm run monitorear    | Monitoreo sintético de solo lectura, con |
+|                       | aviso si algo se rompe o se recupera     |
++-----------------------+------------------------------------------+
 | npm run record        | Graba un flujo con Playwright codegen    |
 +-----------------------+------------------------------------------+
 | npm run debug         | Corre web en modo debug (secuencial, con |

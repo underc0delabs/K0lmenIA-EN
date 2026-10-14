@@ -34,7 +34,12 @@ VARIABLES_CONECTOR = {
     "aio-tests": ["AIO_MCP_URL", "AIO_API_TOKEN"],
     "k0lmena-tmt": ["K0LMENA_TMT_TOKEN"],
     "github": ["GITHUB_TOKEN"],
+    "asana": ["ASANA_CLIENT_ID", "ASANA_CLIENT_SECRET"],
+    "youtrack": ["YOUTRACK_URL", "YOUTRACK_TOKEN"],
 }
+# Se autorizan con tu cuenta (OAuth) desde /mcp; los de token opcional, solo si ese token está vacío.
+CONECTORES_OAUTH = ("atlassian", "figma", "figma-desktop", "clickup", "trello", "notion", "shortcut", "asana")
+CONECTORES_TOKEN_OPCIONAL = {"gitlab": "GITLAB_TOKEN", "linear": "LINEAR_API_KEY", "monday": "MONDAY_API_TOKEN"}
 VARIABLES_GESTION = {
     "xray-cloud": ["GESTION_PROYECTO", "XRAY_CLOUD_CLIENT_ID", "XRAY_CLOUD_CLIENT_SECRET", "JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"],
     "xray-dc": ["GESTION_PROYECTO", "XRAY_DC_URL", "XRAY_DC_TOKEN|XRAY_DC_USER+XRAY_DC_PASSWORD"],
@@ -179,11 +184,11 @@ def main():
         origen = " (activado con npm run conector)" if nombre in locales else ""
         if faltan:
             linea(FALTA, f"{nombre}{origen}: faltan {', '.join(faltan)}", "Completalas en el .env (ver CONECTORES.md)")
-        elif nombre in ("atlassian", "figma") or (nombre == "gitlab" and not env.get("GITLAB_TOKEN")):
+        elif nombre in CONECTORES_OAUTH or (nombre in CONECTORES_TOKEN_OPCIONAL and not env.get(CONECTORES_TOKEN_OPCIONAL[nombre])):
             linea(OK, f"{nombre}{origen} (se autoriza con tu cuenta desde /mcp la primera vez)")
         else:
             linea(OK, nombre + origen)
-    print("        → Para sumar Azure DevOps, Figma, GitHub, GitLab, QMetry, AIO Tests, k0lmenaTMT o Appium: npm run conector")
+    print("        → Para sumar Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, QMetry, AIO Tests, k0lmenaTMT o Appium: npm run conector")
 
     print(f"\nResultado: {resumen['ok']} OK · {resumen['aviso']} avisos · {resumen['falta']} faltantes")
     if resumen["falta"]:

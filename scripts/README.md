@@ -35,6 +35,15 @@ Actuales:
 - `generar_charters.py` — hojas de sesión y el informe de las sesiones exploratorias (`generador-charters`).
 - `generar_informe_ux.py` y `generar_informe_formularios.py` — los informes de `npm run ux` y `npm run formularios` (`evaluador-ux`, `probador-formularios`).
 - `analizar_logs.py` + `generar_informe_logs.py` — logs agrupados y cruzados con la corrida (`analista-logs`).
+- `generar_informe_permisos.py` y `generar_informe_resiliencia.py` — los informes de `npm run permisos` y `npm run resiliencia` (`probador-permisos`, `probador-resiliencia`).
+- `buscar_duplicados.py` — similitud entre bugs: duplicados, posibles regresiones y relacionados (`triador-bugs`).
+- `tablero_calidad.py` — tablero de calidad por sprint o release (`tablero-calidad`).
+- `portal_informes.py` — `output/index.html` con el último informe de cada herramienta; `_estilos_reporte.page()` lo programa para regenerarse al terminar cada informe (`K0LMENIA_PORTAL=0` lo desactiva).
+- `avisar.py` — avisos a Slack y Teams por webhook del `.env`; `--desde-cucumber` resume un `npm test`.
+- `generar_informe_monitoreo.py` — informe de `npm run monitorear` (monitoreo sintético) con la disponibilidad y los tiempos.
+- `cambios_documentacion.py` — documentación incremental del `documentador-proyecto`: estado de lo documentado y qué documentos y casos afecta un cambio.
+- `convertir_coleccion.py` — Bruno e Insomnia a Postman v2.1 (lo usa `correr_newman.py`); `resumir_graphql.py` — resumen de un schema GraphQL (introspección, SDL o JSON).
+- `evaluar_agentes.py` — evals de los agentes (`evals/`): preparar el workspace aislado, correr con `claude -p`, verificar y armar el informe con regresiones.
 - `doctor.py` — revisa el entorno (Python, Node, k0lmena, Playwright, Newman, Java, Docker, `.env` y conectores) y dice qué falta. También: `npm run doctor`.
 - `_env.py` — lectura del `.env` de la raíz con las mismas reglas que k0lmena y `scripts/mcp/leer-env.js` (la usan los scripts de Python).
 - `_estilos_reporte.py` — sistema de diseño de todos los reportes HTML (plan, ejecución, cierre, performance y seguridad): modo oscuro, paleta categórica y de estado validadas para daltonismo y contraste, indicadores, pastillas con ícono, tooltips y gráficos (dona, barras, barras apiladas, columnas agrupadas y líneas con crosshair, siempre con un solo eje). Los reportes de k0lmena usan los mismos colores (`herramientas/k0lmena/reports/tema-oscuro.js` y el reporte de performance).

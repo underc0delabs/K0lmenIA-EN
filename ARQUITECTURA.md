@@ -6,7 +6,7 @@ Este repo está pensado para crecer de forma ordenada. Cubre tanto **planificar 
 
 ### Agentes — el *quién* (`.claude/agents/`)
 
-Cada agente es un subagente de Claude Code con su rol, su proceso y sus reglas. Es a quién se le delega una tarea entera. Hoy hay treinta y seis, agrupados en documentación del proyecto, análisis y diseño, ejecución en vivo (incluidas las pruebas exploratorias, de accesibilidad, de rendimiento web, la regresión visual, el cross-browser, los correos y las traducciones), reportes (con el análisis de fallos y la cobertura), automatización con k0lmena (con la reparación de locators), la selección de casos por cambio, seguridad y gestión (el catálogo, con los skills, herramientas y conectores de cada uno, está en `AGENTES.md`). Como corren como subagentes, no pueden hacerle preguntas a la persona a mitad del trabajo: si les falta un dato, terminan devolviendo "Necesito que confirmes" y la conversación principal pregunta y los continúa. La clave de cada uno está en el `description` de su frontmatter: es lo que usa Claude Code para saber cuándo invocarlo.
+Cada agente es un subagente de Claude Code con su rol, su proceso y sus reglas. Es a quién se le delega una tarea entera. Hoy hay cuarenta y uno, agrupados en documentación del proyecto, análisis y diseño (con el triage de bugs y las consultas sobre el producto), ejecución en vivo (incluidas las pruebas exploratorias, de accesibilidad, de rendimiento web, de permisos por rol, de resiliencia, la regresión visual, el cross-browser, los correos y las traducciones), reportes (con el análisis de fallos, la cobertura y el tablero de calidad), automatización con k0lmena (con la reparación de locators), la selección de casos por cambio, seguridad y gestión (el catálogo, con los skills, herramientas y conectores de cada uno, está en `AGENTES.md`). Como corren como subagentes, no pueden hacerle preguntas a la persona a mitad del trabajo: si les falta un dato, terminan devolviendo "Necesito que confirmes" y la conversación principal pregunta y los continúa. La clave de cada uno está en el `description` de su frontmatter: es lo que usa Claude Code para saber cuándo invocarlo.
 
 ### Skills — el *cómo* (`.claude/skills/`)
 
@@ -39,6 +39,10 @@ Herramientas que el agente **ejecuta** por línea de comandos, con sus plantilla
 ### Scripts — utilidades internas (`scripts/`)
 
 Código Python propio del repo para tareas mecánicas (generar la planilla `.xlsx`, normalizar tablas). Incluye `scripts/gestion/`, la integración con Xray, QMetry (QTM4J) y AIO Tests sobre sus APIs oficiales: los agentes deciden qué hacer y el script lo ejecuta, sin depender de servers MCP. Las utilidades internas nuevas viven acá.
+
+### Evals — la calidad de los agentes (`evals/`)
+
+Los tests (`tests/`) cubren los scripts; los **evals** miden la calidad de lo que generan los agentes. Cada caso trae insumos con trampas deliberadas y chequeos determinísticos versionados; `scripts/evaluar_agentes.py` los corre en un workspace aislado con `claude -p` y arma un informe con las regresiones contra la corrida anterior. Al cambiar un agente o un skill, se corren antes y después.
 
 ## En resumen
 

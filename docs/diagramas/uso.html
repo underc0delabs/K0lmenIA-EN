@@ -33,8 +33,8 @@
     <div class="etapa">
       <h2><span class="num-etapa" style="background:var(--violeta)">1</span>Diseño</h2>
       <p>De la historia a los casos de prueba</p>
-      <div class="paso"><div class="n">0</div><div><div class="pedido">Poné la historia en <code>input/historias/</code></div>
-        <div class="quien">o pasá una key de Jira: los agentes investigan la documentación del proyecto (documentador-proyecto: repositorio, PRs, web), comentarios, subtareas, épica, Confluence y Figma, arman la ficha de contexto y marcan lo que falta (FI-01)</div></div></div>
+      <div class="paso"><div class="n">0</div><div><div class="pedido">"Documentá el proyecto" · poné la historia en <code>input/historias/</code></div>
+        <div class="quien">o pasá una key de Jira, Azure DevOps, Linear, ClickUp, monday, Asana, Trello, Notion, YouTrack o Shortcut: los agentes investigan la documentación del proyecto (documentador-proyecto: repositorio, PRs, web), comentarios, subtareas, épica, Confluence y Figma, arman la ficha de contexto y marcan lo que falta (FI-01)</div></div></div>
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">1</div><div><div class="pedido">"Analizá la historia HU-001"</div><div class="quien">analista-historias</div>
         <div class="sale">ambigüedades y preguntas para el PO</div></div></div>
@@ -51,8 +51,8 @@
       <div class="paso"><div class="n" style="font-size:12px">3b</div><div><div class="pedido">"¿Qué casos corro para este cambio?"</div><div class="quien">selector-casos-de-prueba</div>
         <div class="sale">selección por riesgo + comando npm test con tags</div></div></div>
       <div class="bajada">▼</div>
-      <div class="paso"><div class="n">4</div><div><div class="pedido">"Generá datos de prueba" · "Armá el reporte de este bug"</div><div class="quien">generador-datos-prueba · generador-reportes-bug</div>
-        <div class="sale">datos CSV/MD · BUG-001.md</div></div></div>
+      <div class="paso"><div class="n">4</div><div><div class="pedido">"Generá datos de prueba" · "Armá el reporte de este bug" · "¿Ya está cargado?" · "¿Qué pasa si…?"</div><div class="quien">generador-datos-prueba · generador-reportes-bug · triador-bugs · consultor-proyecto</div>
+        <div class="sale">datos CSV/MD · BUG-001.md · duplicados y regresiones · respuestas con su fuente</div></div></div>
     </div>
 
     <!-- 2 -->
@@ -60,7 +60,7 @@
       <h2><span class="num-etapa" style="background:var(--verde)">2</span>Ejecución y automatización</h2>
       <p>Una vez con agentes, después sin tokens</p>
       <div class="paso"><div class="n">5</div><div><div class="pedido">"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com"</div>
-        <div class="quien">web-mapper · api-mapper (Postman / Swagger) · mobile-mapper (Appium) · verificador-datos (base de datos)</div>
+        <div class="quien">web-mapper · api-mapper (Postman, Bruno, Insomnia, Swagger, GraphQL) · mobile-mapper (Appium) · verificador-datos (base de datos)</div>
         <div class="sale">recorre la app, ajusta los pasos y escribe .feature + steps + locators <span class="pill token">una vez</span></div></div></div>
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">6</div><div><div class="pedido">Corrés la suite cuando quieras <span class="pill ok">sin tokens</span></div>
@@ -76,10 +76,10 @@
         <div class="quien">analista-seguridad: OWASP ZAP en modo pasivo, solo URLs autorizadas</div>
         <div class="sale">informe de seguridad: hallazgos por riesgo, evidencia y cómo corregirlos</div></div></div>
       <div class="bajada">▼</div>
-      <div class="paso"><div class="n">9</div><div><div class="pedido">"Hacé pruebas exploratorias" · "Revisá la accesibilidad" · "Revisá la velocidad" · "¿Se corrió algo?" · "Probalo en Safari" · "¿Llegó el mail?" · "Revisá las traducciones" · "Evaluá la usabilidad" · "Probá las validaciones del formulario"</div>
-        <div class="quien">explorador-web · analista-accesibilidad (WCAG 2.2) · auditor-rendimiento-web (Lighthouse) · pixel-perfect (regresión visual) · cross-browser (Chromium, Firefox, WebKit) · verificador-correos (Mailpit) · analista-traductor (idiomas) · evaluador-ux (Nielsen) · probador-formularios</div>
-        <div class="terminal">npm run explorar · npm run accesibilidad<br>npm run rendimiento · npm run pixel-perfect<br>npm run cross-browser · npm run correos<br>npm run traductor · npm run ux<br>npm run formularios <span class="c">         # también sin agentes ni tokens</span></div>
-        <div class="sale">links, imágenes, errores, responsive, WCAG, correos, traducciones, usabilidad y formularios, con capturas; cada informe compara contra las corridas anteriores (últimas 5)</div></div></div>
+      <div class="paso"><div class="n">9</div><div><div class="pedido">"Hacé pruebas exploratorias" · "Revisá la accesibilidad" · "Revisá la velocidad" · "¿Se corrió algo?" · "Probalo en Safari" · "¿Llegó el mail?" · "Revisá las traducciones" · "Evaluá la usabilidad" · "Probá las validaciones del formulario" · "Probá los permisos por rol" · "¿Qué pasa si la API se cae?"</div>
+        <div class="quien">explorador-web · analista-accesibilidad (WCAG 2.2) · auditor-rendimiento-web (Lighthouse) · pixel-perfect (regresión visual) · cross-browser (Chromium, Firefox, WebKit) · verificador-correos (Mailpit) · analista-traductor (idiomas) · evaluador-ux (Nielsen) · probador-formularios · probador-permisos · probador-resiliencia</div>
+        <div class="terminal">npm run explorar · npm run accesibilidad<br>npm run rendimiento · npm run pixel-perfect<br>npm run cross-browser · npm run correos<br>npm run traductor · npm run ux<br>npm run formularios · npm run permisos<br>npm run resiliencia <span class="c">         # también sin agentes ni tokens</span></div>
+        <div class="sale">links, imágenes, errores, responsive, WCAG, correos, traducciones, usabilidad, formularios, permisos y resiliencia, con capturas; cada informe compara contra las corridas anteriores (últimas 5)</div></div></div>
       <div class="bucle">¿Una prueba puntual que no vale la pena automatizar? → "Ejecutá el escenario X contra https://…" (ejecutor-e2e / ejecutor-api, en vivo)</div>
     </div>
 
@@ -98,6 +98,9 @@
       <div class="bajada">▼</div>
       <div class="paso"><div class="n">13</div><div><div class="pedido">"Armá el informe de cierre de HU-001"</div>
         <div class="quien">analista-cobertura (qué falta probar) · generador-reporte-cierre</div><div class="sale">huecos de cobertura, resultados, bugs, riesgos y go / no-go</div></div></div>
+      <div class="bajada">▼</div>
+      <div class="paso"><div class="n">14</div><div><div class="pedido">"Armá el tablero del sprint 12" · "Avisá en Slack" · monitoreo en producción</div>
+        <div class="quien">tablero-calidad · avisar (Slack y Teams) · npm run monitorear</div><div class="sale">tendencia y resumen para gerencia · portal <code>output/index.html</code> · aviso cuando algo se rompe o se recupera</div></div></div>
     </div>
   </div>
 

@@ -31,6 +31,9 @@
     "ux": "node -r ./env.js tools/ux/evaluar.js",
     "formularios": "node -r ./env.js tools/formularios/formularios.js",
     "mapa-funcional": "node -r ./env.js tools/mapa-funcional/mapear.js",
+    "permisos": "node -r ./env.js tools/permisos/permisos.js",
+    "resiliencia": "node -r ./env.js tools/resiliencia/resiliencia.js",
+    "monitorear": "node -r ./env.js tools/monitoreo/monitorear.js",
     "debug": "cross-env CUCUMBER_DEBUG=1 npx cucumber-js --profile debug",
     "record": "node -r ./env.js tools/generator/codegen.js",
     "record:generator": "ts-node -r ./env.js tools/generator/record-generator.ts"

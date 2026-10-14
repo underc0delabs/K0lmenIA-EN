@@ -69,13 +69,15 @@
         <div class="env"><span class="v">OAuth desde /mcp, o con token:</span><br><span class="k">ATLASSIAN_MCP_AUTENTICACION</span>=<span class="v">token</span><br><span class="k">JIRA_BASE_URL</span> · <span class="k">JIRA_EMAIL</span> · <span class="k">JIRA_API_TOKEN</span></div></div>
       <div class="grupo" style="border-left-color:var(--verde)"><div class="t">Gestión de pruebas <i>scripts/gestion</i></div>
         <div class="env"><span class="k">GESTION_HERRAMIENTA</span>=<span class="v">xray-cloud | xray-dc | qtm4j | aio</span><br><span class="k">GESTION_PROYECTO</span>=<span class="v">PROJ</span><br><span class="v">Xray Cloud:</span> <span class="k">XRAY_CLOUD_CLIENT_ID</span> · <span class="k">XRAY_CLOUD_CLIENT_SECRET</span><br><span class="v">Xray DC:</span> <span class="k">XRAY_DC_URL</span> · <span class="k">XRAY_DC_TOKEN</span><br><span class="v">QMetry:</span> <span class="k">QTM4J_API_KEY</span> · <span class="v">AIO:</span> <span class="k">AIO_API_TOKEN</span><br><span class="v">Opcional:</span> <span class="k">ESTIMACION_FACTOR</span>=<span class="v">1.3 (tiempo estimado × 1,3)</span></div></div>
+      <div class="grupo" style="border-left-color:var(--violeta)"><div class="t">Repositorio de la app <i>documentador-proyecto</i></div>
+        <div class="env"><span class="k">REPO_PROVEEDOR</span>=<span class="v">github | gitlab | azure-repos | bitbucket</span><br><span class="k">REPO_NOMBRE</span>=<span class="v">mi-empresa/mi-app</span> · <span class="k">GITHUB_TOKEN</span> · <span class="k">GITLAB_TOKEN</span></div></div>
       <div class="grupo" style="border-left-color:var(--naranja)"><div class="t">Azure DevOps <i>conector azure-devops</i></div>
         <div class="env"><span class="k">ADO_ORGANIZACION</span> · <span class="k">ADO_PAT</span> · <span class="k">ADO_PROYECTO</span></div></div>
       <div class="grupo" style="border-left-color:var(--gris)"><div class="t">Bases de datos y seguridad</div>
         <div class="env"><span class="k">DB_CONEXIONES</span>=<span class="v">principal</span> + <span class="k">DB_PRINCIPAL_MOTOR</span> · <span class="k">_HOST</span> · <span class="k">_BASE</span> · <span class="k">_USUARIO</span> · <span class="k">_CLAVE</span><br><span class="k">SEGURIDAD_URLS_AUTORIZADAS</span>=<span class="v">https://staging.tu-app.com</span></div></div>
-      <div class="grupo" style="border-left-color:var(--cian)"><div class="t">Correos e idiomas <i>verificador-correos, analista-traductor</i></div>
-        <div class="env"><span class="k">MAILPIT_URL</span>=<span class="v">http://localhost:8025</span><br><span class="k">TRADUCTOR_IDIOMAS</span>=<span class="v">es-AR,en-US,pt-BR</span><br><span class="v">Mailpit: docker compose -f herramientas/mailpit/docker-compose.yml up -d</span></div></div>
-      <div class="alerta"><b>Conectores opcionales</b> (Azure DevOps, Figma, QMetry, AIO Tests, k0lmenaTMT, Appium): <code>npm run conector -- activar &lt;nombre&gt;</code>, reiniciá Claude Code y verificá con <code>/mcp</code>. Usá credenciales de prueba, nunca de producción.</div>
+      <div class="grupo" style="border-left-color:var(--cian)"><div class="t">Correos, idiomas, roles y avisos <i>correos, traductor, permisos, Slack/Teams</i></div>
+        <div class="env"><span class="k">MAILPIT_URL</span>=<span class="v">http://localhost:8025</span><br><span class="k">TRADUCTOR_IDIOMAS</span>=<span class="v">es-AR,en-US,pt-BR</span><br><span class="k">PERMISOS_ROLES</span>=<span class="v">admin,operador</span> + <span class="k">PERMISOS_&lt;ROL&gt;_USUARIO</span> · <span class="k">_CLAVE</span><br><span class="k">SLACK_WEBHOOK_URL</span> · <span class="k">TEAMS_WEBHOOK_URL</span> · <span class="k">MONITOREO_URLS</span><br><span class="v">Mailpit: docker compose -f herramientas/mailpit/docker-compose.yml up -d</span></div></div>
+      <div class="alerta"><b>Conectores opcionales</b> (Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday, Asana, Trello, Notion, YouTrack, Shortcut, QMetry, AIO Tests, k0lmenaTMT, Appium): <code>npm run conector -- activar &lt;nombre&gt;</code>, reiniciá Claude Code y verificá con <code>/mcp</code>. Usá credenciales de prueba, nunca de producción.</div>
     </div>
 
     <!-- 3 · PROMPTS -->
@@ -83,14 +85,19 @@
       <h2><span class="num" style="background:var(--violeta)">3</span>Pedírselo a los agentes</h2>
       <p>En lenguaje natural: Claude Code elige el agente (o nombralo vos)</p>
       <div class="fam">Análisis y diseño</div>
+      <div class="prompt"><div class="q">"Documentá el proyecto"</div><div class="a"><span class="ag">documentador-proyecto</span><span class="nuevo">nuevo</span> repositorio, historias, links y web</div></div>
       <div class="prompt"><div class="q">"Analizá la historia HU-001 y decime qué falta definir"</div><div class="a"><span class="ag">analista-historias</span></div></div>
       <div class="prompt"><div class="q">"Generá los casos de prueba de PROJ-12"</div><div class="a"><span class="ag">generador-casos-manuales</span> Excel con tiempo estimado + cobertura</div></div>
-      <div class="prompt"><div class="q">"Revisá los casos de HU-001 y decime cuánto lleva ejecutarlos"</div><div class="a"><span class="ag">revisor-casos</span><span class="nuevo">nuevo</span> puntaje, duplicados y minutos</div></div>
+      <div class="prompt"><div class="q">"Revisá los casos de HU-001 y decime cuánto lleva ejecutarlos"</div><div class="a"><span class="ag">revisor-casos</span> puntaje, duplicados y minutos</div></div>
       <div class="prompt"><div class="q">"¿Qué casos corro para el PR #42?"</div><div class="a"><span class="ag">selector-casos-de-prueba</span>  selección por riesgo + comando</div></div>
+      <div class="prompt"><div class="q">"¿Este bug ya está cargado en Jira?"</div><div class="a"><span class="ag">triador-bugs</span><span class="nuevo">nuevo</span> duplicados y regresiones</div></div>
+      <div class="prompt"><div class="q">"¿Qué pasa si un usuario bloqueado intenta pagar?"</div><div class="a"><span class="ag">consultor-proyecto</span><span class="nuevo">nuevo</span> responde con la fuente</div></div>
       <div class="fam">Ejecución en vivo</div>
       <div class="prompt"><div class="q">"Corré una regresión visual de qarmy.ar"</div><div class="a"><span class="ag">pixel-perfect</span>  qué se corrió y cuántos px</div></div>
-      <div class="prompt"><div class="q">"Evaluá la usabilidad del checkout"</div><div class="a"><span class="ag">evaluador-ux</span><span class="nuevo">nuevo</span> heurísticas de Nielsen</div></div>
-      <div class="prompt"><div class="q">"Probá las validaciones del formulario de registro"</div><div class="a"><span class="ag">probador-formularios</span><span class="nuevo">nuevo</span> campo por campo, sin enviarlo</div></div>
+      <div class="prompt"><div class="q">"Evaluá la usabilidad del checkout"</div><div class="a"><span class="ag">evaluador-ux</span> heurísticas de Nielsen</div></div>
+      <div class="prompt"><div class="q">"Probá las validaciones del formulario de registro"</div><div class="a"><span class="ag">probador-formularios</span> campo por campo, sin enviarlo</div></div>
+      <div class="prompt"><div class="q">"Probá los permisos de admin, operador e invitado"</div><div class="a"><span class="ag">probador-permisos</span><span class="nuevo">nuevo</span> matriz rol × ruta</div></div>
+      <div class="prompt"><div class="q">"¿Qué ve el usuario si la API se cae?"</div><div class="a"><span class="ag">probador-resiliencia</span><span class="nuevo">nuevo</span> fallas simuladas</div></div>
       <div class="prompt"><div class="q">"Verificá que llegue el mail de bienvenida a ana@test.com"</div><div class="a"><span class="ag">verificador-correos</span> con Mailpit</div></div>
       <div class="prompt"><div class="q">"Hacé pruebas exploratorias del sitio del .env"</div><div class="a"><span class="ag">explorador-web</span> · también accesibilidad y velocidad</div></div>
       <div class="fam">Automatización con k0lmena</div>
@@ -99,6 +106,7 @@
       <div class="fam">Gestión y cierre</div>
       <div class="prompt"><div class="q">"Subí los casos de HU-001 a Xray y creá el ciclo Sprint 5"</div><div class="a"><span class="ag">gestor-pruebas</span></div></div>
       <div class="prompt"><div class="q">"Armá el informe de cierre de HU-001"</div><div class="a"><span class="ag">generador-reporte-cierre</span> go / no-go</div></div>
+      <div class="prompt"><div class="q">"Armá el tablero de calidad del sprint 12"</div><div class="a"><span class="ag">tablero-calidad</span><span class="nuevo">nuevo</span> resumen para gerencia</div></div>
     </div>
   </div>
 
