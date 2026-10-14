@@ -38,7 +38,7 @@ from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_lis
 from generar_informe_exploratorio import CSS_EXTRA
 from generar_informe_pixel_perfect import CSS_PP, JS_PP, deltas, antes_despues
 
-COLOR_NAV = {"chromium": SERIES[2], "firefox": SERIES[1], "webkit": SERIES[5]}
+COLOR_NAV = {"chromium": SERIES[2], "firefox": SERIES[3], "webkit": SERIES[4]}
 CORTO = {"chromium": "Chromium", "firefox": "Firefox", "webkit": "WebKit"}
 CLASE = {"Pasa en todos": (OK, "✓"), "Diferencia entre navegadores": (CRITICO, "✕"), "Falla en todos": (SERIO, "!"),
          "Sin resultado completo": (NEUTRO, "–")}
@@ -54,11 +54,11 @@ CSS_CB = """
 .lado figure{margin:0;background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .lado .thumb{display:grid;width:100%;height:260px;border:0;border-radius:0;border-bottom:1px solid var(--border)}
 .lado figcaption{padding:9px 12px;font-size:12.5px;color:var(--body);display:flex;justify-content:space-between;gap:8px;align-items:center}
-.err{background:#0E1116;border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;
-  font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:12px;color:#F2B8B8;max-height:260px;overflow:auto}
+.err{background:#120F0B;border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;
+  font-family:var(--mono);font-size:12px;color:#FFB8B0;max-height:260px;overflow:auto}
 .celda{display:flex;flex-direction:column;align-items:center;gap:6px}
-.celda .pct{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--muted)}
-.instalar{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);background:var(--tile);border:1px solid var(--border);
+.celda .pct{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.instalar{font-family:var(--mono);font-size:12px;color:var(--ink);background:var(--tile);border:1px solid var(--border);
   border-radius:8px;padding:4px 8px;display:inline-block}
 .descartado{opacity:.55}
 </style>
@@ -90,7 +90,7 @@ def comparador(base, otra, dif, etq_base, etq_otra, ancho):
     return f'''<div class="comp-wrap">
   <div class="comp-bar"><span class="lado"><i style="background:{SERIES[2]}"></i>{e(etq_base)}</span>
     <input type="range" min="0" max="100" value="50" aria-label="Deslizar entre {e(etq_base)} y {e(etq_otra)}">
-    <span class="lado"><i style="background:{SERIES[1]}"></i>{e(etq_otra)}</span>
+    <span class="lado"><i style="background:{SERIES[3]}"></i>{e(etq_otra)}</span>
     <button type="button" data-modo="desl" class="on">Deslizar</button><button type="button" data-modo="dif">Ver diferencias</button></div>
   <div class="comp" style="{maxw}"><div class="lienzo">
     <img class="base" src="{e(otra)}" data-act="{e(otra)}" data-dif="{e(dif)}" alt="{e(etq_otra)}">

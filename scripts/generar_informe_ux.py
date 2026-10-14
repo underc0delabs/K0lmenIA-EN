@@ -40,7 +40,7 @@ CSS_UX = """
 .heur{border-top:1px solid var(--border-soft);padding:16px 24px}
 .heur:first-child{border-top:0}
 .heur h3{font-size:15px;color:var(--ink);display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-.heur h3 .cod{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;padding:3px 8px;border-radius:7px;background:var(--tile);border:1px solid var(--border)}
+.heur h3 .cod{font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:7px;background:var(--tile);border:1px solid var(--border)}
 .item{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:14px;padding:10px 0;border-top:1px dashed var(--border-soft)}
 .item:first-of-type{border-top:0}
 .item p{margin:2px 0;color:var(--body);font-size:13px}

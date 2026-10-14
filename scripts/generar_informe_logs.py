@@ -31,8 +31,8 @@ from generar_informe_exploratorio import CSS_EXTRA
 
 CSS_LOG = """
 <style>
-.stack{background:#0E1116;border:1px solid var(--border);border-radius:10px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;
-  font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:11.5px;color:#F2B8B8;max-height:240px;overflow:auto;margin-top:6px}
+.stack{background:#120F0B;border:1px solid var(--border);border-radius:10px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;
+  font-family:var(--mono);font-size:11.5px;color:#FFB8B0;max-height:240px;overflow:auto;margin-top:6px}
 details.st summary{cursor:pointer;color:var(--muted);font-size:12px;margin-top:4px}
 .nivel{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px}
 .esc{border-top:1px solid var(--border-soft);padding:14px 24px}

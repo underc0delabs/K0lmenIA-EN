@@ -51,7 +51,7 @@ CSS_COR = """
 .ctl{list-style:none;margin:6px 0 0;padding:0}
 .ctl li{display:flex;gap:8px;align-items:baseline;font-size:13px;color:var(--body);margin:3px 0}
 .ctl b{font-weight:700}
-.ctl .si{color:#4ADE80}.ctl .no{color:#F87171}
+.ctl .si{color:#7BD36A}.ctl .no{color:#FF7B70}
 .linkst td{font-size:12.5px}
 .cat{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;
   background:var(--tile);border:1px solid var(--border);color:var(--ink);white-space:nowrap}

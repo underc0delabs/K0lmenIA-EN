@@ -4,28 +4,28 @@
 <style>
   .lienzo { width: 1800px; }
   .cols { display: grid; grid-template-columns: 1fr 1.08fr 1.12fr; gap: 22px; }
-  .col { background: rgba(255,255,255,0.015); border: 1px solid var(--linea); border-radius: 18px; padding: 18px; }
+  .col { background: rgba(249,176,6,0.025); border: 1px solid var(--linea); border-radius: 18px; padding: 18px; }
   .col > h2 { margin: 0 0 4px; font-size: 24px; display: flex; align-items: center; gap: 12px; }
   .col > p { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
-  .num { width: 38px; height: 38px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 20px; font-weight: 800; color: #0b0f17; }
+  .num { width: 38px; height: 38px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 20px; font-weight: 800; color: var(--noche); }
   .paso { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--panel); border: 1px solid var(--linea); border-radius: 12px; padding: 11px 14px; margin-bottom: 10px; }
   .n { width: 30px; height: 30px; border-radius: 50%; background: var(--panel2); border: 1px solid var(--linea); display: grid; place-items: center; font-weight: 800; font-size: 15px; }
   .paso b { font-size: 16px; display: block; margin-bottom: 4px; }
   .paso span { color: var(--muted); font-size: 13.5px; line-height: 1.4; display: block; }
-  .term { background: #08111d; border: 1px solid var(--linea); border-radius: 10px; padding: 8px 12px; margin-top: 6px; font-family: Consolas, "Cascadia Mono", monospace; font-size: 14px; line-height: 1.65; color: var(--verde); }
+  .term { background: var(--terminal); border: 1px solid var(--linea); border-radius: 10px; padding: 8px 12px; margin-top: 6px; font-family: var(--mono); font-size: 14px; line-height: 1.65; color: var(--verde); }
   .term .c { color: var(--muted); }
   .grupo { background: var(--panel); border: 1px solid var(--linea); border-left: 5px solid var(--azul); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
   .grupo .t { font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
   .grupo .t i { font-style: normal; font-size: 12.5px; color: var(--muted); font-weight: 400; }
-  .env { font-family: Consolas, "Cascadia Mono", monospace; font-size: 13.5px; line-height: 1.6; margin-top: 6px; color: #dbe5f1; }
+  .env { font-family: var(--mono); font-size: 13.5px; line-height: 1.6; margin-top: 6px; color: var(--texto2); }
   .env .k { color: var(--cian); }
   .env .v { color: var(--muted); }
-  .alerta { border: 1px dashed var(--naranja); border-radius: 12px; padding: 10px 14px; color: #f8d38d; font-size: 14px; line-height: 1.45; margin-top: 4px; }
+  .alerta { border: 1px dashed var(--naranja); border-radius: 12px; padding: 10px 14px; color: var(--miel); font-size: 14px; line-height: 1.45; margin-top: 4px; }
   .prompt { background: var(--panel); border: 1px solid var(--linea); border-radius: 14px 14px 14px 4px; padding: 10px 14px; margin-bottom: 10px; }
-  .prompt .q { font-size: 15.5px; font-style: italic; color: #f3f6fa; }
+  .prompt .q { font-size: 15.5px; font-style: italic; color: var(--texto); }
   .prompt .a { font-size: 13px; color: var(--muted); margin-top: 4px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .ag { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; padding: 1px 8px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--linea); color: var(--texto); }
-  .nuevo { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: rgba(34,211,238,0.15); color: var(--cian); text-transform: uppercase; letter-spacing: .5px; }
+  .ag { font-family: var(--mono); font-size: 12.5px; padding: 1px 8px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--linea); color: var(--texto); }
+  .nuevo { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: rgba(201,166,107,0.16); color: var(--cian); text-transform: uppercase; letter-spacing: .5px; }
   .fam { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); font-weight: 700; margin: 12px 0 8px 2px; }
   .fam:first-of-type { margin-top: 0; }
   .pie { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 22px; }

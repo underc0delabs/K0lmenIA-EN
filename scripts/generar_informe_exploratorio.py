@@ -51,12 +51,12 @@ from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_lis
 SEVERIDADES = [("Crítica", CRITICO), ("Alta", SERIO), ("Media", AVISO), ("Baja", NEUTRO)]
 ORDEN = {s: i for i, (s, _) in enumerate(SEVERIDADES)}
 CATEGORIAS = [("Página con error", CRITICO), ("Link roto", SERIO), ("Imagen rota", SERIO), ("Error de JavaScript", SERIO),
-              ("Error de consola", AVISO), ("Recurso que falla", AVISO), ("Responsive", SERIES[0]), ("Rendimiento", SERIES[6]),
-              ("Accesibilidad", NEUTRO), ("Exploración manual", SERIES[4])]
+              ("Error de consola", AVISO), ("Recurso que falla", AVISO), ("Responsive", SERIES[1]), ("Rendimiento", SERIES[7]),
+              ("Accesibilidad", NEUTRO), ("Exploración manual", SERIES[5])]
 
 CSS_EXTRA = """
 <style>
-.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;word-break:break-all}
+.mono{font-family:var(--mono);font-size:12.5px;word-break:break-all}
 .hallazgo{padding:20px 24px;border-top:1px solid var(--border-soft)}
 .hallazgo:first-child{border-top:0}
 .hallazgo h3{font-size:16px;color:var(--ink);margin-bottom:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -258,7 +258,7 @@ def build_html(datos, analisis, hist_html=""):
         nombres = {f["resolucion"]: f.get("nombre", "") for f in resp}
         filas_sb = [(f'{nombres[x]} {x}', [sum(1 for f in resp if f["resolucion"] == x and f.get(k)) for k in
                                            ("desborde_horizontal", "texto_chico", "objetivos_tactiles_chicos")]) for x in resoluciones]
-        series = [("Scroll horizontal", CRITICO), ("Texto < 12px", AVISO), ("Táctiles < 24px", SERIES[0])]
+        series = [("Scroll horizontal", CRITICO), ("Texto < 12px", AVISO), ("Táctiles < 24px", SERIES[1])]
         if any(sum(v) for _, v in filas_sb):
             body.append(section("Problemas de responsive por resolución", stacked_bars(filas_sb, series), "páginas afectadas"))
         paginas_r = list(dict.fromkeys(f["url"] for f in resp))

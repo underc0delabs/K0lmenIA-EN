@@ -11,7 +11,7 @@
   function temaActual() {
     const t = raiz.getAttribute('data-theme');
     if (t) return t;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'dark'; // como k0lmena.com: oscuro salvo que la persona elija el claro
   }
   function pintarBoton() {
     const b = document.getElementById('cambiar-tema');

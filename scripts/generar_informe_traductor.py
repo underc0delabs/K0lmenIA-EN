@@ -43,14 +43,14 @@ CSS_TR = """
 .lado figure{margin:0;background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .lado .thumb{display:grid;width:100%;height:280px;border:0;border-radius:0;border-bottom:1px solid var(--border)}
 .lado figcaption{padding:9px 12px;font-size:12.5px;color:var(--body);display:flex;justify-content:space-between;gap:8px;align-items:center}
-.idioma{display:inline-flex;align-items:center;gap:6px;font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;font-weight:600;padding:3px 9px;
+.idioma{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;font-weight:600;padding:3px 9px;
   border-radius:999px;background:var(--tile);border:1px solid var(--border);color:var(--ink)}
 .cat{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;
   background:var(--tile);border:1px solid var(--border);color:var(--ink);white-space:nowrap}
 .cat i{width:9px;height:9px;border-radius:3px}
 .celda{display:flex;flex-direction:column;align-items:center;gap:6px}
 .descartado{opacity:.55}
-.sug{color:#B9F0B9}
+.sug{color:#C6EDB9}
 </style>
 """
 

@@ -1,5 +1,6 @@
 // Regenera los recursos de la documentación de k0lmenIA:
 //   docs/assets/img/arquitectura.png  ← docs/diagramas/arquitectura.html
+//   docs/assets/img/relaciones.png    ← docs/diagramas/relaciones.html
 //   docs/assets/img/uso.png           ← docs/diagramas/uso.html
 //   docs/assets/img/puesta-en-marcha.png ← docs/diagramas/puesta-en-marcha.html
 //   docs/k0lmenIA-documentacion.pdf   ← docs/index.html (estilos de impresión)
@@ -26,7 +27,7 @@ const ruta = (archivo) => path.join(__dirname, archivo);
 
   // Diagramas → PNG (2x para que se lean bien en pantallas de alta densidad)
   const lienzo = await navegador.newPage({ viewport: { width: 1900, height: 1200 }, deviceScaleFactor: 2 });
-  for (const nombre of ['arquitectura', 'uso', 'puesta-en-marcha']) {
+  for (const nombre of ['arquitectura', 'relaciones', 'uso', 'puesta-en-marcha']) {
     await lienzo.goto(url(`diagramas/${nombre}.html`));
     await lienzo.locator('#captura').screenshot({ path: ruta(`assets/img/${nombre}.png`) });
     console.log(`docs/assets/img/${nombre}.png`);
@@ -43,8 +44,8 @@ const ruta = (archivo) => path.join(__dirname, archivo);
     displayHeaderFooter: true,
     headerTemplate: '<span></span>',
     footerTemplate:
-      '<div style="width:100%;font-size:7.5px;color:#7a8699;padding:0 14mm;display:flex;justify-content:space-between;font-family:Segoe UI,sans-serif">' +
-      '<span>k0lmenIA · Documentación</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>',
+      '<div style="width:100%;font-size:7.5px;color:#8A8172;padding:0 15mm;display:flex;justify-content:space-between;font-family:Consolas,monospace">' +
+      '<span>// k0lmenIA · documentación</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>',
   });
   console.log('docs/k0lmenIA-documentacion.pdf');
   await navegador.close();

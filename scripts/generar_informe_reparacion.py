@@ -51,30 +51,30 @@ QUE_ES = {
 
 CSS_REP = """
 <style>
-.diff{margin:6px 0 4px;border:1px solid var(--border);border-radius:10px;overflow:auto;background:#0B0D11;
-  font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.65}
+.diff{margin:6px 0 4px;border:1px solid var(--border);border-radius:10px;overflow:auto;background:#120F0B;
+  font-family:var(--mono);font-size:12.5px;line-height:1.65}
 .diff div{padding:1px 14px;white-space:pre}
-.diff .h{color:var(--muted);background:rgba(255,255,255,.03)}
-.diff .del{background:rgba(208,59,59,.16);color:#F2B8B8}
-.diff .add{background:rgba(12,163,12,.16);color:#B9F0B9}
+.diff .h{color:var(--muted);background:rgba(244,239,230,.03)}
+.diff .del{background:rgba(255,90,78,.16);color:#FFB8B0}
+.diff .add{background:rgba(92,191,74,.16);color:#C6EDB9}
 .diff .ctx{color:var(--body)}
-.err{background:#0E1116;border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;
-  font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:12px;color:#F2B8B8;max-height:220px;overflow:auto}
-.code{font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:12px;color:var(--ink);background:var(--tile);border:1px solid var(--border);
+.err{background:#120F0B;border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;
+  font-family:var(--mono);font-size:12px;color:#FFB8B0;max-height:220px;overflow:auto}
+.code{font-family:var(--mono);font-size:12px;color:var(--ink);background:var(--tile);border:1px solid var(--border);
   border-radius:7px;padding:3px 8px;display:inline-block;word-break:break-all}
-.code.old{color:#F2B8B8;text-decoration:line-through;text-decoration-color:rgba(242,184,184,.5)}
-.code.new{color:#B9F0B9}
+.code.old{color:#FFB8B0;text-decoration:line-through;text-decoration-color:rgba(255,184,176,.5)}
+.code.new{color:#C6EDB9}
 .flecha{color:var(--muted);margin:0 6px}
 .score{display:flex;align-items:center;gap:8px;min-width:120px}
-.score .t{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
-.score .t span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,rgba(20,168,149,.5),#14A895)}
-.score b{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);min-width:26px;text-align:right}
-.aviso{border:1px solid rgba(250,178,25,.35);background:rgba(250,178,25,.07);border-radius:10px;padding:10px 14px;color:#F5D58A;margin-top:10px}
+.score .t{flex:1;height:6px;border-radius:99px;background:rgba(244,239,230,.06);overflow:hidden}
+.score .t span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,rgba(249,176,6,.5),#F9B006)}
+.score b{font-family:var(--mono);font-size:12px;color:var(--ink);min-width:26px;text-align:right}
+.aviso{border:1px solid rgba(255,214,10,.35);background:rgba(255,214,10,.07);border-radius:10px;padding:10px 14px;color:#FFE58A;margin-top:10px}
 .capturas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:8px}
 .capturas figure{margin:0}
 .capturas figcaption{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px}
 .capturas img{display:block;width:100%;max-height:320px;object-fit:contain;object-position:left top;border-radius:8px;border:1px solid var(--border);background:#fff}
-.cmd{font-family:"Geist Mono",ui-monospace,monospace;font-size:12.5px;color:var(--ink)}
+.cmd{font-family:var(--mono);font-size:12.5px;color:var(--ink)}
 @media (max-width:720px){.capturas{grid-template-columns:1fr}}
 </style>
 """
@@ -220,7 +220,7 @@ def build_html(datos, analisis, carpeta=None, hist_html=""):
         cuenta = Counter(x.get("diagnostico") for x in rs)
         segs = [(cuenta[d], COLOR_DIAG[d], d) for d in DIAGNOSTICOS if cuenta[d]]
         principal = max(segs, key=lambda s: s[0])
-        recorrido = bar_chart([("Analizadas", n, SERIES[2]), ("Con propuesta", prop, SERIES[0]), ("Aplicadas", apl, SERIES[5]), ("Verificadas", ver, OK)],
+        recorrido = bar_chart([("Analizadas", n, SERIES[2]), ("Con propuesta", prop, SERIES[1]), ("Aplicadas", apl, SERIES[4]), ("Verificadas", ver, OK)],
                               ancho_etiqueta=130)
         body.append(two_col(section("Recorrido de las reparaciones", recorrido, "de la falla al test que vuelve a pasar"),
                             section("Diagnósticos", donut_panel(segs, round(principal[0] / len(rs) * 100), principal[2][:16].lower()))))

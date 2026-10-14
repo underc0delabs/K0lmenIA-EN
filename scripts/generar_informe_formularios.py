@@ -44,7 +44,7 @@ CSS_FO = """
 .capturas figcaption{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px}
 .capturas .thumb{display:grid;width:100%;height:260px}
 .campo{font-weight:650;color:var(--ink)}
-.campo small{display:block;font-weight:400;color:var(--muted);font-family:"Geist Mono",ui-monospace,monospace;font-size:11.5px}
+.campo small{display:block;font-weight:400;color:var(--muted);font-family:var(--mono);font-size:11.5px}
 .descartado{opacity:.55}
 </style>
 """

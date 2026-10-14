@@ -35,29 +35,29 @@ from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_lis
 from generar_informe_exploratorio import CSS_EXTRA
 
 GRUPOS = ["Imprescindible", "Recomendado", "Regresión mínima", "No seleccionado"]
-COLOR_GRUPO = {"Imprescindible": SERIES[0], "Recomendado": SERIES[2], "Regresión mínima": SERIES[5], "No seleccionado": NEUTRO}
+COLOR_GRUPO = {"Imprescindible": SERIES[1], "Recomendado": SERIES[2], "Regresión mínima": SERIES[4], "No seleccionado": NEUTRO}
 ICONO_GRUPO = {"Imprescindible": "●", "Recomendado": "◐", "Regresión mínima": "○", "No seleccionado": "–"}
 RIESGO = {"Alto": "bad", "Medio": "warn", "Bajo": "ok"}
 
 CSS_SEL = """
 <style>
-.cmdbox{position:relative;background:#0B0D11;border:1px solid var(--border);border-radius:12px;padding:14px 16px 14px 16px;margin:10px 0}
+.cmdbox{position:relative;background:#120F0B;border:1px solid var(--border);border-radius:12px;padding:14px 16px 14px 16px;margin:10px 0}
 .cmdbox .et{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px;display:flex;gap:10px;align-items:center}
-.cmdbox pre{margin:0;white-space:pre-wrap;word-break:break-all;font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:12.5px;color:#B9F0E8}
+.cmdbox pre{margin:0;white-space:pre-wrap;word-break:break-all;font-family:var(--mono);font-size:12.5px;color:#FFE58A}
 .cmdbox button{position:absolute;top:10px;right:10px;background:var(--tile);border:1px solid var(--border);color:var(--ink);border-radius:8px;
   padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
-.cmdbox button.ok{background:var(--accent);color:#04120F;border-color:transparent}
+.cmdbox button.ok{background:var(--accent);color:#0E0C09;border-color:transparent}
 .score{display:flex;align-items:center;gap:8px;min-width:110px}
-.score .t{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+.score .t{flex:1;height:6px;border-radius:99px;background:rgba(244,239,230,.06);overflow:hidden}
 .score .t span{display:block;height:100%;border-radius:99px}
-.score b{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);min-width:24px;text-align:right}
+.score b{font-family:var(--mono);font-size:12px;color:var(--ink);min-width:24px;text-align:right}
 .razones{margin:0;padding-left:16px;color:var(--body);font-size:12.5px}
 .razones li{margin:2px 0}
 .tags{display:flex;flex-wrap:wrap;gap:8px;padding:16px 24px}
 .tags span{font-size:12.5px;padding:5px 11px;border-radius:999px;background:var(--tile);border:1px solid var(--border);color:var(--ink)}
-.tags span b{font-family:"Geist Mono",ui-monospace,monospace;font-weight:600;color:var(--muted);margin-left:6px;font-size:11px}
+.tags span b{font-family:var(--mono);font-weight:600;color:var(--muted);margin-left:6px;font-size:11px}
 .commits li{margin:3px 0;color:var(--body)}
-.commits code{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--muted);margin-right:6px}
+.commits code{font-family:var(--mono);font-size:12px;color:var(--muted);margin-right:6px}
 </style>
 """
 
@@ -135,8 +135,8 @@ def build_html(datos, analisis, hist_html=""):
     body.append(two_col(
         section("Selección por historia", stacked_bars(filas, [(g, COLOR_GRUPO[g]) for g in GRUPOS[:3]]),
                 f'{r.get("historias_seleccionadas", 0)} de {r.get("historias", 0)} historias tienen casos seleccionados'),
-        section("Seleccionados por tipo", donut_panel([(tipos.get("Automatizado", 0), SERIES[0], "Automatizados (npm test)"),
-                                                       (tipos.get("Manual", 0), SERIES[1], "Manuales")],
+        section("Seleccionados por tipo", donut_panel([(tipos.get("Automatizado", 0), SERIES[1], "Automatizados (npm test)"),
+                                                       (tipos.get("Manual", 0), SERIES[3], "Manuales")],
                                                       round(tipos.get("Automatizado", 0) / len(sel) * 100) if sel else 0, "automatizados"))))
 
     # Cómo correrlo

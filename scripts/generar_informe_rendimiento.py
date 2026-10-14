@@ -34,11 +34,11 @@ import sys
 
 import _historial
 from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, stacked_bars,
-                              grouped_columns, two_col, nivel_badge, _pastilla, CRITICO, AVISO, NEUTRO, OK, SERIES,
+                              grouped_columns, two_col, nivel_badge, _pastilla, CRITICO, AVISO, NEUTRO, OK, SERIES, SERIO,
                               SUPERFICIE)
 from generar_informe_exploratorio import CSS_EXTRA, JS_EXTRA, miniatura, corto, origen
 
-SEVERIDADES = [("Crítica", CRITICO), ("Alta", "#EC835A"), ("Media", AVISO), ("Baja", NEUTRO)]
+SEVERIDADES = [("Crítica", CRITICO), ("Alta", SERIO), ("Media", AVISO), ("Baja", NEUTRO)]
 ORDEN = {s: i for i, (s, _) in enumerate(SEVERIDADES)}
 ESTADO = {"bueno": ("Bueno", OK, "✓"), "mejorar": ("A mejorar", AVISO, "!"), "malo": ("Malo", CRITICO, "✕")}
 TIPOS = ["Documento", "JavaScript", "CSS", "Imágenes", "Fuentes", "Video y audio", "Datos (fetch/XHR)", "Otros"]
@@ -76,7 +76,7 @@ def anillo(valor, etiqueta, tam=74):
     largo = c * valor / 100
     estado = "bueno" if valor >= 90 else "a mejorar" if valor >= 50 else "malo"
     return (f'<div class="g" data-tip="{e(etiqueta)}: {valor}/100 ({estado})" tabindex="0"><svg width="{tam}" height="{tam}" viewBox="0 0 {tam} {tam}">'
-            f'<circle cx="{tam / 2}" cy="{tam / 2}" r="{r}" fill="none" stroke="#20252D" stroke-width="7"/>'
+            f'<circle cx="{tam / 2}" cy="{tam / 2}" r="{r}" fill="none" stroke="#2E281F" stroke-width="7"/>'
             f'<circle cx="{tam / 2}" cy="{tam / 2}" r="{r}" fill="none" stroke="{color}" stroke-width="7" stroke-linecap="round" '
             f'stroke-dasharray="{largo:.1f} {c - largo:.1f}" transform="rotate(-90 {tam / 2} {tam / 2})"/>'
             f'<text x="{tam / 2}" y="{tam / 2 + 7}" text-anchor="middle" class="gnum">{valor}</text></svg>{e(etiqueta)}</div>')
@@ -173,7 +173,7 @@ def build_html(datos, analisis, hist_html=""):
                         "verde 90-100 · amarillo 50-89 · rojo 0-49"))
 
     if len(dispositivos) > 1 and len(paginas) > 1:
-        series = [(DISP[d], SERIES[0] if d == "mobile" else SERIES[2],
+        series = [(DISP[d], SERIES[1] if d == "mobile" else SERIES[2],
                    [next((y["puntajes"].get("performance") for y in ok if y["url"] == u and y["dispositivo"] == d), None) for u in paginas])
                   for d in dispositivos]
         body.append(section("Rendimiento por página y dispositivo", grouped_columns([corto(u, base) for u in paginas], series, alto=280),

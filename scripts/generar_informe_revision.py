@@ -35,13 +35,13 @@ from estimacion import formatear
 CSS_REV = """
 <style>
 .score{display:flex;align-items:center;gap:8px;min-width:110px}
-.score .t{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+.score .t{flex:1;height:6px;border-radius:99px;background:rgba(244,239,230,.06);overflow:hidden}
 .score .t span{display:block;height:100%;border-radius:99px}
-.score b{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);min-width:24px;text-align:right}
+.score b{font-family:var(--mono);font-size:12px;color:var(--ink);min-width:24px;text-align:right}
 .probs{margin:0;padding-left:16px;font-size:12.5px;color:var(--body)}
 .probs li{margin:3px 0}
 .probs .sug{color:var(--muted)}
-.prop{margin-top:8px;border:1px solid rgba(12,163,12,.35);background:rgba(12,163,12,.06);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#C8F2C8;white-space:pre-wrap}
+.prop{margin-top:8px;border:1px solid rgba(92,191,74,.35);background:rgba(92,191,74,.06);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#C6EDB9;white-space:pre-wrap}
 .prop b{color:#E6FBE6}
 .descartado{text-decoration:line-through;opacity:.6}
 </style>

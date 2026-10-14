@@ -56,7 +56,7 @@ CSS_CH = """
 <style>
 .hoja{border:1px solid var(--border);border-radius:14px;background:var(--bg);padding:20px 22px;margin:14px 24px;page-break-inside:avoid}
 .hoja h3{font-size:18px;color:var(--ink);display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
-.mision{font-size:15px;color:var(--ink);line-height:1.55;border-left:3px solid var(--accent);padding:6px 12px;margin:8px 0 14px;background:rgba(20,168,149,.06);border-radius:0 8px 8px 0}
+.mision{font-size:15px;color:var(--ink);line-height:1.55;border-left:3px solid var(--accent);padding:6px 12px;margin:8px 0 14px;background:rgba(249,176,6,.06);border-radius:0 8px 8px 0}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 22px}
 .grid2 .lbl{margin:0 0 4px}
 .grid2 ul{margin:0;padding-left:18px;color:var(--body);font-size:13px}
@@ -179,9 +179,9 @@ def informe_html(datos, sesiones, hist_html=""):
             ]) + "</div>"]
     tbs = [(s["charter"], [s.get("t_preparacion") or 0, s.get("t_prueba") or 0, s.get("t_bugs") or 0]) for s in hechas]
     if any(sum(v) for _, v in tbs):
-        body.append(two_col(section("En qué se fue el tiempo", stacked_bars(tbs, [("Preparación", SERIES[3]), ("Prueba", SERIES[0]), ("Bugs", SERIES[6])]),
+        body.append(two_col(section("En qué se fue el tiempo", stacked_bars(tbs, [("Preparación", SERIES[0]), ("Prueba", SERIES[1]), ("Bugs", SERIES[7])]),
                                     "reparto TBS: mucha preparación o mucho tiempo con bugs reduce la exploración"),
-                            section("Bugs por sesión", bar_chart([(s["charter"], len(s["bugs"]), SERIES[6]) for s in hechas], ancho_etiqueta=80))))
+                            section("Bugs por sesión", bar_chart([(s["charter"], len(s["bugs"]), SERIES[7]) for s in hechas], ancho_etiqueta=80))))
     if bugs:
         filas = [[nivel_badge(b["severidad"]), f'<strong style="color:var(--ink)">{e(b["texto"])}</strong>', e(b["charter"])] for b in bugs]
         body.append(section("Bugs encontrados", table(["Severidad", "Bug", "Sesión"], filas), "redactalos con el generador-reportes-bug"))

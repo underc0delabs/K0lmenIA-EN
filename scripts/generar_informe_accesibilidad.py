@@ -43,7 +43,7 @@ from generar_informe_exploratorio import CSS_EXTRA, JS_EXTRA, miniatura, corto, 
 
 SEVERIDADES = [("Crítica", CRITICO), ("Alta", SERIO), ("Media", AVISO), ("Baja", NEUTRO)]
 ORDEN = {s: i for i, (s, _) in enumerate(SEVERIDADES)}
-PRINCIPIOS = {"1": ("Perceptible", SERIES[0]), "2": ("Operable", SERIES[1]), "3": ("Comprensible", SERIES[2]), "4": ("Robusto", SERIES[6])}
+PRINCIPIOS = {"1": ("Perceptible", SERIES[1]), "2": ("Operable", SERIES[3]), "3": ("Comprensible", SERIES[2]), "4": ("Robusto", SERIES[7])}
 
 # Criterios de conformidad de WCAG 2.2 (niveles A y AA, y los AAA que revisa axe).
 WCAG = {
@@ -78,10 +78,10 @@ WCAG = {
 
 CSS_A11Y = """
 <style>
-.crit{display:inline-block;font-family:ui-monospace,Consolas,monospace;font-size:11.5px;padding:1px 7px;border-radius:6px;
+.crit{display:inline-block;font-family:var(--mono);font-size:11.5px;padding:1px 7px;border-radius:6px;
   background:var(--tile);border:1px solid var(--border);color:var(--ink);margin:2px 4px 2px 0;white-space:nowrap}
 .codigo-a11y{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;white-space:pre-wrap;
-  word-break:break-all;color:var(--body);font-family:ui-monospace,Consolas,monospace;font-size:12px;margin:4px 0}
+  word-break:break-all;color:var(--body);font-family:var(--mono);font-size:12px;margin:4px 0}
 .elem{display:grid;grid-template-columns:1fr 130px;gap:14px;padding:10px 0;border-top:1px dashed var(--border-soft)}
 .elem:first-child{border-top:0}
 .foco{font-size:12.5px;color:var(--body);columns:2;column-gap:28px}

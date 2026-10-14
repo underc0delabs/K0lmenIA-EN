@@ -1,6 +1,6 @@
 // reports/tema-oscuro.js — tema de k0lmenIA para los reportes de multiple-cucumber-html-reporter
-// (web, api y mobile). Deja los reportes en modo oscuro fijo y con la misma paleta que el resto
-// de los informes (scripts/_estilos_reporte.py): fondo, tarjetas, bordes y los colores de estado
+// (web, api y mobile). Deja los reportes en modo oscuro fijo, con el estilo de k0lmena.com y la misma
+// paleta que el resto de los informes (scripts/_estilos_reporte.py): fondo, tarjetas, bordes y los colores de estado
 // que usan sus gráficos (ApexCharts los lee de las variables --status-*).
 //
 //   const { opcionesReporte, aplicarTema } = require('../tema-oscuro');
@@ -15,53 +15,58 @@ try {
   // sin dotenv instalado (por ejemplo, en los tests del repo): los datos del encabezado quedan con "—"
 }
 
-// Paleta validada para la superficie oscura (CVD y contraste, skill dataviz).
+// Paleta de k0lmena.com (noche, carbón, cera y ámbar) con los colores de datos validados para la
+// superficie oscura (CVD y contraste, skill dataviz): los mismos que scripts/_estilos_reporte.py.
 const TOKENS = {
-  '--background': '#08090C',
-  '--foreground': '#F3F5F8',
-  '--card': '#111318',
-  '--card-foreground': '#F3F5F8',
-  '--popover': '#15181D',
-  '--popover-foreground': '#F3F5F8',
-  '--primary': '#14A895',
-  '--primary-foreground': '#0B0D11',
-  '--secondary': '#1A1E25',
-  '--secondary-foreground': '#F3F5F8',
-  '--muted': '#1A1E25',
-  '--muted-foreground': '#7F8896',
-  '--accent': '#16302D',
-  '--accent-foreground': '#BFF1E9',
-  '--destructive': '#D03B3B',
-  '--border': '#242A33',
-  '--input': '#242A33',
-  '--ring': '#14A895',
-  '--chart-1': '#14A895',
-  '--chart-2': '#E0702E',
+  '--background': '#0E0C09',
+  '--foreground': '#F4EFE6',
+  '--card': '#1A1712',
+  '--card-foreground': '#F4EFE6',
+  '--popover': '#221E17',
+  '--popover-foreground': '#F4EFE6',
+  '--primary': '#F9B006',
+  '--primary-foreground': '#0E0C09',
+  '--secondary': '#221E17',
+  '--secondary-foreground': '#F4EFE6',
+  '--muted': '#221E17',
+  '--muted-foreground': '#8A8172',
+  '--accent': '#2E2412',
+  '--accent-foreground': '#FFE58A',
+  '--destructive': '#FF5A4E',
+  '--border': '#2E281F',
+  '--input': '#2E281F',
+  '--ring': '#F9B006',
+  '--chart-1': '#C98500',
+  '--chart-2': '#14A895',
   '--chart-3': '#4C8DEB',
-  '--chart-4': '#C98500',
+  '--chart-4': '#E0702E',
   '--chart-5': '#9085E9',
   // Estados de Cucumber (siempre acompañados del nombre del estado en el reporte)
-  '--status-passed': '#0CA30C',
-  '--status-failed': '#D03B3B',
-  '--status-ambiguous': '#EC835A',
-  '--status-undefined': '#FAB219',
+  '--status-passed': '#5CBF4A',
+  '--status-failed': '#FF5A4E',
+  '--status-ambiguous': '#FF8A00',
+  '--status-undefined': '#FFD60A',
   '--status-pending': '#9085E9',
-  '--status-skipped': '#8B949E',
-  '--font-sans': '"Geist","Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif',
-  '--radius': '1rem',
+  '--status-skipped': '#8A8172',
+  '--font-sans': '"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif',
+  '--radius': '0.875rem',
 };
 
-// Tipografía Geist incrustada (scripts/fuentes, licencia OFL): igual sin internet.
+// Tipografía de k0lmena.com incrustada (scripts/fuentes, licencia OFL): igual sin internet.
 const FUENTES = (() => {
   const dir = path.resolve(__dirname, '..', '..', '..', 'scripts', 'fuentes');
-  return [['Geist', 'geist-latin-wght-normal.woff2'], ['Geist Mono', 'geist-mono-latin-wght-normal.woff2']].map(([familia, archivo]) => {
-    try {
-      return `@font-face{font-family:'${familia}';font-weight:100 900;font-display:swap;src:url(data:font/woff2;base64,${fs.readFileSync(path.join(dir, archivo)).toString('base64')}) format('woff2')}`;
-    } catch {
-      return '';
-    }
-  }).join('');
+  return [['Saira', 'saira.woff2', '500 700'], ['Inter', 'inter.woff2', '400 600'], ['JetBrains Mono', 'jetbrains-mono.woff2', '400 700']]
+    .map(([familia, archivo, pesos]) => {
+      try {
+        return `@font-face{font-family:'${familia}';font-weight:${pesos};font-display:swap;src:url(data:font/woff2;base64,${fs.readFileSync(path.join(dir, archivo)).toString('base64')}) format('woff2')}`;
+      } catch {
+        return '';
+      }
+    }).join('');
 })();
+
+// Patrón de panal de k0lmena.com (fondo del encabezado).
+const PANAL = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23F9B006' stroke-opacity='.10' stroke-width='1.2'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23F9B006' stroke-opacity='.07' stroke-width='1.2'/%3E%3C/svg%3E\")";
 
 const ESTILO = `
 <style id="k0lmena-theme">
@@ -69,24 +74,24 @@ ${FUENTES}
 html.dark,:root.dark{${Object.entries(TOKENS).map(([k, v]) => `${k}:${v}`).join(';')}}
 html.dark{color-scheme:dark}
 html.dark body{
-  background:radial-gradient(900px 480px at 18% -12%,rgba(20,168,149,.13),transparent 62%),
-             radial-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/22px 22px,var(--background) !important;
+  background:radial-gradient(760px 420px at 100% -8%,rgba(249,176,6,.12),transparent 62%),
+             ${PANAL} 0 0/56px 100px,var(--background) !important;
   background-attachment:fixed !important;font-family:var(--font-sans) !important;-webkit-font-smoothing:antialiased;
 }
 html.dark main,html.dark .container,html.dark .max-w-7xl,html.dark .max-w-6xl,html.dark .max-w-screen-xl{max-width:1480px !important;margin-left:auto !important;margin-right:auto !important}
-html.dark .bg-card{border:1px solid transparent !important;border-radius:20px !important;
-  background:linear-gradient(180deg,#14171D,#111318) padding-box,linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03) 45%,rgba(255,255,255,.05)) border-box !important;
+html.dark .bg-card{border:1px solid transparent !important;border-radius:14px !important;
+  background:linear-gradient(180deg,#1E1A14,#1A1712) padding-box,linear-gradient(180deg,rgba(244,239,230,.12),rgba(244,239,230,.04) 45%,rgba(244,239,230,.06)) border-box !important;
   box-shadow:0 24px 48px -32px rgba(0,0,0,.9) !important}
-html.dark code,html.dark pre{font-family:"Geist Mono",ui-monospace,Consolas,monospace !important}
-html.dark h1,html.dark h2,html.dark h3{letter-spacing:-.015em}
-html.dark header,html.dark nav{background:rgba(11,13,17,.85) !important;backdrop-filter:blur(10px);border-color:var(--border) !important}
+html.dark h1,html.dark h2,html.dark h3{font-family:"Saira","Inter",ui-sans-serif,system-ui,sans-serif !important;font-weight:700 !important;letter-spacing:-.012em}
+html.dark header,html.dark nav{background:rgba(14,12,9,.85) !important;backdrop-filter:blur(10px);border-color:var(--border) !important}
 html.dark table{font-variant-numeric:tabular-nums}
-html.dark thead th{font-size:10.5px !important;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-foreground) !important;background:rgba(255,255,255,.02)}
-html.dark table tbody tr:hover td{background:rgba(255,255,255,.025)}
-html.dark code,html.dark pre,html.dark .font-mono{font-family:"JetBrains Mono","Cascadia Code",ui-monospace,Consolas,monospace !important}
-html.dark .apexcharts-tooltip{background:#0E1116 !important;border:1px solid var(--border) !important;color:var(--foreground) !important;
+html.dark thead th{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace !important;font-size:11px !important;text-transform:lowercase;letter-spacing:.02em;color:var(--muted-foreground) !important;background:rgba(244,239,230,.025)}
+html.dark table tbody tr:hover td{background:rgba(249,176,6,.035)}
+html.dark code,html.dark pre,html.dark .font-mono{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace !important}
+html.dark a{color:#F9B006}
+html.dark .apexcharts-tooltip{background:#1A1712 !important;border:1px solid rgba(249,176,6,.38) !important;color:var(--foreground) !important;
   box-shadow:0 14px 34px rgba(0,0,0,.6) !important;border-radius:12px !important}
-html.dark .apexcharts-legend-text{color:#B7BECA !important}
+html.dark .apexcharts-legend-text{color:#CFC7B8 !important}
 #theme-toggle{display:none !important}
 </style>
 <script id="k0lmena-dark">document.documentElement.classList.add('dark');try{localStorage.setItem('theme','dark')}catch(e){}</script>`;

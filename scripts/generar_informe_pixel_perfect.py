@@ -51,8 +51,8 @@ CSS_PP = """
 .comp-bar input[type=range]{flex:1;min-width:160px;accent-color:var(--accent)}
 .comp-bar button{background:var(--tile);border:1px solid var(--border);color:var(--ink);border-radius:999px;padding:5px 12px;
   font:inherit;font-size:12px;cursor:pointer}
-.comp-bar button.on{background:var(--accent);color:#04120F;border-color:transparent}
-.comp{position:relative;max-height:640px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:#0B0D11;margin:0 auto}
+.comp-bar button.on{background:var(--accent);color:#0E0C09;border-color:transparent}
+.comp{position:relative;max-height:640px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:#120F0B;margin:0 auto}
 .comp .lienzo{position:relative}
 .comp img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
 .comp .sobre{position:absolute;left:0;top:0;width:100%;clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
@@ -70,12 +70,12 @@ CSS_PP = """
 .ad{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:8px}
 .ad figure{margin:0}
 .ad figcaption{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px}
-.ad img{display:block;width:100%;max-height:300px;object-fit:contain;object-position:left top;border-radius:8px;border:1px solid var(--border);background:#0B0D11}
+.ad img{display:block;width:100%;max-height:300px;object-fit:contain;object-position:left top;border-radius:8px;border:1px solid var(--border);background:#120F0B}
 .delta{display:inline-flex;gap:6px;flex-wrap:wrap}
-.delta span{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;padding:3px 8px;border-radius:6px;background:var(--tile);border:1px solid var(--border);color:var(--ink)}
-.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(255,255,255,.25);margin:0 3px}
+.delta span{font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:6px;background:var(--tile);border:1px solid var(--border);color:var(--ink)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(244,239,230,.25);margin:0 3px}
 .celda{display:flex;flex-direction:column;align-items:center;gap:6px}
-.celda .pct{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;color:var(--muted)}
+.celda .pct{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .intencional{opacity:.62}
 .cat{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;
   background:var(--tile);border:1px solid var(--border);color:var(--ink);white-space:nowrap}
@@ -118,7 +118,7 @@ def comparador(p):
     return f'''<div class="comp-wrap">
   <div class="comp-bar"><span class="lado"><i style="background:{SERIES[2]}"></i>Referencia</span>
     <input type="range" min="0" max="100" value="50" aria-label="Deslizar entre referencia y actual">
-    <span class="lado"><i style="background:{SERIES[0]}"></i>Actual</span>
+    <span class="lado"><i style="background:{SERIES[1]}"></i>Actual</span>
     <button type="button" data-modo="desl" class="on">Deslizar</button><button type="button" data-modo="dif">Ver diferencias</button>
     <a class="lb" href="{e(p["diferencia"])}" title="Diferencias · {e(p["id"])}" style="color:var(--ink);font-size:12px">Ampliar diferencias</a></div>
   <div class="comp" style="{maxw}"><div class="lienzo">

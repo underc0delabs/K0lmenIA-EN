@@ -82,6 +82,10 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 </p>
 
 <p align="center">
+  <img src="docs/assets/img/relaciones.png" alt="Cómo se relacionan agentes, skills, plantillas, scripts, herramientas y conectores MCP" width="100%">
+</p>
+
+<p align="center">
   <img src="docs/assets/img/uso.png" alt="Cómo se usa k0lmenIA" width="100%">
 </p>
 

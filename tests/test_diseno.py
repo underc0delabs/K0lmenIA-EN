@@ -9,7 +9,7 @@ def test_pagina_con_indice_fuentes_y_buscador():
     assert 'class="side"' in html and 'id="nav"' in html and 'id="buscar"' in html
     assert html.count('data-nav="Resumen"') == 2 and 'id="s-resumen"' in html and 'id="s-resumen-2"' in html  # ids únicos
     assert "grid-column:span 4" in html
-    assert "@font-face" in html and "font/woff2;base64," in html  # Geist incrustada: se ve igual sin internet
+    assert "@font-face" in html and "font/woff2;base64," in html  # Saira, Inter y JetBrains Mono incrustadas: se ve igual sin internet
     assert "https://" not in html.split("<body>")[0]  # nada se carga de internet
 
 

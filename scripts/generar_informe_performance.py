@@ -51,7 +51,7 @@ from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_lis
 
 CSS_EXTRA = """
 <style>
-.ok-t{color:#7BE07B;font-weight:600}.bad-t{color:#F59A9A;font-weight:600}.warn-t{color:#F7CD6E;font-weight:600}
+.ok-t{color:#7BD36A;font-weight:600}.bad-t{color:#FF8F85;font-weight:600}.warn-t{color:#FFE066;font-weight:600}
 .ok-t::before{content:"✓ "}.bad-t::before{content:"✕ "}.warn-t::before{content:"! "}
 .plan dl{display:grid;grid-template-columns:190px 1fr;gap:9px 16px}
 .plan dt{color:var(--muted);font-size:13px}.plan dd{color:var(--ink)}
@@ -207,8 +207,8 @@ def build_html(data, corridas):
     # Gráficos comparativos
     grupos = [c["_nombre"] for c in corridas]
     lat = grouped_columns(grupos, [
-        ("p50", SERIES[0], [(c.get("latencia") or {}).get("p50") for c in corridas]),
-        ("p95", SERIES[1], [(c.get("latencia") or {}).get("p95") for c in corridas]),
+        ("p50", SERIES[1], [(c.get("latencia") or {}).get("p50") for c in corridas]),
+        ("p95", SERIES[3], [(c.get("latencia") or {}).get("p95") for c in corridas]),
         ("p99", SERIES[2], [(c.get("latencia") or {}).get("p99") for c in corridas]),
     ], fmt=ms)
     body.append(section("Latencia por corrida", lat, "percentiles del tiempo de respuesta"))

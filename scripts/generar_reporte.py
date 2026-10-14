@@ -99,7 +99,7 @@ def _tabla(casos, dir_html=None):
         ev_html = miniatura(ev, f'{c.get("id", "")} · {c.get("titulo", "")}', "s", existe) if ev else '<span class="muted">—</span>'
         det = e(c.get("motivo") or "") or '<span class="muted">—</span>'
         if _fi_ids(c):
-            det += f'<br><span style="color:#F7CD6E">Falta información: {e(", ".join(_fi_ids(c)))}</span>'
+            det += f'<br><span style="color:#FFE066">Falta información: {e(", ".join(_fi_ids(c)))}</span>'
         dur = c.get("duracion_s")
         filas.append([f'<span class="id mono">{e(c.get("id"))}</span>', e(c.get("titulo")),
                       nivel_badge(c.get("prioridad")), estado_pill(_estado(c)),

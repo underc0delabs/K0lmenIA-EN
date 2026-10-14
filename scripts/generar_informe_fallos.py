@@ -41,8 +41,8 @@ AUTOMATIZACION = {"Locator o espera", "Error en la automatización", "Paso sin d
 
 CSS_FALLOS = """
 <style>
-.err{background:#0E1116;border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;
-  font-family:"JetBrains Mono","Cascadia Code",ui-monospace,Consolas,monospace;font-size:12px;color:#F2B8B8;max-height:320px;overflow:auto}
+.err{background:#120F0B;border:1px solid var(--border);border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;
+  font-family:var(--mono);font-size:12px;color:#FFB8B0;max-height:320px;overflow:auto}
 .runs{display:flex;gap:4px;flex-wrap:wrap}
 .cat{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;
   background:var(--tile);border:1px solid var(--border);color:var(--ink);white-space:nowrap}

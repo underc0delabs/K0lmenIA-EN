@@ -425,7 +425,7 @@ async function analizarFalla(browser, f, a, dirCap, rel, n) {
       }
       if (r.propuesta) {
         const el = r.propuesta.candidato_match != null ? page.locator(`[data-k0-match="${r.propuesta.candidato_match}"]`) : locatorDe(page, r.propuesta.input);
-        r.captura = await capturarMarcado(page, el.first(), path.join(dirCap, `${r.id}-propuesta.png`), '#14A895', rel);
+        r.captura = await capturarMarcado(page, el.first(), path.join(dirCap, `${r.id}-propuesta.png`), '#F9B006', rel);
       }
     }
     // Candidatos: si no existe. Si existe y se ve, el arreglo es de espera, no de locator.
@@ -448,7 +448,7 @@ async function analizarFalla(browser, f, a, dirCap, rel, n) {
         if (r.accion === 'verificación' && confianza === 'Alta') confianza = 'Media';
         r.propuesta = { input: top.mejor.input, codigo: top.mejor.codigo, candidato: top.indice, confianza, puntaje: top.puntaje, motivos: top.motivos };
         // Captura del DOM con el elemento propuesto marcado.
-        r.captura = await capturarMarcado(page, page.locator(`[data-k0-cand="${top.indice}"]`).first(), path.join(dirCap, `${r.id}-propuesta.png`), '#14A895', rel);
+        r.captura = await capturarMarcado(page, page.locator(`[data-k0-cand="${top.indice}"]`).first(), path.join(dirCap, `${r.id}-propuesta.png`), '#F9B006', rel);
       } else {
         r.detalle += ' No encontré un elemento parecido que se pueda ubicar de forma única: revisalo a mano con Playwright MCP.';
       }

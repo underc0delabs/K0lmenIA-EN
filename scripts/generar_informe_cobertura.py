@@ -37,10 +37,10 @@ ORDEN = {"Crítica": 0, "Alta": 1, "Media": 2, "Baja": 3}
 CSS_COB = """
 <style>
 .prog{display:flex;align-items:center;gap:10px;min-width:150px}
-.prog .t{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+.prog .t{flex:1;height:8px;border-radius:999px;background:rgba(244,239,230,.06);overflow:hidden}
 .prog .t span{display:block;height:100%;border-radius:999px}
 .prog b{font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
-.tag{display:inline-block;font-family:"JetBrains Mono","Cascadia Code",ui-monospace,Consolas,monospace;font-size:11.5px;padding:1px 7px;
+.tag{display:inline-block;font-family:var(--mono);font-size:11.5px;padding:1px 7px;
   border-radius:6px;background:var(--tile);border:1px solid var(--border);color:var(--ink);margin:1px 3px 1px 0;white-space:nowrap}
 .hu-tit{font-size:15px;font-weight:700;color:var(--ink)}
 </style>

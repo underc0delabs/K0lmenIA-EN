@@ -4,6 +4,10 @@ Este repo está pensado para crecer de forma ordenada. Cubre tanto **planificar 
 
 ## Las piezas
 
+![Cómo se relacionan las piezas](docs/assets/img/relaciones.png)
+
+El agente es el centro: carga **skills** (el cómo), respeta las **plantillas** (el formato), ejecuta **scripts** (lo mecánico) y **herramientas** (por terminal), y usa **conectores MCP** para hablar con sistemas externos; lee de `input/` y deja todo en `output/`. El diagrama se edita en `docs/diagramas/relaciones.html` y se regenera con `node docs/generar.js`.
+
 ### Agentes — el *quién* (`.claude/agents/`)
 
 Cada agente es un subagente de Claude Code con su rol, su proceso y sus reglas. Es a quién se le delega una tarea entera. Hoy hay cuarenta y uno, agrupados en documentación del proyecto, análisis y diseño (con el triage de bugs y las consultas sobre el producto), ejecución en vivo (incluidas las pruebas exploratorias, de accesibilidad, de rendimiento web, de permisos por rol, de resiliencia, la regresión visual, el cross-browser, los correos y las traducciones), reportes (con el análisis de fallos, la cobertura y el tablero de calidad), automatización con k0lmena (con la reparación de locators), la selección de casos por cambio, seguridad y gestión (el catálogo, con los skills, herramientas y conectores de cada uno, está en `AGENTES.md`). Como corren como subagentes, no pueden hacerle preguntas a la persona a mitad del trabajo: si les falta un dato, terminan devolviendo "Necesito que confirmes" y la conversación principal pregunta y los continúa. La clave de cada uno está en el `description` de su frontmatter: es lo que usa Claude Code para saber cuándo invocarlo.

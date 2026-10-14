@@ -2,6 +2,13 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-14 (3) — Estilo k0lmena en la web, los diagramas, el PDF y los informes
+- La web de documentación, los diagramas (y sus imágenes), el PDF y todos los informes HTML (los de Python y los reportes de k0lmena) usan el estilo de https://k0lmena.com: fondo noche y carbón, ámbar, miel y naranja, patrón de panal, etiquetas `// sección` y viñetas hexagonales.
+- Tipografía de k0lmena incrustada: Saira (títulos), Inter (texto) y JetBrains Mono (código), con licencia OFL (`docs/assets/fuentes/` y `scripts/fuentes/`); reemplazan a Geist.
+- Paleta de gráficos cálida y validada para contraste y daltonismo; los estados usan verde, miel, naranja y rojo cálido.
+- La web arranca en oscuro (tema claro cálido opcional) y el PDF sale con el mismo estilo oscuro.
+- Diagrama nuevo `docs/assets/img/relaciones.png`: cómo se relacionan agentes, skills, plantillas, scripts, herramientas y conectores MCP (en el README, la web y `ARQUITECTURA.md`).
+
 ## 2026-10-14 (2) — Permisos, resiliencia, triage, consultas, tablero, avisos, monitoreo, evals y más fuentes
 - Nuevo agente `probador-permisos`: `npm run permisos` inicia sesión con cada rol (más el anónimo) y arma la matriz rol × ruta y rol × endpoint, con acceso por URL directa, menús y botones visibles por rol y diferencias con la regla documentada. Solo GET.
 - Nuevo agente `probador-resiliencia`: `npm run resiliencia` intercepta la red desde el navegador (API con 500/503/404, timeout, red lenta, sin conexión, respuestas vacías, rotas o con nulos, estáticos que no cargan) y revisa pantallas en blanco, fallas silenciosas, spinners infinitos, mensajes técnicos, reintentos y recuperación.

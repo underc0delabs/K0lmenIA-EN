@@ -42,7 +42,7 @@ CSS_EXTRA = """
 .hallazgo h3{font-size:16px;color:var(--ink);margin-bottom:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .hallazgo .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:12px 0 4px}
 .hallazgo p{color:var(--body)}
-.hallazgo code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.hallazgo code,.mono{font-family:var(--mono);font-size:12.5px}
 .hallazgo ul{margin-left:18px;color:var(--body)}
 .hallazgo li{word-break:break-all}
 .ev{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;white-space:pre-wrap;word-break:break-all;color:var(--body)}
