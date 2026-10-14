@@ -262,7 +262,6 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
    ========================================================================== */
 @page { size: A4; margin: 13mm 0 15mm; }
 @page :first { margin: 0; }
-@page apaisada { size: A4 landscape; margin: 13mm 0 15mm; }
 
 @media print {
   html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: var(--noche) !important; }
@@ -273,7 +272,12 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
   .solo-impresion { display: block; }
   .layout { display: block; max-width: none; }
   .contenido { padding: 0; }
-  .seccion { max-width: none; padding: 2mm 15mm 0; break-before: page; }
+  /* Flujo continuo: las secciones siguen una tras otra, separadas por una línea. Solo empieza
+     página nueva cada parte del documento (y los diagramas, que ocupan su propia página). */
+  .seccion { max-width: none; padding: 7mm 15mm 0; margin-top: 7mm; border-top: 1px solid rgba(244,239,230,.10); break-before: auto; }
+  #que-es, #agentes, #requisitos, #documentacion, #conectores { break-before: page; border-top: 0; margin-top: 0; padding-top: 2mm; }
+  .seccion > .kicker, .seccion > h2, .seccion > .bajada, .lamina > .kicker, .lamina > h2 { break-after: avoid; }
+  .seccion > h2 + *, .seccion > .bajada + * { break-before: avoid; }
   h2 { font-size: 21pt; }
   h3 { font-size: 13pt; margin-top: 6mm; }
   p, li, td { color: var(--texto-2); }
@@ -281,13 +285,15 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
   .tabla { border-radius: 8px; break-inside: auto; }
   table { font-size: 8.8pt; }
   th, td { padding: 1.6mm 2.4mm; }
-  tr, .guia, .tarjeta, .aviso, .codigo, .pedido, details.faq, .pasos > li { break-inside: avoid; }
+  tr, .guia, .tarjeta, .aviso, .codigo, .pedido, details.faq, .pasos > li, .figura, .metrica { break-inside: avoid; }
+  thead { display: table-header-group; }
+  p { orphans: 3; widows: 3; }
   h3, h4, .subtitulo-grupo { break-after: avoid; }
   pre { font-size: 8.2pt; white-space: pre-wrap; padding: 9mm 4mm 3mm; border-radius: 8px; box-shadow: none; }
   code { white-space: normal; }
   /* En la grilla Chromium parte las tarjetas entre páginas: al imprimir van en línea (no se parten). */
   .tarjetas { display: block; font-size: 0; margin-right: -2.5mm; }
-  .tarjeta { display: inline-block; vertical-align: top; width: calc(25% - 2.5mm); margin: 0 2.5mm 2.5mm 0; padding: 3.5mm; font-size: 9.6pt; }
+  .tarjeta { display: inline-block; vertical-align: top; width: calc(33.333% - 2.5mm); margin: 0 2.5mm 2.5mm 0; padding: 3.5mm 4mm; font-size: 9.6pt; }
   .tarjeta:hover { box-shadow: none; }
   .tarjeta p { font-size: 8.8pt; }
   .guia { padding: 3.5mm 4.5mm; margin-bottom: 3mm; }
@@ -317,12 +323,13 @@ details.faq > div { padding: 0 18px 16px; color: var(--texto-2); }
   .indice li span { color: var(--amarillo); font: 600 9.5pt var(--mono); width: 8mm; }
   .indice { break-after: page; }
 
-  /* Láminas apaisadas con los diagramas */
-  .lamina { page: apaisada; break-before: page; break-after: page; padding: 0 12mm; }
-  .lamina h2 { font-size: 15pt; margin-bottom: 3mm; }
-  .lamina .figura { margin: 0; text-align: center; }
-  .lamina .figura a { display: inline-block; border: 0; box-shadow: none; }
-  .lamina .figura img { width: auto; max-width: 100%; max-height: 158mm; }
-  .seccion.con-lamina { break-before: auto; padding-top: 0; }
+  /* Diagramas: cada uno a todo el ancho, en su propia página vertical */
+  #arquitectura { break-before: page; border-top: 0; margin-top: 0; padding-top: 2mm; }
+  .lamina { padding: 0; }
+  .lamina h2 { font-size: 21pt; margin-bottom: 4mm; }
+  .figura { margin: 0 0 5mm; text-align: center; }
+  .figura a { display: block; border: 0; box-shadow: none; }
+  .figura img { width: 100%; height: auto; max-height: 232mm; object-fit: contain; }
+  .figura figcaption { display: none; }
   .figura a[href]::after { content: none; }
 }

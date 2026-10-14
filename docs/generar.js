@@ -7,6 +7,8 @@
 //
 // Uso, desde la raíz del repo (con k0lmena instalado: usa su Playwright):
 //   node docs/generar.js
+// La portada se genera aparte, sin encabezado ni pie, y reemplaza a la primera página con pypdf
+// (pip install pypdf). Sin pypdf el PDF sale igual, con el pie también en la portada.
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -50,8 +52,11 @@ const ruta = (archivo) => path.join(__dirname, archivo);
   const pagina = await navegador.newPage();
   await pagina.goto(url('index.html'), { waitUntil: 'networkidle' });
   await pagina.emulateMedia({ media: 'print' });
+  const final = ruta('k0lmenIA-documentacion.pdf');
+  const portada = ruta('.portada.pdf');
+  await pagina.pdf({ path: portada, printBackground: true, preferCSSPageSize: true, pageRanges: '1' });
   await pagina.pdf({
-    path: ruta('k0lmenIA-documentacion.pdf'),
+    path: final,
     printBackground: true,
     preferCSSPageSize: true,
     displayHeaderFooter: true,
@@ -64,6 +69,21 @@ const ruta = (archivo) => path.join(__dirname, archivo);
       '<span><span style="color:#F9B006">//</span> k0lmenIA · documentación</span>' +
       '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>', `${15 - BORDE_ABAJO}mm`, false),
   });
-  console.log('docs/k0lmenIA-documentacion.pdf');
   await navegador.close();
+
+  // Portada sin pie: reemplaza la primera página (pypdf).
+  const py = process.platform === 'win32' ? 'python' : 'python3';
+  const unir = [
+    'import sys',
+    'from pypdf import PdfReader, PdfWriter',
+    'final, portada = sys.argv[1], sys.argv[2]',
+    'w = PdfWriter(clone_from=final)',
+    'w.remove_page(0)',
+    'w.insert_page(PdfReader(portada).pages[0], 0)',
+    'w.write(final)',
+  ].join(String.fromCharCode(10));
+  const r = require('child_process').spawnSync(py, ['-c', unir, final, portada], { encoding: 'utf8' });
+  if (r.status !== 0) console.log(`(No pude quitar el pie de la portada: ${(r.stderr || r.error || '').toString().trim().split(String.fromCharCode(10)).pop()}. Instalá pypdf.)`);
+  require('fs').rmSync(portada, { force: true });
+  console.log('docs/k0lmenIA-documentacion.pdf');
 })();
