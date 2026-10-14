@@ -39,6 +39,12 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 +----------------------------+------------------------------------------+---------------------------------------+
 | Agente                     | Para qué sirve                           | Guarda la salida en                   |
 +============================+==========================================+=======================================+
+| `documentador-proyecto`    | Junta la documentación del proyecto:     | `input/documentacion/`                |
+|                            | repositorio (solo lectura), historias    |                                       |
+|                            | con comentarios, PRs y links, y mapa     |                                       |
+|                            | funcional de la web; base del proyecto,  |                                       |
+|                            | dossier por historia e índice            |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 | `analista-historias`       | Analiza historias y criterios de         | `output/analisis-historias/`          |
 |                            | aceptación; detecta ambigüedades y arma  |                                       |
 |                            | preguntas de refinamiento                |                                       |
@@ -251,7 +257,7 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 Estos principios aplican a **todos** los agentes:
 
 - **No inventar.** Si falta información para hacer bien la tarea (un paso, un dato, una regla de negocio, un resultado esperado), el agente lo **marca y lo pregunta**; nunca rellena con suposiciones disfrazadas de hechos. Es preferible un artefacto con huecos señalados que uno completo pero inventado.
-- **Investigar antes de suponer.** Antes de analizar, planificar, escribir casos o automatizar una historia, se revisa su contexto completo con el skill `investigacion-contexto`: la historia de Jira con **todos** sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence y los diseños de Figma relacionados, contratos y `input/`. El resultado queda en una ficha reutilizable `output/contexto/contexto-HU-XXX.md`.
+- **Investigar antes de suponer.** Antes de analizar, planificar, escribir casos o automatizar una historia, se revisa su contexto completo con el skill `investigacion-contexto`: primero la documentación del proyecto de `input/documentacion/` (la arma el `documentador-proyecto`: índice, dossier de la historia, reglas del código, mensajes, mapa funcional), y después la historia de Jira con **todos** sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence y los diseños de Figma relacionados, contratos y `input/`. El resultado queda en una ficha reutilizable `output/contexto/contexto-HU-XXX.md`.
 - **Marcar lo que falta.** Lo que no aparece en ninguna fuente se registra como **Falta información** con un ID por historia (`FI-01`, `FI-02`, …) y viaja con ese ID a todos los artefactos: casos (resaltados, etiqueta `@falta-info`, hoja *Falta información*), `.feature` (`@falta-info @FI-01`), coberturas, mapeos, reportes de ejecución, informe de cierre y lo que se publica en Xray/QMetry/AIO.
 - **Respetar los formatos.** Los campos, su orden y sus valores permitidos los define la plantilla (o el script), no el agente.
 - **Trazabilidad.** Todo artefacto referencia la historia (`HU-XXX`) o el contrato del que sale.
@@ -313,6 +319,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/estimacion.py` → **tiempo estimado de ejecución manual** de cada caso (fórmula en `plantillas/estimacion-tiempos.md`): va en la planilla de casos, en la herramienta de gestión al subirlos (descripción y Original Estimate / estimatedTime / estimatedEffort), en la selección y en la revisión.
 - `scripts/revisar_casos.py`, `generar_charters.py` y `analizar_logs.py` (con sus `generar_informe_*`) → revisión de casos, charters exploratorios y análisis de logs; `generar_informe_ux.py` y `generar_informe_formularios.py` → los informes de `npm run ux` y `npm run formularios`.
 - `scripts/_historial.py` (y `herramientas/k0lmena/tools/historial/`) → guardan las últimas 5 corridas de cada herramienta y arman la sección de evolución de los informes.
+- `scripts/indice_documentacion.py` → arma `input/documentacion/INDICE.md` (qué documentación hay, sus fuentes y si está vigente); `npm run mapa-funcional`, el mapa funcional de la web (`documentador-proyecto`).
 - `scripts/seleccionar_casos.py` → elige y prioriza los casos a correr para un cambio y genera el informe (`selector-casos-de-prueba`).
 - `scripts/generar_informe_pixel_perfect.py`, `generar_informe_cross_browser.py` y `generar_informe_reparacion.py` → los informes HTML de `npm run pixel-perfect`, `npm run cross-browser` y `npm run reparar` (`pixel-perfect`, `cross-browser`, `reparador-automatizacion`).
 - **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (también corren en CI, en Ubuntu y Windows).
@@ -321,6 +328,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 ## Nombres de archivos de salida (sugerencia)
 
+- Documentación del proyecto (`documentador-proyecto`, no se versiona): `input/documentacion/` con `INDICE.md`, `proyecto/` (resumen, repositorio, reglas de negocio, mensajes, estados y permisos, mapa funcional, links), `api/` y `historias/<HU o key>/dossier.md`.
 - Ficha de contexto: `output/contexto/contexto-HU-001.md` (fuentes consultadas, hallazgos y Falta información)
 - Análisis de historia: `analisis-HU-001.md`
 - Casos manuales: `casos-HU-001.xlsx` + `casos-HU-001.md` + `casos-HU-001-cobertura.md` (cada caso con su tiempo estimado de ejecución manual)
@@ -369,6 +377,8 @@ El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **
 
 `herramientas/k0lmena/` es el framework de automatización (web, api, mobile y performance). Los agentes **mapper** escriben la automatización **una sola vez** (skill `automatizacion-k0lmena`); después la suite corre **sin agentes ni tokens** con `cd herramientas/k0lmena && npm test` (performance: `npm run perf -- <script> <perfil>`). Para correr pruebas ya automatizadas, preferí `npm test` antes que los ejecutores en vivo (`ejecutor-e2e` / `ejecutor-api`), que gastan tokens en cada corrida.
 
-Secretos (tokens, credenciales): van en el `.env` local (gitignored) o en variables de entorno, **nunca** commiteados; hay una plantilla `.env.example`. El `.mcp.json` está versionado con los conectores que vienen activos para todos (Playwright y Atlassian: Jira y Confluence), así Claude Code arranca sin pedir aprobaciones. Los opcionales (Azure DevOps, Figma, QMetry/QTM4J, AIO Tests, k0lmenaTMT, Appium) los activa cada persona con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: los que piden token lo leen del `.env` con los scripts de `scripts/mcp/`. Si un agente necesita un conector que no está activo, decí cuál y cómo activarlo. Detalle en `CONECTORES.md`.
+Secretos (tokens, credenciales): van en el `.env` local (gitignored) o en variables de entorno, **nunca** commiteados; hay una plantilla `.env.example`. El `.mcp.json` está versionado con los conectores que vienen activos para todos (Playwright y Atlassian: Jira y Confluence), así Claude Code arranca sin pedir aprobaciones. Los opcionales (Azure DevOps, Figma, GitHub, GitLab, QMetry/QTM4J, AIO Tests, k0lmenaTMT, Appium) los activa cada persona con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: los que piden token lo leen del `.env` con los scripts de `scripts/mcp/`. Si un agente necesita un conector que no está activo, decí cuál y cómo activarlo. Detalle en `CONECTORES.md`.
+
+**Repositorio de la aplicación:** el `documentador-proyecto` lo lee en solo lectura con el conector de su proveedor (`github`, `gitlab`, `azure-devops` para Azure Repos o `atlassian` para Bitbucket Cloud), configurado en el bloque *Repositorio de la aplicación* del `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, `REPO_RAMA`, `REPO_RUTA_LOCAL`).
 
 **Fuentes externas por MCP:** si la persona da una key de Jira, un work item de Azure DevOps, una página de Confluence o de la Wiki de Azure DevOps, o un link de Figma y el conector (`atlassian`, `azure-devops` o `figma`) está activo, cualquier agente puede leerlos como insumo, igual que un archivo de `input/` (trazabilidad: citá la key, la página o el link). Si el conector no está activo, pedí el contenido o indicá cómo activarlo (`CONECTORES.md`); no lo supongas.

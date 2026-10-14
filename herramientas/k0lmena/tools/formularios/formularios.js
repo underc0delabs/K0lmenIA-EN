@@ -331,4 +331,5 @@ if (require.main === module) {
   main().catch((e) => { console.error(`Error: ${e.message}`); process.exit(1); });
 }
 
-module.exports = { argumentos, pruebasPara, hallazgosDe, GENERADOS };
+// extraerFormularios lo reutiliza el mapa funcional (tools/mapa-funcional) del documentador-proyecto.
+module.exports = { argumentos, pruebasPara, hallazgosDe, GENERADOS, extraerFormularios: _formularios };

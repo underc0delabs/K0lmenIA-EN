@@ -1,6 +1,6 @@
 # Conectores MCP
 
-Cómo conectar k0lmenIA por MCP a **Jira y Confluence** (Atlassian), **Figma**, **QMetry**, **AIO Tests**, **k0lmenaTMT**, **Azure DevOps** y **Appium**. Xray se integra sin MCP (ver abajo).
+Cómo conectar k0lmenIA por MCP a **Jira y Confluence** (Atlassian), **Figma**, el **repositorio de la aplicación** (GitHub, GitLab, Azure Repos o Bitbucket), **QMetry**, **AIO Tests**, **k0lmenaTMT**, **Azure DevOps** y **Appium**. Xray se integra sin MCP (ver abajo).
 
 Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae solo los que vienen habilitados para todos (Playwright y **Atlassian: Jira y Confluence**). Los demás están en un catálogo (`scripts/mcp/catalogo.json`) y cada persona activa los que usa con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: las credenciales se leen del `.env` de la raíz o se autorizan con tu cuenta (OAuth).
 
@@ -21,6 +21,10 @@ Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae 
 | figma                            | Figma (diseños)                         | Figma MCP Server remoto                 | Oficial | http         | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | figma-desktop                    | Figma (app de escritorio)               | Figma MCP Server de escritorio (local)  | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| github                           | GitHub (repositorio de la app)          | GitHub MCP Server remoto (solo lectura) | Oficial | http         | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| gitlab                           | GitLab (repositorio de la app)          | GitLab MCP Server (/api/v4/mcp)         | Oficial | http         | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | qmetry                           | QMetry Test Management                  | @smartbear/mcp                          | Oficial | stdio        | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
@@ -56,6 +60,21 @@ Todos los conectores ya están en `.mcp.json` y todas las variables, en `.env.ex
 +---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
 | Figma                     | `figma` o `figma-desktop` (MCP)       | Ninguna (OAuth)                          | No                              |
 +---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Repositorio en GitHub     | `github` (MCP)                        | `REPO_PROVEEDOR=github`, `REPO_NOMBRE`,  | No                              |
+|                           |                                       | `GITHUB_TOKEN`                           |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Repositorio en GitLab     | `gitlab` (MCP)                        | `REPO_PROVEEDOR=gitlab`, `REPO_NOMBRE`,  | No                              |
+|                           |                                       | `GITLAB_URL`; `GITLAB_TOKEN` opcional    |                                 |
+|                           |                                       | (OAuth)                                  |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Repositorio en Azure      | `azure-devops` (MCP)                  | `REPO_PROVEEDOR=azure-repos`,            | No                              |
+| Repos                     |                                       | `REPO_NOMBRE` + las de Azure DevOps      |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
+| Repositorio en Bitbucket  | `atlassian` (MCP)                     | `REPO_PROVEEDOR=bitbucket`,              | Sí (con token)                  |
+| Cloud                     |                                       | `REPO_NOMBRE`,                           |                                 |
+|                           |                                       | `ATLASSIAN_MCP_AUTENTICACION=token` +    |                                 |
+|                           |                                       | las de Jira                              |                                 |
++---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
 | Xray Cloud                | `scripts/gestion` (sin MCP)           | `GESTION_HERRAMIENTA=xray-cloud`,        | Listo al completar el `.env`    |
 |                           |                                       | `GESTION_PROYECTO`,                      |                                 |
 |                           |                                       | `XRAY_CLOUD_CLIENT_ID`,                  |                                 |
@@ -79,7 +98,7 @@ Todos los conectores ya están en `.mcp.json` y todas las variables, en `.env.ex
 +---------------------------+---------------------------------------+------------------------------------------+---------------------------------+
 ```
 
-**Activar los opcionales** (Azure DevOps, Figma, QMetry, AIO Tests, k0lmenaTMT, Appium):
+**Activar los opcionales** (Azure DevOps, Figma, GitHub, GitLab, QMetry, AIO Tests, k0lmenaTMT, Appium):
 
 ```bash
 npm run conector                              # lista los conectores y cuáles tenés activos
@@ -123,6 +142,14 @@ npm run conector -- desactivar azure-devops
 | `atlassian-headers.js`   | atlassian                       | Con `ATLASSIAN_MCP_AUTENTICACION=token`  |
 |                          |                                 | arma el header con el API token; con     |
 |                          |                                 | `oauth` (por defecto) no agrega nada     |
++--------------------------+---------------------------------+------------------------------------------+
+| `github-headers.js`      | github                          | Devuelve el token como `Bearer`, el modo |
+|                          |                                 | solo lectura y los toolsets (es un       |
+|                          |                                 | `headersHelper`)                         |
++--------------------------+---------------------------------+------------------------------------------+
+| `gitlab-headers.js`      | gitlab                          | Elige los toolsets y, si hay             |
+|                          |                                 | `GITLAB_TOKEN`, agrega el `Bearer`; sin  |
+|                          |                                 | token, OAuth desde `/mcp`                |
 +--------------------------+---------------------------------+------------------------------------------+
 | `lanzar.js`              | todos los de `npx`              | Versiones fijas de cada paquete,         |
 |                          |                                 | lanzamiento en Windows y cierre del      |
@@ -220,7 +247,8 @@ Conecta los agentes con **k0lmenaTMT** por su server MCP, para cargar y consulta
 +-------------------+-------------+------------------------------------------+
 | K0LMENA_TMT_URL   | No          | Por defecto                              |
 |                   |             | http://localhost:4000/api/v1/mcp; para   |
-|                   |             | otra URL, definila en el entorno         |
+|                   |             | otra URL, definila en el .env antes de   |
+|                   |             | activar (o en el entorno)                |
 +-------------------+-------------+------------------------------------------+
 ```
 
@@ -253,6 +281,8 @@ La entrada de `.mcp.json` usa `headersHelper` (`scripts/mcp/atlassian-headers.js
 
 Si tu organización restringe las apps de IA, un admin de Atlassian tiene que habilitar el Rovo MCP Server para el sitio.
 
+**Bitbucket Cloud**: el mismo conector da acceso a los repositorios de Bitbucket Cloud (archivos, commits y pull requests), pero **solo con `ATLASSIAN_MCP_AUTENTICACION=token`** (Bitbucket todavía no acepta OAuth en el Rovo MCP Server) y con un workspace vinculado a la organización de Atlassian. Lo usa el `documentador-proyecto` (ver [Repositorio de la aplicación](#repositorio-de-la-aplicación)).
+
 Ejemplos de uso:
 
 > *"Leé la historia PROJ-12 de Jira y analizala."* · *"Generá los casos de PROJ-12 usando la página de Confluence 'Reglas de facturación' como documentación."*
@@ -281,6 +311,7 @@ Ejemplos de uso:
 Usa el server MCP **oficial de Microsoft**, [`@azure-devops/mcp`](https://github.com/microsoft/azure-devops-mcp) (requiere **Node.js 20+**). Con una sola conexión los agentes pueden:
 
 - **Consultar historias** (*User Story*, *Product Backlog Item*, *Bug*) de Azure Boards con sus comentarios, tareas hijas, padre (*Feature* / *Epic*) y vínculos, y leer la **Wiki** del proyecto. Lo usa el skill `investigacion-contexto`, igual que Jira y Confluence.
+- **Leer el repositorio en Azure Repos** (dominio `repositories`, solo lectura para el `documentador-proyecto`): archivos y carpetas, pull requests con sus comentarios y búsqueda de commits.
 - **Gestionar pruebas en Azure Test Plans**: crear planes y suites, crear casos de prueba (*Test Case*) con sus pasos y resultado esperado, vincularlos a la historia (*Tests* / *Tested By*) y agregarlos a una suite. Lo hace el agente `gestor-pruebas`.
 
 ```
@@ -308,8 +339,8 @@ Usa el server MCP **oficial de Microsoft**, [`@azure-devops/mcp`](https://github
 |                   |               | `interactive` o `azcli`                  |
 +-------------------+---------------+------------------------------------------+
 | ADO_DOMINIOS      | No            | Áreas habilitadas. Por defecto: `core    |
-|                   |               | work work-items test-plans wiki search`; |
-|                   |               | sumá `repositories` o `pipelines` si las |
+|                   |               | work work-items repositories test-plans  |
+|                   |               | wiki search`; sumá `pipelines` si la     |
 |                   |               | necesitás                                |
 +-------------------+---------------+------------------------------------------+
 ```
@@ -331,8 +362,8 @@ Igual que k0lmenaTMT, **la configuración se lee del `.env`**: la entrada ejecut
 +------------------+--------------+-----------------------------------------+
 | Wiki             | Read         | Leer la Wiki del proyecto               |
 +------------------+--------------+-----------------------------------------+
-| Code             | Read         | Solo si habilitás la búsqueda de código |
-|                  |              | o `repositories`                        |
+| Code             | Read         | Búsqueda de código y `repositories`     |
+|                  |              | (Azure Repos, documentador-proyecto)    |
 +------------------+--------------+-----------------------------------------+
 ```
 
@@ -349,6 +380,49 @@ Para activarlo:
 Ejemplos de uso:
 
 > *"Leé la historia 1234 de Azure DevOps y analizala."* · *"Subí los casos de `casos-HU-001.xlsx` a Azure Test Plans, en el plan 'Sprint 5', suite 'HU-001 Registro', vinculados a la historia 1234."*
+
+---
+
+## Repositorio de la aplicación
+
+El agente `documentador-proyecto` lee el repositorio de la aplicación **en solo lectura** (README y docs, validaciones, mensajes, estados, permisos, rutas, contratos de API y los PRs y commits de cada historia) para dejar el contexto del proyecto en `input/documentacion/`. Se configura en el bloque *Repositorio de la aplicación* del `.env`:
+
+```
++-------------------+-------------------------------------------------------------------+
+| Variable          | Descripción                                                       |
++===================+===================================================================+
+| REPO_PROVEEDOR    | `github`, `gitlab`, `azure-repos` o `bitbucket`                   |
++-------------------+-------------------------------------------------------------------+
+| REPO_NOMBRE       | Uno o varios, separados por coma: `dueño/repo` (GitHub),          |
+|                   | `grupo/proyecto` (GitLab), `proyecto/repo` (Azure Repos),         |
+|                   | `workspace/repo` (Bitbucket)                                      |
++-------------------+-------------------------------------------------------------------+
+| REPO_RAMA         | Rama a documentar (vacío = la rama por defecto)                   |
++-------------------+-------------------------------------------------------------------+
+| REPO_RUTA_LOCAL   | Opcional: un clon local del mismo repositorio. El código se lee   |
+|                   | de ahí (más rápido y sin gastar tokens del conector); PRs y       |
+|                   | commits siguen por el conector                                    |
++-------------------+-------------------------------------------------------------------+
+```
+
+Cada proveedor usa su server MCP oficial:
+
+- **GitHub** — conector `github`: el server remoto oficial (`https://api.githubcopilot.com/mcp/readonly`) en **modo solo lectura** (`X-MCP-Readonly`), con los toolsets `context,repos,issues,pull_requests` (`GITHUB_TOOLSETS` para cambiarlos). Necesita `GITHUB_TOKEN`: un token *fine-grained* con permisos de solo lectura sobre los repositorios (*Contents*, *Pull requests*, *Issues* y *Metadata*: Read-only). `scripts/mcp/github-headers.js` lo lee del `.env` y lo manda como `Bearer`. El server remoto no soporta GitHub Enterprise Server.
+- **GitLab** — conector `gitlab`: el server oficial de GitLab en `<GITLAB_URL>/api/v4/mcp` (GitLab.com, o Self-Managed y Dedicated desde la 19.5, en todos los planes; en GitLab.com el grupo tiene que permitir el acceso al server MCP). Sin `GITLAB_TOKEN` te autorizás con tu cuenta (OAuth) desde `/mcp`; con token, tiene que ser un personal access token *fine-grained* con el recurso *MCP tool* y permiso *Execute* (los tokens clásicos los rechaza con 403). `scripts/mcp/gitlab-headers.js` limita los toolsets a `meta,core,merge_requests,work_items,repository,wikis` (`GITLAB_TOOLSETS`). La URL se toma del `.env` al activarlo: si cambiás `GITLAB_URL`, volvé a activar el conector.
+- **Azure Repos** — conector `azure-devops`, con el dominio `repositories` (viene por defecto en `ADO_DOMINIOS`) y el PAT con *Code (Read)*. Ver [Azure DevOps](#azure-devops).
+- **Bitbucket Cloud** — conector `atlassian` con `ATLASSIAN_MCP_AUTENTICACION=token` y un API token con los permisos de Bitbucket. Bitbucket Data Center no está soportado por el Rovo MCP Server. Ver [Atlassian](#atlassian-jira-y-confluence).
+
+Para activar GitHub o GitLab:
+
+1. Completá el bloque *Repositorio de la aplicación* del `.env` (ver `.env.example`).
+2. `npm run conector -- activar github` (o `gitlab`).
+3. Reiniciá Claude Code y verificá con `/mcp` (con GitLab sin token, autorizá con tu cuenta la primera vez).
+
+**Solo lectura**: GitHub ya arranca en modo solo lectura. GitLab, Azure DevOps y Atlassian exponen también herramientas de escritura (crear ramas, archivos o PRs): el `documentador-proyecto` tiene prohibido usarlas, Claude Code pide confirmación antes de cada una, y conviene que el token tenga permisos de lectura.
+
+Ejemplos de uso:
+
+> *"Documentá el proyecto"* · *"Juntá todo el contexto de PROJ-12 antes de escribir los casos"*
 
 ---
 
@@ -387,4 +461,8 @@ Se activa con `npm run conector -- activar appium-mcp`. `ANDROID_HOME` se toma d
 - Xray Server/DC REST API (integración propia): https://docs.getxray.app/display/XRAY/REST+API
 - Appium MCP (oficial): https://github.com/appium/appium-mcp
 - Azure DevOps MCP Server (oficial): https://github.com/microsoft/azure-devops-mcp
+- Azure DevOps MCP, herramientas por dominio: https://github.com/microsoft/azure-devops-mcp/blob/main/docs/TOOLSET.md
+- GitHub MCP Server: https://github.com/github/github-mcp-server (server remoto: https://github.com/github/github-mcp-server/blob/main/docs/remote-server.md)
+- GitLab MCP Server: https://docs.gitlab.com/user/model_context_protocol/mcp_server/
+- Bitbucket Cloud en el Atlassian Rovo MCP Server: https://www.atlassian.com/blog/bitbucket/the-atlassian-rovo-mcp-server-now-supports-bitbucket-cloud
 - Azure DevOps MCP, autenticación: https://github.com/microsoft/azure-devops-mcp/blob/main/docs/GETTINGSTARTED.md

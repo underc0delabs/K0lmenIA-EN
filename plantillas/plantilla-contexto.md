@@ -15,6 +15,9 @@
 +-------------------+------------------------------+------------+----------------------------------------+
 | Fuente            | Referencia                   | Estado     | Aporte                                 |
 +===================+==============================+============+========================================+
+| Documentación del | input/documentacion/         | Consultada | Dossier vigente (2026-10-07): PR #318, |
+| proyecto          | historias/PROJ-12/dossier.md |            | mensajes del login en el código        |
++-------------------+------------------------------+------------+----------------------------------------+
 | Historia          | PROJ-12                      | Consultada | Criterios CA1 a CA3                    |
 +-------------------+------------------------------+------------+----------------------------------------+
 | Comentarios       | 7 comentarios                | Consultada | Decisión sobre el bloqueo (ver abajo)  |

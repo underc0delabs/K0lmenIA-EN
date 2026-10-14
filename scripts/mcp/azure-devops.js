@@ -17,7 +17,7 @@ function salirConError(mensaje) {
 const organizacion = variable('ADO_ORGANIZACION');
 const pat = variable('ADO_PAT');
 const autenticacion = variable('ADO_AUTENTICACION') || 'pat';
-const dominios = (variable('ADO_DOMINIOS') || 'core work work-items test-plans wiki search')
+const dominios = (variable('ADO_DOMINIOS') || 'core work work-items repositories test-plans wiki search')
   .split(/[\s,]+/)
   .filter(Boolean);
 

@@ -26,7 +26,19 @@ const REQUERIDAS = {
   qmetry: () => ['QMETRY_API_KEY'],
   'aio-tests': () => ['AIO_MCP_URL', 'AIO_API_TOKEN'],
   'k0lmena-tmt': () => ['K0LMENA_TMT_TOKEN'],
+  github: () => ['GITHUB_TOKEN'],
 };
+
+/**
+ * ${VAR:-valor} de la URL con el valor del .env (o del entorno), si está definido: así, por ejemplo,
+ * GITLAB_URL se toma del .env. Si no está, queda igual y Claude Code lo resuelve con el entorno.
+ */
+function conVariablesDelEnv(url) {
+  return url.replace(/\$\{([A-Z_][A-Z0-9_]*)(:-[^}]*)?\}/g, (todo, nombre) => {
+    const valor = variable(nombre);
+    return valor ? valor.replace(/\/+$/, '') : todo;
+  });
+}
 
 /** Los scripts del repo con ruta absoluta: así el conector arranca aunque abras Claude Code en otra carpeta. */
 function conRutasAbsolutas(servidor) {
@@ -34,6 +46,7 @@ function conRutasAbsolutas(servidor) {
   const s = JSON.parse(JSON.stringify(servidor));
   if (Array.isArray(s.args)) s.args = s.args.map((a) => (a.startsWith('scripts/') ? abs(a) : a));
   if (s.headersHelper) s.headersHelper = s.headersHelper.replace(/scripts\/[\w./-]+/, (r) => `"${abs(r)}"`);
+  if (s.url) s.url = conVariablesDelEnv(s.url);
   return s;
 }
 

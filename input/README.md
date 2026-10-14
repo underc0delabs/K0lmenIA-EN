@@ -7,8 +7,10 @@
 | `historias/`     | Historias de usuario con sus criterios   | `HU-001-registro.md`                  |
 |                  | de aceptación (`HU-XXX-<tema>.md`)       |                                       |
 +------------------+------------------------------------------+---------------------------------------+
-| `documentacion/` | Documentación funcional de apoyo: reglas | —                                     |
-|                  | de negocio, manuales, actas              |                                       |
+| `documentacion/` | Documentación del proyecto: la que arma  | `INDICE.md`, `proyecto/`, `api/`,     |
+|                  | el documentador-proyecto (repositorio,   | `historias/<HU o key>/dossier.md` (no |
+|                  | historias, links, mapa funcional) y la   | se versiona)                          |
+|                  | que agregues a mano (manuales, actas)    |                                       |
 +------------------+------------------------------------------+---------------------------------------+
 | `api/`           | Contratos de API, colecciones y          | incluye `auth-endpoints.md` y         |
 |                  | environments de Postman, Swagger/OpenAPI | `demo.postman_collection.json`        |
@@ -30,6 +32,7 @@ la key (`PROJ-12`) o el ID del work item (`1234`) con el conector activo (ver `C
 
 ## Primer uso en cinco minutos
 
+0. (Opcional, recomendado) Pedí *"Documentá el proyecto"*: el `documentador-proyecto` lee el repositorio de la app, las historias y la web, y deja el contexto en `documentacion/` para los demás agentes (ver el bloque *Repositorio de la aplicación* del `.env`).
 1. Guardá una historia en `input/historias/HU-001-<tema>.md`: título, "Como / Quiero / Para" y los criterios de aceptación numerados (`CA1`, `CA2`, …). Para practicar podés usar el formulario "Crear cuenta" del sitio de práctica https://qarmy.ar/practica/automation (el `BASEURL` de `.env.example`).
 2. En Claude Code, pedí en orden:
    - *"Analizá la historia HU-001"* → ambigüedades y preguntas para el PO en `output/analisis-historias/`.

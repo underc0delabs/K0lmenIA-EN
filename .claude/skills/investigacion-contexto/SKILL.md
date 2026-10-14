@@ -1,6 +1,6 @@
 ---
 name: investigacion-contexto
-description: Cómo investigar a fondo una historia o funcionalidad antes de analizarla, planificarla, escribir casos o automatizarla — la historia de Jira o de Azure DevOps (Azure Boards) con sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence relacionadas, los diseños de Figma, contratos de API y documentación local — y cómo registrar lo que falta como "Falta información" (FI-XX) en una ficha de contexto reutilizable. Úsalo en analista-historias, estratega-pruebas, los generadores de casos y los mappers cuando trabajen sobre una historia.
+description: Cómo investigar a fondo una historia o funcionalidad antes de analizarla, planificarla, escribir casos o automatizarla — la documentación del proyecto que arma el documentador-proyecto en input/documentacion/ (índice, dossier de la historia, reglas del código, mensajes, mapa funcional), la historia de Jira o de Azure DevOps (Azure Boards) con sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence relacionadas, los diseños de Figma, contratos de API y documentación local — y cómo registrar lo que falta como "Falta información" (FI-XX) en una ficha de contexto reutilizable. Úsalo en analista-historias, estratega-pruebas, los generadores de casos y los mappers cuando trabajen sobre una historia.
 ---
 
 # Investigación de contexto
@@ -14,7 +14,17 @@ Buscá `output/contexto/contexto-<HU>.md`.
 - Si existe y la historia **no cambió** desde entonces (compará el campo `updated` de Jira con la fecha de la ficha), **reusala** y no vuelvas a investigar: ahorra tokens.
 - Si cambió, o la persona pide actualizarla, investigá de nuevo y reemplazá la ficha (conservá los `FI-XX` que sigan abiertos, con el mismo ID).
 
-## 2. Dónde buscar (en este orden)
+## 2. Primero, la documentación del proyecto
+
+Si existe `input/documentacion/INDICE.md` (lo arma el agente `documentador-proyecto`), leelo **antes** que cualquier otra fuente: dice qué contexto hay, de dónde sale y si está vigente.
+
+- **Dossier de la historia** (`input/documentacion/historias/<HU o key>/dossier.md`): ya trae la historia con sus comentarios, decisiones, vínculos, links, PRs y commits, archivos tocados, pantallas, contradicciones y pistas para probar. Si su `actualizado` es posterior al último cambio de la historia, **usalo como fuente principal** y no vuelvas a recorrer Jira o Azure DevOps (ahorra tokens); si es anterior, revisá solo lo que cambió después.
+- **Documentos del proyecto** (`proyecto/`): abrí solo los que sirvan para la historia — `reglas-de-negocio.md`, `mensajes.md` y `estados-y-permisos.md` (buscá el módulo o el campo, no los leas enteros), `mapa-funcional.md` (los campos y textos reales de la pantalla) y `api/` (contratos).
+- **Citá la fuente original** que figura en el documento (`src/...:línea`, el PR, el comentario), no solo el archivo de `input/documentacion/`.
+- Las **Contradicciones y dudas** del dossier se registran como `FI-XX` en la ficha (sección 5).
+- Si no hay documentación o está marcada como *Revisar*, seguí con las fuentes de la sección 3 y, en la respuesta, sugerí pedirle al `documentador-proyecto` que la arme o la actualice (no lo invoques vos).
+
+## 3. Dónde buscar (en este orden)
 
 ```
 +-------------------------+------------------------------------------+------------------------------+
@@ -59,7 +69,14 @@ Buscá `output/contexto/contexto-<HU>.md`.
 |                         | validaciones, códigos de respuesta       |                              |
 +-------------------------+------------------------------------------+------------------------------+
 | **Documentación local** | `input/historias/`,                      | Lectura de archivos          |
-|                         | `input/documentacion/`                   |                              |
+|                         | `input/documentacion/` (sección 2 y lo   |                              |
+|                         | que la persona dejó a mano)              |                              |
++-------------------------+------------------------------------------+------------------------------+
+| **Repositorio de la     | Solo si no hay dossier vigente: los PRs  | Conector del repositorio     |
+| app**                   | o commits con la key de la historia y    | (`github`, `gitlab`,         |
+|                         | las validaciones o mensajes del código   | `azure-devops` o             |
+|                         | que tocan (puntual; el recorrido         | `atlassian` para Bitbucket); |
+|                         | completo es del documentador-proyecto)   | ver `CONECTORES.md`          |
 +-------------------------+------------------------------------------+------------------------------+
 | **Trabajo previo**      | `output/analisis-historias/`, casos      | Lectura de archivos          |
 |                         | anteriores de la misma historia o de     |                              |
@@ -74,14 +91,15 @@ Límites para no gastar tokens de más: un solo nivel de profundidad desde la hi
 
 **Si un conector no está activo** (por ejemplo, no hay `atlassian` o `azure-devops`), no lo reemplaces con suposiciones: anotá la fuente como **No disponible** en la ficha y seguí con las demás. Si la historia vino pegada en el chat o en `input/`, avisá que los comentarios, subtareas y la épica no se pudieron revisar.
 
-## 3. Cómo interpretar lo que encontrás
+## 4. Cómo interpretar lo que encontrás
 
 - **Comentario vs. descripción**: un comentario más nuevo que registra una **decisión** (de PO, analista o equipo) reemplaza a la descripción. Citá quién y cuándo.
 - **Contradicciones**: si dos fuentes dicen cosas distintas y ninguna es una decisión explícita posterior, **no elijas**: registralo como contradicción y como `FI-XX`.
 - **Diseño vs. historia**: los textos de Figma valen como fuente para mensajes y etiquetas; si contradicen la historia, es contradicción.
 - **La app no es fuente de requisitos**: lo que hace hoy la aplicación sirve como observación, pero no define el resultado esperado.
+- **El código tampoco**: una validación o un mensaje del repositorio dice cómo está implementado hoy. Sirve para concretar un dato que la historia deja abierto (el texto exacto de un error, un largo máximo) citándolo como *observado en el código*; si contradice a la historia o a una decisión, es contradicción y `FI-XX`, no el resultado esperado.
 
-## 4. "Falta información" (FI-XX)
+## 5. "Falta información" (FI-XX)
 
 Todo dato necesario para probar que **no aparece en ninguna fuente** (o aparece contradictorio) se registra como un ítem `FI-XX`, numerado por historia (`FI-01`, `FI-02`, …):
 
@@ -102,6 +120,6 @@ Reglas que valen para todos los agentes:
    - Reportes de ejecución e informe de cierre: campo `falta_info` en cada caso y lista `falta_informacion` (ver los scripts).
 3. **Reusar los IDs**: el mismo `FI-01` viaja de la ficha a los casos, al `.feature`, a los reportes y a la herramienta de gestión. Así, cuando el PO responde, se sabe qué cambiar.
 
-## 5. La ficha de contexto
+## 6. La ficha de contexto
 
-Guardala en `output/contexto/contexto-<HU>.md` siguiendo `plantillas/plantilla-contexto.md` y normalizala con `python scripts/formatear_tablas.py`. Secciones: fuentes consultadas, resumen de la funcionalidad, reglas y hallazgos por criterio (cada uno con su fuente), decisiones en comentarios, contradicciones y **Falta información**. Respondé a la persona con un resumen corto: fuentes revisadas, hallazgos clave y la lista de `FI-XX` abiertos.
+Guardala en `output/contexto/contexto-<HU>.md` siguiendo `plantillas/plantilla-contexto.md` y normalizala con `python scripts/formatear_tablas.py`. Secciones: fuentes consultadas (incluidos los documentos de `input/documentacion/` que usaste), resumen de la funcionalidad, reglas y hallazgos por criterio (cada uno con su fuente), decisiones en comentarios, contradicciones y **Falta información**. Respondé a la persona con un resumen corto: fuentes revisadas, hallazgos clave y la lista de `FI-XX` abiertos.

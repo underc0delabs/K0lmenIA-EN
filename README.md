@@ -95,6 +95,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 - [Configuración: el archivo `.env`](#️-configuración-el-archivo-env)
 - [Cómo se usa](#-cómo-se-usa)
 - [Investigación de contexto y "Falta información"](#-investigación-de-contexto-y-falta-información)
+- [Documentación del proyecto](#-documentación-del-proyecto)
 - [Automatización con k0lmena](#️-automatización-con-k0lmena)
 - [Pruebas de performance](#-pruebas-de-performance)
 - [Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps](#️-gestión-de-pruebas-xray-qmetry-aio-tests-y-azure-devops)
@@ -128,8 +129,9 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 
 <table>
 <tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="10"><b>🧠 Análisis<br>y diseño</b></td>
-  <td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
+<tr><td rowspan="11"><b>🧠 Análisis<br>y diseño</b></td>
+  <td><code>documentador-proyecto</code></td><td>Arma la documentación del proyecto en <code>input/documentacion/</code>: lee el repositorio (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura), las historias con sus comentarios, PRs y links, y hace un mapa funcional de la web</td></tr>
+<tr><td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
 <tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
 <tr><td><code>generador-casos-manuales</code></td><td>Casos en Excel y Markdown + informe de cobertura</td></tr>
 <tr><td><code>generador-casos-bdd</code></td><td>Escenarios Gherkin (keywords en inglés, contenido en español) + cobertura</td></tr>
@@ -281,6 +283,7 @@ Antes de analizar, planificar, escribir casos o automatizar una historia, los ag
 
 | Fuente                               | Qué revisan                                                                                                      |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Documentación del proyecto           | Primero: el índice y el dossier de la historia que arma el `documentador-proyecto` en `input/documentacion/`     |
 | Historia de Jira                     | Descripción, criterios, estado, labels, componentes y adjuntos                                                   |
 | Comentarios                          | **Todos**: las decisiones que se tomaron después (*"acordamos que el límite es 50"*) reemplazan a la descripción |
 | Subtareas, épica e issues vinculados | Reglas generales, historias hermanas y bugs conocidos del flujo                                                  |
@@ -305,6 +308,25 @@ El resultado es una **ficha de contexto** reutilizable (`output/contexto/context
 
 ---
 
+## 📚 Documentación del proyecto
+
+El **documentador-proyecto** junta el contexto real del proyecto y lo deja en `input/documentacion/`, para que el analista, el estratega y los generadores de casos trabajen sobre lo que existe y no sobre suposiciones:
+
+| Fuente                | Qué lee                                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repositorio de la app | README y docs, validaciones y límites, mensajes, estados, roles y permisos, rutas, contratos de API y los PRs y commits de cada historia (solo lectura) |
+| Historias             | Jira o Azure DevOps con todos sus comentarios, subtareas, épica, vínculos y bugs                                                                        |
+| Links                 | Confluence, Wiki y Figma con su conector; páginas públicas; los privados quedan listados como *No accesible*                                            |
+| La aplicación         | `npm run mapa-funcional`: páginas, menús, formularios con cada campo, botones y mensajes (solo GET, sin enviar nada)                                    |
+
+Deja una **base del proyecto** (resumen, reglas de negocio, mensajes, estados y permisos, mapa funcional, API y links), un **dossier por historia** (decisiones, PRs y código tocado, pantallas, contradicciones y pistas para probar) y un **índice** (`INDICE.md`). Cada dato lleva su fuente (`src/...:línea`, el PR, el comentario). El skill `investigacion-contexto` lo lee primero, así que lo aprovechan todos los agentes. `input/documentacion/` no se versiona.
+
+Para leer el repositorio, completá el bloque *Repositorio de la aplicación* del `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, …) y activá su conector: `github` o `gitlab` con `npm run conector`, `azure-devops` para Azure Repos o `atlassian` (con token) para Bitbucket Cloud. Detalle en [`CONECTORES.md`](CONECTORES.md#repositorio-de-la-aplicación).
+
+> *"Documentá el proyecto"* · *"Juntá todo el contexto de PROJ-12 antes de escribir los casos"*
+
+---
+
 ## ⚙️ Automatización con k0lmena
 
 [k0lmena](https://github.com/underc0delabs/k0lmena) vive en `herramientas/k0lmena/`. Los agentes *mapper* verifican tus casos contra la app real y escriben la automatización **una sola vez**; después la suite corre las veces que quieras, **sin tokens**. Las carpetas vienen vacías: todo lo generan los mappers para tu aplicación.
@@ -326,7 +348,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run mapa-funcional` (páginas, formularios y mensajes, para la documentación), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
 Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
 
@@ -679,6 +701,7 @@ También se usa sin agente: `npm run bd -- conexiones | esquema | existe | consu
 | `qmetry` · `qtm4j` · `aio-tests` | Consultar la herramienta de gestión desde el chat           | API key / token                                   |
 | `azure-devops`                   | **Azure DevOps**: historias, Wiki y casos en Test Plans     | PAT                                               |
 | `k0lmena-tmt`                    | Cargar y consultar casos en k0lmenaTMT                      | Token personal                                    |
+| `github` · `gitlab`              | Repositorio de la app para el documentador-proyecto         | Token de solo lectura (GitLab: también OAuth)     |
 
 Claude Code arranca directo, sin pedir aprobar conectores: vienen activos Playwright y Atlassian (Jira y Confluence). Los demás los activa cada QA según su equipo, con un comando. Ninguno lleva secretos: las credenciales se leen del `.env`, que trae un bloque comentado por herramienta. Guía completa en [`CONECTORES.md`](CONECTORES.md).
 
@@ -752,7 +775,7 @@ k0lmenIA/
 ├── tests/                  Tests de los scripts del repo (pytest y node --test)
 ├── .github/workflows/      CI: los tests en Ubuntu y Windows
 ├── .claude/
-│   ├── agents/             Los 35 agentes
+│   ├── agents/             Los 36 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

@@ -50,6 +50,7 @@
   <a href="#instalacion">Instalación</a>
   <a href="#configuracion">Configuración (.env)</a>
   <div class="grupo">Guías</div>
+  <a href="#documentacion">Documentación del proyecto</a>
   <a href="#contexto">Contexto y falta información</a>
   <a href="#guia">Diseño y ejecución</a>
   <a href="#k0lmena">Automatización con k0lmena</a>
@@ -90,14 +91,14 @@
     <div class="k">Documentación del proyecto</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">Agentes de QA para Claude Code: diseño de pruebas, automatización con k0lmena e integración con Xray, QMetry, AIO Tests y Azure DevOps — todo en español.</div>
-    <div class="chips"><span>35 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
+    <div class="chips"><span>36 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>Licencia MIT</span></div>
 </section>
 <section class="solo-impresion indice">
   <h2>Contenido</h2>
   <ol>
-    <li><span>1</span>Qué es k0lmenIA</li><li><span>2</span>Arquitectura</li><li><span>3</span>Cómo se usa</li><li><span>4</span>Agentes</li><li><span>5</span>Requisitos</li><li><span>6</span>Instalación</li><li><span>7</span>Configuración: el archivo .env</li><li><span>8</span>Investigación de contexto y falta información</li><li><span>9</span>Guía por tarea: diseño y ejecución</li><li><span>10</span>Automatización con k0lmena</li><li><span>11</span>Pruebas de performance</li><li><span>12</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>13</span>Verificación en base de datos</li><li><span>14</span>Pruebas exploratorias</li><li><span>15</span>Accesibilidad</li><li><span>16</span>Rendimiento web</li><li><span>17</span>Análisis de fallos</li><li><span>18</span>Logs del servidor</li><li><span>19</span>Cobertura y trazabilidad</li><li><span>20</span>Regresión visual (pixel perfect)</li><li><span>21</span>Cross-browser</li><li><span>22</span>Reparación de la automatización</li><li><span>23</span>Selección de casos para un cambio</li><li><span>24</span>Revisión de casos y tiempo estimado</li><li><span>25</span>Charters y sesiones exploratorias</li><li><span>26</span>Correos</li><li><span>27</span>Traducciones e idiomas</li><li><span>28</span>Usabilidad</li><li><span>29</span>Formularios</li><li><span>30</span>Historial de corridas</li><li><span>31</span>Seguridad web</li><li><span>32</span>Conectores MCP</li><li><span>33</span>Convenciones</li><li><span>34</span>Estructura del repositorio</li><li><span>35</span>Problemas frecuentes</li><li><span>36</span>Extender el proyecto</li>
+    <li><span>1</span>Qué es k0lmenIA</li><li><span>2</span>Arquitectura</li><li><span>3</span>Cómo se usa</li><li><span>4</span>Agentes</li><li><span>5</span>Requisitos</li><li><span>6</span>Instalación</li><li><span>7</span>Configuración: el archivo .env</li><li><span>8</span>Documentación del proyecto</li><li><span>9</span>Investigación de contexto y falta información</li><li><span>10</span>Guía por tarea: diseño y ejecución</li><li><span>11</span>Automatización con k0lmena</li><li><span>12</span>Pruebas de performance</li><li><span>13</span>Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps</li><li><span>14</span>Verificación en base de datos</li><li><span>15</span>Pruebas exploratorias</li><li><span>16</span>Accesibilidad</li><li><span>17</span>Rendimiento web</li><li><span>18</span>Análisis de fallos</li><li><span>19</span>Logs del servidor</li><li><span>20</span>Cobertura y trazabilidad</li><li><span>21</span>Regresión visual (pixel perfect)</li><li><span>22</span>Cross-browser</li><li><span>23</span>Reparación de la automatización</li><li><span>24</span>Selección de casos para un cambio</li><li><span>25</span>Revisión de casos y tiempo estimado</li><li><span>26</span>Charters y sesiones exploratorias</li><li><span>27</span>Correos</li><li><span>28</span>Traducciones e idiomas</li><li><span>29</span>Usabilidad</li><li><span>30</span>Formularios</li><li><span>31</span>Historial de corridas</li><li><span>32</span>Seguridad web</li><li><span>33</span>Conectores MCP</li><li><span>34</span>Convenciones</li><li><span>35</span>Estructura del repositorio</li><li><span>36</span>Problemas frecuentes</li><li><span>37</span>Extender el proyecto</li>
   </ol>
 </section>
 
@@ -128,6 +129,7 @@
     <span class="tec"><i style="background:#3776ab"></i>Python</span>
     <span class="tec"><i style="background:#0052cc"></i>Jira · Confluence</span>
     <span class="tec"><i style="background:#a259ff"></i>Figma</span>
+    <span class="tec"><i style="background:#6e5494"></i>GitHub · GitLab · Bitbucket</span>
     <span class="tec"><i style="background:#00c7b1"></i>Xray · QMetry · AIO Tests · Azure DevOps</span>
     <span class="tec"><i style="background:#4169e1"></i>PostgreSQL</span>
     <span class="tec"><i style="background:#4479a1"></i>MySQL · MariaDB</span>
@@ -135,7 +137,7 @@
     <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
   </div>
   <div class="metricas">
-    <div class="metrica"><div class="n">35</div><div class="t">agentes especializados</div></div>
+    <div class="metrica"><div class="n">36</div><div class="t">agentes especializados</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">tipos de automatización</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">herramientas de gestión</div></div>
     <div class="metrica"><div class="n">0</div><div class="t">tokens para correr las suites</div></div>
@@ -162,7 +164,7 @@
     <tr><td>Respetar los formatos</td><td>Los campos, su orden y sus valores los definen las plantillas y los scripts, no el agente.</td></tr>
     <tr><td>Trazabilidad</td><td>Todo referencia la historia (<code>HU-XXX</code>); cada escenario automatizado lleva el ID del caso (<code>@CP-001</code>) y la key de la herramienta de gestión.</td></tr>
     <tr><td>Cobertura pensada</td><td>Positivos, negativos, bordes y validaciones de campos, no solo el camino feliz.</td></tr>
-    <tr><td>Investigar antes de suponer</td><td>Antes de trabajar una historia se revisan sus comentarios, subtareas, épica, issues vinculados, Confluence y Figma. Lo que no aparece queda marcado como <b>Falta información</b> (<code>FI-01</code>).</td></tr>
+    <tr><td>Investigar antes de suponer</td><td>Antes de trabajar una historia se revisan la documentación del proyecto (repositorio, PRs, mapa de la web), sus comentarios, subtareas, épica, issues vinculados, Confluence y Figma. Lo que no aparece queda marcado como <b>Falta información</b> (<code>FI-01</code>).</td></tr>
     <tr><td>Ahorro de tokens</td><td>Lo que se repite se automatiza una vez y después corre sin agentes.</td></tr>
     <tr><td>Seguridad</td><td>Los secretos viven en el <code>.env</code> de la raíz, que nunca se versiona; los agentes nunca piden tokens por el chat.</td></tr>
   </table></div>
@@ -185,7 +187,7 @@
     <tr><td>Skills</td><td>El "cómo": conocimiento que se carga cuando hace falta (técnicas de diseño, ejecución E2E y de API, convenciones de k0lmena).</td><td><code>.claude/skills/</code></td></tr>
     <tr><td>Plantillas y scripts</td><td>Formato de salida (planilla de casos, cobertura, bug) y reportes HTML determinísticos.</td><td><code>plantillas/</code> · <code>scripts/</code></td></tr>
     <tr><td>Integración de gestión</td><td><code>gestion.py</code> con un adaptador por herramienta: Xray Cloud, Xray Server/DC, QTM4J y AIO Tests. Azure DevOps va por su conector MCP.</td><td><code>scripts/gestion/</code></td></tr>
-    <tr><td>Conectores MCP</td><td>Playwright y Atlassian (Jira y Confluence) activos; Azure DevOps, Figma, Appium, QMetry, AIO Tests y k0lmenaTMT listos para habilitar. Versiones fijas, sin secretos en el archivo.</td><td><code>.mcp.json</code></td></tr>
+    <tr><td>Conectores MCP</td><td>Playwright y Atlassian (Jira y Confluence) activos; Azure DevOps, Figma, GitHub, GitLab, Appium, QMetry, AIO Tests y k0lmenaTMT listos para habilitar. Versiones fijas, sin secretos en el archivo.</td><td><code>.mcp.json</code></td></tr>
     <tr><td>Herramientas</td><td>Newman para colecciones de Postman y k0lmena para web, API, mobile y performance.</td><td><code>herramientas/</code></td></tr>
     <tr><td>Entrada y salida</td><td>Insumos del usuario y artefactos generados, ordenados por tipo.</td><td><code>input/</code> · <code>output/</code></td></tr>
   </table></div>
@@ -202,27 +204,28 @@
     </figure>
   </div>
   <ol class="pasos">
-    <li><b>Poné tus insumos</b>En <code>input/</code>, o pasá una key de Jira, una página de Confluence o un link de Figma con el conector activo. Los agentes investigan el contexto completo y marcan lo que falta (<code>FI-01</code>).</li>
+    <li><b>Poné tus insumos</b>Pedí <i>"Documentá el proyecto"</i> para juntar el contexto del repositorio, las historias y la web en <code>input/documentacion/</code>; poné lo demás en <code>input/</code>, o pasá una key de Jira, una página de Confluence o un link de Figma con el conector activo. Los agentes investigan el contexto completo y marcan lo que falta (<code>FI-01</code>).</li>
     <li><b>Pedí en lenguaje natural</b>Claude Code elige el agente. También podés nombrarlo: <i>"usá el web-mapper para…"</i>.</li>
     <li><b>Revisá el resultado</b>En <code>output/</code> o en <code>herramientas/k0lmena/</code>.</li>
     <li><b>Automatizá lo que se repite</b>Y corrélo con <code>npm test</code> todas las veces que quieras, sin tokens.</li>
   </ol>
   <div class="tabla"><table>
     <tr><th style="width:7%">#</th><th>Le pedís</th><th style="width:32%">Obtenés</th></tr>
-    <tr><td>0</td><td>"Investigá el contexto de PROJ-12"</td><td>Ficha de contexto + Falta información</td></tr>
-    <tr><td>1</td><td>"Analizá la historia HU-001"</td><td>Ambigüedades y preguntas para el PO</td></tr>
-    <tr><td>2</td><td>"Armá el plan de pruebas de HU-001"</td><td>Plan HTML</td></tr>
-    <tr><td>3</td><td>"Generá los casos de HU-001"</td><td><code>casos-HU-001.xlsx</code> + cobertura</td></tr>
-    <tr><td>4</td><td>"Subí los casos a Xray en 'HU-001 Registro', vinculados a PROJ-12, y creá el ciclo Sprint 5"</td><td>Casos y ciclo en Xray</td></tr>
-    <tr><td>5</td><td>"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com"</td><td><code>.feature</code> + steps + locators</td></tr>
-    <tr><td>6</td><td><code>npm test</code> · <code>npm run report:web</code></td><td>Reporte HTML con evidencias</td></tr>
-    <tr><td>7</td><td>"Subí los resultados al ciclo del Sprint 5"</td><td>Estados y evidencias en Xray</td></tr>
-    <tr><td>8</td><td>"Armá una prueba de carga del login para 20 usuarios"</td><td>Script k6/Artillery/JMeter + reporte HTML</td></tr>
-    <tr><td>9</td><td>"¿Qué casos corro para el PR #42?"</td><td>Selección por riesgo + comando <code>npm test</code> con tags</td></tr>
-    <tr><td>10</td><td>"Corré una regresión visual de https://tu-app.com" · "Probá HU-003 en Chrome, Firefox y Safari"</td><td>Qué se corrió y cuántos px · matriz por navegador</td></tr>
-    <tr><td>11</td><td>"Repará los tests que fallaron por locators"</td><td>Locators nuevos aplicados y verificados</td></tr>
-    <tr><td>12</td><td>"Verificá que llegue el mail de bienvenida a ana@test.com" · "Revisá las traducciones del sitio en inglés y portugués"</td><td>Correos revisados contra lo esperado · porcentaje traducido por idioma</td></tr>
-    <tr><td>13</td><td>"Armá el informe de cierre de HU-001"</td><td>Go / no-go</td></tr>
+    <tr><td>0</td><td>"Documentá el proyecto" · "Juntá el contexto de PROJ-12"</td><td>Base del proyecto + dossier de la historia en <code>input/documentacion/</code></td></tr>
+    <tr><td>1</td><td>"Investigá el contexto de PROJ-12"</td><td>Ficha de contexto + Falta información</td></tr>
+    <tr><td>2</td><td>"Analizá la historia HU-001"</td><td>Ambigüedades y preguntas para el PO</td></tr>
+    <tr><td>3</td><td>"Armá el plan de pruebas de HU-001"</td><td>Plan HTML</td></tr>
+    <tr><td>4</td><td>"Generá los casos de HU-001"</td><td><code>casos-HU-001.xlsx</code> + cobertura</td></tr>
+    <tr><td>5</td><td>"Subí los casos a Xray en 'HU-001 Registro', vinculados a PROJ-12, y creá el ciclo Sprint 5"</td><td>Casos y ciclo en Xray</td></tr>
+    <tr><td>6</td><td>"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com"</td><td><code>.feature</code> + steps + locators</td></tr>
+    <tr><td>7</td><td><code>npm test</code> · <code>npm run report:web</code></td><td>Reporte HTML con evidencias</td></tr>
+    <tr><td>8</td><td>"Subí los resultados al ciclo del Sprint 5"</td><td>Estados y evidencias en Xray</td></tr>
+    <tr><td>9</td><td>"Armá una prueba de carga del login para 20 usuarios"</td><td>Script k6/Artillery/JMeter + reporte HTML</td></tr>
+    <tr><td>10</td><td>"¿Qué casos corro para el PR #42?"</td><td>Selección por riesgo + comando <code>npm test</code> con tags</td></tr>
+    <tr><td>11</td><td>"Corré una regresión visual de https://tu-app.com" · "Probá HU-003 en Chrome, Firefox y Safari"</td><td>Qué se corrió y cuántos px · matriz por navegador</td></tr>
+    <tr><td>12</td><td>"Repará los tests que fallaron por locators"</td><td>Locators nuevos aplicados y verificados</td></tr>
+    <tr><td>13</td><td>"Verificá que llegue el mail de bienvenida a ana@test.com" · "Revisá las traducciones del sitio en inglés y portugués"</td><td>Correos revisados contra lo esperado · porcentaje traducido por idioma</td></tr>
+    <tr><td>14</td><td>"Armá el informe de cierre de HU-001"</td><td>Go / no-go</td></tr>
   </table></div>
 </section>
 
@@ -234,6 +237,7 @@
 
   <div class="subtitulo-grupo"><h3>Análisis y diseño</h3></div>
   <div class="tarjetas">
+    <div class="tarjeta c-violeta"><h4>documentador-proyecto</h4><p>Arma la documentación del proyecto para los demás agentes: lee el repositorio (solo lectura), las historias con sus comentarios, PRs y links, y hace un mapa funcional de la web.</p><div class="usa"><b>Skills</b> investigacion-contexto, ejecucion-e2e<br><b>Usa</b> npm run mapa-funcional, indice_documentacion.py<br><b>Conectores</b> github, gitlab, azure-devops, atlassian, playwright</div><div class="salida"><code>input/documentacion/</code></div></div>
     <div class="tarjeta c-violeta"><h4>analista-historias</h4><p>Investiga el contexto de la historia y detecta ambigüedades, vacíos, riesgos y Falta información.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Usa</b> formatear_tablas.py<br><b>Conectores</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/analisis-historias/</code></div></div>
     <div class="tarjeta c-violeta"><h4>estratega-pruebas</h4><p>Plan de pruebas: alcance, riesgos, tipos de prueba, entorno y criterios, en HTML.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Usa</b> generar_plan.py<br><b>Conectores</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/planes-de-prueba/</code></div></div>
     <div class="tarjeta c-violeta"><h4>generador-casos-manuales</h4><p>Casos en Excel y Markdown + informe de cobertura con preguntas para el PO.</p><div class="usa"><b>Skills</b> investigacion-contexto, tecnicas-de-diseno<br><b>Usa</b> generar_casos.py<br><b>Conectores</b> atlassian, azure-devops, figma</div><div class="salida"><code>output/casos-de-prueba/manuales/</code></div></div>
@@ -285,9 +289,9 @@
   <div class="subtitulo-grupo"><h3>Skills: el cómo que usan los agentes</h3></div>
   <div class="tabla"><table>
     <tr><th style="width:24%">Skill</th><th>Qué enseña</th><th style="width:30%">Lo usan</th></tr>
-    <tr><td><code>investigacion-contexto</code></td><td>Investigar la historia completa (comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper, analista-cobertura, selector-casos-de-prueba, verificador-correos, analista-traductor, revisor-casos, generador-charters, evaluador-ux, probador-formularios</td></tr>
+    <tr><td><code>investigacion-contexto</code></td><td>Investigar la historia completa (documentación del proyecto, comentarios, subtareas, épica, Confluence, Figma, contratos) y registrar la Falta información (<code>FI-XX</code>)</td><td>analista-historias, estratega-pruebas, generadores de casos y datos, web-mapper, api-mapper, mobile-mapper, analista-cobertura, selector-casos-de-prueba, verificador-correos, analista-traductor, revisor-casos, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto</td></tr>
     <tr><td><code>tecnicas-de-diseno</code></td><td>Equivalencia, valores límite, tabla de decisión, transición de estados y pairwise</td><td>generadores de casos manuales, BDD y API; api-mapper, revisor-casos, generador-charters</td></tr>
-    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos, pixel-perfect, cross-browser, reparador-automatizacion, verificador-correos, analista-traductor, generador-charters, evaluador-ux, probador-formularios</td></tr>
+    <tr><td><code>ejecucion-e2e</code></td><td>Ejecutar en el navegador con Playwright MCP: modos, snapshots, esperas y evidencia</td><td>ejecutor-e2e, web-mapper, explorador-web, analista-accesibilidad, analista-fallos, pixel-perfect, cross-browser, reparador-automatizacion, verificador-correos, analista-traductor, generador-charters, evaluador-ux, probador-formularios, documentador-proyecto</td></tr>
     <tr><td><code>ejecucion-api</code></td><td>Correr colecciones con Newman: base_url, token, validaciones y resultados</td><td>ejecutor-api</td></tr>
     <tr><td><code>automatizacion-k0lmena</code></td><td>Convenciones de k0lmena: features, steps, locators, tags, steps de BD y scripts de performance</td><td>los mappers, verificador-datos, reparador-automatizacion y verificador-correos</td></tr>
     <tr><td><code>guia-performance</code></td><td>Planificar con la persona una prueba de performance paso a paso</td><td>la conversación principal y performance-mapper</td></tr>
@@ -364,7 +368,8 @@ npm run bootstrap:jmeter                           <span class="c"># performance
     <tr><td>Performance</td><td><code>PERF_VUS</code> <code>PERF_DURACION</code></td><td>Pisar la carga de los scripts k6</td></tr>
     <tr><td>Bases de datos</td><td><code>DB_CONEXIONES</code> + <code>DB_&lt;NOMBRE&gt;_MOTOR</code> <code>_HOST</code> <code>_PUERTO</code> <code>_BASE</code> <code>_USUARIO</code> <code>_CLAVE</code> (o <code>_URL</code>) <code>_ESCRITURA</code> <code>_PRODUCCION</code></td><td>Verificación en base de datos</td></tr>
     <tr><td>Gestión</td><td><code>GESTION_HERRAMIENTA</code> <code>GESTION_PROYECTO</code> + credenciales de la herramienta</td><td>Xray, QMetry y AIO Tests</td></tr>
-    <tr><td>Azure DevOps (MCP)</td><td><code>ADO_ORGANIZACION</code> <code>ADO_PAT</code> <code>ADO_PROYECTO</code></td><td>Boards, Wiki y Test Plans</td></tr>
+    <tr><td>Azure DevOps (MCP)</td><td><code>ADO_ORGANIZACION</code> <code>ADO_PAT</code> <code>ADO_PROYECTO</code></td><td>Boards, Wiki, Repos y Test Plans</td></tr>
+    <tr><td>Repositorio de la app</td><td><code>REPO_PROVEEDOR</code> <code>REPO_NOMBRE</code> <code>REPO_RAMA</code> <code>REPO_RUTA_LOCAL</code> <code>GITHUB_TOKEN</code> <code>GITLAB_URL</code> <code>GITLAB_TOKEN</code></td><td>Lo lee el documentador-proyecto (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura)</td></tr>
     <tr><td>Correos</td><td><code>MAILPIT_URL</code> <code>MAILPIT_USUARIO</code> <code>MAILPIT_CLAVE</code> <code>CORREO_TIMEOUT_S</code></td><td>Buzón de prueba Mailpit (verificador-correos y steps de correo)</td></tr>
     <tr><td>Idiomas</td><td><code>TRADUCTOR_IDIOMAS</code> <code>TRADUCTOR_URL_IDIOMA</code></td><td>Idiomas a revisar y cómo se cambia de idioma (analista-traductor)</td></tr>
     <tr><td>Tiempo estimado</td><td><code>ESTIMACION_FACTOR</code> <code>GESTION_TIEMPO_NATIVO</code></td><td>Opcionales: multiplicar el tiempo estimado de los casos (por ejemplo 1,3) y no usar el campo de tiempo de la herramienta de gestión (<code>0</code>)</td></tr>
@@ -375,12 +380,47 @@ npm run bootstrap:jmeter                           <span class="c"># performance
   <div class="tabla"><table>
     <tr><th style="width:28%">Carpeta</th><th>Qué va</th></tr>
     <tr><td><code>input/historias/</code></td><td>Historias de usuario con sus criterios de aceptación (<code>HU-001.md</code>, …).</td></tr>
-    <tr><td><code>input/documentacion/</code></td><td>Documentación del producto que sirva de contexto.</td></tr>
+    <tr><td><code>input/documentacion/</code></td><td>Documentación del proyecto: la que arma el documentador-proyecto (índice, base del proyecto, dossier por historia) y la que agregues a mano. No se versiona.</td></tr>
     <tr><td><code>input/api/</code></td><td>Contratos, colecciones de Postman y environments.</td></tr>
     <tr><td><code>input/bugs/</code></td><td>Observaciones sueltas de errores para convertir en reportes.</td></tr>
     <tr><td><code>input/correos/</code></td><td>Lo que tiene que llegar por mail en cada caso (<code>espera-HU-001.json</code>, para el verificador-correos).</td></tr>
     <tr><td><code>input/logs/</code></td><td>Logs de la aplicación para el analista-logs (<code>app.log</code>, <code>access.log</code>). No se versionan.</td></tr>
   </table></div>
+</section>
+
+<!-- ======================================================= DOCUMENTACIÓN DEL PROYECTO -->
+<section class="seccion" id="documentacion">
+  <div class="kicker">Guías</div>
+  <h2>Documentación del proyecto</h2>
+  <p class="bajada">El <b>documentador-proyecto</b> junta el contexto real del proyecto y lo deja en <code>input/documentacion/</code>, para que el analista, el estratega y los generadores de casos trabajen sobre lo que existe y no sobre suposiciones. Es de <b>solo lectura</b>: no escribe en el repositorio, en Jira ni en la aplicación.</p>
+  <h3>Qué lee</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:24%">Fuente</th><th>Qué extrae</th></tr>
+    <tr><td>Repositorio de la app</td><td>README y docs; validaciones y límites, mensajes de error, estados y transiciones, roles y permisos, rutas y pantallas, contratos de API; y los PRs y commits de cada historia, con sus comentarios de revisión.</td></tr>
+    <tr><td>Historias</td><td>Jira o Azure DevOps con <b>todos</b> sus comentarios, subtareas, épica, historias hermanas, issues y bugs vinculados (skill <code>investigacion-contexto</code>).</td></tr>
+    <tr><td>Links</td><td>Confluence, la Wiki de Azure DevOps y Figma con su conector; las páginas públicas con una lectura rápida. Los privados sin conector (Google Docs, SharePoint, Notion) quedan listados como <b>No accesible</b>, con qué haría falta para leerlos.</td></tr>
+    <tr><td>La aplicación</td><td><code>npm run mapa-funcional</code>: cada página con sus secciones, menús, formularios (cada campo con su etiqueta, tipo, obligatorio, largos, mínimos, máximos, patrón y opciones), botones, mensajes visibles y tablas. Solo GET, sin login y sin enviar nada.</td></tr>
+  </table></div>
+  <h3>Qué deja</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:34%">Archivo</th><th>Contenido</th></tr>
+    <tr><td><code>INDICE.md</code></td><td>Qué documentación hay, de qué fuentes sale, cuándo se actualizó y si conviene revisarla (<code>scripts/indice_documentacion.py</code>).</td></tr>
+    <tr><td><code>proyecto/</code></td><td>Resumen del producto (módulos, roles, glosario), repositorio, reglas de negocio, mensajes, estados y permisos, mapa funcional y links.</td></tr>
+    <tr><td><code>api/</code></td><td>Los contratos de API encontrados en el repositorio y su resumen.</td></tr>
+    <tr><td><code>historias/&lt;HU o key&gt;/dossier.md</code></td><td>Todo lo de una historia: criterios, decisiones en comentarios, links, PRs y código tocado, pantallas, API, <b>contradicciones</b> entre fuentes y pistas para probar.</td></tr>
+  </table></div>
+  <p>Cada dato lleva su fuente (<code>src/pagos/validaciones.ts:42</code>, el PR, el comentario con autor y fecha). Lo que sale del código o de la aplicación queda como <b>"así funciona hoy"</b>, no como requisito: si contradice a la historia, el skill <code>investigacion-contexto</code> lo registra como <code>FI-XX</code>. Ese skill lee primero el índice y el dossier, así que lo aprovechan todos los agentes que investigan una historia. <code>input/documentacion/</code> no se versiona.</p>
+  <h3>Conectar el repositorio</h3>
+  <div class="tabla"><table>
+    <tr><th style="width:18%">Proveedor</th><th style="width:22%">Conector</th><th>Qué configurar</th></tr>
+    <tr><td>GitHub</td><td><code>github</code> (remoto, solo lectura)</td><td><code>GITHUB_TOKEN</code> fine-grained de solo lectura. No soporta GitHub Enterprise Server.</td></tr>
+    <tr><td>GitLab</td><td><code>gitlab</code> (<code>/api/v4/mcp</code>)</td><td><code>GITLAB_URL</code>; tu cuenta (OAuth) o <code>GITLAB_TOKEN</code> fine-grained. GitLab.com o 19.5+.</td></tr>
+    <tr><td>Azure Repos</td><td><code>azure-devops</code></td><td>El dominio <code>repositories</code> viene por defecto; el PAT necesita <i>Code (Read)</i>.</td></tr>
+    <tr><td>Bitbucket Cloud</td><td><code>atlassian</code></td><td><code>ATLASSIAN_MCP_AUTENTICACION=token</code> y un API token con permisos de Bitbucket.</td></tr>
+  </table></div>
+  <p>En el <code>.env</code>: <code>REPO_PROVEEDOR</code>, <code>REPO_NOMBRE</code> (uno o varios, separados por coma), <code>REPO_RAMA</code> y, opcional, <code>REPO_RUTA_LOCAL</code> (un clon local: el código se lee de ahí, más rápido y sin gastar tokens del conector). Después, <code>npm run conector -- activar github</code> (o <code>gitlab</code>) y reiniciá Claude Code.</p>
+  <div class="pedido">Documentá el proyecto.</div>
+  <div class="pedido">Juntá todo el contexto de PROJ-12 antes de escribir los casos.</div>
 </section>
 
 <!-- ======================================================= CONTEXTO -->
@@ -391,6 +431,7 @@ npm run bootstrap:jmeter                           <span class="c"># performance
   <h3>Dónde buscan</h3>
   <div class="tabla"><table>
     <tr><th style="width:26%">Fuente</th><th>Qué revisan</th></tr>
+    <tr><td>Documentación del proyecto</td><td><b>Primero.</b> El índice y el dossier de la historia que arma el documentador-proyecto en <code>input/documentacion/</code>: si está vigente, no se vuelve a recorrer Jira.</td></tr>
     <tr><td>Historia de Jira</td><td>Descripción, criterios, estado, labels, componentes y adjuntos.</td></tr>
     <tr><td>Comentarios</td><td><b>Todos.</b> Las decisiones que se tomaron después ("acordamos que el límite es 50") reemplazan a la descripción, citando quién y cuándo.</td></tr>
     <tr><td>Subtareas, épica e issues vinculados</td><td>Detalle de cada subtarea, reglas generales e historias hermanas de la épica, dependencias y bugs conocidos del flujo.</td></tr>
@@ -513,6 +554,7 @@ npm run report:web                        <span class="c"># también: report:api
     <tr><td><code>npm run traductor</code></td><td>Cada página en cada idioma: textos sin traducir, cortados y formatos, con informe HTML (lo usa el <b>analista-traductor</b>).</td></tr>
     <tr><td><code>npm run ux</code></td><td>Usabilidad con las 10 heurísticas de Nielsen en desktop y mobile, con la página 404, capturas e informe HTML (lo usa el <b>evaluador-ux</b>).</td></tr>
     <tr><td><code>npm run formularios</code></td><td>Validaciones de cada campo sin enviar el formulario, con matriz campo × prueba, capturas e informe HTML (lo usa el <b>probador-formularios</b>).</td></tr>
+    <tr><td><code>npm run mapa-funcional</code></td><td>Mapa funcional del sitio: páginas, menús, formularios con cada campo, botones y mensajes, sin enviar nada (lo usa el <b>documentador-proyecto</b>, en <code>input/documentacion/</code>).</td></tr>
     <tr><td><code>npm run record</code></td><td>Graba un flujo con Playwright codegen.</td></tr>
     <tr><td><code>npm run debug</code></td><td>Corre la suite web en modo debug.</td></tr>
   </table></div>
@@ -976,12 +1018,13 @@ npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio 
   <div class="tabla"><table>
     <tr><th style="width:22%">Conector</th><th>Para qué</th><th style="width:18%">Autenticación</th></tr>
     <tr><td><code>playwright</code></td><td>Navegador para el ejecutor E2E y el web-mapper (headed y headless).</td><td>Activo</td></tr>
-    <tr><td><code>atlassian</code></td><td>Jira y Confluence: historias, criterios y documentación funcional directamente.</td><td>Activo · OAuth o API token</td></tr>
+    <tr><td><code>atlassian</code></td><td>Jira y Confluence: historias, criterios y documentación funcional directamente. Con token, también Bitbucket Cloud.</td><td>Activo · OAuth o API token</td></tr>
     <tr><td><code>figma</code></td><td>Diseños desde un link a un frame o archivo: textos, estados y componentes. Requiere asiento Full o Dev.</td><td>Cuenta (OAuth)</td></tr>
     <tr><td><code>appium-mcp</code></td><td>Lo usa el mobile-mapper para recorrer la app.</td><td><code>ANDROID_HOME</code></td></tr>
     <tr><td><code>qmetry</code> · <code>qtm4j</code></td><td>Consultar QMetry desde el chat.</td><td>API key</td></tr>
     <tr><td><code>aio-tests</code></td><td>Consultar AIO Tests desde el chat.</td><td>Token</td></tr>
-    <tr><td><code>azure-devops</code></td><td>Azure DevOps: historias, Wiki y casos en Test Plans.</td><td>PAT</td></tr>
+    <tr><td><code>azure-devops</code></td><td>Azure DevOps: historias, Wiki, Azure Repos y casos en Test Plans.</td><td>PAT</td></tr>
+    <tr><td><code>github</code> · <code>gitlab</code></td><td>Repositorio de la app para el documentador-proyecto (código, PRs y commits, solo lectura).</td><td>Token (GitLab: también OAuth)</td></tr>
     <tr><td><code>k0lmena-tmt</code></td><td>Cargar y consultar casos en k0lmenaTMT.</td><td>Token personal</td></tr>
   </table></div>
   <ol class="pasos">
@@ -1067,13 +1110,13 @@ npm run formularios -- --url https://staging.tu-app.com/registro --enviar-vacio 
 ├── tests/                  <span class="c">Tests de los scripts (pytest y node --test)</span>
 ├── .github/workflows/      <span class="c">CI: los tests en Ubuntu y Windows</span>
 ├── .claude/
-│   ├── agents/             <span class="c">Los 35 agentes</span>
+│   ├── agents/             <span class="c">Los 36 agentes</span>
 │   ├── skills/             <span class="c">Contexto, diseño, guía de performance, ejecución, k0lmena</span>
 │   └── settings.json       <span class="c">Conectores habilitados y permisos</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>
 ├── output/                 <span class="c">Lo que generan los agentes</span>
 ├── plantillas/             <span class="c">Bug, planilla de casos, cobertura, tiempo estimado</span>
-├── scripts/                <span class="c">Casos, tiempo estimado, revisión, charters, logs, informes y doctor</span>
+├── scripts/                <span class="c">Casos, tiempo estimado, revisión, charters, logs, índice de la documentación, informes y doctor</span>
 │   ├── gestion/            <span class="c">Xray, QMetry (QTM4J), AIO Tests y casos para Azure DevOps</span>
 │   └── mcp/                <span class="c">Lanzadores de los conectores MCP (leen el .env)</span>
 └── herramientas/

@@ -2,6 +2,15 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-14 — Documentador del proyecto y conexión al repositorio
+- Nuevo agente `documentador-proyecto`: arma la documentación del proyecto en `input/documentacion/` para que el resto de los agentes trabaje con contexto real. Lee el repositorio de la aplicación en solo lectura (README y docs, validaciones y límites, mensajes, estados, roles y permisos, rutas, contratos de API y los PRs y commits de cada historia), las historias de Jira o Azure DevOps con sus comentarios, subtareas, épica, vínculos y links (Confluence, Wiki, Figma y páginas públicas; los privados quedan como *No accesible*) y la web. Deja una base del proyecto, un dossier por historia y un índice; cada dato con su fuente.
+- **Repositorio de la aplicación** en el `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, `REPO_RAMA`, `REPO_RUTA_LOCAL`) con los servers MCP oficiales de cada proveedor: conectores nuevos `github` (remoto, modo solo lectura, `GITHUB_TOKEN`) y `gitlab` (`/api/v4/mcp`, OAuth o `GITLAB_TOKEN`) en el catálogo; Azure Repos con el dominio `repositories`, que ahora viene por defecto en `azure-devops`; Bitbucket Cloud con el conector `atlassian` y autenticación por token.
+- `npm run mapa-funcional` (k0lmena `tools/mapa-funcional`): recorre el sitio solo con GET y documenta cada página (secciones, menús, formularios con cada campo y sus restricciones, botones, mensajes y tablas), sin enviar nada. Reutiliza el descubrimiento de páginas de pixel-perfect y la extracción de campos de formularios.
+- `scripts/indice_documentacion.py`: índice de `input/documentacion/` con el tipo, las fuentes, la fecha y si conviene revisar cada documento.
+- El skill `investigacion-contexto` lee primero la documentación del proyecto (el índice y el dossier de la historia), así que la aprovechan todos los agentes que investigan una historia; el código del repositorio cuenta como *observado*, no como requisito.
+- `input/documentacion/` deja de versionarse (puede tener código e información interna del cliente).
+- `npm run conector -- activar` toma del `.env` las variables de la URL de un conector (`GITLAB_URL`, `K0LMENA_TMT_URL`).
+
 ## 2026-10-11 (5) — Revisor de casos, charters, UX, formularios, logs y tiempo de ejecución
 - **Tiempo estimado de ejecución manual** de cada caso (`scripts/estimacion.py`, fórmula en `plantillas/estimacion-tiempos.md`): columna *Tiempo estimado (min)* con el total en la planilla de casos y en el `.md`; al subir a la herramienta de gestión va en la descripción y en el campo nativo (Original Estimate en Xray Cloud y Server/DC, estimatedTime en QTM4J, estimatedEffort en AIO Tests; si se rechaza, se crea sin él); para Azure DevOps en el JSON y como etiqueta. Un valor cargado a mano en la planilla manda sobre la fórmula.
 - Nuevo agente `revisor-casos`: puntaje por caso, resultados y pasos vagos, duplicados, escenarios sin Then o imperativos, historias sin negativos, tiempo de ejecución y versiones mejoradas.

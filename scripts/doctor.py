@@ -33,6 +33,7 @@ VARIABLES_CONECTOR = {
     "qmetry": ["QMETRY_API_KEY"],
     "aio-tests": ["AIO_MCP_URL", "AIO_API_TOKEN"],
     "k0lmena-tmt": ["K0LMENA_TMT_TOKEN"],
+    "github": ["GITHUB_TOKEN"],
 }
 VARIABLES_GESTION = {
     "xray-cloud": ["GESTION_PROYECTO", "XRAY_CLOUD_CLIENT_ID", "XRAY_CLOUD_CLIENT_SECRET", "JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"],
@@ -178,11 +179,11 @@ def main():
         origen = " (activado con npm run conector)" if nombre in locales else ""
         if faltan:
             linea(FALTA, f"{nombre}{origen}: faltan {', '.join(faltan)}", "Completalas en el .env (ver CONECTORES.md)")
-        elif nombre in ("atlassian", "figma"):
+        elif nombre in ("atlassian", "figma") or (nombre == "gitlab" and not env.get("GITLAB_TOKEN")):
             linea(OK, f"{nombre}{origen} (se autoriza con tu cuenta desde /mcp la primera vez)")
         else:
             linea(OK, nombre + origen)
-    print("        → Para sumar Azure DevOps, Figma, QMetry, AIO Tests, k0lmenaTMT o Appium: npm run conector")
+    print("        → Para sumar Azure DevOps, Figma, GitHub, GitLab, QMetry, AIO Tests, k0lmenaTMT o Appium: npm run conector")
 
     print(f"\nResultado: {resumen['ok']} OK · {resumen['aviso']} avisos · {resumen['falta']} faltantes")
     if resumen["falta"]:

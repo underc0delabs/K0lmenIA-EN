@@ -32,6 +32,7 @@
     "traductor": "npm --prefix herramientas/k0lmena run traductor --",
     "ux": "npm --prefix herramientas/k0lmena run ux --",
     "formularios": "npm --prefix herramientas/k0lmena run formularios --",
+    "mapa-funcional": "npm --prefix herramientas/k0lmena run mapa-funcional --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
     "conector": "node scripts/mcp/conector.js"

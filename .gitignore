@@ -8,6 +8,11 @@
 /input/logs/*
 !/input/logs/.gitkeep
 
+# Documentación del proyecto que junta el documentador-proyecto (código, historias, comentarios y
+# páginas internas del cliente): no se versiona. Se regenera con el agente.
+/input/documentacion/*
+!/input/documentacion/.gitkeep
+
 # Sistema operativo
 .DS_Store
 Thumbs.db

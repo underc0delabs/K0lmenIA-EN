@@ -28,6 +28,24 @@
         "url": "http://127.0.0.1:3845/mcp"
       }
     },
+    "github": {
+      "descripcion": "GitHub (remoto, solo lectura): código, PRs, issues y commits del repositorio de la app",
+      "variables": "GITHUB_TOKEN",
+      "servidor": {
+        "type": "http",
+        "url": "https://api.githubcopilot.com/mcp/readonly",
+        "headersHelper": "node scripts/mcp/github-headers.js"
+      }
+    },
+    "gitlab": {
+      "descripcion": "GitLab (GitLab.com o self-managed 19.5+): código, merge requests, work items y wiki",
+      "variables": "GITLAB_URL (opcional), GITLAB_TOKEN (opcional: sin token, OAuth desde /mcp)",
+      "servidor": {
+        "type": "http",
+        "url": "${GITLAB_URL:-https://gitlab.com}/api/v4/mcp",
+        "headersHelper": "node scripts/mcp/gitlab-headers.js"
+      }
+    },
     "qtm4j": {
       "descripcion": "QMetry para Jira (QTM4J)",
       "variables": "QTM4J_API_KEY",
