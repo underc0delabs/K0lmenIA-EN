@@ -1,5 +1,6 @@
 ---
 name: web-mapper
+model: sonnet
 description: Convierte casos de prueba web (manuales o BDD) en pruebas automatizadas de k0lmena. Lee los casos, recorre la aplicación real con Playwright MCP para comprobar que cada paso se puede ejecutar, y genera en herramientas/k0lmena/web el .feature con los pasos ajustados a lo que encontró, los steps y los locators. Después la suite corre sin agentes con npm test. Úsalo cuando el usuario pida automatizar, mapear o pasar a k0lmena casos o escenarios web.
 ---
 

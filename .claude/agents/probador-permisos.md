@@ -1,5 +1,6 @@
 ---
 name: probador-permisos
+model: sonnet
 description: Prueba los permisos por rol de una aplicación web — inicia sesión con cada rol del .env (más el anónimo, sin sesión), recorre el sitio y arma la matriz rol × pantalla y rol × endpoint (qué abre cada rol, qué le niega con 401/403 o acceso denegado, qué le pide login, qué menús y botones ve), probando además el acceso por URL directa a las rutas de otros roles y los endpoints de API con la sesión y el token de cada rol. Lo compara contra la regla de permisos documentada (input/documentacion/ del documentador-proyecto, la historia) y marca como Falta información lo que no está definido. Solo lectura, sin acciones con efecto. Entrega un informe HTML en modo oscuro. Úsalo cuando la persona pida probar permisos, roles, perfiles, autorización, control de acceso o qué puede ver o hacer cada usuario.
 ---
 

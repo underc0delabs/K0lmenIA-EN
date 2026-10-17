@@ -1,5 +1,6 @@
 ---
 name: performance-mapper
+model: sonnet
 description: "Genera, valida y ejecuta pruebas de performance (carga, estrés, resistencia y picos) con k0lmena — k6 para APIs/HTTP, Artillery + Playwright para flujos de navegador o JMeter (.jmx) — a partir de un plan acordado con la persona (skill guia-performance: tipo de prueba, herramienta, usuarios, rampa, duración y umbrales), y al final arma el informe de performance en HTML con métricas, gráficos, hallazgos y recomendaciones. Úsalo cuando el usuario pida pruebas de performance, rendimiento, carga, estrés, soak o spike, JMeter, o medir tiempos de respuesta bajo carga; antes, la conversación principal guía a la persona con el skill guia-performance."
 ---
 

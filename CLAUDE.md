@@ -432,6 +432,16 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena** y OWASP ZAP) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
+### Modelo por agente (costo de tokens)
+
+Cada agente fija su modelo en el frontmatter (`model:`) para no gastar de más. Criterio por niveles:
+
+- **`haiku`** — trabajo mecánico que sobre todo corre un script y arma el JSON/HTML (tablero-calidad, analista-cobertura, analista-logs, generador-reporte-html, selector-casos-de-prueba, publicador-resultados, generador-charters, guia-onboarding).
+- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores, auditores, documentador, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
+- **`opus`** — lo que más razona o es sensible: `analista-historias`, `analista-seguridad`, `pentester-web`.
+
+Un agente nuevo lleva su `model:` según este criterio. El costo real por agente lo mide `scripts/metricas_tokens.py` (lo resume el tablero de calidad): si uno queda flojo en Haiku/Sonnet, se sube; si otro no necesita Opus, se baja.
+
 ## APIs: REST y GraphQL; Postman, Bruno e Insomnia
 
 `ejecutor-api` corre colecciones de **Postman, Bruno o Insomnia** con Newman (`correr_newman.py` convierte Bruno e Insomnia con `scripts/convertir_coleccion.py` y avisa lo que no tiene equivalente). `api-mapper` automatiza también **GraphQL** en k0lmena, con steps genéricos (`envío la consulta GraphQL:`, `la respuesta GraphQL no tiene errores`, …) y el schema resumido por `scripts/resumir_graphql.py`; `generador-casos-api` incluye casos GraphQL (variables inválidas, campos inexistentes, autorización por campo, errores parciales, profundidad y paginación).

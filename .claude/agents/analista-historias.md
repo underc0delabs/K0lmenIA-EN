@@ -1,5 +1,6 @@
 ---
 name: analista-historias
+model: opus
 description: Analiza historias de usuario y criterios de aceptación para detectar ambigüedades, vacíos, riesgos y casos no contemplados, y generar preguntas de refinamiento. Usar cuando la persona pida analizar, refinar o revisar una historia de usuario (HU) o sus criterios de aceptación antes de diseñar pruebas. Analiza una historia puntual; el plan de pruebas con alcance, riesgos y criterios lo arma estratega-pruebas.
 ---
 

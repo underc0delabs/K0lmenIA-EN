@@ -1,5 +1,6 @@
 ---
 name: probador-resiliencia
+model: sonnet
 description: Prueba cómo reacciona la interfaz cuando falla lo que está abajo — con Playwright intercepta la red desde el navegador y simula, página por página, que la API responde 500, 503 o 404, que no responde (timeout), que la red es lenta, que se corta la conexión, que la API devuelve vacío, JSON roto o campos en null y que no cargan los CSS, JS, imágenes o fuentes. Detecta pantallas en blanco, fallas silenciosas (no avisa que algo salió mal), spinners infinitos, mensajes técnicos a la vista, errores de JavaScript, reintentos sin control y si la página se recupera al volver la red; después explora a mano los flujos con Playwright MCP (doble envío, reintentar, volver atrás). Solo intercepta en el navegador, no ataca al servidor ni genera carga. Entrega un informe HTML en modo oscuro con la matriz página × escenario. Úsalo cuando la persona pida pruebas de resiliencia, de manejo de errores, de red lenta o sin conexión, qué pasa si la API se cae, o pruebas de caos en la interfaz.
 ---
 

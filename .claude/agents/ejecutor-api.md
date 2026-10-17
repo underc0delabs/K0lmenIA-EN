@@ -1,5 +1,6 @@
 ---
 name: ejecutor-api
+model: sonnet
 description: Ejecuta pruebas de API corriendo una colección de Postman, Bruno o Insomnia con Newman (las de Bruno e Insomnia se convierten solas a Postman), REST o GraphQL, y reporta el resultado (pasó/falló) con un dashboard HTML. Úsalo cuando el usuario pida correr una colección de Postman, Bruno o Insomnia, o validar en vivo endpoints o consultas GraphQL de un servicio (por ejemplo, correr una colección contra una URL). Para automatizar pruebas de API en k0lmena usá api-mapper; para correr lo ya automatizado, npm test (sin agentes ni tokens).
 ---
 

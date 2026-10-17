@@ -1,5 +1,6 @@
 ---
 name: analista-fallos
+model: sonnet
 description: Analiza los escenarios que fallaron en una corrida de k0lmena (npm test, web, API o mobile) — clasifica cada falla por su causa probable (posible bug de la aplicación, locator o espera, ambiente, datos de prueba, error en la automatización, paso sin definir), vuelve a correr los fallidos para detectar los tests inestables (flaky), revisa la evidencia (captura, video y trace), redacta los reportes de bug de los reales y propone cómo arreglar los demás. Entrega un informe HTML en modo oscuro. Úsalo cuando la persona pida analizar, revisar, triar o entender por qué falló npm test o la suite automatizada, separar bugs reales de tests rotos, o encontrar tests inestables.
 ---
 

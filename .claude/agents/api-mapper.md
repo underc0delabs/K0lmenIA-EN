@@ -1,5 +1,6 @@
 ---
 name: api-mapper
+model: sonnet
 description: Genera pruebas de API automatizadas en k0lmena a partir de una colección de Postman, Bruno o Insomnia, de una especificación Swagger/OpenAPI (URL o archivo) o de un schema GraphQL (introspección del endpoint o archivo SDL). Extrae todos los endpoints o solo los que se pidan, los verifica contra la API real y escribe los .feature en herramientas/k0lmena/api usando los steps genéricos del framework. Después la suite corre sin agentes con npm test. Úsalo cuando el usuario pida automatizar, mapear o pasar a k0lmena pruebas de API REST o GraphQL, una colección de Postman, Bruno o Insomnia, o un Swagger.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: auditor-rendimiento-web
+model: sonnet
 description: Audita el rendimiento de carga de un sitio web (por defecto el APP_URL del .env) con Lighthouse en mobile y desktop — puntajes, Core Web Vitals de laboratorio (LCP, CLS y TBT como equivalente de INP), FCP y Speed Index con los umbrales de Google, las oportunidades de mejora con el ahorro estimado y los recursos que las causan, el elemento LCP, el peso por tipo de recurso, el código de terceros y la secuencia de carga. Entrega un informe HTML en modo oscuro con recomendaciones priorizadas. Úsalo cuando la persona pida revisar la velocidad o el rendimiento de carga de una web, Core Web Vitals, Lighthouse, PageSpeed o por qué una página carga lenta. Es la velocidad de una página para una persona; las pruebas con muchos usuarios a la vez son del performance-mapper.
 ---
 

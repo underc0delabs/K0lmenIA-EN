@@ -1,5 +1,6 @@
 ---
 name: generador-casos-bdd
+model: sonnet
 description: Genera escenarios de prueba en formato BDD/Gherkin con las palabras clave en inglés (Feature, Scenario, Given, When, Then…) y el contenido en español, a partir de una historia de usuario o sus criterios de aceptación. Entrega el archivo .feature y, además, un .md con la cobertura por criterio. Usar cuando la persona pida casos en BDD, Gherkin, escenarios, o archivos .feature.
 ---
 

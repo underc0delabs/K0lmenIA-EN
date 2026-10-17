@@ -1,5 +1,6 @@
 ---
 name: cross-browser
+model: sonnet
 description: Prueba la compatibilidad entre navegadores — Chromium (Chrome y Edge), Firefox y WebKit (Safari), en desktop y mobile. Con automatización de k0lmena corre la suite web en cada navegador y arma la matriz escenario × navegador (qué pasa en todos, qué falla solo en algunos y qué falla en todos); sin automatización recorre las páginas en cada navegador y las compara contra el navegador base — errores de JavaScript, de consola y recursos que fallan solo en uno, desborde, elementos que faltan o se corren, estilos distintos y cuánto se ve distinto. Entrega un informe HTML en modo oscuro con la matriz, las capturas lado a lado, el comparador deslizable y recomendaciones. Úsalo cuando la persona pida probar en varios navegadores, cross-browser, compatibilidad con Safari, Firefox o Edge, o por qué algo falla solo en un navegador.
 ---
 

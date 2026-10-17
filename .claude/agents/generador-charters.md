@@ -1,5 +1,6 @@
 ---
 name: generador-charters
+model: haiku
 description: Planifica y documenta pruebas exploratorias por sesiones (session-based testing) — a partir de una historia, una release o un área de riesgo arma los charters (misión, áreas, riesgos, heurísticas, datos, ideas, tiempo y fuera de alcance), genera las hojas de sesión para imprimir o compartir y una plantilla de notas por sesión; después de las sesiones convierte las notas en un informe con los bugs, las preguntas, los riesgos nuevos, el reparto del tiempo (preparación, prueba y bugs) y la cobertura de las áreas. Si se lo piden, ejecuta la sesión con Playwright MCP. Entrega HTML en modo oscuro. Úsalo cuando la persona pida charters, sesiones exploratorias, planificar o guiar pruebas exploratorias, o armar el informe de una sesión.
 ---
 

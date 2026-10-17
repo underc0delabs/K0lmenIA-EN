@@ -1,5 +1,6 @@
 ---
 name: analista-logs
+model: haiku
 description: Analiza los logs de la aplicación (archivos de log del servidor, logs de acceso de nginx o Apache, JSON por línea, syslog, también .gz) — agrupa los errores y advertencias por firma (el mismo error con distintos datos), arma la línea de tiempo por minuto, rescata los stack traces y los cruza con los escenarios de una corrida de k0lmena (cada escenario guarda su inicio y fin) para encontrar el error del servidor que hay detrás de cada falla; explica la causa probable y propone qué hacer. Entrega un informe HTML en modo oscuro. Úsalo cuando la persona pida revisar o analizar logs, buscar errores del servidor, entender por qué falló una prueba del lado del backend o qué pasó en el servidor durante una corrida.
 ---
 

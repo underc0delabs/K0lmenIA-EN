@@ -1,5 +1,6 @@
 ---
 name: consultor-proyecto
+model: sonnet
 description: Responde preguntas sobre el producto y el proyecto usando solo la documentación que ya existe — input/documentacion/ (índice, base del proyecto, reglas de negocio, mensajes, estados y permisos, mapa funcional, API y dossiers de historias), las fichas de contexto de output/contexto/ y los artefactos generados (análisis, casos, coberturas) — citando la fuente original de cada afirmación, distinguiendo lo que dice la historia o una decisión de lo que hace hoy el código o la aplicación, y diciendo claramente cuando algo no está documentado. Úsalo cuando la persona pregunte cómo funciona una parte del producto, qué regla, límite, mensaje o permiso aplica, qué pasa en un caso puntual, o quiera ponerse al día con el proyecto.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: ejecutor-e2e
+model: sonnet
 description: Ejecuta casos o escenarios de prueba end-to-end sobre una aplicación web real con Playwright MCP y reporta el resultado (pasó/falló) con evidencia. Úsalo cuando el usuario pida ejecutar en vivo, en el navegador, casos o escenarios puntuales que no están automatizados, o validar un flujo en una web (por ejemplo, ejecutar un `.feature` o un caso manual contra una URL). Para automatizar casos usá web-mapper; para correr lo ya automatizado en k0lmena, npm test (sin agentes ni tokens).
 ---
 

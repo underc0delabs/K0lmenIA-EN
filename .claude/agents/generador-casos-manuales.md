@@ -1,5 +1,6 @@
 ---
 name: generador-casos-manuales
+model: sonnet
 description: "Genera casos de prueba manuales a partir de una historia de usuario o sus criterios de aceptación. Entrega tres artefactos: una planilla Excel (.xlsx) con los casos, una versión en Markdown (.md) con los casos en tabla alineada, y un informe de cobertura (.md) con ambigüedades y preguntas para el PO. Cubre escenarios positivos, negativos, de borde y validaciones de campos. Usar cuando la persona pida crear, diseñar o escribir casos de prueba manuales."
 ---
 

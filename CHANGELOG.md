@@ -2,6 +2,9 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-17 — Modelo por agente (ahorro de tokens)
+- Cada agente fija su `model:` en el frontmatter para no gastar de más: `haiku` para los mecánicos (corren un script y arman el JSON/HTML), `sonnet` para la mayoría del trabajo de QA y `opus` solo para los que más razonan o son sensibles (analista-historias, analista-seguridad, pentester-web). El criterio queda documentado en `CLAUDE.md`; el costo real por agente lo mide `scripts/metricas_tokens.py`.
+
 ## 2026-10-17 — Ahorro al automatizar en el tablero
 - El tablero de calidad calcula el **ahorro de tiempo al automatizar**: el tiempo estimado de ejecución manual de los casos automatizados menos lo que tardan corriendo solos (`npm test`). Muestra el **ahorro por corrida** y el **acumulado** del período en los indicadores, y una columna de ahorro por historia. Usa el tiempo manual que ya se guardaba por caso y la duración real de la última corrida.
 

@@ -1,5 +1,6 @@
 ---
 name: analista-cobertura
+model: haiku
 description: Arma la matriz de cobertura y trazabilidad de una o varias historias — HU → criterios de aceptación → casos (manuales y BDD) → automatización en k0lmena → herramienta de gestión → último resultado → bugs — y marca los huecos (criterios sin casos, casos sin criterio, sin automatizar, automatizados bloqueados o sin ejecutar, fallidos, sin subir a la herramienta de gestión, falta información abierta). Entrega un informe HTML en modo oscuro con el embudo, la matriz y los huecos priorizados. Úsalo cuando la persona pregunte qué falta probar, la cobertura de una historia o de la ronda, una matriz de trazabilidad, qué criterios no tienen casos o qué casos no están automatizados.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: explorador-web
+model: sonnet
 description: Hace pruebas exploratorias sobre un sitio web (por defecto el APP_URL del .env) — recorre sus páginas buscando links rotos, imágenes rotas, errores de JavaScript, errores de consola y recursos que fallan, revisa el responsive en varias resoluciones (mobile, tablet y desktop) con capturas, y después explora a mano con Playwright MCP (navegación, menús, formularios, búsquedas, casos de borde) para encontrar lo que un recorrido automático no ve. Entrega un informe HTML en modo oscuro con los hallazgos por severidad, evidencia y recomendaciones. Úsalo cuando la persona pida pruebas exploratorias, explorar o recorrer un sitio, buscar links o imágenes rotas, errores en la web o revisar el responsive.
 ---
 

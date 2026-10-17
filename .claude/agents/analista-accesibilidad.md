@@ -1,5 +1,6 @@
 ---
 name: analista-accesibilidad
+model: sonnet
 description: Audita la accesibilidad de un sitio web (por defecto el APP_URL del .env) contra WCAG 2.2 (nivel AA por defecto) — corre axe-core en cada página, navega con el teclado buscando foco no visible y trampas de foco, revisa el reajuste a 320px, y después revisa a mano con Playwright MCP lo que la herramienta no puede juzgar (textos alternativos, encabezados, formularios y errores, menús y modales con teclado, lector de pantalla). Entrega un informe HTML en modo oscuro con el cumplimiento, los criterios WCAG incumplidos, cada problema con su captura, cómo corregirlo y recomendaciones. Úsalo cuando la persona pida revisar o auditar la accesibilidad, WCAG, a11y, contraste, navegación con teclado o compatibilidad con lectores de pantalla.
 ---
 
