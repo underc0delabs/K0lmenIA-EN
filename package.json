@@ -17,6 +17,7 @@
     "bootstrap:k6": "npm --prefix herramientas/k0lmena run bootstrap:k6 --",
     "bootstrap:jmeter": "npm --prefix herramientas/k0lmena run bootstrap:jmeter --",
     "debug": "npm --prefix herramientas/k0lmena run debug --",
+    "login": "npm --prefix herramientas/k0lmena run login --",
     "test:repo": "node tests/node/correr.js",
     "doctor": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/doctor.py'],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\"",
     "crawler": "npm --prefix herramientas/k0lmena run crawler --",
@@ -43,6 +44,7 @@
     "metricas": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/metricas_tokens.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "record": "npm --prefix herramientas/k0lmena run record --",
     "record:generator": "npm --prefix herramientas/k0lmena run record:generator --",
+    "configurar": "node scripts/configurar.js",
     "conector": "node scripts/mcp/conector.js"
   }
 }

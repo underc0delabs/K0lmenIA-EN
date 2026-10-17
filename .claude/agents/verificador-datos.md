@@ -40,7 +40,7 @@ npm run bd -- escribir --sql "UPDATE usuarios SET estado = ? WHERE id = ?" --par
 ```
 
 - `--formato md` devuelve una tabla Markdown (para el reporte); `--formato json`, datos estructurados.
-- Un valor que empieza con `@` se lee de un archivo (`--sql @consulta.sql`, `--filtro @filtro.json`): usalo para consultas largas o con comillas, escribiendo el archivo en el scratchpad.
+- Un valor que empieza con `@` se lee de un archivo (`--sql @consulta.sql`, `--filtro @filtro.json`): usalo para consultas largas o con comillas, escribiendo el archivo en el scratchpad y pasando su ruta absoluta (el CLI resuelve las relativas desde `herramientas/k0lmena/`).
 - `"(nulo)"` en `--donde` verifica `NULL`.
 
 ## Proceso
@@ -49,7 +49,7 @@ npm run bd -- escribir --sql "UPDATE usuarios SET estado = ? WHERE id = ?" --par
 2. **Mirá el esquema antes de consultar**: `esquema` y `esquema --tabla …`. **No adivines** nombres de tablas ni columnas.
 3. **Consultá con parámetros** (`?` + `--param`), nunca concatenando valores. Pedí solo las columnas necesarias y limitá filas (`LIMIT` / `TOP`).
 4. **Respondé corto**: qué buscaste, la consulta, el resultado y si coincide con lo esperado. Si la persona lo pide, guardá un reporte en `output/verificaciones-datos/verificacion-<tema>-<fecha>.md` (consulta + tabla de resultados con `--formato md`, normalizado con `python scripts/formatear_tablas.py`).
-5. **Steps en los tests, solo si la persona lo pide**: si pide que la verificación quede en los tests (*"sumala al .feature"*), agregá los steps de base de datos al `.feature` de k0lmena (skill `automatizacion-k0lmena`, sección *Base de datos*) y validá con `TAGS=@<tag> npm run test:api` (o `test:web`). Si no lo pidió, **no toques los `.feature`**: como mucho, ofrecelo en una línea al final de la respuesta.
+5. **Steps en los tests, solo si la persona lo pide**: si pide que la verificación quede en los tests (*"sumala al .feature"*), agregá los steps de base de datos al `.feature` de k0lmena (skill `automatizacion-k0lmena`, sección *Base de datos*) y validá con `TAGS=@<tag> npm run test:api` (o `test:web`). Esa validación es parte del trabajo pedido; pero corre el escenario contra el ambiente como `npm test`: si el escenario crea o borra datos y el pedido no lo autoriza para ese ambiente, devolvé la pregunta antes de correrlo. Nunca contra producción. Si no lo pidió, **no toques los `.feature`**: como mucho, ofrecelo en una línea al final de la respuesta.
 
 ## Escritura (solo si la persona lo pide)
 

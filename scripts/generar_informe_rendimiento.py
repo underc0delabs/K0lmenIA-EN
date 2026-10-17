@@ -21,6 +21,7 @@ Los datos salen del rendimiento.json. El análisis (opcional) aporta:
   "notas": {"R-02": "El caché lo configura el CDN: lo confirma el equipo de infraestructura"},
   "descartados": [{"id": "R-05", "motivo": "El script de terceros es el chat de soporte, se acepta"}],
   "severidades": {"R-03": "Alta"},
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -33,7 +34,7 @@ import math
 import sys
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, stacked_bars,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, stacked_bars,
                               grouped_columns, two_col, nivel_badge, _pastilla, CRITICO, AVISO, NEUTRO, OK, SERIES, SERIO,
                               SUPERFICIE)
 from generar_informe_exploratorio import CSS_EXTRA, JS_EXTRA, miniatura, corto, origen
@@ -292,6 +293,7 @@ def build_html(datos, analisis, hist_html=""):
         originales = {h.get("id"): h for h in datos.get("hallazgos") or []}
         filas = [[e(i), e((originales.get(i) or {}).get("titulo", "")), e(m)] for i, m in descartados.items()]
         body.append(section("Descartados", table(["ID", "Hallazgo", "Motivo"], filas)))
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -328,6 +330,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("rendimiento", Path(a.rendimiento_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

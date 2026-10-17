@@ -19,8 +19,8 @@
 // cada resolución. Al terminar genera el informe HTML (scripts/generar_informe_exploratorio.py).
 //
 // Solo navega con GET: no completa ni envía formularios y no sigue links de cierre de sesión.
-// Deja todo en output/exploratorias/<HU o host>/ y cada corrida REEMPLAZA a la anterior:
-// exploracion.json, informe-exploratorio.html, capturas/ y videos/ (y borra el analisis.json viejo).
+// Deja todo en output/exploratorias/<HU o host>/: exploracion.json, informe-exploratorio.html, capturas/
+// y videos/. La corrida anterior (con su analisis.json) pasa a historial/ (se guardan las últimas 5).
 const fs = require('fs');
 const path = require('path');
 const { archivar } = require('../historial/historial.js');
@@ -399,7 +399,7 @@ async function main() {
   const inicioUrl = normalizar(url);
   const host = new URL(inicioUrl).hostname;
   const marca = sello();
-  // Carpeta fija por historia o sitio: cada corrida reemplaza a la anterior.
+  // Carpeta fija por historia o sitio: la corrida anterior pasa a historial/.
   const carpeta = a.salida ? path.resolve(a.salida) : path.join(RAIZ, 'output', 'exploratorias', a.historia || host);
   limpiarCarpeta(carpeta);
   const dirCapturas = path.join(carpeta, 'capturas');

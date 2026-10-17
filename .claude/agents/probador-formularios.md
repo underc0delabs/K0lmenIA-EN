@@ -19,7 +19,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 - **Dónde están los formularios**: la URL del formulario (`--url` o `--paginas`) o el sitio (`APP_URL`, recorre hasta 6 páginas). Si el formulario está detrás de un login, decilo: esta herramienta no inicia sesión (podés probarlo a mano con Playwright MCP).
 - **Las reglas de cada campo** (recomendado): de la historia, sus criterios o el diseño (skill `investigacion-contexto`). Sin ellas, la herramienta usa lo que el HTML declara y el sentido común (un email tiene que tener @); con ellas, podés decir si la validación es la que pide el negocio.
-- **Enviar el formulario vacío** (`--enviar-vacio`): si el formulario no valida, **se envía** y puede crear datos. Solo con confirmación explícita y nunca en producción.
+- **Enviar el formulario vacío** (`--enviar-vacio`): si el formulario no valida, **se envía** y puede crear datos. Se aplica a **todos** los formularios recorridos: usalo solo con `--paginas <url del formulario confirmado> --max-paginas 1`, en una página con un único formulario, con confirmación explícita y nunca en producción.
 
 ## Proceso
 
@@ -27,18 +27,27 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    npm run formularios -- --url <url del formulario> [--historia HU-001] [--paginas url1,url2]
    ```
-   La herramienta bloquea cualquier envío (salvo `--enviar-vacio`). Deja en `output/formularios/<HU o host>/` `formularios.json`, `informe-formularios.html` y `capturas/` (cada formulario antes y con los valores inválidos a la vista); la corrida anterior pasa a `historial/` (se guardan las últimas 5).
+   La herramienta corta las navegaciones que no son GET (el envío clásico de un formulario; salvo `--enviar-vacio`); los pedidos `fetch`/`XHR` que dispare la página (por ejemplo, un autoguardado al salir del campo) no se bloquean: si el formulario guarda solo, avisalo y no lo corras en producción. Deja en `output/formularios/<HU o host>/` `formularios.json`, `informe-formularios.html` y `capturas/` (cada formulario antes y con los valores inválidos a la vista); la corrida anterior pasa a `historial/` (se guardan las últimas 5).
 2. **Revisá los resultados** (`formularios.json` → `hallazgos`, `formularios[].campos[].pruebas`):
    - **Acepta un valor inválido**: un dato malo llegaría a la base (o lo valida solo el servidor; si sospechás eso, decilo y recomendá probar el envío en un ambiente de pruebas).
    - **Rechaza un valor válido**: es el más grave para la persona (no puede registrarse por tener un acento o un apóstrofe en el nombre).
    - **Mensajes**: los del navegador son genéricos y salen en su idioma; los buenos dicen qué está mal y cómo corregirlo, junto al campo.
    - Compará con las reglas de la historia: si la historia pide una edad mínima de 18 y el campo acepta 16, es un bug aunque el HTML no tenga `min`.
-   - Si algo no queda claro, probalo a mano con Playwright MCP (skill `ejecucion-e2e`), sin enviar.
-3. **Escribí el análisis** en `output/formularios/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (ajustes de severidad o `nota`), `descartados` (con motivo), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_formularios.py`. Regenerá:
+   - Si algo no queda claro, probalo a mano con Playwright MCP (skill `ejecucion-e2e`), sin enviar; lo que confirmes va como `nota` del hallazgo `V-XX` (o en `recomendaciones` si es nuevo), con la captura en `capturas/manual/` (si Playwright la deja en otro lado (por defecto `output/ejecuciones/evidencia/`), movela con Bash).
+3. **Escribí el análisis** en `output/formularios/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (ajustes de severidad o `nota`), `descartados` (con motivo), `falta_informacion` (`id`, `que_falta`, `pregunta`: las reglas que la historia no define), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_formularios.py`. Regenerá:
    ```bash
    python scripts/generar_informe_formularios.py <carpeta>/formularios.json <carpeta>/informe-formularios.html --analisis <carpeta>/analisis.json
    ```
 4. **Respondé corto**: cuántos campos y pruebas, qué valores inválidos se aceptan y qué valores válidos se rechazan (por campo), los problemas de mensajes y etiquetas, y la ruta del informe. Ofrecé convertir las validaciones en casos (`generador-casos-manuales`) o automatizarlas (`web-mapper`).
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`V-01`, no `V-1`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 

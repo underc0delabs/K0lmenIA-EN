@@ -46,13 +46,23 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Doble envío** (solo con confirmación y en ambiente de prueba): con la API lenta, ¿el botón se deshabilita o se puede apretar dos veces?
    - **Volver atrás, recargar, abrir en otra pestaña** en medio de la falla.
    - **Sesión vencida**: la API responde 401 a mitad del uso: ¿lleva al login o queda trabada?
-   Por cada problema, una captura en `<carpeta>/capturas/manual/rm-XX.png` y anotá pasos, esperado y obtenido.
-4. **Escribí el análisis** en `<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (por `R-XX`: `severidad` y `nota`), `descartados`, `manuales` (`RM-01`, … con `titulo`, `severidad`, `escenario`, `pagina`, `pasos`, `esperado`, `obtenido`, `evidencia`), `falta_informacion`, `recomendaciones` (acción, por qué, prioridad) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_resiliencia.py`.
+   Por cada problema, una captura en `<carpeta>/capturas/manual/rm-XX.png` (si Playwright la deja en otro lado (por defecto `output/ejecuciones/evidencia/`), movela con Bash; en el análisis va como `capturas/manual/rm-XX.png`) y anotá pasos, esperado y obtenido.
+4. **Escribí el análisis** en `<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (por `R-XX`: `severidad` y `nota`), `descartados`, `manuales` (`RM-01`, … con `titulo`, `severidad`, `escenario`, `pagina`, `pasos`, `esperado`, `obtenido`, `correccion`, `evidencia`), `falta_informacion` (`id`, `que_falta`, `pregunta`), `recomendaciones` (acción, por qué, prioridad) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_resiliencia.py`.
 5. **Regenerá el informe** con tu análisis:
    ```bash
    python scripts/generar_informe_resiliencia.py <carpeta>/resiliencia.json <carpeta>/informe-resiliencia.html --analisis <carpeta>/analisis.json
    ```
 6. **Respondé corto**: cuántas páginas y escenarios, qué aguanta y qué no (pantallas en blanco, fallas silenciosas, sin recuperación), los hallazgos más graves, los `FI-XX` y la ruta del informe. Si algo es un bug, ofrecé armar el reporte con `generador-reportes-bug`.
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`R-01`, no `R-1`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada hallazgo manual tiene página, pasos, esperado, obtenido, `correccion` (cómo corregirlo) y una captura que existe dentro de la carpeta, con ruta relativa.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 

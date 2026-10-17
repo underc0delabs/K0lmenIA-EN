@@ -92,6 +92,18 @@ TAGS="@smoke and not @wip" npm run test:web
 
 Los escenarios marcados `@bloqueado` (pasos que el mapper no pudo verificar en la app) **nunca se ejecutan**. Los marcados `@falta-info @FI-XX` dependen de un dato que no está definido en la historia ni en sus fuentes: corren normalmente y el reporte les agrega una nota de **Falta información** (detalle en `output/contexto/`).
 
+### Sesión guardada (`npm run login`)
+
+Para no loguearse en cada escenario (o cuando el login tiene captcha, 2FA o SSO):
+
+```bash
+npm run login                        # abre el navegador: te logueás a mano y apretás Enter en la terminal
+npm run login -- --nombre admin      # una sesión por rol: .auth/sesion-admin.json
+npm run login -- --url https://mi-app.com/ingresar
+```
+
+La sesión (cookies, localStorage e IndexedDB) queda en `.auth/` de la raíz (gitignored: equivale a una contraseña). Para usarla, `SESION=si` (o `SESION=admin`) en el `.env`: cada escenario web arranca logueado, y el navegador de los agentes (Playwright MCP) también, al reiniciar Claude Code. Los escenarios con `@sin-sesion` (los que prueban el login) arrancan siempre sin sesión. Si la sesión vence, se vuelve a correr `npm run login`.
+
 ### Mobile: dispositivo, emulador o BrowserStack
 
 Se elige en el `.env` de la raíz, sin tocar código:
@@ -161,7 +173,7 @@ Los agentes agregan estas verificaciones a un `.feature` **solo cuando se las pi
 +--------------------------+-------------------------+
 ```
 
-Primero corré los tests y después generá el reporte: refleja **solo la última corrida** (cada `npm test` limpia las evidencias de la anterior).
+`npm test` arma solo el reporte de web y api (`reports/<suite>/index.html`) al terminar cada suite, y ese es el que enlaza el portal de informes; `npm run report:web` / `report:api` sirven para regenerarlo. Refleja **solo la última corrida** (la anterior pasa a `historial/`).
 
 ### Evidencias que se adjuntan
 
@@ -206,7 +218,7 @@ Con `K0LMENA_AUTO_HEALING=on`, cada acción exitosa guarda locators alternativos
 | npm run crawler [url] | Genera un archivo de locators            |
 |                       | recorriendo una página                   |
 +-----------------------+------------------------------------------+
-| npm run link-tester   | Busca enlaces e imágenes rotas (BASEURL) |
+| npm run link-tester   | Busca enlaces e imágenes rotas (APP_URL) |
 +-----------------------+------------------------------------------+
 | npm run explorar      | Recorrido exploratorio con navegador:    |
 |                       | links, imágenes, errores y responsive    |

@@ -14,7 +14,7 @@ Playwright MCP corre el navegador **headed (visible) por defecto**; con `--headl
 - **`playwright`** → headed (ves el navegador; ideal para demos y para seguir la corrida).
 - **`playwright-headless`** → headless (segundo plano; más rápido, sirve para CI).
 
-Preguntá a la persona cuál quiere y usá las tools del server correspondiente. Todas las acciones (navegar, click, screenshot) funcionan igual en los dos modos.
+Usá el modo que diga el pedido (si no lo dice, devolvelo en "Necesito que confirmes"; recomendado: headless) y las tools del server correspondiente. Todas las acciones (navegar, click, screenshot) funcionan igual en los dos modos.
 
 ## Ubicar elementos (sin selectores frágiles)
 
@@ -40,7 +40,7 @@ cp .env.example .env   # y editás .env con tus datos
 
 Variables típicas: `APP_URL`, `APP_USER`, `APP_PASSWORD`. El agente las lee del `.env` (o las recibe en el prompt) y las usa **solo** para loguearse: nunca las escribe en el reporte, el JSON ni las capturas, y nunca las commitea. Usá credenciales de un entorno de **prueba/staging**, no de producción.
 
-**Evitar loguearte en cada corrida (opcional):** Playwright MCP usa por defecto un **perfil persistente**, así que si te logueás una vez en modo headed, la sesión (cookies) suele quedar para las siguientes corridas. Para algo más explícito, podés arrancar el server con `--storage-state <archivo>` apuntando a un estado de sesión guardado (ese archivo también va gitignored).
+**Sesión guardada (`npm run login`):** la persona corre `npm run login` (o `npm run login -- --nombre <rol>`), se loguea a mano en el navegador que se abre (sirve para captcha, 2FA o SSO) y la sesión queda en `.auth/` (gitignored). Con `SESION=si` (o `SESION=<rol>`) en el `.env`, los servers de Playwright arrancan con esa sesión (`--isolated --storage-state`) y la app ya abre logueada: **no hace falta pasar por el login**, salvo que el caso pruebe justamente el login. Si al navegar aparece la pantalla de login igual, la sesión venció: no la reemplaces con las credenciales sin avisar; contalo en el resultado y sugerí correr `npm run login` de nuevo. `npm run login` es interactivo: lo corre la persona, no el agente.
 
 ## Evidencia
 

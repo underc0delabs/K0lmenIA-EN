@@ -9,7 +9,7 @@ dotenv.config();
 async function run() {
   const inputUrl = process.argv[2] || process.env.BASEURL;
   if (!inputUrl) {
-    console.error("Proporcione una URL como parámetro o defina BASEURL en .env.");
+    console.error("Proporcione una URL como parámetro o defina APP_URL en el .env.");
     process.exit(1);
   }
 

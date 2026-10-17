@@ -288,7 +288,7 @@ async function testSinglePage(baseUrl: string): Promise<void> {
 // CLI con opciones
 async function main() {
   const baseUrl = process.env.BASEURL;
-  if (!baseUrl) { console.error('❌ Error: BASEURL no definido'); process.exit(1); }
+  if (!baseUrl) { console.error('❌ Error: APP_URL no definida en el .env'); process.exit(1); }
   const args = process.argv.slice(2);
   const full = args.includes('-full');
 

@@ -219,18 +219,26 @@ def revisar_env(ctx):
     seccion("env", "Configuración (.env)")
     archivo, env = ctx["archivo"], ctx["env"]
     if not archivo.exists():
-        linea(FALTA, f"No existe {archivo.name}", "Copiá .env.example a .env y completá lo que uses (cp .env.example .env)")
+        linea(FALTA, f"No existe {archivo.name}", "Corré npm run configurar: te hace unas preguntas y crea el .env")
         return
     linea(OK, f"{archivo.name} encontrado")
-    for nombre, para in (("APP_URL", "la app a probar (ejecución E2E, exploratorias, mapa funcional)"),
-                         ("BASEURL", "la automatización web de k0lmena (si queda vacía usa APP_URL)")):
-        valor = env.get(nombre, "")
-        if not valor:
-            linea(AVISO, f"{nombre} vacía: {para}", f"Completala en {archivo.name}")
-        elif not es_url(valor):
-            linea(FALTA, f"{nombre} no es una URL válida (tiene que empezar con http:// o https://)", f"Corregila en {archivo.name}")
+    # La URL de la app va solo en APP_URL; k0lmena arma BASEURL desde ahí (herramientas/k0lmena/env.js).
+    app_url, baseurl = env.get("APP_URL", ""), env.get("BASEURL", "")
+    if not app_url and not baseurl:
+        linea(AVISO, "APP_URL vacía: la app a probar (agentes, herramientas y automatización web)", f"Completala en {archivo.name}")
+    elif app_url and not es_url(app_url):
+        linea(FALTA, "APP_URL no es una URL válida (tiene que empezar con http:// o https://)", f"Corregila en {archivo.name}")
+    elif app_url:
+        linea(OK, "APP_URL definida")
+    if baseurl:
+        if not es_url(baseurl):
+            linea(FALTA, "BASEURL no es una URL válida (tiene que empezar con http:// o https://)", f"Mejor borrala y dejá solo APP_URL en {archivo.name}")
+        elif not app_url:
+            linea(AVISO, "La URL está en BASEURL (nombre viejo): se usa igual", f"Pasala a APP_URL y borrá BASEURL de {archivo.name}")
+        elif baseurl.rstrip("/") != app_url.rstrip("/"):
+            linea(AVISO, "BASEURL y APP_URL son distintas: se usa APP_URL", f"Borrá BASEURL de {archivo.name}: la URL va solo en APP_URL")
         else:
-            linea(OK, f"{nombre} definida")
+            linea(AVISO, "BASEURL repite APP_URL: no hace falta", f"Borrá BASEURL de {archivo.name}")
     if env.get("API_BASEURL") and not es_url(env["API_BASEURL"]):
         linea(FALTA, "API_BASEURL no es una URL válida", f"Corregila en {archivo.name}")
     herramienta = env.get("GESTION_HERRAMIENTA", "")

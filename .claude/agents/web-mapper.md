@@ -20,8 +20,9 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 ## Entradas
 
 - **Casos a mapear**: casos manuales (`output/casos-de-prueba/manuales/*.md` o `.xlsx`) o escenarios BDD (`output/casos-de-prueba/bdd/*.feature`). Si la persona no dice cuáles, preguntá; si dice "todos", son todos los de esa HU.
-- **URL** de la aplicación. Si no está en el pedido, usá `BASEURL` (o `APP_URL`) del `.env` de la raíz; si tampoco está, pedila.
+- **URL** de la aplicación. Si no está en el pedido, usá `APP_URL` del `.env` de la raíz (es la que usa `npm test`; k0lmena la expone como `BASEURL`, y un `BASEURL` del `.env` solo vale si `APP_URL` está vacía); si tampoco está, pedila.
 - **Datos y credenciales**: los del caso. Para login, `APP_USER` / `APP_PASSWORD` del `.env` de la raíz (es el único `.env` del repo; k0lmena también lo usa). Si faltan, pedilos: no inventes datos.
+- **Sesión guardada**: si la persona usa `npm run login` con `SESION` en el `.env`, el navegador y `npm test` ya arrancan logueados; los escenarios no repiten el login (empiezan en la pantalla del caso). Los que prueban el login en sí llevan el tag `@sin-sesion`. Si usaste la sesión guardada, decilo en el reporte de mapeo y en la respuesta: la suite necesita `SESION` en el `.env` y un `npm run login` vigente (en CI o en otra PC sin `.auth/`, esos escenarios fallan en el primer paso).
 
 ## Proceso
 
@@ -36,16 +37,17 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - Una sola pasada por caso; no repitas navegaciones ya verificadas.
 5. **Cerrá el navegador** con `browser_close`.
 6. **Generá los archivos** en `herramientas/k0lmena/web/`:
-   - `features/HU-XXX-<slug>.feature` con los pasos **tal como se ejecutaron** en la app (incluye los `Ajustado`), tags `@HU-XXX @web` en el Feature y `@CP-XXX` por escenario. Usá `Background` para la precondición común y `Scenario Outline` cuando varios casos solo cambian datos.
+   - `features/HU-XXX-<slug>.feature` con los pasos **tal como se ejecutaron** en la app (incluye los `Ajustado`), tags `@HU-XXX @web` en el Feature y `@CP-XXX` por escenario. Usá `Background` para la precondición común y `Scenario Outline` cuando un mismo caso solo cambia los datos (un Outline es un solo `@CP-XXX`; casos distintos van en escenarios separados).
    - `locators/HU-XXX.locators.ts` con los locators que observaste (no inventes ninguno que no hayas visto en el snapshot).
    - `steps/HU-XXX.steps.ts` solo con los steps nuevos, usando los helpers de k0lmena.
-7. **Validá una vez** desde `herramientas/k0lmena/`: `TAGS=@HU-XXX npm run test:web` (en PowerShell `$env:TAGS="@HU-XXX"; npm run test:web`). Si `node_modules` no existe, corré antes `npm install` y `npx playwright install chromium`. Corregí los errores de locator o de step (máximo 2 reintentos); lo que siga fallando por la app va `@bloqueado` con el motivo.
-8. **Escribí el reporte de mapeo** en `output/mapeos/mapeo-HU-XXX-web.md` y normalizalo con `python scripts/formatear_tablas.py`.
+7. **Validá una vez** desde `herramientas/k0lmena/`: `REPORT_DIR=reports/validacion TAGS=@HU-XXX npm run test:web` (en PowerShell `$env:REPORT_DIR="reports/validacion"; $env:TAGS="@HU-XXX"; npm run test:web`; con `REPORT_DIR` no pisás el último `npm test`). Es parte del trabajo pedido: no hace falta otra confirmación, salvo que el escenario cree o borre datos sin autorización (ver *Reglas*). Si `node_modules` no existe, corré antes `npm install` y `npx playwright install chromium`. Corregí los errores de locator o de step (máximo 2 reintentos). Lo que no se pudo ejecutar (un paso imposible o falta información FI-XX) va `@bloqueado` con el motivo; un `Then` que falla porque la app no cumple lo esperado **no** va `@bloqueado` (npm test nunca lo correría y el bug quedaría oculto): queda activo con el comentario `# POSIBLE BUG: <qué hace la app>` arriba y se reporta como posible bug.
+8. **Escribí el reporte de mapeo** en `output/mapeos/mapeo-HU-XXX-web.md` y normalizalo con `python scripts/formatear_tablas.py output/mapeos/mapeo-HU-XXX-web.md`.
 9. **Respondé corto**: archivos generados, cuántos escenarios pasan, cuáles quedaron bloqueados o con posible bug y el comando para correrlos (`cd herramientas/k0lmena && npm test`).
 
 ## Reglas
 
 - **No inventar**: cada locator sale del snapshot real; cada dato, del caso o del `.env`. Si un paso no se puede ejecutar, es `@bloqueado`, no se rellena.
+- **Ambiente y datos**: nunca mapees contra producción. Si un caso crea, modifica o borra datos (un alta, un pago, una baja), recorrelo solo si el pedido lo autoriza para ese ambiente; si no, devolvé la pregunta (ver *Cuando te falta un dato*) y anotá en el reporte de mapeo qué datos crea cada corrida de `npm test`.
 - **Trazabilidad**: todo escenario lleva el ID del caso de origen.
 - **Sin credenciales en el código**: ni en el `.feature`, ni en los steps, ni en el reporte. Se leen de `process.env`.
 - **No dupliques steps**: reutilizá el texto exacto de los existentes.

@@ -19,6 +19,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 - **URL**: la del pedido o `APP_URL` del `.env`.
 - **Flujos principales** a recorrer a mano (registrarse, buscar y comprar, pedir un turno…): los del pedido, la historia (skill `investigacion-contexto`) o, si no hay, los que se ven en el menú. Si un flujo crea datos (envía un formulario, paga), recorrelo hasta antes de confirmar, salvo que el pedido lo autorice.
+- **Modo** de la revisión manual: headless (`playwright-headless`, recomendado) o headed (`playwright`). Si el pedido no lo dice, devolvé la pregunta.
 - **Para quién es** (opcional): el público de la app (personas mayores, uso en el celular, profesionales) cambia qué pesa más.
 
 ## Proceso
@@ -34,16 +35,26 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **H5 y H9**: ¿los errores se previenen (confirmación antes de borrar) y los mensajes explican cómo resolverlos?
    - **H7**: ¿hay pasos de más, datos que se piden dos veces, atajos para quien vuelve?
    - **H2 y H8**: ¿el lenguaje es el de la persona? ¿Hay ruido que distrae de la tarea?
-   Sacá una captura de cada problema (en `output/ux/<carpeta>/capturas/manual-N.png`).
-3. **Escribí el análisis** en `output/ux/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (ajustes de severidad o `nota`), `descartados` (con motivo), `hallazgos_manuales` (heurística, severidad, título, detalle, flujo y captura), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_ux.py`. Regenerá:
+   Sacá una captura de cada problema; si Playwright la deja en otro lado (por defecto `output/ejecuciones/evidencia/`), movela con Bash a `output/ux/<HU o host>/capturas/manual-N.png`. En el análisis va relativa: `capturas/manual-N.png`.
+3. **Escribí el análisis** en `output/ux/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (ajustes de severidad o `nota`), `descartados` (con motivo), `hallazgos_manuales` (heurística, severidad, título, detalle, `correccion`, flujo, `url` de la pantalla y captura), `falta_informacion` (`id`, `que_falta`, `pregunta`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_ux.py`. Regenerá:
    ```bash
    python scripts/generar_informe_ux.py <carpeta>/ux.json <carpeta>/informe-ux.html --analisis <carpeta>/analisis.json
    ```
 4. **Respondé corto**: el puntaje heurístico, los 3 a 5 problemas que más afectan a la persona (con la heurística y dónde), y la ruta del informe.
 
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`U-03`, no `U-3`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada hallazgo manual tiene página, pasos, esperado, obtenido, `correccion` (cómo corregirlo) y una captura que existe dentro de la carpeta, con ruta relativa.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
+
 ## Reglas
 
-- **Severidad según el impacto en la persona**: Alta si la frena o la hace equivocarse, Media si la confunde o la demora, Baja si es un detalle.
+- **Severidad según el impacto en la persona**: Crítica si le impide completar la tarea (no puede pagar, registrarse o salir de un error), Alta si la frena o la hace equivocarse, Media si la confunde o la demora, Baja si es un detalle.
 - **No es opinión de diseño**: cada hallazgo dice qué heurística rompe y qué le pasa a la persona; "no me gusta el color" no es un hallazgo.
 - **Sin efectos**: la evaluación automática solo hace GET; a mano no envíes formularios ni crees datos sin confirmación.
 - **No reemplaza pruebas con personas reales**: si el pedido es importante (rediseño, lanzamiento), recomendá una prueba con usuarios.

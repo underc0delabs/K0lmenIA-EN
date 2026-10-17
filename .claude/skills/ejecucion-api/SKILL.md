@@ -34,7 +34,7 @@ pm.test("Devuelve un id", function () {
 });
 ```
 
-Validá lo que importa: **status code**, **campos clave** del cuerpo, y si hace falta el **esquema** o un **valor puntual**. El estado del caso lo decide Newman, no el criterio del modelo.
+Validá lo que importa: **status code**, **campos clave** del cuerpo, y si hace falta el **esquema** o un **valor puntual**. El estado del caso lo decide Newman, no el criterio del modelo. Un request **sin ningún `pm.test`** sale **Bloqueado** ("Sin validaciones"), nunca Aprobado.
 
 ## base_url y token
 
@@ -119,15 +119,15 @@ Si no los ponés, el id se autonumera (`API-001`, `API-002`…) y la prioridad q
 
 El conversor (`scripts/newman_a_resultados.py`) traduce la salida de Newman a:
 
-- **Aprobado** — el request se hizo y **ningún** assert falló.
+- **Aprobado** — el request se hizo, tiene asserts y **ninguno** falló.
 - **Fallido** — algún `pm.test` falló (el motivo es el primer assert que falló, ej. *"El status es 200: expected 200 but got 404"*).
-- **Bloqueado** — el request **no se pudo hacer** (error de conexión, host caído, etc.).
+- **Bloqueado** — el request **no se pudo hacer** (error de conexión, host caído, etc.) o **no tiene ningún `pm.test`** (motivo *"Sin validaciones (pm.test)"*: sin asserts no hay nada verificado).
 
 ## Velocidad y permisos
 
 - Newman corre por **Bash**. La primera vez, Claude Code puede pedir permiso para ejecutar `newman`: elegí *Always allow* (o ya viene pre-aprobado en `.claude/settings.json`).
 - Una colección puntual corre rápido. Si tenés muchas, corré **solo la carpeta** que pide la persona, no todo.
-- **Datos variables** (data-driven): Newman acepta `-d datos.csv` para iterar el mismo request con varios sets; cada iteración es una fila en el reporte.
+- **Datos variables** (data-driven): `correr_newman.py ... --datos datos.csv` (el `-d` de Newman) itera la colección con cada fila; cada iteración es una fila en el reporte.
 
 ## Prerrequisitos
 

@@ -17,6 +17,7 @@ El análisis (opcional) aporta:
   "resumen": "Resumen para alguien no técnico...",
   "hallazgos": {"T-01": {"severidad": "Alta", "nota": "...", "sugerencia": "Add to cart"}},
   "descartados": [{"id": "T-09", "motivo": "Es el nombre de la marca"}],
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -28,7 +29,7 @@ from collections import Counter
 from pathlib import Path
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, two_col,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, two_col,
                               nivel_badge, _pastilla, miniatura, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -170,6 +171,7 @@ def build_html(datos, analisis, hist_html=""):
                           miniatura(primero.get("recorte") or primero.get("captura"), h["titulo"], "s") if (primero.get("recorte") or primero.get("captura")) else '<span class="muted">—</span>'])
         body.append(section("Hallazgos", table(["ID", "Severidad", "Tipo", "Idioma", "Hallazgo", "Dónde", "Evidencia"], filas),
                             "un mismo texto en varias páginas es un solo hallazgo"))
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -199,6 +201,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("traductor", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

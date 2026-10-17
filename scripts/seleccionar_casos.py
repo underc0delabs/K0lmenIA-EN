@@ -32,7 +32,7 @@ Imprescindible · Recomendado · Regresión mínima (smoke y prioridad Crítica)
 Además marca los cambios que no tocan ningún caso (cambios sin cobertura).
 
 Deja output/seleccion-casos/<nombre>/ con seleccion.json, seleccion.csv (para ejecutar a mano) e
-informe-seleccion.html. Cada corrida con el mismo nombre reemplaza a la anterior.
+informe-seleccion.html. Con el mismo nombre, la corrida anterior pasa a historial/ (últimas 5).
 """
 import argparse
 import csv
@@ -148,19 +148,31 @@ def _git(repo, *args):
     return r.stdout
 
 
+def rangos_git(rango):
+    """(rango para git diff, rango para git log). `A..B` o `A...B`: el diff va desde la base común
+    (`A...B`, así no entran los cambios que A sumó después) y el log son los commits de B que no están
+    en A (`A..B`). Un solo commit o ref se deja como está."""
+    m = re.fullmatch(r"(.*?)\.{2,3}(.*)", rango.strip())
+    if not m:
+        return rango, rango
+    base, punta = m.group(1) or "HEAD", m.group(2) or "HEAD"
+    return f"{base}...{punta}", f"{base}..{punta}"
+
+
 def leer_cambio(a):
     cambio = {"titulo": "", "archivos": [], "historias": set(), "keys": set(), "commits": [], "funciones": [], "texto": "", "palabras": [],
               "fuentes": []}
     if a.git:
         repo = Path(a.repo or ".").resolve()
-        cambio["archivos"] += [l.strip() for l in _git(repo, "diff", "--name-only", a.git).splitlines() if l.strip()]
-        msgs = _git(repo, "log", "--format=%h%x09%s%x09%b%x1e", a.git)
+        r_diff, r_log = rangos_git(a.git)
+        cambio["archivos"] += [l.strip() for l in _git(repo, "diff", "--name-only", r_diff).splitlines() if l.strip()]
+        msgs = _git(repo, "log", "--format=%h%x09%s%x09%b%x1e", r_log)
         for bloque in msgs.split("\x1e"):
             partes = bloque.strip().split("\t")
             if len(partes) >= 2:
                 cambio["commits"].append({"hash": partes[0], "mensaje": partes[1], "cuerpo": partes[2].strip() if len(partes) > 2 else ""})
         # Funciones y clases tocadas (encabezados de los hunks: "@@ -10,3 +10,4 @@ function validarTarjeta(").
-        diff = _git(repo, "diff", "--unified=0", a.git)
+        diff = _git(repo, "diff", "--unified=0", r_diff)
         cambio["funciones"] = sorted({m.strip() for m in re.findall(r"^@@[^@]*@@\s*(.+)$", diff, re.M)})[:80]
         cambio["fuentes"].append(f"git {a.git} ({repo.name})")
     if a.archivos:
@@ -279,7 +291,10 @@ def inventario():
                 k["titulo"] = k["titulo"] or c["titulo"]
                 k["titulo_historia"] = k["titulo_historia"] or tit
                 if c.get("prioridad") and not k["prioridad"]:
-                    k["prioridad"] = c["prioridad"] if any(t.lower() == "smoke" for t in c["etiquetas"]) else ""
+                    # Solo se confía en la prioridad del .feature si viene de un tag explícito
+                    # (@critica/@alta/@media/@baja o @smoke); si no, se deja que gane la del caso manual.
+                    tiene_tag = any(t.lower() in ("critica", "crítica", "alta", "media", "baja", "smoke") for t in c["etiquetas"])
+                    k["prioridad"] = c["prioridad"] if tiene_tag else ""
                 k["etiquetas"].update(c["etiquetas"])
                 k["texto"] += [c["titulo"], c["titulo"], c.get("gherkin", ""), tit]
                 k["pasos"] = max(k["pasos"], len([l for l in c.get("gherkin", "").splitlines() if re.match(r"\s*(Given|When|Then|And|But|\*)\b", l)]))

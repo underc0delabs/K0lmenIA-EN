@@ -18,7 +18,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 ## Qué necesitás antes de arrancar
 
 - **Los casos**: los de una historia (`--historia HU-001`: `output/casos-de-prueba/manuales/casos-HU-001.xlsx` y `bdd/HU-001*.feature`), archivos puntuales (`--origen`) o todos los de `output/casos-de-prueba/`. Si están solo en Xray, QMetry, AIO o Azure DevOps, pedí que los exporten a `.xlsx` (o el gestor-pruebas puede bajarlos).
-- **La historia y sus criterios** (opcional, recomendado): con el skill `investigacion-contexto`, para saber si un resultado esperado es correcto y si falta cubrir algo.
+- **La historia y sus criterios** (opcional, recomendado): con el skill `investigacion-contexto`, para saber si un resultado esperado es correcto y si falta cubrir algo. Sin la ficha de contexto no marques un resultado esperado como incorrecto: limitate a la forma y decilo en el `resumen`.
 
 ## Proceso
 
@@ -29,11 +29,13 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    Deja `revision.json` e `informe-revision.html` en `output/revision-casos/<HU o nombre>/`; la revisión anterior pasa a `historial/` (se guardan las últimas 5) y el informe muestra qué problemas se resolvieron. Cada caso tiene un puntaje (100 sin problemas; Alta resta 25, Media 10, Baja 4) y su **tiempo estimado de ejecución manual** (`scripts/estimacion.py`, fórmula en `plantillas/estimacion-tiempos.md`).
 2. **Revisá con criterio** (`revision.json` → `casos`, `por_historia`); el script detecta patrones, vos juzgás:
    - Un **duplicado** puede ser intencional (mismo flujo en otro dispositivo o con otro rol): si es así, descartalo con el motivo.
+   - Un caso manual y un escenario BDD con el mismo `HU-XXX` + `CP-XXX` son **el mismo caso** en dos formatos, no un duplicado: descartalo con ese motivo. En `propuestas`, aclará en `nota` si la versión es para el manual o para el BDD (la clave es la misma para los dos).
    - Un **resultado esperado** que no coincide con la historia es más grave que uno vago: marcalo.
    - Pensá qué **falta**: casos negativos, valores límite, permisos, estados (skill `tecnicas-de-diseno`).
 3. **Proponé las versiones mejoradas** de los casos con puntaje bajo, con los mismos datos y sin inventar comportamiento: lo que la historia no define se marca como falta información (`FI-XX`).
-4. **Escribí el análisis** en `output/revision-casos/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `propuestas` (por `HU-XXX:CP-XXX`: `titulo`, `pasos`, `resultado`, `nota`), `descartados` (`caso`, `tipo`, `motivo`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_revision.py`. Regenerá: `python scripts/revisar_casos.py --solo-informe --nombre <carpeta>`.
-5. **Si la persona lo pide**, generá la planilla corregida con `scripts/generar_casos.py` como `casos-HU-XXX-revisado.xlsx` (no pises la original) y, si los casos están en una herramienta de gestión, ofrecé actualizarlos con el `gestor-pruebas` (con confirmación).
+4. **Escribí el análisis** en `output/revision-casos/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `propuestas` (por `HU-XXX:CP-XXX`: `titulo`, `pasos`, `resultado`, `nota`), `descartados` (`caso`, `tipo`, `motivo`; el `tipo` exactamente como figura en `revision.json`: `Duplicado`, `Resultado esperado`, `Then`, `Paso vago`…; el descarte solo tacha el problema: el puntaje y los indicadores no se recalculan, así que en tu respuesta aclarás cuántos descartaste), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_revision.py`. Regenerá: `python scripts/revisar_casos.py --solo-informe --nombre <carpeta>`.
+5. **Si la persona lo pide**, generá la planilla corregida con `scripts/generar_casos.py` (esquema del JSON en `.claude/agents/generador-casos-manuales.md`; `pasos` y `datos` como texto con `
+`, los mismos `CP-XXX` y `falta_info`) desde `_casos-HU-XXX-revisado.json` con `--limpiar`, como `casos-HU-XXX-revisado.xlsx` (no pises la original) y, si los casos están en una herramienta de gestión, ofrecé actualizarlos con el `gestor-pruebas` (con confirmación).
 6. **Respondé corto**: puntaje promedio, cuántos casos mejorar y los problemas más comunes, duplicados, historias sin negativos, el tiempo total de ejecución manual y la ruta del informe.
 
 ## Reglas

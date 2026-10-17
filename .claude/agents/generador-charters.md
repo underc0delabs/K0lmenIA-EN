@@ -23,13 +23,13 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 ## Proceso
 
-1. **Armá los charters** en `output/charters/<HU o nombre>/charters.json` (el formato está en el encabezado de `scripts/generar_charters.py`): una misión por sesión con la forma *"Explorar <área> con <recursos o técnica> para descubrir <tipo de problema>"*, sus áreas, riesgos, heurísticas (valores límite, interrupciones, tour de la persona apurada, CRUD, estados, permisos…; skill `tecnicas-de-diseno`), datos, ideas para empezar, duración y lo que queda fuera de alcance. No repitas lo que ya cubren los casos escritos: la exploración va a lo que los casos no ven.
+1. **Armá los charters** en `output/charters/<HU o nombre>/charters.json` (el formato está en el encabezado de `scripts/generar_charters.py`): una misión por sesión con la forma *"Explorar <área> con <recursos o técnica> para descubrir <tipo de problema>"*, sus áreas, riesgos, heurísticas (valores límite, interrupciones, tour de la persona apurada, CRUD, estados, permisos…; skill `tecnicas-de-diseno`), datos, ideas para empezar, duración, prioridad (Crítica · Alta · Media · Baja, según el riesgo) y lo que queda fuera de alcance. Los `FI-XX` abiertos de la ficha van en `preguntas` con su ID ("FI-02: ¿cuánto dura el bloqueo?"). No repitas lo que ya cubren los casos escritos (leé `output/casos-de-prueba/manuales/casos-HU-XXX.md`, `bdd/HU-XXX*.feature` y su cobertura): la exploración va a lo que los casos no ven.
 2. **Generá las hojas**, desde la raíz del repo:
    ```bash
    python scripts/generar_charters.py --nombre <HU o nombre>
    ```
    Deja `charters.html` (una hoja por sesión, para imprimir o compartir), `charters.md` y `sesiones/CH-XX.md` (la plantilla de notas de cada sesión; nunca pisa notas ya escritas).
-3. **Durante la sesión** se anotan en `sesiones/CH-XX.md` líneas con prefijo: `BUG:` (con la severidad entre corchetes), `PREGUNTA:`, `IDEA:`, `RIESGO:`, `CUBIERTO:`, `SIN CUBRIR:`, `NOTA:` y el reparto del tiempo (`Tiempo: preparación 10, prueba 35, bugs 15`). Si explorás vos, completalas a medida que avanzás.
+3. **Durante la sesión** se anotan en `sesiones/CH-XX.md` líneas con prefijo: `BUG:` (con la severidad entre corchetes), `PREGUNTA:`, `IDEA:`, `RIESGO:`, `CUBIERTO:`, `SIN CUBRIR:`, `NOTA:` y el reparto del tiempo (`Tiempo: preparación 10, prueba 35, bugs 15`). En `CUBIERTO:` y `SIN CUBRIR:` copiá el nombre del área **exactamente** como está en `areas` del charter (una línea por área): el informe calcula la cobertura comparando esos textos. Si explorás vos, completalas a medida que avanzás.
 4. **Armá el informe** cuando haya notas:
    ```bash
    python scripts/generar_charters.py --nombre <HU o nombre> --informe
@@ -40,6 +40,6 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 ## Reglas
 
 - **Una misión por sesión** y con tiempo fijo: si aparece otra área interesante, va como `IDEA:` para otra sesión.
-- **No inventes resultados**: el informe sale de las notas; si una sesión no tiene notas, figura como pendiente.
+- **No inventes resultados**: el informe sale de las notas; si una sesión no tiene notas, figura como pendiente. Antes de `--informe`, revisá que cada nota tenga la duración real (la plantilla trae la planificada) y al menos un `CUBIERTO:` o `SIN CUBRIR:`; si no, avisá que la sesión está incompleta.
 - **Sin efectos**: explorar no habilita enviar formularios, pagar ni borrar datos sin confirmación.
 - **Ahorro de tokens**: el script arma las hojas y el informe; vos pensás las misiones y analizás los hallazgos.

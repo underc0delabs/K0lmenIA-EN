@@ -14,7 +14,7 @@ Estas técnicas ayudan a **cubrir más con menos casos**: derivan los casos rele
 3. **Derivá los casos** con la técnica.
 4. **Sumá siempre negativos y bordes**, no solo el camino feliz.
 5. **Eliminá redundancia**: si dos casos prueban exactamente lo mismo, dejá uno.
-6. **Lo que no esté definido no se inventa**: registralo como supuesto (en Comentarios) y como pregunta al PO.
+6. **Lo que no esté definido no se inventa**: registralo como **Falta información** (`FI-XX`, skill `investigacion-contexto`) con su pregunta al PO; si usás un supuesto para escribir el caso, aclaralo ligado a ese `FI-XX`.
 
 ## Qué técnica usar
 
@@ -36,4 +36,4 @@ El detalle de cada técnica, con ejemplos trabajados y errores comunes, está en
 
 ## Salida
 
-Los casos que derives se cargan en el formato del repo (planilla `.xlsx` + `.md`), cada uno con su **prioridad** (lo más crítico primero). En el informe de cobertura conviene indicar **qué técnica** cubrió cada criterio, para que se vea el porqué de cada caso.
+Los casos que derives van en el formato del agente que los genera (planilla `.xlsx` + `.md`, `.feature`, casos de API…), cada uno con su **prioridad** (lo más crítico primero). En el informe de cobertura indicá **siempre** la técnica y los valores derivados por criterio (ej.: "Valores límite, 8–16: 7, 8, 16, 17 → CP-004 a CP-007"), para que se pueda verificar el porqué de cada caso.

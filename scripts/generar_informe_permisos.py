@@ -18,8 +18,9 @@ El análisis (opcional) aporta:
   "fuente_esperado": "input/documentacion/proyecto/estados-y-permisos.md (src/auth/roles.ts:12)",
   "hallazgos": {"P-01": {"severidad": "Alta", "nota": "..."}},
   "descartados": [{"id": "P-04", "motivo": "..."}],
-  "adicionales": [{"severidad": "Media", "tipo": "Botón", "titulo": "...", "detalle": "...", "rol": "operador", "url": "..."}],
-  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],
+  "adicionales": [{"severidad": "Media", "tipo": "Botón", "titulo": "...", "detalle": "...", "correccion": "...", "rol": "operador", "url": "...",
+                   "captura": "capturas/manual/pm-01.png"}],
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -33,7 +34,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, two_col,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, two_col,
                               nivel_badge, _pastilla, miniatura, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -200,8 +201,9 @@ def build_html(datos, analisis, hist_html=""):
         for h in hallazgos:
             det = (f'<strong style="color:var(--ink)">{e(h.get("titulo"))}</strong><div class="muted">{e(h.get("detalle"))}</div>'
                    + (f'<div><i>{e(h["_nota"])}</i></div>' if h.get("_nota") else "")
+                   + (f'<div><b>Cómo corregirlo:</b> {e(h["correccion"])}</div>' if h.get("correccion") else "")
                    + (f'<div class="muted">Descartado: {e(h["_desc"])}</div>' if h.get("_desc") else ""))
-            cap = (matriz.get((h.get("rol"), h.get("url"))) or {}).get("captura")
+            cap = h.get("captura") or (matriz.get((h.get("rol"), h.get("url"))) or {}).get("captura")
             filas.append([e(h.get("id")), nivel_badge(h.get("severidad")), e(h.get("tipo")), e(h.get("rol") or "—"), det,
                           miniatura(cap, f'{h.get("rol")} · {ruta_de(h.get("url"))}') if cap else '<span class="muted">—</span>'])
         body.append(section("Hallazgos", table(["ID", "Severidad", "Tipo", "Rol", "Hallazgo", "Evidencia"], filas)))
@@ -223,8 +225,7 @@ def build_html(datos, analisis, hist_html=""):
     if not esperado and not fi:
         fi = [{"id": "—", "que_falta": "La regla de permisos esperada (qué rol puede ver qué).",
                "pregunta": "¿Dónde está definida la matriz de permisos por rol? Sin ella, la matriz describe cómo funciona hoy, no si está bien."}]
-    if fi:
-        body.append(section("Falta información", table(["ID", "Qué falta", "Pregunta"], [[e(f.get("id")), e(f.get("que_falta")), e(f.get("pregunta"))] for f in fi])))
+    body.append(falta_informacion(fi))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -254,6 +255,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("permisos", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

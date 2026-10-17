@@ -40,7 +40,30 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    python scripts/generar_informe_rendimiento.py <carpeta>/rendimiento.json <carpeta>/informe-rendimiento.html --analisis <carpeta>/analisis.json
    ```
-4. **Respondé corto**: puntaje promedio en mobile y desktop, cuántas páginas tienen los Core Web Vitals en verde, las 3–5 mejoras de más impacto (con el ahorro estimado) y la ruta del informe.
+4. **Respondé corto**: puntaje promedio en mobile y desktop, cuántas páginas tienen los Core Web Vitals en verde, las 3–5 mejoras de más impacto (con el ahorro estimado), las páginas que Lighthouse no pudo medir y la ruta del informe. Si fue con 1 repetición, aclará que las diferencias contra la corrida anterior no son concluyentes.
+
+## Severidad
+
+La propone el script; la ajustás con criterio (y lo explicás en `notas`):
+
+| Hallazgo                                                                     | Severidad |
+| ---------------------------------------------------------------------------- | --------- |
+| Core Web Vital (LCP, CLS, TBT) malo                                          | Alta      |
+| Core Web Vital a mejorar, otra métrica (FCP, Speed Index) mala               | Media     |
+| Otra métrica a mejorar                                                       | Baja      |
+| Oportunidad con ahorro de 1,5 s o más                                        | Alta      |
+| Oportunidad con ahorro de 0,5 s o más (o de 500 KB o más)                    | Media     |
+| Oportunidad con menos ahorro                                                 | Baja      |
+| Lighthouse no pudo medir la página (confirmá si es del sitio o del ambiente) | Alta      |
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`R-03`, no `R-3`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 

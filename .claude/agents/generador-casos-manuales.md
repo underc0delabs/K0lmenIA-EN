@@ -26,22 +26,22 @@ Si la persona no aclara qué historia usar y hay varias, preguntá cuál.
 # Salidas (generá las tres, en `output/casos-de-prueba/manuales/`)
 
 1. **La planilla de casos** → `casos-HU-XXX.xlsx`
-2. **Los casos en Markdown** → `casos-HU-XXX.md` (una tabla **Resumen** —ID, Título, Resultado esperado, Prioridad— y la **tabla de casos**, una fila por caso; sin Estado, Evidencia, Fecha de Ejecución ni Comentarios)
+2. **Los casos en Markdown** → `casos-HU-XXX.md` (una tabla **Resumen** —ID, Título, Resultado esperado, Prioridad, Tiempo y, si hay, Falta info— y la **tabla de casos**, una fila por caso; sin Estado, Evidencia, Fecha de Ejecución ni Comentarios)
 3. **El informe de cobertura** → `casos-HU-XXX-cobertura.md` (cobertura + ambigüedades + preguntas para el PO)
 
 > La planilla `.xlsx` y el `.md` (1 y 2) los genera el mismo script en un solo paso, a partir del mismo JSON.
 
 # Columnas de los casos (en este orden)
 
-`ID #` · `Título` · `Descripción` · `Precondiciones` · `Datos de Prueba` · `Pasos` · `Resultado Esperado` · `Estado` · `Prioridad` · `#Etiquetas` · `Evidencia` · `Fecha de Ejecución` · `Comentarios`
+`ID #` · `Título` · `Descripción` · `Precondiciones` · `Datos de Prueba` · `Pasos` · `Resultado Esperado` · `Estado` · `Prioridad` · `Tiempo estimado (min)` · `#Etiquetas` · `Evidencia` · `Fecha de Ejecución` · `Comentarios`
 
 # Proceso
 
 Aplicá el skill **`tecnicas-de-diseno`** (clases de equivalencia, valores límite, tabla de decisión, transición de estados y pairwise) cuando la historia o el endpoint tenga rangos, condiciones, estados o combinaciones: así los casos salen completos y sin redundancia.
 
 1. **Investigá el contexto** con el skill **`investigacion-contexto`**: si existe `output/contexto/contexto-HU-XXX.md` y la historia no cambió, reusala; si no, revisá la historia de Jira con **todos** sus comentarios, subtareas, épica e issues vinculados, Confluence, Figma, contratos y `input/`, y guardá la ficha. Lo que no esté en ninguna fuente queda registrado como **Falta información** (`FI-01`, `FI-02`, …). Leé la historia, sus criterios de aceptación y la ficha.
-2. Derivá los casos cubriendo, como mínimo: **positivos**, **negativos**, **de borde** y **validaciones de campos**. Cada vez que falte un dato concreto, **no lo inventes**: buscalo en la ficha; si es un `FI-XX`, poné en el caso `"falta_info": ["FI-01"]` (y, si usás un supuesto para poder escribirlo, aclaralo en `comentarios`). El script resalta esos casos, les suma la etiqueta `@falta-info` y arma la hoja **Falta información**. **Ordená los casos por prioridad** (Crítica → Alta → Media → Baja) y asigná los IDs en ese orden (`CP-001` = el más crítico).
-3. **Escribí los datos en un JSON temporal** `output/casos-de-prueba/manuales/_casos-HU-XXX.json` (esquema abajo).
+2. Derivá los casos cubriendo, como mínimo: **positivos**, **negativos**, **de borde** y **validaciones de campos**. Cada vez que falte un dato concreto, **no lo inventes**: buscalo en la ficha; si es un `FI-XX`, poné en el caso `"falta_info": ["FI-01"]` (y, si usás un supuesto para poder escribirlo, aclaralo en `comentarios`). El script resalta esos casos, les suma la etiqueta `@falta-info` y arma la hoja **Falta información**. **Ordená los casos por prioridad** (Crítica → Alta → Media → Baja). Antes de numerar, buscá IDs existentes de la historia (`output/casos-de-prueba/manuales/casos-HU-XXX.xlsx`, `bdd/HU-XXX*.feature`, `herramientas/k0lmena/*/features/HU-XXX*`, `output/gestion/HU-XXX-*.json`): el caso que prueba lo mismo **conserva su `CP-XXX`** y los nuevos siguen desde el último (el BDD, la gestión y los resultados cruzan por `@HU` + `@CP`). Solo si la historia no tiene casos previos, asigná los IDs en orden de prioridad (`CP-001` = el más crítico).
+3. **Escribí los datos en un JSON temporal** `output/casos-de-prueba/manuales/_casos-HU-XXX.json` (esquema abajo). **Autorrevisión antes de generar:** (a) cada CA tiene al menos un positivo y un negativo; (b) cada rango tiene sus valores límite (mín−1, mín, máx, máx+1); (c) ningún resultado esperado dice "correctamente", "funciona" o "según corresponda"; (d) todo dato concreto (mensaje, límite, código) sale de la ficha o es un `FI-XX`; (e) no hay dos casos con los mismos pasos y datos; (f) se conservaron los IDs existentes. Si algo falla, corregí el JSON antes del paso 4.
 4. **Generá la planilla y el `.md` con el script** (un solo comando genera los dos y borra el JSON temporal al terminar, gracias a `--limpiar`):
 
 ```bash
@@ -90,7 +90,7 @@ python scripts/formatear_tablas.py output/casos-de-prueba/manuales/casos-HU-XXX-
 
 > `falta_info` (por caso) y `falta_informacion` (lista) son opcionales: van solo si hay datos que faltan. Copiá los ítems de la ficha de contexto con el mismo ID.
 
-> El `.md` tiene una tabla **Resumen** (ID, Título, Resultado esperado, Prioridad, ordenada por prioridad) y la **tabla de casos** (una fila por caso). No incluye Estado, Evidencia, Fecha de Ejecución ni Comentarios (sí están en el `.xlsx`). Con varias columnas la tabla de casos queda ancha, así que en el editor puede pedir algo de scroll horizontal; la planilla `.xlsx` es la grilla completa con las 13 columnas.
+> El `.md` tiene una tabla **Resumen** (ID, Título, Resultado esperado, Prioridad, ordenada por prioridad) y la **tabla de casos** (una fila por caso). No incluye Estado, Evidencia, Fecha de Ejecución ni Comentarios (sí están en el `.xlsx`). Con varias columnas la tabla de casos queda ancha, así que en el editor puede pedir algo de scroll horizontal; la planilla `.xlsx` es la grilla completa con las 14 columnas.
 
 > **Si Python no está disponible**, el script no puede correr y no se generan ni el `.xlsx` ni el `.md`. Avisá a la persona que para generarlos hace falta Python 3.
 
@@ -100,7 +100,7 @@ Es prosa en Markdown (no la tabla de casos). Seguí `plantillas/plantilla-cobert
 
 - **Resumen:** historia, cantidad de casos, criterios cubiertos, tipos de prueba.
 - **Cobertura por criterio de aceptación:** una tabla que mapea cada criterio (CA1, CA2, …) a los casos que lo cubren y su estado. Escribila como **tabla Markdown normal** (columnas: `Criterio` · `Descripción` · `Casos que lo cubren` · `Cobertura`). No la alinees a mano: la normaliza el paso 6. **Sin emojis** en las celdas (descuadran la tabla).
-- **Cobertura por tipo de prueba:** qué casos son positivos, negativos, de borde y de validación.
+- **Cobertura por tipo de prueba:** qué casos son positivos, negativos, de borde y de validación, y **qué técnica** derivó cada grupo con sus valores (ej.: "Valores límite, contraseña 8–16: CP-004 (7), CP-005 (8), CP-006 (16), CP-007 (17)").
 - **Fuera de alcance / no cubierto:** lo que la historia no pide o queda explícitamente afuera.
 - **Falta información:** tabla con los `FI-XX` (ID · Qué falta · Dónde se buscó · Casos afectados · Pregunta para el PO · Estado). En la tabla por criterio, un criterio que depende de un `FI-XX` va como `Parcial (falta información)`.
 - **Ambigüedades detectadas:** puntos poco claros o incompletos de la historia. Incluí acá cada supuesto que hayas tenido que hacer (los mismos que anotaste en `Comentarios`).

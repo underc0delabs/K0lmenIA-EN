@@ -35,7 +35,7 @@ Preguntá **qué quiere averiguar** y sugerí el tipo de prueba que lo responde:
 | "¿Soporta el uso normal / el pico        | `load`          | Sube hasta la carga objetivo, la         |
 | esperado?"                               |                 | sostiene y baja                          |
 +------------------------------------------+-----------------+------------------------------------------+
-| "¿Hasta dónde aguanta? ¿Dónde se rompe?" | `stress`        | Escalones crecientes (1x, 1,5x, 2x, 3x)  |
+| "¿Hasta dónde aguanta? ¿Dónde se rompe?" | `stress`        | Escalones crecientes (1x, 2x, 3x)        |
 |                                          |                 | hasta que se degrada                     |
 +------------------------------------------+-----------------+------------------------------------------+
 | "¿Se degrada con el tiempo? (memoria,    | `soak`          | Carga moderada durante horas             |
@@ -99,7 +99,7 @@ Valores de referencia para sugerir (siempre como sugerencia):
 +--------+-------------------------------+-------------------------------------+---------------------------------+
 | load   | el pico esperado              | 10-20 % de la duración (mín. 1 min) | 10-30 min                       |
 +--------+-------------------------------+-------------------------------------+---------------------------------+
-| stress | escalones 1x · 1,5x · 2x · 3x | 1-2 min por escalón                 | 5-10 min por escalón            |
+| stress | escalones 1x · 2x · 3x        | 1-2 min por escalón                 | 5-10 min por escalón            |
 +--------+-------------------------------+-------------------------------------+---------------------------------+
 | soak   | 70-80 % del pico              | 2-5 min                             | 1-8 h                           |
 +--------+-------------------------------+-------------------------------------+---------------------------------+
@@ -107,6 +107,7 @@ Valores de referencia para sugerir (siempre como sugerencia):
 +--------+-------------------------------+-------------------------------------+---------------------------------+
 ```
 
+- **En k6** los perfiles los arma `performance/k6/lib/k0lmena.ts`: stress = 1x · 2x · 3x de los usuarios y spike = 1 min en el pico. Otro esquema (escalones de 1,5x, un pico más largo) solo con JMeter o Artillery.
 - **Tiempo de pensamiento**: 1-5 s entre acciones de una persona real; 0 solo si se quiere medir el máximo de throughput (avisá que no representa usuarios reales).
 - **Límites de la máquina**: k6 aguanta miles de usuarios; JMeter, unos cientos por PC (según memoria); Artillery + navegador, 10-20. Si la carga pedida supera eso, avisá que se mediría la PC y no la app, y proponé alternativas (otra herramienta, menos usuarios, generadores distribuidos).
 

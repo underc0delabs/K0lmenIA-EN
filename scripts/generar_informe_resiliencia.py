@@ -17,8 +17,9 @@ El análisis (opcional) aporta:
   "hallazgos": {"R-01": {"severidad": "Alta", "nota": "..."}},
   "descartados": [{"id": "R-05", "motivo": "..."}],
   "manuales": [{"id": "RM-01", "titulo": "...", "severidad": "Media", "escenario": "...", "pagina": "...",
-                "pasos": "...", "esperado": "...", "obtenido": "...", "evidencia": "capturas/manual/rm-01.png"}],
-  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],
+                "pasos": ["..."], "esperado": "...", "obtenido": "...", "correccion": "...",
+                "evidencia": "capturas/manual/rm-01.png"}],
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -30,7 +31,7 @@ from collections import Counter
 from pathlib import Path
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, two_col,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, two_col,
                               nivel_badge, _pastilla, miniatura, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -170,14 +171,13 @@ def build_html(datos, analisis, hist_html=""):
                   + (f'<div><i>{e(h["_nota"])}</i></div>' if h.get("_nota") else "") + (f'<div class="muted">Descartado: {e(h["_desc"])}</div>' if h.get("_desc") else ""),
                   miniatura(h["captura"], h["titulo"]) if h.get("captura") else "—"] for h in hallazgos]
         filas += [[e(m.get("id")), nivel_badge(m.get("severidad")), "Exploración manual", e(m.get("escenario")),
-                   f'<strong style="color:var(--ink)">{e(m.get("titulo"))}</strong><div class="muted">Pasos: {e(m.get("pasos"))}</div>'
-                   f'<div class="muted">Esperado: {e(m.get("esperado"))} · Obtenido: {e(m.get("obtenido"))}</div>',
+                   f'<strong style="color:var(--ink)">{e(m.get("titulo"))}</strong><div class="muted mono">{e(m.get("pagina") or "")}</div>'
+                   f'<div class="muted">Pasos: {e(" → ".join(map(str, m["pasos"])) if isinstance(m.get("pasos"), list) else m.get("pasos"))}</div>'
+                   f'<div class="muted">Esperado: {e(m.get("esperado"))} · Obtenido: {e(m.get("obtenido"))}</div>'
+                   + (f'<div><b>Cómo corregirlo:</b> {e(m["correccion"])}</div>' if m.get("correccion") else ""),
                    miniatura(m["evidencia"], m.get("titulo")) if m.get("evidencia") else "—"] for m in manuales]
         body.append(section("Hallazgos", table(["ID", "Severidad", "Tipo", "Escenario", "Hallazgo", "Evidencia"], filas)))
-    if analisis.get("falta_informacion"):
-        filas = [[e(f.get("id")), e(f.get("que_falta")), e(f.get("pregunta"))] for f in analisis["falta_informacion"]]
-        body.append(section("Falta información", table(["ID", "Qué falta", "Pregunta para el PO"], filas),
-                            "cómo tiene que reaccionar la app ante una falla, cuando ninguna fuente lo define"))
+    body.append(falta_informacion(analisis.get("falta_informacion"), "cómo tiene que reaccionar la app ante una falla, cuando ninguna fuente lo define"))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -207,6 +207,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("resiliencia", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

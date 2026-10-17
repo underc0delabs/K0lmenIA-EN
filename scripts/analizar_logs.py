@@ -248,7 +248,7 @@ def main():
     ap.add_argument("--hasta")
     ap.add_argument("--zona", help="zona horaria de las fechas sin zona (por ejemplo -03:00); por defecto la local")
     ap.add_argument("--margen-s", type=int, default=10, help="segundos antes y después de cada escenario")
-    ap.add_argument("--nombre", help="carpeta de salida (por defecto la historia o 'app')")
+    ap.add_argument("--nombre", help="carpeta de salida en output/logs/ (por defecto 'app')")
     ap.add_argument("--solo-informe", action="store_true")
     ap.add_argument("--salida")
     a = ap.parse_args()

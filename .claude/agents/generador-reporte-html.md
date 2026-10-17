@@ -40,11 +40,12 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 }
 ```
 
-   - `estado`: **Aprobado | Fallido | Bloqueado**. `prioridad`: **Crítica | Alta | Media | Baja**.
+   - `estado`: **Aprobado | Fallido | Bloqueado** (normalizá "Pasó", "passed", "OK" y similares: el script solo cuenta esos tres). `prioridad`: **Crítica | Alta | Media | Baja**.
+   - `historia` va siempre que la corrida sea de una: sin ella, el informe de cierre y la cobertura no ven esta corrida.
    - `motivo` solo para los fallos; `evidencia` es la ruta al screenshot (opcional).
    - Si el agente `ejecutor-e2e` ya dejó el `output/ejecuciones/_resultados-HU-XXX-<fecha-hora>.json` de esa corrida, usá ese directamente; si no, armalo con esta forma y guardalo ahí. **Un reporte = una ejecución** (solo los casos de esa corrida).
 
-   Si algún caso depende de información faltante (`@falta-info` / `FI-XX`), agregale `"falta_info": ["FI-01"]` y sumá en la raíz `"falta_informacion"` con los ítems de la ficha de contexto: el reporte los marca como **Falta información**.
+   Si algún caso depende de información faltante (`@falta-info` / `FI-XX`), agregale `"falta_info": ["FI-01"]` y sumá en la raíz `"falta_informacion"` con un objeto por ítem de la ficha de contexto (`{"id": "FI-01", "que_falta": "…", "pregunta": "…", "estado": "Abierto"}`): el reporte los marca como **Falta información**.
 
 2. **Generá el HTML** con el script:
 
@@ -52,7 +53,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 python scripts/generar_reporte.py output/ejecuciones/_resultados-HU-XXX-<fecha-hora>.json output/ejecuciones/reporte-HU-XXX-<fecha-hora>.html
 ```
 
-3. Avisá a la persona la ruta del reporte. Podés borrar el JSON temporal al terminar.
+3. **Antes de entregar**, verificá que aprobados + fallidos + bloqueados = total de casos (si no, hay estados sin normalizar). Avisá a la persona la ruta del reporte. No borres el `_resultados-*.json`: el informe de cierre, el tablero y la cobertura lo leen.
 
 ## Salida
 

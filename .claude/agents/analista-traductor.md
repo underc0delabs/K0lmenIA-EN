@@ -35,11 +35,21 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Texto cortado o desbordado**: el diseño no deja lugar para textos más largos (en alemán o portugués suelen ser un 30 % más largos). Proponé la solución (que el botón crezca, permitir dos líneas o una traducción más corta).
    - **Formatos**: números y fechas tienen que usar los de cada región (`1.234,56` en es-AR, `1,234.56` en en-US); los meses y días, traducidos.
    - Si algo no queda claro, miralo en vivo con Playwright MCP (skill `ejecucion-e2e`), sin enviar formularios.
-3. **Escribí el análisis** en `output/traductor/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (por ID: `severidad` si la ajustás, `nota`, `sugerencia` con la traducción propuesta), `descartados` (con motivo), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_traductor.py`. Regenerá el informe:
+3. **Escribí el análisis** en `output/traductor/<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (por ID: `severidad` si la ajustás, `nota`, `sugerencia` con la traducción propuesta), `descartados` (con motivo), `falta_informacion` (`id`, `que_falta`, `pregunta`: por ejemplo, un término sin glosario), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_traductor.py`. Regenerá el informe:
    ```bash
    python scripts/generar_informe_traductor.py <carpeta>/traductor.json <carpeta>/informe-traductor.html --analisis <carpeta>/analisis.json
    ```
 4. **Respondé corto**: idiomas revisados y su porcentaje traducido, los problemas importantes por idioma (con la traducción propuesta), los textos que no entran y la ruta del informe. Si la persona quiere, armá la lista de traducciones faltantes en `output/traductor/<carpeta>/traducciones-faltantes.md` (texto original, idioma, traducción propuesta, página), pasada por `scripts/formatear_tablas.py`.
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`T-01`, no `T-1`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada texto sin traducir que sigue vivo tiene su `sugerencia`, en el registro del sitio y con el glosario.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 

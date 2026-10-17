@@ -31,7 +31,7 @@ herramientas/k0lmena/
 ```
 
 - Tags del `Feature`: `@HU-001` y el tipo (`@web`, `@api` o `@mobile`).
-- Tags de cada `Scenario`: el ID del caso de origen (`@CP-001`, `@CP-API-001`) y, si es crítico, `@smoke` (siempre en minúscula: Cucumber distingue mayúsculas y `TAGS=@smoke` no encuentra `@Smoke`).
+- Tags de cada `Scenario`: el ID del caso de origen (`@CP-001`, `@CP-API-001`), su prioridad (`@critica`/`@alta`/`@media`/`@baja`, la misma del caso de origen) y, si es crítico, `@smoke` (siempre en minúscula: Cucumber distingue mayúsculas y `TAGS=@smoke` no encuentra `@Smoke`). Si el caso de origen es un `.feature` que ya trae el tag de prioridad, conservalo tal cual.
 - **Falta información**: si el caso depende de un dato que no está definido (ficha `output/contexto/contexto-HU-XXX.md`, skill `investigacion-contexto`), el escenario lleva `@falta-info @FI-01` y el comentario `# FALTA INFORMACIÓN (FI-01): <qué falta>` arriba. Corre normalmente (salvo que también sea `@bloqueado`) y el reporte de k0lmena le agrega una nota visible; al publicar en Xray/QMetry/AIO, el comentario lo indica.
 - Si la fuente no es una HU (ej. un contrato de API), usá un slug: `api/features/pets.feature` y tag `@contrato-pets`.
 
@@ -67,7 +67,7 @@ export const HU001 = {
 } satisfies Record<string, LocatorInput>;
 ```
 
-Steps: siempre iterar `pages` (k0lmena puede correr varios navegadores) y usar los helpers, que ya traen esperas y auto-healing.
+Steps: siempre iterar `pages` (k0lmena puede correr varios navegadores) y usar los helpers, que ya traen esperas y auto-healing. **Sin esperas fijas**: nunca `page.waitForTimeout()` ni la opción `delayMs` de los helpers; esperá algo observable (`expectVisible`, `expectUrlContains(page, /…/)`, `waitForApiOk(page, /\/api\/…/)`).
 
 ```ts
 // web/steps/HU-001.steps.ts
@@ -94,7 +94,7 @@ Then('el usuario ve el mensaje de registro exitoso', async () => {
 Helpers disponibles (`web/utils/interactions.ts`): `click(page, loc)`, `fill(page, loc, valor)`, `selectOption(page, loc, opcion)`, `selectByLabel(page, label, opcion)`, `check` / `uncheck(page, loc)`, `hover`, `press(page, loc, tecla)`, `scrollIntoView`.
 Validaciones (`web/utils/validations.ts`): `expectVisible`, `expectHidden`, `expectEnabled`, `expectDisabled`, `expectChecked`, `expectText(page, loc, texto)`, `expectCount(page, loc, n)`, `expectAttribute`, `expectUrlContains(page, /fragmento/)` (pasale una **RegExp**: con string compara la URL exacta), `expectTitleIs`.
 
-La URL base sale de `BASEURL` (o `APP_URL` si está vacía) del `.env` de la raíz. En los steps usá rutas relativas a `BASEURL`, nunca la URL completa hardcodeada.
+La URL base sale de `APP_URL` del `.env` de la raíz (la única URL de la app; k0lmena la expone como `BASEURL`). En los steps usá rutas relativas a `BASEURL`, nunca la URL completa hardcodeada.
 
 ## API — solo features
 
@@ -102,13 +102,21 @@ La URL base sale de `BASEURL` (o `APP_URL` si está vacía) del `.env` de la ra�
 
 ```gherkin
 Given el request usa el token de autenticación
+Given el request usa la API key en el header "api_key"
+Given el request usa la API key en el parámetro "key"
+Given el request usa autenticación básica
 Given el request no envía token de autenticación
 Given el request usa el header "X-Tenant" con valor "demo"
-When envío un GET a "/v2/pet/{petId}"
-When envío un POST a "/v2/pet" con el body:
+Given el request tiene los parámetros:
+  | status | available |
+When envío un GET a "/pet/{petId}"
+When envío un POST a "/pet" con el body:
   """
-  { "name": "Firulais", "status": "available" }
+  { "name": "Firulais {aleatorio}", "status": "available" }
   """
+When envío un POST a "/pet/{petId}" con el formulario:
+  | name   | Firulais |
+  | status | sold     |
 When guardo el campo "id" de la respuesta como "petId"
 Then el status de la respuesta es 200
 Then la respuesta contiene el campo "category.name"
@@ -116,8 +124,12 @@ Then la respuesta no contiene el campo "password"
 Then el campo "status" de la respuesta es "available"
 Then el campo "id" de la respuesta es el número 10
 Then el campo "tags" de la respuesta es de tipo "array"
+Then el campo "id" de la respuesta es de tipo "integer"
 Then la respuesta es una lista
 Then la respuesta es una lista con al menos 1 elemento
+Then la respuesta tiene un elemento con "id" igual a "{petId}"
+Then la lista "items" de la respuesta tiene un elemento con "name" igual a "Firulais"
+Then la respuesta contiene el texto "logged in user session"
 Then la respuesta tiene los campos:
   | id     |
   | name   |
@@ -125,9 +137,18 @@ Then el header "content-type" de la respuesta contiene "application/json"
 Then la respuesta llega en menos de 2000 ms
 ```
 
-- `{nombre}` en endpoint, header o body se reemplaza por un valor guardado o, si no hay, por la variable de entorno del mismo nombre.
+- **Primero resumí la spec** con `python scripts/resumir_openapi.py <url o archivo>` (Swagger 2.0 u OpenAPI 3.x, JSON o YAML): da el `API_BASEURL`, el step de autenticación de cada `securityScheme`, los parámetros, cómo va el body (JSON, formulario o multipart), un body de ejemplo y los status documentados.
+- **URL**: `API_BASEURL` es el server de la spec **con** su basePath (`https://petstore.swagger.io/v2`) y el endpoint del `.feature` es el path de la spec tal cual (`/pet/{petId}`). No repitas el basePath en el endpoint (`/v2/pet` con una base que ya termina en `/v2` da 404).
+- **Autenticación** según el `securityScheme`: Bearer u OAuth2 → `el request usa el token de autenticación` (`API_TOKEN`); `apiKey` en header → `el request usa la API key en el header "<name>"`; en query → `... en el parámetro "<name>"` (`API_KEY`, o `API_TOKEN` si falta); `basic` → `el request usa autenticación básica` (`API_USER`/`API_PASSWORD`). Usá el `name` exacto de la spec (en petstore, `api_key`).
+- **Cada escenario crea sus datos**: las variables se reinician en cada escenario, así que un `GET /pet/{petId}` primero crea la mascota (`POST` + `guardo el campo "id" ... como "petId"`) en el mismo escenario (o en el `Background`). Nunca un id fijo de otra corrida ni de otro escenario: con `PARALLEL` o en una API compartida, otro lo modifica o lo borra.
+- **Datos únicos**: `{aleatorio}` (6 dígitos), `{uuid}`, `{timestamp}` y `{ahora}` se generan una vez por escenario (valen lo mismo en todos sus pasos): `"email": "qa+{aleatorio}@prueba.com"`.
+- `{nombre}` en endpoint, parámetros, header o body se reemplaza por un valor guardado, un dato generado o, si no, la variable de entorno del mismo nombre. Si queda una `{variable}` sin valor en el endpoint o el body, el paso falla avisando cuál (no se manda literal).
+- **Body**: JSON con `con el body:` (un JSON mal escrito falla avisando dónde); `formData` / `application/x-www-form-urlencoded` con `con el formulario:`; los parámetros de query con `el request tiene los parámetros:` (se codifican solos). Multipart (subir archivos) no tiene step genérico: escenario `@bloqueado` con ese motivo o un step propio.
+- **Tipos** (`es de tipo`): `integer`, `number`, `string`, `boolean`, `array`, `object` o `null`, como en la spec (también en español). Los ids enteros grandes (int64) se leen como texto para no perder precisión: compararlos con `es "9223372036854775807"`, no con `es el número`.
+- Respuestas que no son JSON (texto plano) se validan con `la respuesta contiene el texto`.
 - Los campos usan notación de puntos (`data.items.0.id`).
-- La URL base sale de `API_BASEURL` y el token de `API_TOKEN` (`.env` de la raíz).
+- **La spec no siempre dice la verdad**: si la API responde otra cosa que la spec (en petstore, 404 o 500 donde la spec dice 400), el `Then` queda con lo que dice la spec y el escenario lleva `@difiere-de-la-spec` con un comentario `# La API responde XXX; la spec dice YYY`. Así, al ver los fallos, se distingue un bug o una spec desactualizada de un test mal hecho.
+- **APIs públicas de demo** (petstore y similares): son compartidas y cambian solas. No afirmes valores de listados (`findByStatus`) más allá de su estructura, y creá cada dato que leés.
 
 ### GraphQL
 
@@ -179,7 +200,7 @@ Dónde corre (dispositivo, emulador o BrowserStack) se define en el `.env` de la
 
 ## Base de datos — verificaciones en los tests
 
-`tools/bd/bd.steps.ts` está cargado en las suites web, API y mobile. Son steps **de solo lectura** que verifican lo que una prueba dejó guardado. Conexiones en el `.env` (`DB_CONEXIONES` + `DB_<NOMBRE>_*`); sin nombre se usa la primera. **Solo se agregan cuando la persona lo pide explícitamente** (*"sumá la verificación en la base"*, *"validá que quede guardado en la tabla X"*). Aunque un caso diga *"el dato se guarda en la base"*, no los agregues por tu cuenta: dejalo anotado como sugerencia en el reporte de mapeo (*"se puede sumar verificación en BD si se pide"*). Cuando se piden, mirá antes las tablas y columnas con `npm run bd -- esquema --tabla <tabla>`: no adivines nombres.
+`tools/bd/bd.steps.ts` está cargado en las suites web y API (en mobile todavía no funciona: WebdriverIO usa su propia copia de Cucumber, así que no los agregues a un `.feature` mobile). Son steps **de solo lectura** que verifican lo que una prueba dejó guardado. Conexiones en el `.env` (`DB_CONEXIONES` + `DB_<NOMBRE>_*`); sin nombre se usa la primera. **Solo se agregan cuando la persona lo pide explícitamente** (*"sumá la verificación en la base"*, *"validá que quede guardado en la tabla X"*). Aunque un caso diga *"el dato se guarda en la base"*, no los agregues por tu cuenta: dejalo anotado como sugerencia en el reporte de mapeo (*"se puede sumar verificación en BD si se pide"*). Cuando se piden, mirá antes las tablas y columnas con `npm run bd -- esquema --tabla <tabla>`: no adivines nombres.
 
 ```gherkin
 Then existe en la base de datos un registro en "usuarios" donde "email" es "ana@test.com"
@@ -280,7 +301,7 @@ config:
     thresholds:
       - browser.step.Iniciar sesión.p95: 3000      # <métrica>: máximo (ms)
   environments:                                    # un environment por perfil
-    smoke:  { phases: [{ name: smoke, duration: 30, arrivalCount: 5 }] }
+    smoke:  { phases: [{ name: smoke, duration: 30, arrivalCount: 2 }] }
     load:   { phases: [{ name: rampa, duration: 60, arrivalRate: 1, rampTo: 5 }, { name: sostenido, duration: 300, arrivalRate: 5, maxVusers: 20 }] }
 scenarios:
   - { name: HU-001 <flujo>, engine: playwright, testFunction: flujo }
@@ -322,7 +343,7 @@ El `.json` va al lado del `.jmx`, con el destino, la carga de cada perfil y los 
 }
 ```
 
-- `destino`: el nombre de una variable del `.env` (`API_BASEURL`, `BASEURL`) o una URL. Llega al `.jmx` como `${__P(base_url)}`; cada request usa `${__P(base_url)}/path` en el campo *Path*.
+- `destino`: el nombre de una variable del `.env` (`API_BASEURL`, `APP_URL`) o una URL. Llega al `.jmx` como `${__P(base_url)}`; cada request usa `${__P(base_url)}/path` en el campo *Path*.
 - Cada clave del perfil llega como propiedad: `${__P(usuarios,1)}`, `${__P(rampa,1)}`, `${__P(duracion,30)}` en el Thread Group (con *scheduler* y loops `-1`). Se pueden sumar claves propias (ej. `pico`) y leerlas igual.
 - Umbrales (todos en ms, salvo `error_pct` en %): `error_pct`, `p50`, `p90`, `p95`, `p99`, `avg`, `max`, y `por_muestra` con el nombre exacto del request. Los evalúa el reporte de k0lmena: JMeter no los conoce.
 - Cada HTTP Request se nombra `MÉTODO /path` (es la "muestra" del reporte) y lleva una **Response Assertion** con el código esperado; sin aserción, un 404 cuenta como éxito.
@@ -333,15 +354,15 @@ El `.json` va al lado del `.jmx`, con el destino, la carga de cada perfil y los 
 
 ## Validar lo generado (una sola vez)
 
-Desde `herramientas/k0lmena/` (PowerShell usa `$env:TAGS="@HU-001"; npm run test:web`):
+Desde `herramientas/k0lmena/` (PowerShell usa `$env:REPORT_DIR="reports/validacion"; $env:TAGS="@HU-001"; npm run test:web`):
 
 ```bash
-TAGS=@HU-001 npm run test:web      # o test:api / test:mobile
+REPORT_DIR=reports/validacion TAGS=@HU-001 npm run test:web   # web: no pisa el último npm test
+TAGS=@HU-001 npm run test:api      # o test:mobile (estos sí reemplazan el último reporte: avisalo)
 ```
 
-- Si falla por un locator o un step mal armado, corregilo y volvé a correr. **Máximo 2 reintentos**; si sigue fallando, marcá el escenario `@bloqueado` con el motivo y seguí.
-- Si falla porque la app no cumple lo esperado (un bug real), **no** cambies el `Then` para que pase: dejalo y reportalo como posible bug.
-- No hace falta generar reportes HTML para validar: alcanza con el resumen de consola.
+- Si falla por un locator o un step mal armado, corregilo y volvé a correr. **Máximo 2 reintentos**; si sigue fallando por el test (no lográs armar el locator o el step), marcá el escenario `@bloqueado` con el motivo y seguí.
+- Si falla porque la app no cumple lo esperado (un bug real), **no** cambies el `Then` para que pase: dejalo y reportalo como posible bug (sin `@bloqueado`, que nunca corre: con `# POSIBLE BUG: <qué hace la app>` arriba).
 
 ## Reporte de mapeo
 

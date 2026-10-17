@@ -24,8 +24,8 @@ Los hallazgos AUTOMÁTICOS salen del auditoria.json. El análisis (opcional) apo
   "descartados": [{"id": "A-09", "motivo": "El tabindex lo agrega un widget de terceros que no se puede cambiar"}],
   "severidades": {"A-07": "Crítica"},
   "manuales": [{"id": "M-01", "titulo": "...", "severidad": "Alta", "wcag": ["3.3.1"], "pagina": "https://...",
-                "pasos": ["..."], "esperado": "...", "obtenido": "...", "evidencia": "capturas/manual/m-01.png"}],
-  "falta_informacion": [{"id": "FI-01", "descripcion": "..."}],
+                "pasos": ["..."], "esperado": "...", "obtenido": "...", "correccion": "...", "evidencia": "capturas/manual/m-01.png"}],
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -37,7 +37,7 @@ from pathlib import Path
 import sys
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, donut_panel,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, donut_panel,
                               two_col, nivel_badge, _pastilla, CRITICO, SERIO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA, JS_EXTRA, miniatura, corto, origen
 
@@ -248,6 +248,7 @@ def build_html(datos, analisis, hist_html=""):
               {f'<div class="lbl">Pasos</div><ol>{pasos}</ol>' if pasos else ""}
               {f'<div class="lbl">Resultado esperado</div><p>{e(x["esperado"])}</p>' if x.get("esperado") else ""}
               {f'<div class="lbl">Resultado obtenido</div><p>{e(x["obtenido"])}</p>' if x.get("obtenido") else ""}
+              {f'<div class="lbl">Cómo corregirlo</div><p>{e(x["correccion"])}</p>' if x.get("correccion") else ""}
               {f'<div class="lbl">Evidencia</div>{miniatura(x["evidencia"], x.get("titulo", ""))}' if x.get("evidencia") else ""}</div>''')
         body.append(section("Revisión manual", "".join(det)))
 
@@ -311,9 +312,7 @@ def build_html(datos, analisis, hist_html=""):
         originales = {h.get("id"): h for h in datos.get("hallazgos") or []}
         filas = [[e(i), e((originales.get(i) or {}).get("titulo", "")), e(m)] for i, m in descartados.items()]
         body.append(section("Descartados", table(["ID", "Hallazgo", "Motivo"], filas)))
-    if analisis.get("falta_informacion"):
-        filas = [[e(f.get("id")), e(f.get("descripcion"))] for f in analisis["falta_informacion"]]
-        body.append(section("Falta información", table(["ID", "Qué falta definir"], filas)))
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -345,6 +344,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in (datos.get("hallazgos") or []) + (datos.get("revisar") or [])] + [x.get("id") for x in analisis.get("manuales") or []])
     hist_html = _historial.seccion("accesibilidad", Path(a.auditoria_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

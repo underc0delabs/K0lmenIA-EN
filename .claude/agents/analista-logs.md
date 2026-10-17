@@ -25,7 +25,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 1. **Analizá**, desde la raíz del repo:
    ```bash
-   python scripts/analizar_logs.py --logs "input/logs/*.log" [--corrida web] [--desde 2026-10-11T10:00 --hasta 2026-10-11T11:00] [--zona -03:00] [--nombre HU-001]
+   python scripts/analizar_logs.py --logs "input/logs/*.log" [--corrida web] [--desde 2026-10-11T10:00 --hasta 2026-10-11T11:00] [--zona -03:00] --nombre <HU o nombre>
    ```
    Con `--corrida` y sin `--desde`/`--hasta`, analiza la ventana de la corrida (más 5 minutos antes y después). Deja `logs.json` e `informe-logs.html` en `output/logs/<nombre>/`; el análisis anterior pasa a `historial/` (se guardan los últimos 5) y el informe muestra qué errores son nuevos.
 2. **Interpretá** (`logs.json` → `firmas`, `escenarios`, `linea_tiempo`):
@@ -33,8 +33,16 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - Un **pico** en la línea de tiempo suele ser un deploy, una caída o la misma corrida de pruebas.
    - Errores que **se repiten mucho** aunque no rompan pruebas también importan: pueden ser el próximo incidente.
    - Si el escenario falló y **no hay errores** en los logs, la causa probablemente está en el front, en el test o en otro servicio: decilo y derivalo al `analista-fallos`.
-3. **Escribí el análisis** en `output/logs/<nombre>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `firmas` (por ID: `causa`, `accion`, `bug`), `escenarios` (por `CP-XXX`: `causa`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_logs.py`. Regenerá con `python scripts/analizar_logs.py --solo-informe --nombre <nombre>`.
+3. **Escribí el análisis** en `output/logs/<nombre>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `firmas` (por ID: `causa`, `accion`, `bug`), `escenarios` (por `CP-XXX`; si la corrida tiene varias historias, por el nombre exacto del escenario, porque los `CP` se repiten entre historias: `causa`), `falta_informacion` (`id`, `que_falta`, `pregunta`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_logs.py`. Regenerá con `python scripts/analizar_logs.py --solo-informe --nombre <nombre>`.
 4. **Respondé corto**: errores principales (con cuántas veces y desde cuándo), qué escenarios fallidos tienen un error del servidor detrás y su causa probable, y la ruta del informe. Ofrecé redactar los bugs con el `generador-reportes-bug` (con el stack trace como evidencia).
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error (`--solo-informe` con el mismo `--nombre`).
+- Cada ID de `firmas` (`L-01`) y cada clave de `escenarios` existe en `logs.json`; cada causa sale de un stack trace o de una línea del log, no de una suposición.
+- No quedan tokens, claves ni datos personales copiados en el análisis ni en el chat.
 
 ## Reglas
 

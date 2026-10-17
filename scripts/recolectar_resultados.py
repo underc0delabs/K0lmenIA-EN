@@ -8,13 +8,15 @@ Uso:
 
 Fuentes que lee (las que existan):
   - Ejecuciones en vivo (ejecutor-e2e / ejecutor-api): output/ejecuciones/_resultados-*.json
-  - Suites de k0lmena (npm test): herramientas/k0lmena/reports/{web,api,mobile}/cucumber-report.json
+  - Suites de k0lmena (npm test): herramientas/k0lmena/reports/{web,api,mobile}/cucumber-report.json y su
+    historial/ (cada escenario vale por su corrida más reciente: una corrida filtrada con TAGS no tapa al resto)
     (solo los escenarios con el tag @HU de la historia, si se indica)
   - Bugs: output/reportes-bug/BUG-*.md (severidad, estado e historia)
   - Performance: output/performance/<HU>/informe-performance-*.json (+ resúmenes de corridas)
   - Seguridad: output/seguridad/<HU>/<fecha>/zap.json (+ analisis.json)
 
-Un mismo caso ejecutado varias veces cuenta una sola vez: vale su resultado más reciente.
+Un mismo caso (historia + id: los CP se numeran por historia) ejecutado varias veces cuenta una sola vez:
+vale su resultado más reciente.
 Estados: Aprobado | Fallido | Bloqueado (pendiente, salteado o sin definir = Bloqueado).
 Imprime y guarda un JSON con totales, detalle por caso, bugs y extras; generar_informe_cierre.py
 lo toma con el campo "datos" del JSON del informe.
@@ -52,43 +54,50 @@ def de_ejecuciones(historia):
         if historia and (datos.get("historia") or "").upper() != historia:
             continue
         momento = os.path.getmtime(archivo)
+        hu = (datos.get("historia") or "").upper()
         for c in datos.get("casos") or []:
-            salida.append({"id": c.get("id") or c.get("titulo"), "titulo": c.get("titulo", ""),
-                           "estado": _estado(c.get("estado")), "fuente": f"en vivo · {Path(archivo).name}",
+            salida.append({"id": c.get("id") or c.get("titulo"), "titulo": c.get("titulo", ""), "historia": hu,
+                           "prioridad": c.get("prioridad", ""), "estado": _estado(c.get("estado")), "fuente": f"en vivo · {Path(archivo).name}",
                            "momento": momento, "falta_info": c.get("falta_info") or []})
     return salida
 
 
 def de_cucumber(historia):
+    """Escenarios de npm test: la corrida actual y las anteriores de historial/ (las últimas 5). Una corrida
+    filtrada con TAGS no borra el resultado de los demás escenarios: cada uno vale por su corrida más reciente
+    (lo resuelve quien junta, ordenando por "momento")."""
     salida = []
     for suite in ("web", "api", "mobile"):
-        archivo = K0 / suite / "cucumber-report.json"
-        if not archivo.exists():
-            continue
-        try:
-            features = json.loads(archivo.read_text(encoding="utf-8") or "[]")
-        except ValueError:
-            continue
-        momento = os.path.getmtime(archivo)
-        for feature in features:
-            for esc in feature.get("elements", []):
-                if esc.get("type") == "background":
-                    continue
-                tags = [t["name"].lstrip("@") for t in esc.get("tags", [])]
-                tags += [t["name"].lstrip("@") for t in feature.get("tags", [])]
-                if historia and historia not in {t.upper() for t in tags}:
-                    continue
-                estados = [(p.get("result") or {}).get("status", "undefined") for p in esc.get("steps", [])]
-                if any(e in ("failed", "ambiguous") for e in estados):
-                    estado = "Fallido"
-                elif estados and all(e == "passed" for e in estados):
-                    estado = "Aprobado"
-                else:
-                    estado = "Bloqueado"
-                cp = next((t for t in tags if re.match(r"^CP(-API)?-\d+$", t)), None)
-                salida.append({"id": cp or esc.get("name"), "titulo": esc.get("name", ""), "estado": estado,
-                               "fuente": f"npm test · {suite}", "momento": momento,
-                               "falta_info": [t for t in tags if re.match(r"^FI-\d+$", t, re.I)]})
+        actual = K0 / suite / "cucumber-report.json"
+        for archivo in [actual] + sorted((K0 / suite / "historial").glob("*/cucumber-report.json")):
+            if not archivo.exists():
+                continue
+            fuente = f"npm test · {suite}" if archivo == actual else f"npm test · {suite} · historial {archivo.parent.name}"
+            try:
+                features = json.loads(archivo.read_text(encoding="utf-8") or "[]")
+            except ValueError:
+                continue
+            momento = os.path.getmtime(archivo)
+            for feature in features:
+                for esc in feature.get("elements", []):
+                    if esc.get("type") == "background":
+                        continue
+                    tags = [t["name"].lstrip("@") for t in esc.get("tags", [])]
+                    tags += [t["name"].lstrip("@") for t in feature.get("tags", [])]
+                    if historia and historia not in {t.upper() for t in tags}:
+                        continue
+                    estados = [(p.get("result") or {}).get("status", "undefined") for p in esc.get("steps", [])]
+                    if any(e in ("failed", "ambiguous") for e in estados):
+                        estado = "Fallido"
+                    elif estados and all(e == "passed" for e in estados):
+                        estado = "Aprobado"
+                    else:
+                        estado = "Bloqueado"
+                    cp = next((t for t in tags if re.match(r"^CP(-API)?-\d+$", t)), None)
+                    hu = next((t.upper() for t in tags if re.match(r"^HU-\d+$", t, re.I)), "")
+                    salida.append({"id": cp or esc.get("name"), "titulo": esc.get("name", ""), "historia": hu, "estado": estado,
+                                   "fuente": fuente, "momento": momento,
+                                   "falta_info": [t for t in tags if re.match(r"^FI-\d+$", t, re.I)]})
     return salida
 
 
@@ -150,13 +159,18 @@ def de_seguridad(historia):
     return escaneos
 
 
+def clave_caso(r):
+    """Los CP se numeran por historia: el mismo CP-001 de dos historias son casos distintos."""
+    return (r.get("historia") or "", str(r["id"]))
+
+
 def recolectar(historia=None):
     historia = historia.upper() if historia else None
     ejecutados = de_ejecuciones(historia) + de_cucumber(historia)
     ultimo = {}
     for r in sorted(ejecutados, key=lambda r: r["momento"]):
-        ultimo[r["id"]] = r  # el más reciente pisa al anterior
-    casos = sorted(ultimo.values(), key=lambda r: str(r["id"]))
+        ultimo[clave_caso(r)] = r  # el más reciente pisa al anterior
+    casos = sorted(ultimo.values(), key=clave_caso)
     totales = {"aprobado": 0, "fallido": 0, "bloqueado": 0}
     for c in casos:
         totales[c["estado"].lower()] += 1

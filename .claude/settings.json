@@ -105,7 +105,15 @@
       "Bash(python3 scripts/analizar_logs.py:*)",
       "Bash(python3 scripts/generar_informe_logs.py:*)",
       "Bash(npm run ux:*)",
-      "Bash(npm run formularios:*)"
+      "Bash(npm run formularios:*)",
+      "Bash(python scripts/resumir_openapi.py:*)",
+      "Bash(python scripts/resumir_graphql.py:*)",
+      "Bash(python scripts/convertir_coleccion.py:*)",
+      "Bash(python scripts/correr_newman.py:*)",
+      "Bash(python3 scripts/resumir_openapi.py:*)",
+      "Bash(python3 scripts/resumir_graphql.py:*)",
+      "Bash(python3 scripts/convertir_coleccion.py:*)",
+      "Bash(python3 scripts/correr_newman.py:*)"
     ],
     "ask": [
       "mcp__playwright__browser_run_code_unsafe",

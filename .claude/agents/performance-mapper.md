@@ -51,7 +51,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Errores**: cuáles, desde qué carga aparecen (5xx = el servidor no da abasto; timeouts; 4xx = datos o script).
    - **Degradación en soak**: la latencia o los errores crecen con el tiempo a carga constante.
    - **Capacidad observada**: hasta cuántos usuarios se cumplen los umbrales.
-7. **Armá el informe final**: escribí `output/performance/<HU>/informe-performance-<HU>.json` con el plan, la lista de corridas (sus resúmenes JSON, con una etiqueta clara cada una), el resumen ejecutivo, el veredicto (`Apto`, `Apto con observaciones` o `No apto`), la capacidad observada, los hallazgos (con severidad), las **recomendaciones** (acción concreta, por qué —citando la métrica que lo muestra— y prioridad), los `FI-XX` y los próximos pasos. Generá el HTML:
+7. **Armá el informe final**: escribí `output/performance/<HU>/informe-performance-<HU>.json` con el plan, la lista de corridas (sus resúmenes JSON con la ruta desde la raíz del repo —`herramientas/k0lmena/reports/performance/...`; la consola de `npm run perf` la muestra relativa a `herramientas/k0lmena/`— y una etiqueta clara cada una), el resumen ejecutivo, el veredicto (`Apto`, `Apto con observaciones` o `No apto`), la capacidad observada, los hallazgos (con severidad), las **recomendaciones** (acción concreta, por qué —citando la métrica que lo muestra— y prioridad), los `FI-XX` y los próximos pasos. Generá el HTML:
    ```bash
    python scripts/generar_informe_performance.py output/performance/<HU>/informe-performance-<HU>.json output/performance/<HU>/informe-performance-<HU>.html
    ```

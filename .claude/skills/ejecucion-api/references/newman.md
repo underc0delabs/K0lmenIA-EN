@@ -18,7 +18,7 @@ python scripts/correr_newman.py coleccion.json --historia HU-001
 # Reporters: consola + JSON exportado a un archivo
 newman run coleccion.json -r cli,json --reporter-json-export salida.json
 
-# Datos variables (una corrida por fila del CSV/JSON)
+# Datos variables (una corrida por fila del CSV/JSON); en este repo: correr_newman.py ... --datos datos.csv
 newman run coleccion.json -d datos.csv
 
 # Sin global: con npx (más lento por corrida)
@@ -41,7 +41,8 @@ newman run input/api/demo.postman_collection.json \
   -e input/api/demo.postman_environment.json \
   -r cli,json --reporter-json-export output/ejecuciones/_newman-$FECHA.json
 
-# 2) JSON de Newman → formato del reporte
+# 2) JSON de Newman → formato del reporte (no lleva "historia": el cierre y la cobertura de una HU
+#    no ven esta corrida; por eso conviene correr_newman.py --historia HU-XXX)
 python scripts/newman_a_resultados.py \
   output/ejecuciones/_newman-$FECHA.json \
   output/ejecuciones/_resultados-API-$FECHA.json "Demo API k0lmenIA"
@@ -104,6 +105,8 @@ pm.environment.set("token", token);
 | Situación en Newman              | Estado en el reporte   | Motivo                     |
 +==================================+========================+============================+
 | Request OK, sin asserts fallidos | **Aprobado**           | —                          |
++----------------------------------+------------------------+----------------------------+
+| Request sin ningún `pm.test`     | **Bloqueado**          | Sin validaciones (pm.test) |
 +----------------------------------+------------------------+----------------------------+
 | Algún `pm.test` falló            | **Fallido**            | el primer assert que falló |
 +----------------------------------+------------------------+----------------------------+

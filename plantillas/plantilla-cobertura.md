@@ -15,22 +15,22 @@
 ## Cobertura por criterio de aceptación
 
 ```
-+------------+-----------------------------------+-----------------------+-------------+
-| Criterio   | Descripción                       | Casos que lo cubren   | Cobertura   |
-+============+===================================+=======================+=============+
-| CA1        | Login con credenciales válidas    | CP-001                | Cubierto    |
-+------------+-----------------------------------+-----------------------+-------------+
-| CA2        | Rechazo con contraseña incorrecta | CP-002                | Cubierto    |
-+------------+-----------------------------------+-----------------------+-------------+
-| CA3        | Bloqueo tras 3 intentos fallidos  | CP-003                | Cubierto    |
-+------------+-----------------------------------+-----------------------+-------------+
++------------+-----------------------------------+-----------------------+-----------------------------+
+| Criterio   | Descripción                       | Casos que lo cubren   | Cobertura                   |
++============+===================================+=======================+=============================+
+| CA1        | Login con credenciales válidas    | CP-002                | Cubierto                    |
++------------+-----------------------------------+-----------------------+-----------------------------+
+| CA2        | Rechazo con contraseña incorrecta | CP-003                | Cubierto                    |
++------------+-----------------------------------+-----------------------+-----------------------------+
+| CA3        | Bloqueo tras 3 intentos fallidos  | CP-001                | Parcial (falta información) |
++------------+-----------------------------------+-----------------------+-----------------------------+
 ```
 
 ## Cobertura por tipo de prueba
 
-- **Positivos:** CP-001 (login con datos válidos).
-- **Negativos:** CP-002, CP-004, CP-005.
-- **De borde:** CP-003 (bloqueo exactamente en el 3.º intento).
+- **Positivos:** CP-002 (login con datos válidos).
+- **Negativos:** CP-003, CP-004, CP-005.
+- **De borde:** CP-001 (bloqueo exactamente en el 3.º intento). Técnica: transición de estados (Activa → Bloqueada al 3.º intento fallido; Bloqueada + contraseña correcta → rechazado).
 - **Validaciones de campos:** CP-005 (campos obligatorios).
 
 ## Fuera de alcance / no cubierto
@@ -46,10 +46,10 @@ Datos que no aparecen en ninguna fuente (historia, comentarios, subtareas, épic
 +-------+----------------------------------------+------------------------------------------+--------------+-----------------------------------+----------+
 | ID    | Qué falta                              | Dónde se buscó                           | Afecta a     | Pregunta para el PO               | Estado   |
 +=======+========================================+==========================================+==============+===================================+==========+
-| FI-01 | Texto del mensaje al quedar la cuenta  | Historia, comentarios, Figma, Confluence | CA3 · CP-003 | ¿Cuál es el mensaje exacto al     | Abierto  |
+| FI-01 | Texto del mensaje al quedar la cuenta  | Historia, comentarios, Figma, Confluence | CA3 · CP-001 | ¿Cuál es el mensaje exacto al     | Abierto  |
 |       | bloqueada                              |                                          |              | bloquearse?                       |          |
 +-------+----------------------------------------+------------------------------------------+--------------+-----------------------------------+----------+
-| FI-02 | Duración del bloqueo (15 o 30 minutos) | Historia, Confluence (se contradicen)    | CA3 · CP-003 | ¿El bloqueo dura 15 o 30 minutos? | Abierto  |
+| FI-02 | Duración del bloqueo (15 o 30 minutos) | Historia, Confluence (se contradicen)    | CA3 · CP-001 | ¿El bloqueo dura 15 o 30 minutos? | Abierto  |
 +-------+----------------------------------------+------------------------------------------+--------------+-----------------------------------+----------+
 ```
 
@@ -57,7 +57,7 @@ Datos que no aparecen en ninguna fuente (historia, comentarios, subtareas, épic
 
 Puntos de la historia que no están claros o están incompletos. **No se inventaron valores:** donde hizo falta suponer algo, se aclaró el supuesto en `Comentarios` de la planilla y se listó acá.
 
-1. **Duración del bloqueo:** la historia dice "bloqueo temporal" pero no indica cuántos minutos. _(Supuesto usado en CP-003: 15 min, a confirmar.)_
+1. **Duración del bloqueo:** la historia dice "bloqueo temporal" pero no indica cuántos minutos y Confluence dice 15 o 30. _(No se eligió un valor: CP-001 queda ligado a FI-02.)_
 2. **Reinicio del contador de intentos:** no se aclara si los 3 intentos se cuentan por sesión, por tiempo, o hasta un login exitoso.
 3. **Mensaje de error:** no se especifica el texto exacto que ve el usuario al fallar el login o al bloquearse la cuenta.
 

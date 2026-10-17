@@ -95,8 +95,9 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | de la corrida                            |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
 | `ejecutor-api`             | Ejecuta pruebas de API corriendo una     | `output/ejecuciones/`                 |
-|                            | colección de Postman con Newman y genera |                                       |
-|                            | el reporte HTML de la corrida            |                                       |
+|                            | colección de Postman, Bruno o Insomnia   |                                       |
+|                            | con Newman y genera el reporte HTML de   |                                       |
+|                            | la corrida                               |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
 | `generador-reporte-html`   | Arma el reporte HTML (dashboard en modo  | `output/ejecuciones/`                 |
 |                            | oscuro, con indicadores y gráficos) de   |                                       |
@@ -280,6 +281,17 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | corrección y recomendaciones. Solo URLs  |                                       |
 |                            | de SEGURIDAD_URLS_AUTORIZADAS            |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `pentester-web`            | Pentest web AUTORIZADO (ethical          | `output/seguridad/`                   |
+|                            | hacking): intenta vulnerar un sitio      |                                       |
+|                            | propio o con permiso con el escaneo      |                                       |
+|                            | activo de OWASP ZAP y verificación       |                                       |
+|                            | manual (OWASP Top 10) con Playwright     |                                       |
+|                            | MCP; confirma cada hallazgo y arma el    |                                       |
+|                            | informe con riesgo, pasos para           |                                       |
+|                            | reproducir y corrección. Solo URLs de    |                                       |
+|                            | SEGURIDAD_URLS_AUTORIZADAS y con         |                                       |
+|                            | PENTEST_AUTORIZADO; no destructivo       |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 ```
 
 ---
@@ -290,7 +302,7 @@ Estos principios aplican a **todos** los agentes:
 
 - **No inventar.** Si falta información para hacer bien la tarea (un paso, un dato, una regla de negocio, un resultado esperado), el agente lo **marca y lo pregunta**; nunca rellena con suposiciones disfrazadas de hechos. Es preferible un artefacto con huecos señalados que uno completo pero inventado.
 - **Investigar antes de suponer.** Antes de analizar, planificar, escribir casos o automatizar una historia, se revisa su contexto completo con el skill `investigacion-contexto`: primero la documentación del proyecto de `input/documentacion/` (la arma el `documentador-proyecto`: índice, dossier de la historia, reglas del código, mensajes, mapa funcional), y después la historia de Jira con **todos** sus comentarios, subtareas, épica e issues vinculados, las páginas de Confluence y los diseños de Figma relacionados, contratos y `input/`. El resultado queda en una ficha reutilizable `output/contexto/contexto-HU-XXX.md`.
-- **Marcar lo que falta.** Lo que no aparece en ninguna fuente se registra como **Falta información** con un ID por historia (`FI-01`, `FI-02`, …) y viaja con ese ID a todos los artefactos: casos (resaltados, etiqueta `@falta-info`, hoja *Falta información*), `.feature` (`@falta-info @FI-01`), coberturas, mapeos, reportes de ejecución, informe de cierre y lo que se publica en Xray/QMetry/AIO.
+- **Marcar lo que falta.** Lo que no aparece en ninguna fuente se registra como **Falta información** con un ID por historia (`FI-01`, `FI-02`, …) y viaja con ese ID a todos los artefactos: casos (resaltados, etiqueta `@falta-info`, hoja *Falta información*), `.feature` (`@falta-info @FI-01`), coberturas, mapeos, reportes de ejecución, informe de cierre y lo que se publica en Xray/QMetry/AIO. En los `analisis.json` y `_resultados-*.json` de los informes HTML va como `falta_informacion: [{"id": "FI-01", "que_falta": "…", "pregunta": "…"}]`.
 - **Respetar los formatos.** Los campos, su orden y sus valores permitidos los define la plantilla (o el script), no el agente.
 - **Trazabilidad.** Todo artefacto referencia la historia (`HU-XXX`) o el contrato del que sale.
 - **Cobertura pensada.** Los casos contemplan escenarios positivos, negativos, de borde y validaciones de campos, no solo el camino feliz.
@@ -300,10 +312,11 @@ Estos principios aplican a **todos** los agentes:
 
 - Historias de usuario: `HU-001`, `HU-002`, …
 - Criterios de aceptación: `CA1`, `CA2`, … (dentro de cada historia)
-- Casos de prueba manuales: `CP-001`, `CP-002`, … (numeración **por historia**). Los escenarios BDD usan la **misma** numeración como tag `@CP-XXX`, y la `Feature` lleva `@HU-XXX`: el par `@HU` + `@CP` identifica cada caso en la automatización, la gestión y los resultados.
-- Casos de prueba de API: `CP-API-001`, `CP-API-002`, …
+- Casos de prueba manuales: `CP-001`, `CP-002`, … (numeración **por historia**; si la historia ya tiene casos —manuales, BDD, automatización o gestión—, se conservan sus IDs y los nuevos siguen desde el último). Los escenarios BDD usan la **misma** numeración como tag `@CP-XXX`, y la `Feature` lleva `@HU-XXX`: el par `@HU` + `@CP` identifica cada caso en la automatización, la gestión y los resultados. Un `Scenario Outline` es un solo caso (un solo `@CP`).
+- Casos de prueba de API: `CP-API-001`, `CP-API-002`, … (numeración por historia, o por contrato si no hay historia)
 - Bugs: `BUG-001`, `BUG-002`, …
 - Falta información: `FI-01`, `FI-02`, … (por historia; tags `@falta-info @FI-01`)
+- Historia en nombres de archivo: el `HU-XXX` si existe (`contexto-HU-001.md`, `casos-HU-001…`, campo **Historia** de los bugs); si la historia solo tiene key de la herramienta, la key (`contexto-PROJ-12.md`). El dossier de `input/documentacion/historias/` va por key y lleva los dos IDs en su encabezado `historia:`.
 
 ## Escalas
 
@@ -339,8 +352,8 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 - `scripts/generar_casos.py` → arma la planilla `.xlsx` y el `.md` de casos de prueba. Acepta `--limpiar` para borrar su JSON de entrada al terminar (cross-platform, sin depender de `rm`).
 - `scripts/formatear_tablas.py` → alinea las tablas de cualquier `.md` (lo usan todos los agentes que generan informes).
-- `scripts/correr_newman.py` → corre una colección de Postman con el token y la URL del `.env` y genera su reporte (`ejecutor-api`).
-- `scripts/recolectar_resultados.py` → junta los resultados de una historia (ejecuciones en vivo, `npm test`, bugs, performance y seguridad) para el informe de cierre.
+- `scripts/correr_newman.py` → corre una colección de Postman, Bruno o Insomnia con el token y la URL del `.env` (`--datos` para iterar con un CSV/JSON) y genera su reporte (`ejecutor-api`); un request sin `pm.test` queda Bloqueado ("Sin validaciones").
+- `scripts/recolectar_resultados.py` → junta los resultados de una historia (ejecuciones en vivo, `npm test` con su `historial/`, bugs, performance y seguridad) para el informe de cierre; cada caso (historia + ID) vale por su resultado más reciente.
 - `scripts/doctor.py` → revisa el entorno y la configuración por secciones (Python, Node y k0lmena, herramientas, fuentes, `.env`, integraciones, conectores, git y extras), sin mostrar secretos. `--seccion env,integraciones`, `--rapido` (sin red ni Docker) y `--json`.
 - `scripts/generar_informe_exploratorio.py` → arma el informe HTML de pruebas exploratorias desde el `exploracion.json` de `npm run explorar` (`explorador-web`).
 - `scripts/generar_informe_accesibilidad.py` → arma el informe HTML de accesibilidad desde el `auditoria.json` de `npm run accesibilidad` (`analista-accesibilidad`).
@@ -361,7 +374,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/portal_informes.py` → `output/index.html` con el último informe de cada herramienta, buscador y filtros por herramienta, historia, estado y fecha, y vista por herramienta o por historia; se regenera solo al terminar cualquier informe (`K0LMENIA_PORTAL=0` lo desactiva).
 - `scripts/avisar.py` → avisos a Slack y Teams por webhook (`SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL`); `--desde-cucumber` resume un `npm test`. Sin webhook no manda nada.
 - `npm run monitorear` (k0lmena `tools/monitoreo`) y `scripts/generar_informe_monitoreo.py` → monitoreo sintético de solo lectura (URLs, textos, tiempos, certificado y escenarios `@sintetico`); avisa solo cuando algo se rompe o se recupera. Se programa con `.github/workflows/monitoreo.yml`, cron o el Programador de tareas.
-- `scripts/convertir_coleccion.py` → convierte colecciones de Bruno (carpeta con `bruno.json`) e Insomnia (v4 `.json` / v5 `.yaml`) a Postman v2.1, con las advertencias de lo que no se pudo convertir (`correr_newman.py` lo usa solo). `scripts/resumir_graphql.py` → resume un schema GraphQL (introspección por URL, SDL o JSON).
+- `scripts/convertir_coleccion.py` → convierte colecciones de Bruno (carpeta con `bruno.json`) e Insomnia (v4 `.json` / v5 `.yaml`) a Postman v2.1, con las advertencias de lo que no se pudo convertir (`correr_newman.py` lo usa solo). `scripts/resumir_graphql.py` → resume un schema GraphQL (introspección por URL, SDL o JSON). `scripts/resumir_openapi.py` → resume un Swagger 2.0 / OpenAPI 3.x (JSON o YAML): `API_BASEURL` con su basePath, el step de autenticación de cada securityScheme, parámetros, body de ejemplo y status documentados.
 - `scripts/evaluar_agentes.py` → **evals de los agentes** (`evals/`): casos con trampas deliberadas que corren en un workspace aislado con `claude -p` y se verifican con chequeos determinísticos; informe con el puntaje por agente y las regresiones. **Gastan tokens** (tope por caso); `--solo-verificar` revisa salidas ya generadas.
 - `scripts/seleccionar_casos.py` → elige y prioriza los casos a correr para un cambio y genera el informe (`selector-casos-de-prueba`).
 - `scripts/generar_informe_pixel_perfect.py`, `generar_informe_cross_browser.py` y `generar_informe_reparacion.py` → los informes HTML de `npm run pixel-perfect`, `npm run cross-browser` y `npm run reparar` (`pixel-perfect`, `cross-browser`, `reparador-automatizacion`).
@@ -380,19 +393,19 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Seguridad web: `output/seguridad/<HU o host>/<fecha>/` con `zap.json`, `analisis.json` e `informe-seguridad.html`
 - Pruebas exploratorias: `output/exploratorias/<HU o host>/` con `exploracion.json`, `analisis.json`, `informe-exploratorio.html`, `capturas/` y `videos/`. La corrida anterior pasa a `historial/` (últimas 5).
 - Accesibilidad: `output/accesibilidad/<HU o host>/` con `auditoria.json`, `analisis.json`, `informe-accesibilidad.html`, `capturas/` y `videos/`. La corrida anterior pasa a `historial/` (últimas 5).
-- Rendimiento web: `output/rendimiento/<HU o host>/` con `rendimiento.json`, `informe-rendimiento.html`, `capturas/` y `lighthouse/`.
+- Rendimiento web: `output/rendimiento/<HU o host>/` con `rendimiento.json`, `analisis.json`, `informe-rendimiento.html`, `capturas/` y `lighthouse/`. La corrida anterior pasa a `historial/` (últimas 5).
 - Análisis de fallos: `output/fallos/<HU o suite>/` con `fallos.json`, `informe-fallos.html`, `corridas/` y `evidencia/`.
 - Cobertura y trazabilidad: `output/cobertura/<HU o todas>/` con `cobertura.json` e `informe-cobertura.html`.
-- Regresión visual: `output/pixel-perfect/<HU o host>/` con `referencia/` (se conserva entre corridas), `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json` e `informe-pixel-perfect.html`.
+- Regresión visual: `output/pixel-perfect/<HU o host>/` con `referencia/` (se conserva entre corridas), `actual/`, `diferencias/`, `recortes/`, `pixel-perfect.json`, `analisis.json` e `informe-pixel-perfect.html`. La comparación anterior pasa a `historial/` (últimas 5).
 - Cross-browser: `output/cross-browser/<HU, host o suite>/` con `cross-browser.json`, `informe-cross-browser.html`, `capturas/`, `diferencias/` y `suite/` (el reporte de Cucumber de cada navegador).
 - Reparación de la automatización: `output/reparaciones/<HU o suite>/` con `reparaciones.json`, `informe-reparacion.html`, `capturas/`, `cambios.diff` y `respaldo/`.
 - Revisión de casos: `output/revision-casos/<HU o nombre>/` con `revision.json` e `informe-revision.html`.
 - Charters exploratorios: `output/charters/<HU o nombre>/` con `charters.json`, `charters.html`, `charters.md`, `sesiones/CH-XX.md` e `informe-sesiones.html`.
-- Usabilidad: `output/ux/<HU o host>/` con `ux.json`, `informe-ux.html`, `capturas/` y `recortes/`.
-- Formularios: `output/formularios/<HU o host>/` con `formularios.json`, `informe-formularios.html` y `capturas/`.
-- Logs: `output/logs/<nombre>/` con `logs.json` e `informe-logs.html` (los logs de entrada, en `input/logs/`).
-- Correos: `output/correos/<HU o buzón>/` con `correos.json`, `informe-correos.html`, `capturas/` (desktop y mobile) y `eml/`.
-- Traducciones: `output/traductor/<HU o host>/` con `traductor.json`, `informe-traductor.html`, `capturas/` y `recortes/`.
+- Usabilidad: `output/ux/<HU o host>/` con `ux.json`, `analisis.json`, `informe-ux.html`, `capturas/` y `recortes/`. La corrida anterior pasa a `historial/` (últimas 5).
+- Formularios: `output/formularios/<HU o host>/` con `formularios.json`, `analisis.json`, `informe-formularios.html` y `capturas/`. La corrida anterior pasa a `historial/` (últimas 5).
+- Logs: `output/logs/<nombre>/` con `logs.json`, `analisis.json` e `informe-logs.html` (los logs de entrada, en `input/logs/`). El análisis anterior pasa a `historial/` (últimos 5).
+- Correos: `output/correos/<HU o buzón>/` con `correos.json`, `analisis.json`, `informe-correos.html`, `capturas/` (desktop y mobile) y `eml/`. La corrida anterior pasa a `historial/` (últimas 5).
+- Traducciones: `output/traductor/<HU o host>/` con `traductor.json`, `analisis.json`, `informe-traductor.html`, `capturas/` y `recortes/`. La corrida anterior pasa a `historial/` (últimas 5).
 - **Historial**: Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida.
 - Permisos por rol: `output/permisos/<HU o host>/` con `permisos.json`, `analisis.json`, `informe-permisos.html` y `capturas/`. La corrida anterior pasa a `historial/` (últimas 5).
 - Resiliencia: `output/resiliencia/<HU o host>/` con `resiliencia.json`, `informe-resiliencia.html` y `capturas/`. La corrida anterior pasa a `historial/` (últimas 5).
@@ -400,16 +413,16 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Tablero de calidad: `output/tablero/<nombre>/` con `tablero.json`, `analisis.json` e `informe-tablero.html`. Portal de informes: `output/index.html`.
 - Monitoreo sintético: `output/monitoreo/<nombre>/` con `monitoreo.json`, `informe-monitoreo.html` e `historial/` (30 corridas).
 - Evals: `evals/resultados/<fecha>/` con `resultados.json` e `informe-evals.html` (no se versiona).
-- Uso de tokens: `output/metricas-tokens/<nombre>/` con `metricas.json` e `informe-metricas.html`. Onboarding: `output/onboarding/<persona>/` con `plan.json`, `plan-onboarding.html` y `plan-onboarding.md`.
-- Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`.
+- Uso de tokens: `output/metricas-tokens/<nombre>/` con `metricas.json` e `informe-metricas.html`. Onboarding: `output/onboarding/<persona>/` (nombre en minúsculas, sin acentos y con guiones) con `plan.json`, `plan-onboarding.html` y `plan-onboarding.md`.
+- Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`; el cambio que arma el agente va en `output/seleccion-casos/_cambios-<nombre>.json` (fuera de la carpeta de la corrida, que se archiva al repetirla).
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
-- Casos de API: `casos-api-auth.md`
+- Casos de API: `casos-api-HU-001.md` (o `casos-api-<tema>.md` si no salen de una historia)
 - Mapeo a automatización: `herramientas/k0lmena/<web|api|mobile>/features/HU-001-<slug>.feature` + `steps/HU-001.steps.ts` + `locators/HU-001.locators.ts`, y el reporte `output/mapeos/mapeo-HU-001-<web|api|mobile>.md`.
 - Performance: plan `output/performance/HU-001/plan-performance-HU-001.md` + informe `informe-performance-HU-001.html` (y su `.json`) en la misma carpeta; cada corrida deja además su reporte en `herramientas/k0lmena/reports/performance/`.
 - Ejecución E2E (un reporte por corrida): `reporte-HU-001-<fecha-hora>.html` (dashboard, modo oscuro) + `_resultados-HU-001-<fecha-hora>.json` (datos), en `output/ejecuciones/`; evidencia en `output/ejecuciones/evidencia/`. Cada reporte cubre solo los casos de esa ejecución.
 - Ejecución de API (`ejecutor-api`): `reporte-HU-001-<fecha-hora>.html` + `_resultados-HU-001-<fecha-hora>.json` en `output/ejecuciones/` (o `API` en lugar de la historia si la corrida no es de una).
 - Evidencias E2E: `output/ejecuciones/evidencia/<fecha-hora>-<id>.png` (la misma marca de tiempo de la corrida: no se pisan).
-- Plan de pruebas: `output/planes-de-prueba/plan-HU-001-<fecha>.html`.
+- Plan de pruebas: `output/planes-de-prueba/plan-HU-001-<fecha>.html` (fecha `AAAA-MM-DD`) y su `plan-HU-001-<fecha>.json`.
 - Informe de cierre: `output/informes-cierre/cierre-HU-001-<fecha>.html`, con sus datos recolectados en `datos-HU-001.json` (`scripts/recolectar_resultados.py`).
 - Mapeo de performance: `output/mapeos/mapeo-HU-001-performance.md`.
 
@@ -437,7 +450,7 @@ El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **
 
 `herramientas/k0lmena/` es el framework de automatización (web, api, mobile y performance). Los agentes **mapper** escriben la automatización **una sola vez** (skill `automatizacion-k0lmena`); después la suite corre **sin agentes ni tokens** con `cd herramientas/k0lmena && npm test` (performance: `npm run perf -- <script> <perfil>`). Para correr pruebas ya automatizadas, preferí `npm test` antes que los ejecutores en vivo (`ejecutor-e2e` / `ejecutor-api`), que gastan tokens en cada corrida.
 
-Secretos (tokens, credenciales): van en el `.env` local (gitignored) o en variables de entorno, **nunca** commiteados; hay una plantilla `.env.example`. El `.mcp.json` está versionado con los conectores que vienen activos para todos (Playwright y Atlassian: Jira y Confluence), así Claude Code arranca sin pedir aprobaciones. Los opcionales (Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, QMetry/QTM4J, AIO Tests, k0lmenaTMT, Appium) los activa cada persona con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: los que piden token lo leen del `.env` con los scripts de `scripts/mcp/`. Si un agente necesita un conector que no está activo, decí cuál y cómo activarlo. Detalle en `CONECTORES.md`.
+Secretos (tokens, credenciales): van en el `.env` local (gitignored) o en variables de entorno, **nunca** commiteados; hay una plantilla `.env.example`. El `.mcp.json` está versionado con los conectores que vienen activos para todos (Playwright y Atlassian: Jira y Confluence), así Claude Code arranca sin pedir aprobaciones. Los opcionales (Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, Shortcut, QMetry/QTM4J, AIO Tests, k0lmenaTMT, Appium) los activa cada persona con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: los que piden token lo leen del `.env` con los scripts de `scripts/mcp/`. Si un agente necesita un conector que no está activo, o la persona quiere conectar una herramienta o configurar el proyecto, indicale que corra **`npm run configurar`** en una terminal (la de VS Code): pregunta todo en español y activa los conectores. **No le pidas tokens ni contraseñas en el chat**: van solo en ese asistente o en el `.env`. Detalle en `CONECTORES.md`.
 
 **Repositorio de la aplicación:** el `documentador-proyecto` lo lee en solo lectura con el conector de su proveedor (`github`, `gitlab`, `azure-devops` para Azure Repos o `atlassian` para Bitbucket Cloud), configurado en el bloque *Repositorio de la aplicación* del `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, `REPO_RAMA`, `REPO_RUTA_LOCAL`).
 

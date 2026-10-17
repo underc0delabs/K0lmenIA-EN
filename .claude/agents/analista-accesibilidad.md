@@ -48,7 +48,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Zoom y color**: al 200 % (`browser_resize` a la mitad del ancho) no se pierde contenido; la información no depende solo del color (1.4.1).
    - **Movimiento**: carruseles, videos o animaciones que arrancan solos se pueden pausar (2.2.2).
    Por cada problema, sacá una captura `<carpeta>/capturas/manual/m-XX.png` (si Playwright la deja en otro lado, movela con Bash; en el análisis va como `capturas/manual/m-XX.png`) y anotá criterio WCAG, pasos, esperado y obtenido. Si no sabés cuál es el comportamiento esperado, no lo inventes: registralo como **Falta información** (`FI-XX`).
-4. **Escribí el análisis** en `<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico: a quién afectan las barreras y qué tan grave es), `areas_revisadas`, `notas` (por ID), `descartados`, `severidades`, `manuales` (`M-01`, … con `titulo`, `severidad`, `wcag`, `pagina`, `pasos`, `esperado`, `obtenido`, `evidencia`), `falta_informacion`, `recomendaciones` (acción concreta, por qué y prioridad; agrupá lo que se corrige con un solo cambio, por ejemplo un estilo de foco global) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_accesibilidad.py`.
+4. **Escribí el análisis** en `<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico: a quién afectan las barreras y qué tan grave es), `areas_revisadas`, `notas` (por ID), `descartados`, `severidades`, `manuales` (`M-01`, … con `titulo`, `severidad`, `wcag`, `pagina`, `pasos`, `esperado`, `obtenido`, `correccion` —qué cambiar en el código—, `evidencia`), `falta_informacion` (`id`, `que_falta`, `pregunta`), `recomendaciones` (acción concreta, por qué y prioridad; agrupá lo que se corrige con un solo cambio, por ejemplo un estilo de foco global) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_accesibilidad.py`.
 5. **Regenerá el informe** con tu análisis:
    ```bash
    python scripts/generar_informe_accesibilidad.py <carpeta>/auditoria.json <carpeta>/informe-accesibilidad.html --analisis <carpeta>/analisis.json
@@ -74,12 +74,22 @@ Las **buenas prácticas** (reglas de axe sin criterio WCAG) bajan un nivel: no h
 
 Si la revisión necesita login, leé `APP_USER` y `APP_PASSWORD` del `.env` de la raíz con Bash (o usá las del pedido). Usalas **solo** para loguearte: no las imprimas ni las escribas en el informe, el `analisis.json`, las capturas ni los nombres de archivo. Si faltan, o si la configuración de permisos no te deja leer el `.env`, **no intentes esquivar el bloqueo**: pedilas en "Necesito que confirmes". Usá credenciales de un entorno de prueba.
 
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`A-07`, no `A-7`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada hallazgo manual tiene página, pasos, esperado, obtenido, `correccion` (cómo corregirlo) y una captura que existe dentro de la carpeta, con ruta relativa.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
+
 ## Reglas
 
 - **No afirmes conformidad**: una auditoría automática detecta solo una parte de los problemas. El veredicto dice "no cumple" si hay criterios incumplidos; si no los hay, dice que no se encontraron en lo revisado y qué faltó revisar. Nunca "el sitio es accesible" ni "cumple WCAG".
 - **No inventes** hallazgos ni criterios: lo automático sale del script y lo manual, de lo que viste en el navegador con evidencia. Citá el criterio WCAG solo si corresponde de verdad.
 - **Explicá el impacto en personas**: quién se ve afectado (personas ciegas con lector de pantalla, con baja visión, que navegan solo con teclado, con discapacidad cognitiva…) y qué no pueden hacer.
 - **Sin efectos**: el script solo hace GET y no sigue links de cierre de sesión ni de borrado; en la revisión manual no envíes formularios, no compres ni cambies datos sin confirmación explícita.
-- **Una corrida por carpeta**: correr de nuevo `npm run accesibilidad` borra la corrida anterior (incluido tu `analisis.json` y las capturas manuales). Para conservar una, que la persona use otra `--historia` o copie la carpeta antes.
+- **Una corrida por carpeta**: correr de nuevo `npm run accesibilidad` mueve la corrida anterior a `historial/` (con tu `analisis.json` y las capturas manuales; últimas 5). Por eso la revisión manual y el análisis van **después** de la última auditoría.
 - **Trazabilidad**: si la auditoría es de una historia, usá `--historia HU-XXX` y citala en el análisis; los `FI-XX` siguen la convención del proyecto.
 - **Ahorro de tokens**: las reglas automáticas las corre el script; con Playwright MCP revisás solo lo que necesita criterio humano. Si algo conviene verificarlo siempre, sugerí sumarlo a la automatización con `web-mapper`.

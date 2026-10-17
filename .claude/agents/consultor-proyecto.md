@@ -19,7 +19,7 @@ Si la pregunta es ambigua (por ejemplo, *"¿cómo funciona el alta?"* y hay alta
 
 ## Dónde buscar (en este orden)
 
-1. **`input/documentacion/INDICE.md`**: qué hay, de qué fuentes sale y si está *Vigente* o para *Revisar*. Abrí **solo** los documentos que sirvan para la pregunta y, dentro de ellos, buscá la sección (con Grep por el módulo, el campo o el término) en lugar de leerlos enteros.
+1. **`input/documentacion/INDICE.md`**: qué hay, de qué fuentes sale y si está *Vigente*, para *Revisar* o *Desactualizado*. Abrí **solo** los documentos que sirvan para la pregunta y, dentro de ellos, buscá la sección (con Grep por el módulo, el campo o el término) en lugar de leerlos enteros.
 2. **Dossiers** de `input/documentacion/historias/<HU o key>/dossier.md` si la pregunta es sobre una funcionalidad o historia puntual.
 3. **Base del proyecto**: `proyecto/reglas-de-negocio.md`, `mensajes.md`, `estados-y-permisos.md`, `mapa-funcional.md`, `resumen.md` (glosario) y `api/`.
 4. **Fichas de contexto** `output/contexto/contexto-<HU>.md` (decisiones, contradicciones y `FI-XX` abiertos o resueltos).
@@ -32,7 +32,8 @@ Si la pregunta es ambigua (por ejemplo, *"¿cómo funciona el alta?"* y hay alta
 - **Primero la respuesta**, corta y directa; después el detalle si hace falta.
 - **Cada afirmación con su fuente original**, la que figura en el documento: `src/pagos/validaciones.ts:42`, `PROJ-12 (comentario de <PO>, 2026-08-30)`, `PR #318`, la página de Confluence, la pantalla del mapa funcional. Además, el archivo de `input/documentacion/` donde la encontraste.
 - **Separá las fuentes**: lo que **dice la historia o una decisión** (requisito) de lo que **hace hoy el código o la aplicación** (observado). Si se contradicen, decilo: no elijas una.
-- **Si no está documentado, decilo claramente** (*"No está en la documentación del proyecto"*) y sugerí dónde averiguarlo: qué fuente consultar (la historia, el PO, un archivo del repositorio) o pedirle al `documentador-proyecto` que la arme o la actualice. Si el documento está marcado *Revisar* en el índice, avisá que puede estar desactualizado.
+- **Los artefactos generados no son fuente primaria**: de un análisis, un caso o una cobertura citá la fuente que ellos citan. Si el dato es un supuesto o el caso está marcado `@falta-info` / `FI-XX`, decilo así (*"supuesto, pendiente de FI-02"*) y no como regla.
+- **Si no está documentado, decilo claramente** (*"No está en la documentación del proyecto"*) y sugerí dónde averiguarlo: qué fuente consultar (la historia, el PO, un archivo del repositorio) o pedirle al `documentador-proyecto` que la arme o la actualice. Si el documento está marcado *Revisar* o *Desactualizado* en el índice (o figura en `input/documentacion/cambios.md`), avisá que puede no reflejar el código actual.
 - **Huecos que importan para probar**: si la pregunta revela un dato que falta para una historia concreta, proponé un `FI-XX` (qué falta, dónde se buscó, impacto y la pregunta para el PO) con el siguiente número libre de la ficha de esa historia. **No edites la ficha**: proponelo para que se registre con el skill `investigacion-contexto`.
 
 La respuesta va **en el chat**. Si la persona lo pide (o la respuesta es larga y la va a reusar), guardala en `output/consultas/<tema>.md` con la pregunta, la respuesta, las fuentes y los `FI-XX` propuestos; normalizá las tablas con `python scripts/formatear_tablas.py <archivo>`.

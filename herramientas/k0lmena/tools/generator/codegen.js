@@ -2,7 +2,7 @@
 /**
  * tools/generator/codegen.js
  *
- * Lee BASEURL de tu .env (en la raíz del proyecto)
+ * Lee la URL de APP_URL en el .env de la raíz del proyecto
  * y lanza playwright codegen apuntando a esa URL.
  */
 
@@ -12,7 +12,7 @@ require('dotenv').config();  // carga .env desde process.cwd()
 // 1️⃣ Obtener la URL desde .env
 const url = process.env.BASEURL;
 if (!url) {
-  console.error('⚠️ ERROR: La variable BASEURL no está definida en tu .env');
+  console.error('⚠️ ERROR: La variable APP_URL no está definida en tu .env');
   process.exit(1);
 }
 

@@ -31,6 +31,8 @@ front-history.worker-*.json
 reports/web/traces/
 reports/web/videos/
 reports/web/evidencias/
+reports/validacion/
+reports/debug/
 reports/mobile/html/
 reports/mobile/*.png
 reports/**/*-report.html

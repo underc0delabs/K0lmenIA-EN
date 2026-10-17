@@ -64,11 +64,16 @@ def _htmls(carpeta):
                 yield Path(raiz) / a
 
 
+def _reporte_k0(p):
+    """El reporte completo de k0lmena (index.html de npm run report:<suite>, al lado del cucumber-report.json)."""
+    return p.name.lower() == "index.html" and (p.parent / "cucumber-report.json").exists()
+
+
 def _principal(archivos):
     """De varios .html de una misma unidad, el informe principal más reciente."""
     def peso(p):
         n = p.name.lower()
-        return (n.startswith(("informe-", "reporte-", "cierre-", "plan-", "cucumber")), p.stat().st_mtime)
+        return (_reporte_k0(p), n.startswith(("informe-", "reporte-", "cierre-", "plan-", "cucumber")), p.stat().st_mtime)
     return max(archivos, key=peso)
 
 
@@ -160,7 +165,15 @@ def descubrir(output, reportes_k0=None):
     if reportes_k0 and Path(reportes_k0).is_dir():
         k0 = []
         for suite in sorted(p for p in Path(reportes_k0).iterdir() if p.is_dir()):
-            for u in unidades(suite):
+            us = unidades(suite)
+            # El reporte completo (index.html + features/) y el básico de Cucumber son la misma corrida:
+            # una sola entrada, la del completo, con el básico como "otro" y sin las páginas de features/.
+            completo = next((u for u in us if _reporte_k0(u["html"]) and u["html"].parent == suite), None)
+            if completo:
+                basicos = [u["html"] for u in us if u is not completo and u["html"].parent == suite]
+                completo["otros"] = sorted(set(completo["otros"]) | set(basicos), key=lambda p: p.name)
+                us = [u for u in us if u is completo or (u["html"].parent != suite and u["unidad"] != "features")]
+            for u in us:
                 u["unidad"] = suite.name if u["unidad"] in (Path(u["html"]).stem, "cucumber-report", "index") else f'{suite.name} · {u["unidad"]}'
                 if u["html"].parent == suite:
                     u["historial"], u["anterior"] = _anterior(suite)

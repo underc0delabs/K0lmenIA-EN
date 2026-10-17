@@ -5,12 +5,15 @@ const loadReporter = () => import("multiple-cucumber-html-reporter");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { opcionesReporte, temaEnHtml, urlSegura } = require("../tema-oscuro");
+const { opcionesReporte, temaEnHtml, esperarHtml, urlSegura } = require("../tema-oscuro");
 
 /**
- * Este script vive dentro de reports/web
+ * Este script vive dentro de reports/web. Con REPORT_DIR (el mismo de cucumber.js) arma el reporte
+ * en esa carpeta en vez de reports/web.
  */
-const REPORT_DIR = path.resolve(__dirname);
+const REPORT_DIR = (process.env.REPORT_DIR || "").trim()
+  ? path.resolve(__dirname, "../..", process.env.REPORT_DIR.trim())
+  : path.resolve(__dirname);
 
 (async function main() {
   // 1) Genera el reporte
@@ -33,8 +36,8 @@ const REPORT_DIR = path.resolve(__dirname);
     },
   });
 
-  // 2) Espera a que se creen HTMLs
-  await waitForHtmlGeneration(REPORT_DIR);
+  // 2) Espera el index.html (front-report.html, el de Cucumber, ya está en la carpeta)
+  if (!(await esperarHtml(REPORT_DIR))) console.error("[k0lmena] Aviso: el reporter no terminó de escribir index.html a tiempo; el tema se aplicó a lo que había.");
 
   // 3) Aplica patches en TODOS los HTML generados
   patchAllHtmlReports(REPORT_DIR);
@@ -295,23 +298,4 @@ function collectFilesRecursive(dir, predicate) {
   }
 
   return out;
-}
-
-function waitForHtmlGeneration(rootDir, timeoutMs = 15000) {
-  const start = Date.now();
-
-  return new Promise((resolve) => {
-    const tick = () => {
-      const htmlFiles = collectFilesRecursive(rootDir, (p) =>
-        p.toLowerCase().endsWith(".html")
-      );
-
-      if (htmlFiles.length > 0) return resolve(true);
-      if (Date.now() - start >= timeoutMs) return resolve(false);
-
-      setTimeout(tick, 250);
-    };
-
-    tick();
-  });
 }

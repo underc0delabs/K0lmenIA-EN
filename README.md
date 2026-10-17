@@ -217,7 +217,7 @@ git clone https://github.com/underc0delabs/k0lmenIA.git
 cd k0lmenIA
 pip install -r requirements.txt   # en Mac/Linux: pip3 install -r requirements.txt
 npm install                       # k0lmena (se instala en herramientas/k0lmena)
-cp .env.example .env              # y completalo (en PowerShell: copy .env.example .env)
+npm run configurar                # preguntas simples: tu app y las herramientas de tu equipo (crea el .env y activa los conectores)
 
 # 3. Revisá que esté todo listo
 npm run doctor                    # dice qué falta y cómo resolverlo
@@ -252,11 +252,13 @@ Claude Code también se instala con `npm install -g @anthropic-ai/claude-code` (
 
 Hay **un solo `.env`, en la raíz**. Lo usan los agentes, k0lmena y los scripts de gestión. Nunca se sube al repo; la plantilla comentada es [`.env.example`](.env.example).
 
+**La forma fácil:** `npm run configurar`. Pregunta la URL de tu app y qué herramientas usa tu equipo (dónde están las historias, dónde guardan los casos, el código y Figma), pide solo los datos de esas herramientas y activa los conectores. Se puede correr las veces que quieras: Enter deja lo que ya estaba. Lo de abajo es para quien quiera editar el `.env` a mano.
+
 | Grupo                  | Variables                                                                                                                                   |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | App bajo prueba        | `APP_URL` `APP_USER` `APP_PASSWORD`                                                                                                         |
 | API                    | `API_TOKEN` `API_BASEURL`                                                                                                                   |
-| Web (k0lmena)          | `BASEURL` `BROWSER` `HEADLESS` `VIEWPORT_WIDTH` `VIEWPORT_HEIGHT` `LOCALE` `TIMEZONE`                                                       |
+| Web (k0lmena)          | `BROWSER` `HEADLESS` `VIEWPORT_WIDTH` `VIEWPORT_HEIGHT` `LOCALE` `TIMEZONE` (la URL es `APP_URL`)                                           |
 | Ejecución y evidencias | `TAGS` `PARALLEL` `EVIDENCE` (`captura` · `ambos` · `off`) `VIDEO` `TRACE` `K0LMENA_AUTO_HEALING`                                           |
 | Mobile                 | `MOBILE_TARGET` (`device` · `emulator` · `browserstack`) `MOBILE_PLATFORM` `MOBILE_DEVICE_NAME` `MOBILE_APP` `MOBILE_UDID` `BROWSERSTACK_*` |
 | Performance            | `PERF_VUS` `PERF_DURACION` (opcionales)                                                                                                     |
@@ -364,7 +366,7 @@ Los comandos se pueden correr desde la raíz del repo (el `package.json` de la r
 npm test                          # web + API
 npm run test:web                  # también: test:api · test:mobile · test:all
 TAGS=@HU-001 npm test             # filtrar por tag (PowerShell: $env:TAGS="@HU-001"; npm test)
-npm run report:web                # reporte HTML (también: report:api · report:mobile)
+npm run report:web                # regenera el reporte HTML (npm test ya lo arma solo; también: report:api · report:mobile)
 ```
 
 | Suite     | Test que pasa                               | Test que falla                                                                    |
@@ -374,6 +376,7 @@ npm run report:web                # reporte HTML (también: report:api · report
 | 📱 Mobile | Captura final (+ GIF opcional)              | Video completo, captura, page source y logs del dispositivo                       |
 
 - `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
+- **Sesión guardada**: `npm run login` abre el navegador, te logueás a mano (sirve con captcha, 2FA o SSO) y la sesión queda en `.auth/`. Con `SESION=si` en el `.env`, `npm test` y el navegador de los agentes arrancan logueados; `@sin-sesion` lo evita en los escenarios que prueban el login.
 - Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
 - Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run mapa-funcional` (páginas, formularios y mensajes, para la documentación), `npm run permisos` (matriz por rol), `npm run resiliencia` (fallas simuladas), `npm run monitorear` (monitoreo sintético), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
 
@@ -832,7 +835,7 @@ npm run conector -- activar azure-devops    # queda solo para vos; reiniciá Cla
 3. "Generá los casos de HU-001"                        → casos-HU-001.xlsx + cobertura
 4. "Subí los casos a Xray y creá el ciclo Sprint 5"    → casos y ciclo en Xray
 5. "Automatizá en k0lmena los casos de HU-001"         → .feature + steps + locators
-6. npm test · npm run report:web                       → reporte con evidencias (sin tokens)
+6. npm test                                           → reporte con evidencias (sin tokens)
 7. "Subí los resultados al ciclo del Sprint 5"         → estados y evidencias en Xray
 8. "Armá una prueba de carga del login"                → script + reporte de performance
 9. "Hacé pruebas exploratorias del sitio del .env"     → links, imágenes, errores y responsive, con capturas y video

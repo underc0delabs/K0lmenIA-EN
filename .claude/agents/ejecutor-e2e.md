@@ -20,7 +20,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 - **Qué ejecutar en esta corrida**: el caso/escenario (o el conjunto) que pide la persona — un `.feature` (BDD) o casos manuales de `output/`. Ejecutás **solo eso**, no toda la suite automatizada.
 - La **URL** de la aplicación a probar.
 - Los **datos** necesarios (valores de los campos). Si no están, los pedís — no los inventás.
-- **Credenciales de login** (si la app las pide): las tomás del archivo `.env` de la raíz (gitignored) o del prompt. Ver la regla de credenciales más abajo.
+- **Credenciales de login** (si la app las pide): las tomás del archivo `.env` de la raíz (gitignored) o del prompt. Ver la regla de credenciales más abajo. Si la persona guardó la sesión con `npm run login` y tiene `SESION` en el `.env`, el navegador ya arranca logueado (ver "Login y credenciales" en el skill `ejecucion-e2e`).
 
 ## Proceso
 
@@ -34,7 +34,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 4. Fijá una **marca de tiempo de la corrida** `<fecha-hora>` (ej. `20260618-1432`) y usala para nombrar **todos** los archivos de esta ejecución (resultados, reporte, capturas).
 5. Abrí la app y **ejecutá únicamente los casos pedidos**, traduciendo cada paso a acciones de navegador (navegar, completar, click, seleccionar) y ubicando los elementos por su **snapshot de accesibilidad** (rol + nombre), no por selectores frágiles. En cada validación, **comprobá el resultado esperado** contra lo que muestra la página.
 6. **Capturá evidencia**: un screenshot **ante cada fallo** y **uno final**. Nombrá cada captura `<fecha-hora>-<id>.png` (ej. `20260618-1432-cp-004.png`). Las capturas deben quedar en `output/ejecuciones/evidencia/` (el `.mcp.json` ya apunta el `--output-dir` ahí); si por la versión de Playwright quedaran en otro lado —p. ej. `.playwright-mcp/`—, movelas con Bash. Menos capturas = más rápido.
-7. **Guardá los resultados de esta corrida** (solo los casos ejecutados) en `output/ejecuciones/_resultados-<HU>-<fecha-hora>.json` (un objeto con la lista de casos: `id`, `titulo`, `prioridad`, `estado`, `motivo`, `evidencia`). El campo `evidencia` es la ruta **relativa al reporte**: `evidencia/<fecha-hora>-<id>.png` (no una ruta absoluta ni con `output/ejecuciones/` adelante), para que el link "ver" funcione al abrir el HTML.
+7. **Guardá los resultados de esta corrida** (solo los casos ejecutados) en `output/ejecuciones/_resultados-<HU>-<fecha-hora>.json` (un objeto con `titulo`, `historia` (`HU-XXX`: sin ella, el informe de cierre y la cobertura no ven esta corrida), `fecha` (`AAAA-MM-DD HH:MM`), `modo` (headed/headless), `url` y la lista `casos`, cada uno con `id`, `titulo`, `prioridad`, `estado`, `motivo`, `evidencia`; ver el ejemplo en el encabezado de `scripts/generar_reporte.py`). El campo `evidencia` es la ruta **relativa al reporte**: `evidencia/<fecha-hora>-<id>.png` (no una ruta absoluta ni con `output/ejecuciones/` adelante), para que el link "ver" funcione al abrir el HTML.
 8. **Generá el reporte HTML automáticamente, sin que te lo pidan**, corriendo:
    `python scripts/generar_reporte.py output/ejecuciones/_resultados-<HU>-<fecha-hora>.json output/ejecuciones/reporte-<HU>-<fecha-hora>.html`
 9. **Cerrá el navegador** con la tool `browser_close` de Playwright MCP (no dejes la ventana abierta).
@@ -43,7 +43,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 ## Falta información
 
-Si un caso o escenario tiene `@falta-info` / `FI-XX` (o figura en la ficha `output/contexto/contexto-HU-XXX.md`), ejecutalo igual y agregale en el JSON de resultados `"falta_info": ["FI-01"]`; sumá en la raíz la lista `"falta_informacion"` con esos ítems. El reporte HTML los marca como **Falta información**. Si la app no coincide con el supuesto, en `motivo` escribí "no coincide con el supuesto de FI-XX" en lugar de tratarlo como bug.
+Si un caso o escenario tiene `@falta-info` / `FI-XX` (o figura en la ficha `output/contexto/contexto-HU-XXX.md`), ejecutalo igual y agregale en el JSON de resultados `"falta_info": ["FI-01"]`; sumá en la raíz la lista `"falta_informacion"` con un objeto por ítem de la ficha: `{"id": "FI-01", "que_falta": "…", "pregunta": "…", "estado": "Abierto"}`. El reporte HTML los marca como **Falta información**. Si la app no coincide con el supuesto, en `motivo` escribí "no coincide con el supuesto de FI-XX" en lugar de tratarlo como bug.
 
 ## Salida
 

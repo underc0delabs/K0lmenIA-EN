@@ -57,6 +57,26 @@ def test_fallos_detecta_inestables(tmp_path):
     assert "Inestable (flaky)" in html and "F-01" in html
 
 
+
+def test_fallos_reintento_de_una_suite_no_toca_las_demas(tmp_path):
+    """Reintentar solo web (--suites web) no saca a api del análisis ni le suma un "reintento" que no se hizo."""
+    _reporte(tmp_path / "c1", False)
+    (tmp_path / "c1" / "api").mkdir(parents=True)
+    (tmp_path / "c1" / "api" / "cucumber-report.json").write_text(json.dumps([{"name": "A", "uri": "a.feature", "tags": [{"name": "@HU-001"}],
+        "elements": [_escenario("api", ["@CP-API-001"], "failed", "AssertionError: Expected 200 Received 500")]}]), encoding="utf-8")
+    _reporte(tmp_path / "c2", True)
+    (tmp_path / "c2" / "api").mkdir(parents=True)
+    (tmp_path / "c2" / "api" / "cucumber-report.json").write_text("[]", encoding="utf-8")  # no se reintentó
+    salida = tmp_path / "out"
+    script = str(RAIZ / "scripts" / "analizar_fallos.py")
+    subprocess.run([sys.executable, script, "--reportes", str(tmp_path / "c1"), "--salida", str(salida)], check=True, capture_output=True)
+    subprocess.run([sys.executable, script, "--agregar-reintento", "--suites", "web", "--reportes", str(tmp_path / "c2"),
+                    "--salida", str(salida)], check=True, capture_output=True)
+    datos = json.loads((salida / "fallos.json").read_text(encoding="utf-8"))
+    por_caso = {f["caso"]: f for f in datos["fallos"]}
+    assert por_caso["CP-003"]["categoria"] == "Inestable (flaky)"
+    assert por_caso["CP-API-001"]["historial"] == ["Fallido", None] and datos["suites"] == ["web", "api"]
+
 def test_cobertura_cruza_fuentes(tmp_path, monkeypatch):
     def escribir(ruta, texto):
         (tmp_path / ruta).parent.mkdir(parents=True, exist_ok=True)

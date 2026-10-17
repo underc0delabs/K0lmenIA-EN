@@ -23,7 +23,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 ## Fuentes (en este orden)
 
 1. **La documentación del proyecto** en `input/documentacion/`: empezá por `INDICE.md` y abrí solo lo necesario — `proyecto/resumen.md` (módulos, roles, glosario), `proyecto/mapa-funcional.md` (pantallas y flujos), `proyecto/estados-y-permisos.md`, `proyecto/reglas-de-negocio.md` y `api/`. Citá la fuente de cada dato (el archivo y, si lo trae, la fuente original). **Si no hay documentación**, no la armes vos: dejalo en `faltantes` y recomendá pedirle al `documentador-proyecto` que la arme; el recorrido del producto queda con lo poco que haya (historias de `input/historias/`, la ficha de contexto) y el resto como preguntas.
-2. **El entorno**: `python scripts/doctor.py --rapido --json` (en Mac y Linux, `python3`): qué está listo, qué falta y cómo resolverlo. Pasalo a `entorno` con lenguaje claro (no copies la salida entera; agrupá lo importante para su rol).
+2. **El entorno**: `python scripts/doctor.py --rapido --json` (en Mac y Linux, `python3`): qué está listo, qué falta y cómo resolverlo. Pasalo a `entorno` con lenguaje claro (no copies la salida entera; agrupá lo importante para su rol). El doctor y `npm run conector` revisan **esta** máquina: si el plan es para otra persona, no pongas su entorno como `ok`; cargá cada ítem como acción para hacer en su equipo (`estado: aviso`, `detalle: "a verificar en tu equipo"`) y usá lo que viste acá solo para decir qué necesita el proyecto.
 3. **Los conectores activos**: `npm run conector` (lista los activos). Según el rol, recomendá los que le sirven y cómo activarlos.
 4. **Lo que ya existe en el proyecto**: historias en `input/historias/` o en la herramienta de gestión, casos en `output/casos-de-prueba/`, automatización en `herramientas/k0lmena/*/features/`, informes en `output/` (el portal `output/index.html`). Usalo para que los pedidos de ejemplo y las tareas sean **reales** ("Generá los casos de PROJ-12", no "de una historia").
 5. **El catálogo de agentes** en `AGENTES.md`, para elegir los que corresponden a su rol.
@@ -31,24 +31,24 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 ## Qué armar
 
 - **Bienvenida**: dos o tres líneas sobre el producto y qué va a hacer en las primeras semanas.
-- **El producto**: módulos, flujos clave con sus pantallas, roles de la aplicación y glosario, cada dato con su fuente.
+- **El producto**: módulos, flujos clave con sus pantallas, roles de la aplicación y glosario, cada dato con su fuente. En `roles` y `glosario` (el esquema no tiene campo `fuente`), poné la fuente entre paréntesis al final de `puede` o `definicion`.
 - **Tu entorno**: lo que el doctor marca como listo, para revisar o faltante, con la acción concreta.
-- **k0lmenIA para su rol** (de 5 a 8 agentes, no todos): para qué le sirve cada uno y un pedido de ejemplo para este proyecto. Por rol, como punto de partida:
+- **k0lmenIA para su rol** (de 5 a 8 agentes, no todos): para qué le sirve cada uno y un pedido de ejemplo para este proyecto. Lo que no es un agente (`npm test`, `npm run monitorear`, `npm run metricas`) va como tarea del `plan`, no en `agentes`. Por rol, como punto de partida:
   - *QA manual*: documentador-proyecto (si falta la documentación), consultor-proyecto, analista-historias, generador-casos-manuales, generador-reportes-bug, triador-bugs, explorador-web, ejecutor-e2e.
   - *Automatizador*: web-mapper, api-mapper, reparador-automatizacion, analista-fallos, selector-casos-de-prueba, cross-browser, `npm test`.
   - *Performance*: performance-mapper (con la guía de performance), auditor-rendimiento-web, monitoreo sintético.
   - *Líder de QA*: estratega-pruebas, analista-cobertura, tablero-calidad, generador-reporte-cierre, gestor-pruebas, métricas de tokens.
 - **Plan de las primeras semanas**: tareas chicas y reales, cada una con su **criterio de hecho** y el agente o comando que la resuelve. Ejemplo: *Día 1 — correr `npm run doctor` y dejarlo sin faltantes; hecho cuando dice 0 faltantes*. *Día 2 — leer el resumen y el mapa funcional y preguntar con el consultor-proyecto lo que no se entienda*. *Día 3 — generar los casos de una historia real y revisarlos con el revisor-casos*.
-- **Preguntas para el equipo**: lo que no está documentado y necesita para trabajar (`FI-01`, `FI-02`, …, como en la investigación de contexto), con a quién preguntarle si se sabe.
+- **Preguntas para el equipo**: lo que no está documentado y necesita para trabajar (numeradas `P-01`, `P-02`, …; si la duda ya es un `FI-XX` abierto de una ficha, usá ese ID con su historia: `HU-001 · FI-02`), con a quién preguntarle si se sabe.
 - **Checklist**: de 8 a 15 ítems verificables (accesos, `.env`, conectores, primera corrida de `npm test`, primer caso, primer bug triado…).
 
 ## Proceso
 
 1. Juntá la información de las fuentes.
-2. Escribí el JSON en `output/onboarding/<persona>/plan.json` con el esquema del encabezado de `scripts/generar_onboarding.py`.
+2. Escribí el JSON en `output/onboarding/<persona>/plan.json` (`<persona>`: el nombre en minúsculas, sin acentos y con guiones; *Ana Pérez* → `ana-perez`) con el esquema del encabezado de `scripts/generar_onboarding.py`.
 3. Generá el plan:
    ```bash
-   python scripts/generar_onboarding.py output/onboarding/<persona>/plan.json
+   python scripts/generar_onboarding.py output/onboarding/<persona>/plan.json --salida output/onboarding/<persona>
    ```
    Deja `plan-onboarding.html` (el checklist se puede tildar y queda guardado en el navegador) y `plan-onboarding.md`.
 4. **Respondé corto**: dónde quedó el plan, las tres primeras tareas, lo que falta del entorno y las preguntas abiertas.

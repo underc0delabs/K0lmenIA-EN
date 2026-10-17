@@ -34,6 +34,14 @@ def test_formula_por_paso_y_por_caso():
     assert estimacion.formatear(75) == "1 h 15 min" and estimacion.jira_duracion(6.5) == "7m" and estimacion.hhmm(75) == "01:15"
 
 
+def test_etiquetas_como_texto_activan_el_factor_de_negativos():
+    # En el JSON de generar_casos.py las etiquetas son un texto ("@login @negativo"), no una lista.
+    base = {"id": "CP-3", "titulo": "Ingreso al sistema", "pasos": "1. Ir al login\n2. Hacer clic en Ingresar", "resultado": "Ve un aviso"}
+    assert estimacion.estimar_caso(dict(base, etiquetas="@login @negativo"))["factor"] == 1.1
+    assert estimacion.estimar_caso(dict(base, etiquetas=["login", "borde"]))["factor"] == 1.1
+    assert estimacion.estimar_caso(dict(base, etiquetas="@login"))["factor"] == 1.0
+
+
 def test_tiempo_manual_manda_y_bdd():
     c = dict(_caso_login(), tiempo_min="12")
     r = estimacion.estimar_caso(c)

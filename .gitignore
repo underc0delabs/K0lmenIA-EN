@@ -30,6 +30,9 @@ npm-debug.log*
 .env
 .env.local
 
+# Sesiones guardadas con npm run login (cookies de la app: equivalen a una contraseña)
+.auth/
+
 # Python
 __pycache__/
 *.pyc

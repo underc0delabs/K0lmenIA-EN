@@ -30,11 +30,11 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    python scripts/analizar_cobertura.py [--historia HU-001] [--criterios criterios.json]
    ```
-   Cruza: criterios (`input/historias/`, ficha de contexto, tablas de cobertura, `--criterios`), casos manuales (`casos-HU-XXX.xlsx`) y BDD (`.feature` de `output/casos-de-prueba/bdd/`), automatización de k0lmena (`.feature` con `@HU-XXX`, `@CP-XXX`, `@bloqueado`, `@falta-info`), trazabilidad con la herramienta de gestión (`output/gestion/`), resultados (`npm test` y ejecuciones en vivo, vale el más reciente) y bugs. Deja `output/cobertura/<HU o todas>/cobertura.json` e `informe-cobertura.html` (reemplaza el anterior).
+   Cruza: criterios (`input/historias/`, ficha de contexto, tablas de cobertura, `--criterios`), casos manuales (`casos-HU-XXX.xlsx`) y BDD (`.feature` de `output/casos-de-prueba/bdd/`), automatización de k0lmena (`.feature` con `@HU-XXX`, `@CP-XXX`, `@bloqueado`, `@falta-info`), trazabilidad con la herramienta de gestión (`output/gestion/`), resultados (`npm test` y ejecuciones en vivo, vale el más reciente) y bugs. Deja `output/cobertura/<HU o todas>/cobertura.json` e `informe-cobertura.html` (el anterior pasa a `historial/`).
 3. **Revisá los huecos** (`cobertura.json` → `huecos` de cada historia):
    - **Criterio sin casos**: es el más grave; decí qué casos harían falta (los escribe `generador-casos-manuales` o `generador-casos-bdd`).
    - **Caso sin criterio**: puede ser un caso de borde válido o un caso que no corresponde a la historia; decí cuál.
-   - **Sin automatizar / bloqueado / sin resultado / fallido**: priorizá por la prioridad del caso y el riesgo.
+   - **Sin automatizar / bloqueado / sin resultado / fallido**: priorizá por la prioridad del caso y el riesgo. El resultado sale de la corrida más reciente de cada escenario (la última de `npm test` o su `historial/`, últimas 5) y de los `_resultados-*.json` con esa `historia`: un "Automatizado sin resultado" significa que no corrió en ninguna de esas; decí que falta correr `npm test` con `TAGS=@HU-XXX`, no que el caso falle.
    - **Falta información abierta**: qué criterio queda en el aire hasta que el PO responda.
    - Descartá solo con un motivo verificable (por ejemplo, un caso exploratorio que no se automatiza a propósito), en `descartados`.
 4. **Escribí el análisis** en `output/cobertura/<HU o todas>/analisis.json`: `veredicto` (¿la historia está lista para cerrar?), `resumen` (para alguien no técnico), `notas` (por ID de hueco), `descartados`, `recomendaciones` (qué hacer, con qué agente y en qué orden) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_cobertura.py`. Regenerá el informe:

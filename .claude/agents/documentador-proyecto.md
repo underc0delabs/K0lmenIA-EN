@@ -21,7 +21,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
   - **proyecto**: la base general (se arma una vez y se actualiza);
   - **historia**: el dossier de una historia o épica (key de Jira, work item de Azure DevOps, el ID o link de la tarea en Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut, o `HU-XXX` de `input/historias/`);
   - **actualizar**: rehacer **solo lo que cambió** desde la última documentación (ver *Documentación incremental*), lo que el índice marca como *Revisar* o *Desactualizado*, o lo que la persona nombre.
-- **Repositorio**, del `.env` de la raíz: `REPO_PROVEEDOR` (`github`, `gitlab`, `azure-repos` o `bitbucket`), `REPO_NOMBRE` (uno o varios, separados por coma), `REPO_RAMA` (vacío = la rama por defecto) y, opcional, `REPO_RUTA_LOCAL`. Si faltan, seguí con las demás fuentes y anotá el repositorio como **No configurado** (ver *Fuentes no disponibles*).
+- **Repositorio**, del `.env` de la raíz: `REPO_PROVEEDOR` (`github`, `gitlab`, `azure-repos` o `bitbucket`), `REPO_NOMBRE` (uno o varios, separados por coma), `REPO_RAMA` (vacío = la rama por defecto) y, opcional, `REPO_RUTA_LOCAL`. Si faltan, seguí con las demás fuentes y anotá el repositorio como **No disponible** (no configurado) (ver *Fuentes no disponibles*).
 - **URL de la aplicación** para el mapa funcional: la del pedido, o `APP_URL` (o `BASEURL`) del `.env`. Si es de producción, el recorrido es igual de liviano (solo GET, con pausa), pero decilo en la respuesta.
 
 ## Fuentes y cómo leerlas
@@ -111,7 +111,7 @@ De cada link leído, extraé solo lo que sirve para probar; no copies páginas e
    ```bash
    npm run mapa-funcional -- --url <url> [--max-paginas 30] [--profundidad 2] [--paginas url1,url2]
    ```
-   Deja `input/documentacion/proyecto/mapa-funcional.md` (y su `.json`): navegación global, y por página sus secciones, menús, formularios con cada campo (etiqueta, tipo, obligatorio, largos, mínimos y máximos, patrón, opciones), botones, mensajes visibles y tablas. En modo *historia*, pasale solo las páginas de la funcionalidad con `--paginas` y `--salida input/documentacion/historias/<HU>/`.
+   Deja `input/documentacion/proyecto/mapa-funcional.md` (y su `.json`): navegación global, y por página sus secciones, menús, formularios con cada campo (etiqueta, tipo, obligatorio, largos, mínimos y máximos, patrón, opciones), botones, mensajes visibles y tablas. En modo *historia*, pasale solo las páginas de la funcionalidad con `--paginas` y `--salida input/documentacion/historias/<HU o key>/`; después agregale `historia: <key>` al encabezado del `mapa-funcional.md` generado, así el índice lo muestra con su historia.
 2. **Mirada puntual con Playwright MCP** (`playwright-headless`), solo en modo *historia* y solo si el recorrido no alcanza (la pantalla está detrás de un paso, un modal o una pestaña): navegá hasta la pantalla y tomá un `browser_snapshot`. **No completes ni envíes formularios** y no hagas acciones con efecto. Para el cómo de Playwright MCP, aplicá el skill `ejecucion-e2e`.
 
 Lo que muestra la aplicación es una **observación de cómo funciona hoy**, no un requisito.
@@ -151,7 +151,7 @@ Cada `.md` empieza con este encabezado (lo lee el índice):
 ---
 titulo: Reglas de negocio
 tipo: proyecto            (proyecto | repositorio | api | web | historia | links)
-historia: PROJ-12         (solo en los dossiers)
+historia: PROJ-12 (HU-001)  (solo en los dossiers: la key y, si existe, el HU-XXX local)
 fuentes: github mi-empresa/mi-app@main (a1b2c3d), PROJ-12, Confluence "Reglas de pagos"
 actualizado: 2026-10-14
 ---
@@ -160,6 +160,8 @@ actualizado: 2026-10-14
 **Cada dato con su fuente**, para que se pueda verificar: `src/pagos/validaciones.ts:42`, `PR #318 (comentario de <autor>, 2026-09-02)`, `PROJ-12 (comentario de <PO>, 2026-08-30)`, la URL de la página. Separá siempre **lo que dice la historia o una decisión** de **lo que hace el código o la aplicación hoy**.
 
 ### El dossier de una historia (`historias/<HU o key>/dossier.md`)
+
+La carpeta lleva la key de la herramienta (`PROJ-12`); solo si la historia existe únicamente en `input/historias/`, el `HU-XXX`. En el encabezado `historia:` van los dos, así el índice permite encontrarlo por cualquiera.
 
 - **La historia**: fuente, estado, prioridad, última actualización (`updated` de Jira o `System.ChangedDate` de Azure DevOps), descripción y criterios de aceptación tal como están.
 - **Decisiones en comentarios**: quién, cuándo y qué se decidió.

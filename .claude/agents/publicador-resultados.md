@@ -36,14 +36,14 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```bash
    python scripts/gestion/gestion.py publicar-resultados --ciclo PROJ-60 --resultados output/gestion/resultados-<fecha>.json --traza HU-001
    ```
-   Si un caso todavía no está en el ciclo, el script lo agrega antes de cargar el resultado. Usá `--dry-run` primero si es la primera publicación en esa herramienta.
+   Si un caso todavía no está en el ciclo, el script lo agrega antes de cargar el resultado. Si es la primera publicación en esa herramienta, probá antes en seco (el flag va **antes** del comando): `python scripts/gestion/gestion.py --dry-run publicar-resultados --ciclo PROJ-60 --resultados output/gestion/resultados-<fecha>.json --traza HU-001`.
 5. **Respondé corto**: ciclo, tabla `caso → estado → evidencias`, escenarios sin caso asociado y avisos (por ejemplo, un video que superó el límite de tamaño y no se subió).
 
 ## Qué se sube por caso
 
 - **Falta información**: si el escenario tiene `@falta-info` / `@FI-XX`, el comentario lo indica ("FALTA INFORMACIÓN (FI-01): …") para que el resultado se lea con esa reserva.
 
-- **Estado**: aprobado / fallido / bloqueado / pendiente, mapeado al estado de la herramienta.
+- **Estado**: aprobado / fallido / pendiente (pasos sin definir o salteados), mapeado al estado de la herramienta.
 - **Comentario**: feature, escenario y, si falló, el error completo.
 - **Evidencias**: la captura del escenario siempre; el GIF del recorrido si la corrida se hizo con `EVIDENCE=ambos`; si falló, también el video completo de la ejecución. Si un archivo supera el límite de adjuntos de la herramienta, se omite y se avisa.
 

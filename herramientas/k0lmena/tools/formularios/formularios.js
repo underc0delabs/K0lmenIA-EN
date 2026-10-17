@@ -90,6 +90,13 @@ function _formularios() {
   });
 }
 
+// Botón de enviar de ESE formulario (no el primero de la página): se ubica desde su primer campo, que
+// _formularios marca con data-k0-campo (la numeración es la misma al recargar la página).
+function botonEnvio(page, f) {
+  return page.locator(`[data-k0-campo="${f.campos[0].n}"]`).locator('xpath=ancestor::form[1]')
+    .locator('button[type=submit], input[type=submit], button:not([type])').first();
+}
+
 // Pruebas que corresponden a un campo: [{regla, valor, esperado: 'rechaza'|'acepta'}].
 function pruebasPara(c) {
   const p = [];
@@ -290,7 +297,7 @@ async function main() {
         await cargar(page, u).catch(() => {});
         await page.evaluate(_formularios).catch(() => []);
         enviar = true;
-        await page.locator('form button[type=submit], form input[type=submit], form button:not([type])').nth(0).click({ timeout: 5000 }).catch(() => {});
+        await botonEnvio(page, f).click({ timeout: 5000 }).catch(() => {});
         await page.waitForTimeout(1200);
         enviar = false;
         const env = path.join(dirCap, `${f.id}-envio-vacio.png`);
@@ -332,4 +339,4 @@ if (require.main === module) {
 }
 
 // extraerFormularios lo reutiliza el mapa funcional (tools/mapa-funcional) del documentador-proyecto.
-module.exports = { argumentos, pruebasPara, hallazgosDe, GENERADOS, extraerFormularios: _formularios };
+module.exports = { argumentos, pruebasPara, hallazgosDe, botonEnvio, GENERADOS, extraerFormularios: _formularios };

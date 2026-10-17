@@ -43,8 +43,8 @@ const CLEAN = {
 const { archivar } = require('./tools/historial/historial.js');
 const dirWeb = path.resolve(__dirname, process.env.REPORT_DIR || 'reports/web');
 const HISTORIAL = {
-  web: { dir: dirWeb, nombres: ['cucumber-report.json', 'front-report.html', 'screenshots', 'traces', 'videos', 'evidencias', 'dom'] },
-  api: { dir: path.join(__dirname, 'reports/api'), nombres: ['cucumber-report.json', 'api-report.html'] },
+  web: { dir: dirWeb, nombres: ['cucumber-report.json', 'front-report.html', 'index.html', 'features', 'screenshots', 'traces', 'videos', 'evidencias', 'dom'] },
+  api: { dir: path.join(__dirname, 'reports/api'), nombres: ['cucumber-report.json', 'api-report.html', 'index.html', 'features'] },
   mobile: { dir: path.join(__dirname, 'reports/mobile'), nombres: ['cucumber-report.json', 'html', 'evidencias', 'screenshots'] },
 };
 
@@ -73,6 +73,20 @@ function preguntarEvidencia() {
   );
 }
 
+// Reporte completo (multiple-cucumber-html-reporter con el tema de k0lmenIA, el de `npm run report:<suite>`):
+// se arma solo al terminar cada suite, así el portal de informes enlaza ese y no el HTML básico de Cucumber.
+const REPORTES = {
+  web: { json: path.join(dirWeb, 'cucumber-report.json'), cmd: 'node reports/web/report-generator.js' },
+  api: { json: path.join(__dirname, 'reports/api/cucumber-report.json'), cmd: 'node reports/api/report-generator.js' },
+};
+
+function generarReporte(suite) {
+  const r = REPORTES[suite];
+  if (!r || !fs.existsSync(r.json) || fs.statSync(r.json).size <= 4) return; // sin escenarios no hay reporte
+  const { status } = spawnSync(r.cmd, { stdio: 'inherit', shell: true, cwd: __dirname });
+  if (status !== 0) console.error(`[k0lmena] No se pudo generar el reporte de ${suite}; queda el básico de Cucumber.`);
+}
+
 function correr() {
   const results = plan.map((suite) => {
     console.log(`\n=== k0lmena: suite ${suite} ===`);
@@ -81,6 +95,7 @@ function correr() {
     if (h) archivar(h.dir, h.nombres, 'cucumber-report.json');
     for (const dir of CLEAN[suite] || []) fs.rmSync(dir, { recursive: true, force: true });
     const { status } = spawnSync(SUITES[suite], { stdio: 'inherit', shell: true });
+    generarReporte(suite);
     return { suite, ok: status === 0 };
   });
 

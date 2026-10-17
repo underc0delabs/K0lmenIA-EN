@@ -17,7 +17,7 @@
 // Con --repeticiones N corre N veces cada página y se queda con la mediana (Lighthouse varía
 // entre corridas: para comparar versiones conviene 3).
 //
-// Deja todo en output/rendimiento/<HU o host>/ y cada corrida REEMPLAZA a la anterior:
+// Deja todo en output/rendimiento/<HU o host>/ (la corrida anterior pasa a historial/, últimas 5):
 // rendimiento.json, informe-rendimiento.html, capturas/ y lighthouse/ (el reporte nativo de cada
 // página, para el detalle). Al terminar genera el informe HTML (scripts/generar_informe_rendimiento.py).
 //

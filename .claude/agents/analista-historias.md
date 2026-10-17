@@ -17,7 +17,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 # Entradas
 
-- La historia a analizar: en `input/historias/` (ej.: `HU-001-login.md`) o una key de Jira (ej. `PROJ-12`) si el conector `atlassian` está activo.
+- La historia a analizar: en `input/historias/` (ej.: `HU-001-login.md`) o su ID en Jira (`PROJ-12`), Azure DevOps u otra herramienta de gestión si su conector está activo (ver el skill `investigacion-contexto`).
 - Documentación de apoyo en `input/documentacion/` (reglas de negocio, glosario) si existe y es relevante.
 
 Si la persona no aclara qué historia analizar y hay varias, preguntá cuál antes de continuar.
@@ -37,11 +37,12 @@ Generá un archivo Markdown en `output/analisis-historias/` con el nombre `anali
 
 - **Resumen** — De qué trata la historia, en 2-3 líneas.
 - **Evaluación de criterios de aceptación** — Una tabla (ver abajo) con, por cada criterio: ¿es claro?, ¿es testeable?, ¿está completo?, y observaciones. Marcá los que no cumplen.
-- **Ambigüedades y supuestos** — Lo que está abierto a interpretación o se da por sentado sin estar escrito.
+- **Ambigüedades, contradicciones y supuestos** — Lo que está abierto a interpretación, lo que se da por sentado sin estar escrito y cada contradicción con sus dos fuentes (ej.: *la descripción dice 18; el CA4, 16*), sin elegir una.
 - **Escenarios no contemplados** — Negativos, de borde, de error, de roles/permisos que la historia no menciona.
 - **Riesgos** — Qué podría salir mal o impactar a otras funcionalidades.
 - **Preguntas de refinamiento** — Lista numerada de preguntas concretas para resolver lo anterior.
 - **Recomendaciones** — Sugerencias para mejorar la historia o sus criterios.
+- **Falta información** — Tabla con los `FI-XX` de la ficha (`ID` · `Qué falta` · `Dónde se buscó` · `Impacto` · `Pregunta para el PO` · `Estado`), con los mismos IDs que la ficha de contexto. La pregunta de refinamiento que corresponda a un `FI-XX` lleva ese ID al principio.
 
 Cuando termines de escribir el `.md`, **normalizá las tablas** para que queden alineadas:
 
@@ -67,6 +68,14 @@ Usá `Sí` / `No` / `Parcial` en las tres columnas de evaluación. **Sin emojis*
 ```
 
 > **Si Python no está disponible:** escribí la evaluación como una tabla Markdown normal (`| ID | ... |`) y avisá que, sin el script, las columnas no quedan perfectamente alineadas en el editor (sí se ven bien en la vista previa).
+
+# Antes de entregar
+
+- Cada CA de la historia está en la tabla de evaluación.
+- Cada `No` o `Parcial` tiene su pregunta de refinamiento o su `FI-XX`.
+- Ningún valor (texto, límite, rol) aparece como hecho si no está en una fuente de la ficha.
+- Los `FI-XX` coinciden con los de la ficha y las tablas pasaron por `formatear_tablas.py`.
+- Respondé corto: ruta del análisis y de la ficha, los 3 hallazgos principales y los `FI-XX` abiertos.
 
 # Reglas
 

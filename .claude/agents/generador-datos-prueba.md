@@ -25,12 +25,12 @@ Si no está claro para qué historia o campos son los datos, preguntá.
 # Formato de salida
 
 - Por defecto: **tabla Markdown** (la normalizás al final para que quede alineada).
-- Si la persona lo pide: **CSV** (con encabezados, separado por comas). El CSV se escribe directo, sin normalizar.
+- Si la persona lo pide: **CSV** (con encabezados, separado por `;`). El CSV se escribe directo, sin normalizar.
 - Datos realistas en **español / Latinoamérica** (nombres, emails, etc.). No uses documentos atados a un país puntual salvo que el campo lo pida explícitamente.
 
 # Proceso
 
-Si los datos son para una historia, leé su ficha `output/contexto/contexto-HU-XXX.md` (o investigala con el skill `investigacion-contexto`): las reglas de cada campo (formatos, rangos, obligatorios) salen de ahí. Un dato que depende de una regla sin definir se marca con su `FI-XX`.
+Si los datos son para una historia, leé su ficha `output/contexto/contexto-HU-XXX.md` (o investigala con el skill `investigacion-contexto`): las reglas de cada campo (formatos, rangos, obligatorios) salen de ahí. Un dato que depende de una regla sin definir se marca con su `FI-XX`. Para los rangos y longitudes, aplicá el skill `tecnicas-de-diseno` (clases de equivalencia y valores límite: mín−1, mín, máx, máx+1).
 
 1. Identificá los campos y sus reglas (tipo, formato, longitud, obligatoriedad).
 2. Generá filas que cubran:
@@ -48,12 +48,14 @@ Generá un archivo en `output/datos-de-prueba/` con nombre `datos-HU-XXX.md` (o 
 Escribí los datos como una **tabla Markdown normal** (no la alinees a mano), por ejemplo:
 
 ```markdown
-| # | Nombre | Email | Password | Tipo | Resultado esperado |
-|---|--------|-------|----------|------|--------------------|
-| 1 | María González | maria.gonzalez@test.ar | Test1234 | Válido | Aceptado |
-| 2 | Juan Pérez | juanperez.test.ar | Test1234 | Inválido | Rechazado: email sin @ |
-| 3 | Ana Díaz | ana@test.ar | 123 | De borde | Rechazado: password < 8 |
+| # | Nombre | Email | Password | Tipo | Resultado esperado | Falta info |
+|---|--------|-------|----------|------|--------------------|------------|
+| 1 | María González | maria.gonzalez@test.ar | Test1234 | Válido | Aceptado | |
+| 2 | Juan Pérez | juanperez.test.ar | Test1234 | Inválido | Rechazado: email sin @ | |
+| 3 | Ana Díaz | ana@test.ar | Test123 | De borde (mín−1) | Rechazado: password de 7 caracteres (mínimo 8, según la ficha) | |
 ```
+
+Si hay `FI-XX`, agregá al final una sección **Falta información** (ID · Qué falta · Dónde se buscó · Filas afectadas · Pregunta para el PO · Estado).
 
 Cuando termines de escribir el `.md`, **normalizá las tablas** para que queden alineadas:
 
@@ -65,11 +67,11 @@ python scripts/formatear_tablas.py output/datos-de-prueba/datos-HU-XXX.md
 
 ## Si es CSV
 
-Escribí directamente el archivo `.csv` con los encabezados y las filas separadas por comas. El CSV no usa el script.
+Escribí el `.csv` en UTF-8 con BOM, separado por `;` (como el resto de los CSV del repo), con comillas dobles en los valores que tengan `;`, comillas o saltos de línea. El CSV no usa el script.
 
 # Reglas
 
-- **No inventes reglas de negocio.** Generás datos según las restricciones conocidas; si no hay reglas para un campo, usá criterios estándar de QA y aclaralo.
+- **No inventes reglas de negocio.** Generás datos según las restricciones conocidas; si no hay reglas para un campo, no las supongas: registrá la regla faltante como `FI-XX` (columna *Falta info* y sección **Falta información**) y, en las filas que dependen de ella, poné como resultado esperado `A confirmar (FI-XX)`.
 - Datos plausibles y coherentes, no relleno aleatorio sin sentido.
 - En la tabla, **sin emojis** en las celdas (descuadran el ASCII).
 - Todo en español.

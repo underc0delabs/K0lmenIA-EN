@@ -122,7 +122,9 @@ def estimar_caso(caso):
     n_pre = min(3, _items(precond))
     prep = 1.0 + 0.5 * n_pre + (2.0 if CREAR_DATOS.search(precond) else 0.0)
     registro = 0.5 + 0.1 * len(pasos)
-    texto_caso = " ".join(str(caso.get(k) or "") for k in ("titulo", "descripcion")) + " " + " ".join(caso.get("etiquetas") or [])
+    etiquetas = caso.get("etiquetas") or []
+    etiquetas = etiquetas if isinstance(etiquetas, (list, tuple, set)) else [str(etiquetas)]  # el JSON de generar_casos.py trae un texto
+    texto_caso = " ".join(str(caso.get(k) or "") for k in ("titulo", "descripcion")) + " " + " ".join(str(x) for x in etiquetas)
     factor = (1.1 if NEGATIVO.search(texto_caso) else 1.0) * FACTOR
     crudo = (prep + sum(p["minutos"] for p in pasos) + registro) * factor
     minutos = max(1.0, math.ceil(crudo * 2) / 2)

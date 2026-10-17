@@ -28,6 +28,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    python scripts/tablero_calidad.py --nombre <nombre> [--desde AAAA-MM-DD] [--hasta AAAA-MM-DD]
    ```
    Lee las ejecuciones en vivo (`output/ejecuciones/`), los reportes de `npm test` y su historial (`herramientas/k0lmena/reports/`), el inventario de casos con su último resultado y su tiempo estimado (el mismo de `seleccionar_casos.py`), la cobertura (`output/cobertura/`), los bugs (`output/reportes-bug/`), los fallos e inestables (`output/fallos/`) y lo que haya de accesibilidad, rendimiento, performance y seguridad. Deja `tablero.json` e `informe-tablero.html` en `output/tablero/<nombre>/`. Las **alertas** (bugs críticos o altos abiertos, inestables, historias con fallidos, sin automatizar o con poca cobertura, accesibilidad crítica) las arma el script con reglas fijas.
+   El tablero calcula además el **ahorro al automatizar**: el tiempo que costaría ejecutar a mano los casos automatizados menos lo que tardan corriendo solos (`ahorro_por_corrida`), y por las corridas del período (`ahorro_acumulado`). Sale en los indicadores y en la tabla por historia.
 2. **Leé el resumen**, no todo el JSON: `resumen`, `alertas`, `sin_datos` y la tabla de `historias`.
 3. **Fijate qué falta**: lo que aparece en `sin_datos` no se estima ni se completa. Si falta algo importante para el período (por ejemplo, no hay corridas o no hay análisis de cobertura), decilo y sugerí qué correr (`npm test`, `analista-cobertura`, `analista-fallos`).
 4. **Escribí el análisis** en `output/tablero/<nombre>/analisis.json` (formato en el encabezado de `scripts/tablero_calidad.py`):
@@ -41,9 +42,10 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    ```
 6. **Si la persona pidió publicarlo**, mandá el resumen con:
    ```bash
-   python scripts/avisar.py --titulo "Tablero de calidad <nombre>" --texto "<veredicto y 3 números clave>" --nivel <ok|aviso|error> --link <ruta o URL del informe>
+   python scripts/avisar.py --titulo "Tablero de calidad <nombre>" --texto "<veredicto y 3 números clave>" --nivel <ok|aviso|error> [--link <URL https del informe publicado>]
    ```
-7. **Respondé corto**: veredicto, los cuatro o cinco números clave (aprobados y tendencia, automatizado, cobertura, bugs abiertos críticos, inestables), los riesgos principales, lo que no tenía datos y la ruta del informe. El portal de informes (`output/index.html`) se actualiza solo.
+   `--link` es el botón del aviso: tiene que ser una URL `https://` (con una ruta local, Slack rechaza el mensaje). Sin URL pública, omitilo y poné la ruta del informe en `--texto`.
+7. **Respondé corto**: veredicto, los cuatro o cinco números clave (aprobados y tendencia, automatizado, cobertura, bugs abiertos críticos, inestables, ahorro por corrida), los riesgos principales, lo que no tenía datos y la ruta del informe. El portal de informes (`output/index.html`) se actualiza solo.
 
 ## Reglas
 

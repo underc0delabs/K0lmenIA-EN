@@ -111,6 +111,53 @@ def test_recolectar_resultados(tmp_path, monkeypatch):
     assert [b["id"] for b in datos["bugs"]["criticos_abiertos"]] == ["BUG-001"]
 
 
+
+def test_recolectar_distingue_historias_y_usa_el_historial(tmp_path, monkeypatch):
+    """Los CP se numeran por historia (CP-001 de HU-001 ≠ CP-001 de HU-002) y una corrida de npm test filtrada
+    con TAGS no tapa el resultado de los escenarios que quedaron en historial/."""
+    import os
+    import time
+    (tmp_path / "output" / "ejecuciones").mkdir(parents=True)
+    k0 = tmp_path / "herramientas" / "k0lmena" / "reports"
+    viejo = k0 / "web" / "historial" / "2026-10-01T10-00-00"
+    viejo.mkdir(parents=True)
+    esc = lambda nombre, cp, st: {"type": "scenario", "name": nombre, "tags": [{"name": f"@{cp}"}],  # noqa: E731
+                                  "steps": [{"result": {"status": st}}]}
+    (viejo / "cucumber-report.json").write_text(json.dumps([
+        {"name": "F", "tags": [{"name": "@HU-001"}], "elements": [esc("uno", "CP-001", "passed"), esc("dos", "CP-002", "failed")]},
+        {"name": "G", "tags": [{"name": "@HU-002"}], "elements": [esc("otro", "CP-001", "failed")]}]), encoding="utf-8")
+    hace_rato = time.time() - 3600
+    os.utime(viejo / "cucumber-report.json", (hace_rato, hace_rato))
+    # Última corrida filtrada (TAGS=@CP-002): solo trae CP-002 de HU-001, que ahora pasa.
+    (k0 / "web" / "cucumber-report.json").write_text(json.dumps([
+        {"name": "F", "tags": [{"name": "@HU-001"}], "elements": [esc("dos", "CP-002", "passed")]}]), encoding="utf-8")
+    monkeypatch.setattr(recolectar_resultados, "RAIZ", tmp_path)
+    monkeypatch.setattr(recolectar_resultados, "K0", k0)
+    ronda = recolectar_resultados.recolectar()
+    assert ronda["resultados"] == {"aprobado": 2, "fallido": 1, "bloqueado": 0}
+    assert {(c["historia"], c["id"], c["estado"]) for c in ronda["casos"]} == {
+        ("HU-001", "CP-001", "Aprobado"), ("HU-001", "CP-002", "Aprobado"), ("HU-002", "CP-001", "Fallido")}
+    hu1 = recolectar_resultados.recolectar("HU-001")
+    assert hu1["resultados"] == {"aprobado": 2, "fallido": 0, "bloqueado": 0}
+    assert any("historial" in f for f in hu1["fuentes"]) and "npm test · web" in hu1["fuentes"]
+
+
+def test_newman_sin_validaciones_no_queda_aprobado():
+    import newman_a_resultados as nar
+    ok = {"assertion": "status 200"}
+    datos = nar.convertir({"run": {"executions": [
+        {"item": {"name": "API-001 — Con test"}, "assertions": [ok]},
+        {"item": {"name": "API-002 — Sin test"}, "assertions": []},
+        {"item": {"name": "API-003 — Caído"}, "requestError": {"code": "ECONNREFUSED"}}]}})
+    assert [(c["id"], c["estado"]) for c in datos["casos"]] == [("API-001", "Aprobado"), ("API-002", "Bloqueado"), ("API-003", "Bloqueado")]
+    assert datos["casos"][1]["motivo"] == "Sin validaciones (pm.test)"
+
+
+def test_reporte_acepta_falta_informacion_como_texto():
+    html = generar_reporte.build_html({"casos": [{"id": "CP-001", "estado": "Aprobado", "falta_info": ["FI-01"]}],
+                                       "falta_informacion": ["FI-01", {"id": "FI-02", "que_falta": "Mensaje de error"}]})
+    assert "Falta información" in html and "FI-02" in html and "Mensaje de error" in html
+
 def test_accesibilidad():
     datos = {"url": "https://x.com/", "host": "x.com", "config": {"nivel": "AA", "buenas_practicas": True, "tabs": 60},
              "resumen": {"paginas": 1, "cumplimiento_pct": 80.0},

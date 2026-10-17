@@ -14,11 +14,13 @@ Los HALLAZGOS salen del zap.json (no se escriben a mano). El análisis (opcional
   "resumen": "Resumen ejecutivo...",
   "falsos_positivos": [{"pluginid": "10021", "motivo": "El header lo agrega el proxy de producción"}],
   "notas": {"10038": "Afecta a todas las páginas: se resuelve en la configuración del servidor"},
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
 
-Riesgo de ZAP: Alto | Medio | Bajo | Informativo. El HTML es autocontenido (sin internet).
+Riesgo de ZAP: Alto | Medio | Bajo | Informativo. La evidencia se muestra con las cadenas largas enmascaradas
+(posibles tokens o claves). El HTML es autocontenido (sin internet).
 """
 import argparse
 import datetime
@@ -27,7 +29,7 @@ import json
 import re
 import sys
 
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, nivel_badge,
+from _estilos_reporte import (falta_informacion, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, nivel_badge,
                               CRITICO, SERIO, AVISO, NEUTRO)
 
 RIESGOS = [(3, "Alto", CRITICO), (2, "Medio", SERIO), (1, "Bajo", AVISO), (0, "Informativo", NEUTRO)]
@@ -49,6 +51,15 @@ CSS_EXTRA = """
 .fp{opacity:.6}
 </style>
 """
+
+
+def enmascarar(t):
+    """La evidencia de ZAP puede traer un token o una clave expuesta: de cada cadena con forma de secreto (16 o más
+    caracteres de token, con letras y números) se muestran solo los primeros 4."""
+    def tapar(m):
+        s = m.group(0)
+        return s[:4] + "…" if re.search(r"\d", s) and re.search(r"[A-Za-z]", s) else s
+    return re.sub(r"[A-Za-z0-9_\-+/=.]{16,}", tapar, t or "")
 
 
 def texto(html_zap):
@@ -92,7 +103,8 @@ def tono(veredicto, alertas):
     return "warn" if any(a["_riesgo"] == 2 for a in alertas) else "ok"
 
 
-def build_html(zap, analisis, url, historia):
+def build_html(zap, analisis, url, historia, modo="pasivo"):
+    activo = str(modo).lower() == "activo"
     alertas = cargar_alertas(zap)
     falsos = {str(f.get("pluginid")): f.get("motivo", "") for f in analisis.get("falsos_positivos") or []}
     notas = {str(k): v for k, v in (analisis.get("notas") or {}).items()}
@@ -104,7 +116,7 @@ def build_html(zap, analisis, url, historia):
         alto = sum(1 for a in validas if a["_riesgo"] == 3)
         medio = sum(1 for a in validas if a["_riesgo"] == 2)
         veredicto = (f"{alto} hallazgo(s) de riesgo alto" if alto else f"{medio} hallazgo(s) de riesgo medio" if medio
-                     else "Sin hallazgos de riesgo alto ni medio en el escaneo pasivo")
+                     else f"Sin hallazgos de riesgo alto ni medio en el escaneo {'activo' if activo else 'pasivo'}")
     body.append(banner(veredicto, analisis.get("veredicto_tono") or tono(analisis.get("veredicto"), validas)))
 
     cuenta = {c: sum(1 for a in validas if a["_riesgo"] == c) for c, _, _ in RIESGOS}
@@ -116,11 +128,16 @@ def build_html(zap, analisis, url, historia):
     ])
     body.append(f'<div style="margin-top:20px">{kpis}</div>')
 
-    body.append(section("Alcance y método", f'''<div class="cardbody">
+    metodo = (f'''
+      <p><strong style="color:var(--ink)">Escaneo activo</strong> con OWASP ZAP (full scan) sobre una URL autorizada: además de recorrer el sitio,
+      se enviaron payloads de ataque (inyección, XSS, etc.) y se analizaron las respuestas. Es intrusivo y pudo crear o modificar datos
+      en el ambiente de prueba. No cubre lógica de negocio ni control de acceso por rol más allá de lo que ZAP prueba.</p>'''
+      if activo else '''
       <p><strong style="color:var(--ink)">Escaneo pasivo</strong> con OWASP ZAP (baseline): se recorrió el sitio con el spider y se analizaron
       las respuestas sin enviar ataques ni modificar datos. Detecta configuraciones y exposiciones visibles desde el cliente
       (encabezados de seguridad, cookies, información expuesta, contenido mixto…); <strong style="color:var(--ink)">no reemplaza</strong>
-      un escaneo activo autorizado ni una prueba de penetración.</p>
+      un escaneo activo autorizado ni una prueba de penetración.</p>''')
+    body.append(section("Alcance y método", f'''<div class="cardbody">{metodo}
       <p>Sitio: <span class="mono">{e(url or ", ".join(sorted({a["_sitio"] for a in alertas})) or "—")}</span> ·
       Versión de ZAP: {e(zap.get("@version", "—"))} · Generado por ZAP: {e(zap.get("@generated", "—"))}</p></div>'''))
 
@@ -151,7 +168,7 @@ def build_html(zap, analisis, url, historia):
               <div class="lbl">Qué es</div>{parrafos(a.get("desc"))}
               {f'<div class="lbl">Análisis</div><p>{e(notas[str(a.get("pluginid"))])}</p>' if str(a.get("pluginid")) in notas else ""}
               <div class="lbl">Dónde ({len(inst)})</div><ul>{urls}{mas}</ul>
-              {f'<div class="lbl">Evidencia</div><div class="ev">{e(evid[:400])}</div>' if evid else ""}
+              {f'<div class="lbl">Evidencia</div><div class="ev">{e(enmascarar(evid)[:400])}</div>' if evid else ""}
               <div class="lbl">Cómo se corrige</div>{parrafos(a.get("solution"))}
               {"<div class='lbl'>Referencias</div><ul>" + "".join(f"<li>{e(r)}</li>" for r in refs) + "</ul>" if refs else ""}
             </div>''')
@@ -161,6 +178,7 @@ def build_html(zap, analisis, url, historia):
         filas = [[e(next((a.get("name") for a in alertas if str(a.get("pluginid")) == pid), pid)), e(motivo)] for pid, motivo in falsos.items()]
         body.append(section("Descartados como falsos positivos", table(["Hallazgo", "Motivo"], filas)))
 
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(r.get("accion"))}</strong>', e(r.get("motivo")), nivel_badge(r.get("prioridad"))]
                  for r in analisis["recomendaciones"]]
@@ -168,7 +186,8 @@ def build_html(zap, analisis, url, historia):
     if analisis.get("proximos_pasos"):
         body.append(section("Próximos pasos", doc_list(analisis["proximos_pasos"])))
 
-    meta_html = meta([("Historia", historia), ("Fecha", datetime.date.today().isoformat()), ("Herramienta", "OWASP ZAP · baseline pasivo")])
+    meta_html = meta([("Historia", historia), ("Fecha", datetime.date.today().isoformat()),
+                      ("Herramienta", "OWASP ZAP · full scan activo" if activo else "OWASP ZAP · baseline pasivo")])
     return page("Informe de seguridad web", "Informe de seguridad", meta_html, CSS_EXTRA + "".join(body))
 
 
@@ -179,6 +198,7 @@ def main():
     ap.add_argument("--url")
     ap.add_argument("--historia")
     ap.add_argument("--analisis", help="JSON con veredicto, resumen, falsos positivos, notas y recomendaciones")
+    ap.add_argument("--modo", choices=["pasivo", "activo"], default="pasivo", help="tipo de escaneo que generó el zap.json")
     a = ap.parse_args()
     if not a.salida.lower().endswith(".html"):
         sys.exit("La salida debe terminar en .html")
@@ -189,7 +209,7 @@ def main():
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
     with open(a.salida, "w", encoding="utf-8") as f:
-        f.write(build_html(zap, analisis, a.url, a.historia))
+        f.write(build_html(zap, analisis, a.url, a.historia, a.modo))
     print(f"OK: {a.salida}")
 
 

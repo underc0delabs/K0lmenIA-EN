@@ -18,6 +18,7 @@ El análisis (opcional) aporta:
   "resumen": "Resumen para alguien no técnico...",
   "hallazgos": {"C-02": {"severidad": "Crítica", "nota": "Lo recibe cada cliente que compra"}},
   "descartados": [{"id": "C-11", "motivo": "Outlook no es un cliente objetivo"}],
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -29,7 +30,7 @@ from collections import Counter
 from pathlib import Path
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, donut_panel, two_col,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, donut_panel, two_col,
                               nivel_badge, _pastilla, miniatura, NIVEL_COLOR, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -190,6 +191,7 @@ def build_html(datos, analisis, hist_html=""):
                   f'<a href="#{e(h["correo"])}" style="color:var(--ink)">{e(h["correo"])}</a>' if h.get("correo") else '<span class="muted">—</span>']
                  for h in hallazgos]
         body.append(section("Todos los hallazgos", table(["ID", "Severidad", "Tipo", "Hallazgo", "Correo"], filas)))
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -219,6 +221,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("correos", Path(a.datos_json).resolve().parent, datos)
     html = build_html(datos, analisis, hist_html=hist_html)
     with open(a.salida, "w", encoding="utf-8") as f:

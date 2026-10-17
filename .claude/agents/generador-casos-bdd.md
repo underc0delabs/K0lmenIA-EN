@@ -50,21 +50,26 @@ Feature: Inicio de sesión
   Background:
     Given que existe un usuario registrado y activo
 
-  @CP-001 @smoke
+  @CP-001 @smoke @critica
   Scenario: Login con credenciales válidas
     Given que estoy en la pantalla de login
     When ingreso un email y una contraseña válidos
     Then accedo a mi cuenta
 
   @CP-002
-  Scenario Outline: Login con datos inválidos
-    When ingreso "<email>" y "<password>"
-    Then veo el mensaje "<mensaje>"
+  Scenario Outline: Login con email de formato inválido
+    When ingreso el email "<email>" y una contraseña válida
+    Then veo el mensaje "Email con formato inválido"
 
     Examples:
-      | email         | password   | mensaje                    |
-      | invalido      | Test1234   | Email con formato inválido |
-      | maria@test.ar | incorrecta | Credenciales incorrectas   |
+      | email         |
+      | invalido      |
+      | maria@test    |
+
+  @CP-003
+  Scenario: Login con contraseña incorrecta
+    When ingreso un email registrado y una contraseña incorrecta
+    Then veo el mensaje "Credenciales incorrectas"
 ```
 
 En el informe de cobertura, sumá el **tiempo estimado de ejecución manual** de los escenarios (`python scripts/estimacion.py <archivo.feature>`, fórmula en `plantillas/estimacion-tiempos.md`): sirve para planificar si se ejecutan a mano antes de automatizarlos. Al subirlos a la herramienta de gestión, cada escenario lleva su tiempo.
@@ -73,10 +78,12 @@ En el informe de cobertura, sumá el **tiempo estimado de ejecución manual** de
 
 - **Palabras clave en inglés:** `Feature`, `Background`, `Scenario`, `Scenario Outline`, `Examples`, `Given`, `When`, `Then`, `And`, `But`. (Para listar varios pasos del mismo tipo, usá `And` / `But`.)
 - **Contenido en español:** títulos, descripción de la feature, nombres de escenarios, pasos y datos de las tablas.
-- **ID de cada escenario (obligatorio):** cada `Scenario` y `Scenario Outline` lleva su `@CP-XXX`. Es la misma numeración por historia que los casos manuales: si ya existen casos de la historia en `output/casos-de-prueba/manuales/`, el escenario que prueba lo mismo **reusa su `CP-XXX`**; los escenarios nuevos siguen la numeración desde el último. Sin ese tag, el mapper, la herramienta de gestión y la publicación de resultados no pueden saber qué caso es cada escenario.
+- **ID de cada escenario (obligatorio):** cada `Scenario` y `Scenario Outline` lleva su `@CP-XXX`. Es la misma numeración por historia que los casos manuales: si ya existen casos de la historia en `output/casos-de-prueba/manuales/`, el escenario que prueba lo mismo **reusa su `CP-XXX`**; los escenarios nuevos siguen la numeración desde el último. Si todavía no hay casos manuales, tus `@CP-XXX` pasan a ser la numeración de la historia (el generador-casos-manuales los reusa). Sin ese tag, el mapper, la herramienta de gestión y la publicación de resultados no pueden saber qué caso es cada escenario.
 - **Etiquetas:** `@HU-XXX` en la `Feature` (trazabilidad) y, por escenario, `@smoke` (en minúscula; Cucumber distingue mayúsculas) y `@regresion` según corresponda.
+- **Prioridad (obligatoria):** cada escenario lleva un tag de prioridad `@critica`, `@alta`, `@media` o `@baja` (en minúscula, sin tilde), **la misma** del caso manual equivalente (columna *Prioridad*). Es el equivalente BDD de esa columna: sin el tag, al subir a la herramienta de gestión el escenario queda en `Media` por defecto y se pierde la criticidad. Un escenario `@smoke` sin tag de prioridad se toma como `@alta`.
 - **Falta información:** un escenario que depende de un dato faltante lleva `@falta-info @FI-01` y, arriba, el comentario `# FALTA INFORMACIÓN (FI-01): <qué falta>`.
 - Usá **Background** para precondiciones comunes y **Scenario Outline + Examples** cuando varían solo los datos.
+- **Scenario Outline = un solo caso:** usalo solo si todas las filas de `Examples` son el mismo `CP-XXX` (misma conducta, distintos datos). Si las filas corresponden a casos distintos (ej. formato inválido vs. credenciales incorrectas), van en escenarios separados, cada uno con su `@CP-XXX`: el lector de `.feature` toma un solo `@CP` por escenario.
 - Cubrí camino feliz, escenarios alternativos y negativos.
 
 # Informe de cobertura (`HU-XXX-cobertura.md`)
@@ -84,10 +91,10 @@ En el informe de cobertura, sumá el **tiempo estimado de ejecución manual** de
 Seguí `plantillas/plantilla-cobertura-bdd.md`. Estructura:
 
 - **Resumen:** historia, cantidad de escenarios, criterios cubiertos.
-- **Cobertura por criterio:** una tabla que mapea cada criterio (CA1, CA2, …) a los escenarios que lo cubren y su estado. Columnas: `Criterio` · `Descripción` · `Escenarios que lo cubren` · `Cobertura`.
+- **Cobertura por criterio:** una tabla que mapea cada criterio (CA1, CA2, …) a los escenarios que lo cubren y su estado. Columnas: `Criterio` · `Descripción` · `Escenarios que lo cubren` (con su `CP-XXX`: "CP-001 — Login con credenciales válidas") · `Cobertura`.
 - **Detalle de escenarios por criterio:** una tabla con un escenario por fila. Columnas: `Criterio` · `Escenario` · `Tipo` · `Pasos clave`. (`Tipo`: camino feliz / alternativo / negativo / borde.)
 - **Falta información:** tabla con los `FI-XX` (ID · Qué falta · Dónde se buscó · Escenarios afectados · Pregunta para el PO · Estado). En la cobertura por criterio, `Parcial (falta información)` si depende de alguno.
-- **Pendientes / por confirmar:** lo que quedó como `# TODO` en el `.feature` o falta definir.
+- **Pendientes / por confirmar:** los `FI-XX` abiertos (marcados con `# FALTA INFORMACIÓN` en el `.feature`) y lo que falte definir antes de automatizar.
 
 ## Cómo escribir las tablas
 
@@ -100,6 +107,8 @@ python scripts/formatear_tablas.py output/casos-de-prueba/bdd/HU-XXX-cobertura.m
 ```
 
 (Usá `python` o `python3` según el sistema. El script instala `tabulate` solo si falta.)
+
+**Antes de entregar, verificá:** cada `Scenario` y `Scenario Outline` tiene un `@CP-XXX` y un tag de prioridad (`@critica`/`@alta`/`@media`/`@baja`) y no hay dos iguales; cada CA tiene al menos un escenario negativo; cada rango tiene sus valores límite en `Examples`; cada `Then` verifica algo observable (texto, dato, URL), sin "correctamente"; los `Given`/`When` son declarativos (sin "hago clic en el botón"); todo dato concreto sale de la ficha o lleva `@falta-info @FI-XX`.
 
 # Reglas
 

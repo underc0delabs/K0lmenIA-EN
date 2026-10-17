@@ -28,10 +28,10 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 ## Proceso
 
-1. Confirmá **qué se ejecuta en esta corrida** (la colección y, si corresponde, la carpeta), la **historia** (`HU-XXX`, si la hay) y el **`base_url`** (el de la colección o su environment; si no traen uno, `API_BASEURL` del `.env`; `--base-url` los pisa a todos). Si la colección sale de una historia y existe su ficha `output/contexto/contexto-HU-XXX.md`, leela: los requests que dependen de un `FI-XX` llevan ese ID en el nombre (ej. `CP-API-003 — Crear usuario [FI-01]`).
+1. Confirmá **qué se ejecuta en esta corrida** (la colección y, si corresponde, la carpeta), la **historia** (`HU-XXX`, si la hay) y el **`base_url`** (el de la colección o su environment; si no traen uno, `API_BASEURL` del `.env`; `--base-url` los pisa a todos). Si la colección sale de una historia y existe su ficha `output/contexto/contexto-HU-XXX.md`, leela: los requests que dependen de un `FI-XX` llevan ese ID en el nombre (ej. `CP-API-003 — Crear usuario [FI-01]`). Revisá los métodos de lo que vas a correr: si hay POST, PUT, PATCH, DELETE o mutations, corré solo con la confirmación explícita en el pedido; si no está, devolvela en "Necesito que confirmes" (recomendado: correr solo la carpeta de lectura).
 2. **Corré la colección** (desde la raíz; en Mac/Linux, `python3`):
    ```bash
-   python scripts/correr_newman.py <coleccion.json> --historia HU-001 [--carpeta "Login"] [--environment env.json] [--base-url URL]
+   python scripts/correr_newman.py <coleccion.json> --historia HU-001 [--carpeta "Login"] [--environment env.json] [--base-url URL] [--datos datos.csv]
    ```
    Con **Bruno o Insomnia**, pasale la carpeta o el export en lugar del `.json`, y en `--environment` el **nombre** del environment (por ejemplo `--environment Staging`; si hay uno solo, se usa ese). El script convierte a Postman en una carpeta temporal, muestra las **advertencias** de lo que no se pudo convertir (template tags de Insomnia, auth OAuth2, archivos en multipart, `bru.runRequest`, …) y corre. **Incluí esas advertencias en tu respuesta**: un request que no se convirtió entero puede fallar por eso y no por la API. Si querés revisar la conversión antes, `python scripts/convertir_coleccion.py <origen> --salida <carpeta>`.
    El script toma `API_TOKEN` (variable `{{token}}` de la colección) del `.env`, en cualquier sistema operativo; la URL (`{{base_url}}`) sale de `--base-url`, del environment o de la colección, y solo si ninguno la define, de `API_BASEURL` del `.env`; corre Newman (instalado o con `npx`), convierte el resultado, genera el reporte y borra el JSON crudo. Imprime el resumen y las rutas.
@@ -50,7 +50,7 @@ El **output de cada ejecución es su propio reporte HTML** `output/ejecuciones/r
 
 - **Solo lo pedido**: ejecutá y reportá exactamente la colección/carpeta de esta corrida.
 - **No inventes** resultados: el estado sale de lo que devuelve Newman, no de tu criterio. Si Newman no corrió (no instalado, sin red, sin colección), avisá en vez de inventar un resultado.
-- **Estados** (los arma el conversor a partir de Newman): **Aprobado** (sin asserts fallidos), **Fallido** (algún assert falló), **Bloqueado** (el request no se pudo hacer, ej. error de conexión).
+- **Estados** (los arma el conversor a partir de Newman): **Aprobado** (tiene asserts y ninguno falló), **Fallido** (algún assert falló), **Bloqueado** (el request no se pudo hacer, ej. error de conexión, o no tiene ningún `pm.test`: motivo "Sin validaciones (pm.test)"). Listá en tu respuesta los requests sin validaciones: no se verificó nada, no son aprobados.
 - **Credenciales**: el token sale de `API_TOKEN` en el `.env` (lo pasa `correr_newman.py`; no hace falta leerlo vos). **Nunca** lo escribas en la colección, el environment, el reporte ni los nombres de archivo, y **nunca** lo commitees. Usá un entorno de prueba, no producción. Si falta, pedilo.
 - **No generes basura**: el output son el reporte `.html` y el `_resultados-<HU o API>-<fecha-hora>.json`. El JSON crudo de Newman es intermedio: borralo o dejalo solo si sirve.
 - El reporte es **por corrida** y cubre solo lo de esa corrida. Si querés regenerarlo desde un `_resultados-*.json` existente, está el agente `generador-reporte-html`.

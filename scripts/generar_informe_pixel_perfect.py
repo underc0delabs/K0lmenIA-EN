@@ -18,6 +18,7 @@ El análisis (opcional) aporta:
   "resumen": "Resumen para alguien no técnico...",
   "hallazgos": {"V-01": {"intencional": true, "nota": "Cambio pedido en HU-014"},
                 "V-02": {"severidad": "Alta", "nota": "Tapa el precio en 390px"}},
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -31,7 +32,7 @@ import sys
 from collections import Counter
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, donut_panel,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, column_chart, donut_panel,
                               two_col, nivel_badge, _pastilla, miniatura, NIVEL_COLOR, CRITICO, AVISO, NEUTRO, OK, SERIO, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -282,6 +283,7 @@ def build_html(datos, analisis, hist_html=""):
                       e(p.get("error") or "No hay referencia para esta pantalla: aceptala con --aceptar si es correcta.")] for p in errores + nuevas]
             body.append(section("Pantallas sin comparar", table(["Página", "Resolución", "Estado", "Detalle"], filas)))
 
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -328,6 +330,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("pixel-perfect", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

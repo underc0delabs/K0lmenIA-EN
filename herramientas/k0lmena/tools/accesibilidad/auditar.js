@@ -18,7 +18,7 @@
 // (scripts/generar_informe_accesibilidad.py).
 //
 // Solo navega con GET y no envía formularios. Deja todo en output/accesibilidad/<HU o host>/ y
-// cada corrida REEMPLAZA a la anterior (borra también el analisis.json viejo).
+// la corrida anterior (con su analisis.json) pasa a historial/ (se guardan las últimas 5).
 //
 // Una auditoría automática encuentra entre un 30 y un 50 % de los problemas de accesibilidad:
 // el resto requiere revisión manual (la hace el agente).

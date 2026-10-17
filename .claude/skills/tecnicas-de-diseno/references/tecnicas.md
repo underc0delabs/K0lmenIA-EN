@@ -147,4 +147,4 @@ Rara vez se usa una sola. Lo típico:
 - Si hay flujo con estados: **transición de estados**.
 - Si hay muchas configuraciones: **pairwise**.
 
-Y siempre: negativos y bordes, no solo el camino feliz; lo que no esté definido se marca como supuesto y como pregunta al PO.
+Y siempre: negativos y bordes, no solo el camino feliz; lo que no esté definido se registra como `FI-XX` (Falta información) con su pregunta al PO.

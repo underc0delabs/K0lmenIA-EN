@@ -20,6 +20,11 @@ const CSS_ESTABLE = `*,*::before,*::after{animation-duration:0s!important;animat
   animation-iteration-count:1!important;transition:none!important;caret-color:transparent!important;scroll-behavior:auto!important}
   [data-k0-oculto]{visibility:hidden!important}`;
 
+// Sin barras de scroll: Firefox (y WebKit en algunos sistemas) las dibuja ocupando ancho y Chromium
+// headless no; con barra la página queda más angosta, el texto corta distinto y todo parece corrido.
+// Lo usa el cross-browser al comparar motores (el pixel-perfect compara el mismo navegador).
+const CSS_SIN_SCROLLBAR = `html{scrollbar-width:none!important}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none!important}`;
+
 async function estabilizar(page, { ocultar = [], esperaMs = 400 } = {}) {
   await page.addStyleTag({ content: CSS_ESTABLE }).catch(() => {});
   await page.evaluate(async (sels) => {
@@ -54,10 +59,26 @@ function _medirEnPagina() {
   const conTexto = [...document.querySelectorAll('div,span,section,strong,em,small')].filter((el) =>
     [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim().length > 2));
   const lista = [...new Set([...document.querySelectorAll(SEL), ...conTexto])];
+  // El color calculado llega en el formato de cada motor (rgb(), oklch(), color(srgb …)): se pinta
+  // en un canvas y se lee el píxel, así queda en sRGB igual en todos los navegadores.
+  const lienzo = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+  const colores = new Map();
   const hex = (c) => {
-    const m = c.match(/\d+(\.\d+)?/g);
-    if (!m || (m.length === 4 && Number(m[3]) === 0)) return 'transparente';
-    return '#' + m.slice(0, 3).map((x) => Number(x).toString(16).padStart(2, '0')).join('');
+    if (colores.has(c)) return colores.get(c);
+    let salida = 'transparente';
+    if (lienzo) {
+      lienzo.clearRect(0, 0, 1, 1);
+      lienzo.fillStyle = '#000';
+      lienzo.fillStyle = c;
+      lienzo.fillRect(0, 0, 1, 1);
+      const [r, g, b, a] = lienzo.getImageData(0, 0, 1, 1).data;
+      if (a > 0) salida = '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
+    } else {
+      const m = c.match(/\d+(\.\d+)?/g);
+      if (m && !(m.length === 4 && Number(m[3]) === 0)) salida = '#' + m.slice(0, 3).map((x) => Math.round(Number(x)).toString(16).padStart(2, '0')).join('');
+    }
+    colores.set(c, salida);
+    return salida;
   };
   for (const el of lista) {
     if (salida.length >= 800) break;
@@ -348,4 +369,4 @@ function tamanoPng(buf) {
 }
 
 module.exports = { estabilizar, medirElementos, compararElementos, compararPng, recortar, recorteMarcado, ventanaDe, tamanoPng, severidadMovimiento,
-  CSS_ESTABLE, _regiones };
+  CSS_ESTABLE, CSS_SIN_SCROLLBAR, _regiones };

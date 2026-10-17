@@ -33,7 +33,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Ya no existe** en un paso de **acción** (Given/When) con un candidato claro (mismo rol, texto parecido): es un locator a actualizar. Seguí las convenciones de k0lmena (skill `automatizacion-k0lmena`): `role` + `name` → `label` → `placeholder` → `testId` → `text`; `css` solo si no hay alternativa.
    - **Ya no existe** en un paso de **verificación** (Then): **puede ser un bug** (la app no muestra lo que el caso espera). Compará con la historia o el caso: si el elemento debía estar, no cambies el test; marcá el posible bug y ofrecé redactarlo (`generador-reportes-bug`).
    - **Coincide con varios**: si `exact: true` alcanza, es seguro; si propone acotarlo a un contenedor (la tarjeta de un producto), elegí la alternativa que corresponde a lo que el caso quiere probar.
-   - **Existe y se ve**: el locator está bien; falló la espera. Proponé la espera adecuada (esperar la carga, la respuesta o el estado del elemento) en el step.
+   - **Existe y se ve**: el locator está bien; falló la espera. Proponé la espera adecuada (esperar la carga, la respuesta con `waitForApiOk` o el estado del elemento con `expectVisible`) en el step; nunca una espera fija (`waitForTimeout`, `delayMs`).
    - **El valor viene del `.feature`**: es un dato del caso; cambiarlo cambia lo que el caso espera. Solo con confirmación.
    - Si dudás, abrí la página con Playwright MCP (skill `ejecucion-e2e`) y comprobalo, sin enviar formularios.
 3. **Aplicá** lo decidido:

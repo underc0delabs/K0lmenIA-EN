@@ -22,6 +22,8 @@ Página y estructura
                                             extra: {"pct": 0-100} barra de progreso · {"serie": [números]} sparkline
   table(headers, rows)                      tabla (las celdas pueden traer HTML)
   doc_list(items)                           lista con viñetas
+  falta_informacion(items, sub="")          sección "Falta información" ({id, que_falta, pregunta}; "descripcion" vale como alias)
+  avisar_analisis(analisis, ids)            avisa por stderr IDs del análisis que no existen y severidades fuera de la escala
   nivel_badge(nivel) / estado_pill(estado)  pastillas con ícono + texto (nunca solo color)
   legend(items)                             leyenda (nombre, color[, valor])
 
@@ -52,6 +54,7 @@ import html
 import math
 import os
 import re
+import sys
 from pathlib import Path
 
 # ------------------------------------------------------------------ tokens
@@ -670,6 +673,31 @@ def table(headers, rows):
     th = "".join(f'<th>{e(h)}</th>' for h in headers)
     trs = "".join("<tr>" + "".join(f'<td>{c}</td>' for c in row) + "</tr>" for row in rows)
     return f'<div class="tablecard"><table><thead><tr>{th}</tr></thead><tbody>{trs}</tbody></table></div>'
+
+
+def falta_informacion(items, sub=""):
+    """Sección "Falta información" de los informes: {id, que_falta, pregunta} ("descripcion" vale como alias de que_falta)."""
+    filas = [[e(f.get("id")), e(f.get("que_falta") or f.get("descripcion")), e(f.get("pregunta") or "—")]
+             for f in items or [] if isinstance(f, dict)]
+    return section("Falta información", table(["ID", "Qué falta", "Pregunta para el PO"], filas), sub) if filas else ""
+
+
+SEVERIDADES_VALIDAS = ("Crítica", "Alta", "Media", "Baja")
+
+
+def avisar_analisis(analisis, ids):
+    """Avisa por stderr (sin cortar el informe) lo que el script ignoraría en silencio: IDs de notas, severidades,
+    hallazgos y descartados que no están en los datos, y severidades fuera de la escala. Devuelve los avisos."""
+    ids = {str(i) for i in ids}
+    citados = [(c, str(k)) for c in ("notas", "severidades", "hallazgos") if isinstance(analisis.get(c), dict) for k in analisis[c]]
+    citados += [("descartados", str(d.get("id"))) for d in analisis.get("descartados") or [] if isinstance(d, dict)]
+    sevs = list((analisis.get("severidades") or {}).values()) if isinstance(analisis.get("severidades"), dict) else []
+    sevs += [x["severidad"] for x in (analisis.get("hallazgos") or {}).values() if isinstance(x, dict) and x.get("severidad")]         if isinstance(analisis.get("hallazgos"), dict) else []
+    avisos = [f"{c}: {i} no está en los datos (se ignora)" for c, i in citados if i not in ids]
+    avisos += [f"severidad {s!r} fuera de la escala {'/'.join(SEVERIDADES_VALIDAS)} (se ignora)" for s in sevs if s not in SEVERIDADES_VALIDAS]
+    for a in avisos:
+        print(f"[aviso] analisis.json · {a}", file=sys.stderr)
+    return avisos
 
 
 def resolver_evidencia(ruta, dir_html, raiz=None):

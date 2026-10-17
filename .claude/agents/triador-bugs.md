@@ -27,7 +27,8 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Jira** (conector `atlassian`): JQL con `issuetype = Bug` en el proyecto y 2 o 3 búsquedas de texto con los conceptos clave, en español y en inglés si el equipo mezcla idiomas (`text ~ "tarjeta inválida"`, `text ~ "payment rejected"`), sin filtrar por estado: los cerrados sirven para detectar regresiones. Sumá los bugs vinculados a la historia.
    - **Azure DevOps** (conector `azure-devops`): WIQL sobre `[System.WorkItemType] = 'Bug'` con `CONTAINS` en el título, o la búsqueda de work items.
    - **GitHub / GitLab** (conectores `github` / `gitlab`, si están activos y `REPO_PROVEEDOR` lo indica): issues con label de bug que mencionen los mismos conceptos.
-   - De cada uno guardá `id`, `titulo`, `descripcion` (resumida), `estado`, `fuente`, `url`, `historia`, `componente` y `creado` en `output/triage/<nombre>/candidatos.json`.
+   - De cada uno guardá `id`, `titulo`, `descripcion` (resumida), `estado` (si está terminado —categoría *Done* en Jira; *Closed*, *Resolved*, *Done* o *Removed* en Azure DevOps; *closed* en GitHub o GitLab— guardá `Cerrado`; si no, el estado tal cual), `fuente`, `url`, `historia`, `componente` y `creado` en `output/triage/<nombre>/candidatos.json`.
+   - Si el bug no está en un archivo (texto del chat o key), escribilo en `output/triage/<nombre>/bug.json` con `id` (la key, si la tiene), `titulo`, `descripcion`, `historia` y `estado`, y pasá esa ruta a `--bug`: el mismo `id` que en `candidatos.json` evita que se compare contra sí mismo. `<nombre>` solo admite letras, números, guiones y puntos (`sprint-5`, no `sprint 5`).
 3. **Puntuá la similitud** desde la raíz del repo (los bugs locales de `output/reportes-bug/` e `input/bugs/` se suman solos):
    ```bash
    python scripts/buscar_duplicados.py --bug <bug.md|.json> --candidatos output/triage/<nombre>/candidatos.json --nombre <nombre>
@@ -41,7 +42,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Componente o módulo**: de la ficha o la documentación del proyecto (`input/documentacion/`), del mapa funcional o de los componentes del proyecto en Jira o Azure DevOps.
    - **Responsable sugerido**: el equipo o los usuarios de la herramienta que tocan esa zona del código — `CODEOWNERS` del repositorio y los autores de los últimos commits o PRs sobre los archivos del módulo, por el conector del repositorio o con `git -C <REPO_RUTA_LOCAL> log` sobre esos archivos. Es una sugerencia, no una asignación. Usá solo el usuario de la herramienta (`@usuario`), nunca emails ni otros datos personales.
    - **Historia a vincular**: la del flujo afectado (ficha de contexto, dossier, casos `CP-XXX` asociados).
-6. **Respondé**: el veredicto (nuevo, duplicado de X, regresión de X, relacionado con X), la clasificación sugerida con su criterio y los próximos pasos. Si es nuevo y no está redactado, sugerí pasarlo por el `generador-reportes-bug`.
+6. **Respondé**: el veredicto (nuevo, duplicado de X, regresión de X, relacionado con X), la clasificación sugerida con su criterio y los próximos pasos. Si es nuevo y no está redactado, sugerí pasarlo por el `generador-reportes-bug`. Agregá al final de `output/triage/<nombre>/triage.md` una sección **Conclusión del triador** con una tabla por bug (`Bug` · `Veredicto confirmado` · `Duplicado / regresión de` · `Severidad` · `Prioridad` · `Componente` · `Responsable sugerido` · `Historia` · `Criterio`) y normalizala con `python scripts/formatear_tablas.py output/triage/<nombre>/triage.md`.
 
 ## Acciones con efecto (solo con confirmación)
 

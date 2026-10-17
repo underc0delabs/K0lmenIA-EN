@@ -73,16 +73,17 @@ module.exports = {
   },
 
   // Debug always runs sequentially so breakpoints / logs are readable.
+  // Sus reportes van a reports/debug: el reporte web lee todos los .json de reports/web y los mezclaría.
   debug: {
     ...common,
     paths: ['web/features/*.feature'],
     require: ['tools/debug/debugHook.ts', 'web/steps/*.ts', ...pasosComunes],
     parallel: 0,
     format: [
-      ['html', 'reports/web/front-report-debug.html'],
+      ['html', 'reports/debug/front-report-debug.html'],
       'summary',
       'progress-bar',
-      'json:reports/web/cucumber-report-debug.json',
+      'json:reports/debug/cucumber-report-debug.json',
     ],
   },
 };

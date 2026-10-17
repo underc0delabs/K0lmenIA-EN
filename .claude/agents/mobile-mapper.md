@@ -45,8 +45,8 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - `features/HU-XXX-<slug>.feature`, con tags `@HU-XXX @mobile` y `@CP-XXX` por escenario, y los pasos tal como se ejecutaron.
    - `locators/HU-XXX.locators.ts`, solo con los locators observados. Si Android e iOS difieren, exportá uno por plataforma y elegilo con `process.env.MOBILE_PLATFORM`.
    - `steps/HU-XXX.steps.ts`, con los steps nuevos (`@wdio/cucumber-framework`, `$()` y `waitForDisplayed` antes de interactuar).
-7. **Validá una vez** desde `herramientas/k0lmena/` con el mismo dispositivo: `TAGS=@HU-XXX npm run test:mobile` (PowerShell: `$env:TAGS="@HU-XXX"; npm run test:mobile`). Si `node_modules` no existe, corré antes `npm install`. Máximo 2 reintentos; lo que siga fallando por la app va `@bloqueado`.
-8. **Escribí el reporte de mapeo** en `output/mapeos/mapeo-HU-XXX-mobile.md` y normalizalo con `python scripts/formatear_tablas.py`.
+7. **Validá una vez** desde `herramientas/k0lmena/` con el mismo dispositivo: `TAGS=@HU-XXX npm run test:mobile` (PowerShell: `$env:TAGS="@HU-XXX"; npm run test:mobile`). Si `node_modules` no existe, corré antes `npm install`. Máximo 2 reintentos. Lo que no se pudo ejecutar va `@bloqueado` con el motivo; un `Then` que falla porque la app no cumple lo esperado **no** va `@bloqueado` (npm test nunca lo correría): queda activo con el comentario `# POSIBLE BUG: <qué hace la app>` arriba y se reporta como posible bug.
+8. **Escribí el reporte de mapeo** en `output/mapeos/mapeo-HU-XXX-mobile.md` y normalizalo con `python scripts/formatear_tablas.py output/mapeos/mapeo-HU-XXX-mobile.md`.
 9. **Respondé corto**: archivos generados, resultado, bloqueados, y cómo correrlo en cada destino:
    - Dispositivo: `MOBILE_TARGET=device` y `MOBILE_UDID` en el `.env`.
    - Emulador: `MOBILE_TARGET=emulator`.

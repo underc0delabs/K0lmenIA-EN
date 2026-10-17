@@ -27,6 +27,15 @@ def test_env_valido_y_urls(tmp_path, monkeypatch, capsys):
     assert all(r["seccion"] == "env" for r in res)
 
 
+def test_url_en_un_solo_lugar(tmp_path, monkeypatch, capsys):
+    _, res = correr(tmp_path, monkeypatch, capsys, "APP_URL=https://app.test\nBASEURL=https://otra.test\n", "--seccion", "env")
+    assert any("BASEURL y APP_URL son distintas" in t for t in textos(res, "aviso"))
+    _, res = correr(tmp_path, monkeypatch, capsys, "BASEURL=https://vieja.test\n", "--seccion", "env")
+    assert any("nombre viejo" in t for t in textos(res, "aviso"))
+    _, res = correr(tmp_path, monkeypatch, capsys, "APP_URL=https://app.test\n", "--seccion", "env")
+    assert not any("BASEURL" in t for t in textos(res, "aviso") + textos(res, "falta"))
+
+
 def test_integraciones_coherentes(tmp_path, monkeypatch, capsys):
     contenido = ("REPO_PROVEEDOR=bitbucket\nREPO_NOMBRE=ws/app\nATLASSIAN_MCP_AUTENTICACION=oauth\n"
                  "PERMISOS_ROLES=admin,Operador Senior\nPERMISOS_ADMIN_USUARIO=a\nPERMISOS_ADMIN_CLAVE=b\n"

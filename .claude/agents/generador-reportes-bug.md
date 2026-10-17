@@ -19,7 +19,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 - La observación del error: la que pase la persona en el chat, o un archivo en `input/bugs/`.
 - **La plantilla `plantillas/plantilla-reporte-bug.md` — leéla siempre antes de generar** y seguila al pie de la letra (campos y orden).
-- Documentación de apoyo en `input/documentacion/` si ayuda a definir el resultado esperado.
+- Documentación de apoyo: la ficha `output/contexto/contexto-<HU>.md` y `input/documentacion/` (dossier, reglas de negocio). Para el **Resultado Esperado** valen la historia, sus criterios y las decisiones; lo que la documentación marca como observado en el código o en la aplicación describe cómo funciona hoy y no sirve como esperado.
 
 # Proceso
 
@@ -39,6 +39,7 @@ Generá un archivo Markdown en `output/reportes-bug/` con el nombre `BUG-XXX.md`
 - `Estado`: `Abierto` para un bug nuevo. Si la persona pide actualizar un bug existente (por ejemplo, porque se corrigió), editá solo su `Estado` y dejá el resto como está.
 - `Título` con el formato `[Pantalla] descripción del error`.
 - Severidad/Criticidad de la escala `Crítica · Alta · Media · Baja`; Prioridad `Crítica · Alta · Media · Baja` (la misma escala que `CLAUDE.md`). Agregá entre paréntesis una justificación corta (ej.: *Alta — bloquea el login, sin workaround*).
+- Criterio de severidad (el mismo del `triador-bugs`): *Crítica* = pérdida o corrupción de datos, seguridad, caída o un flujo principal bloqueado sin alternativa · *Alta* = una funcionalidad importante no anda o anda mal, con una alternativa costosa · *Media* = una funcionalidad secundaria falla, o la principal con una alternativa razonable · *Baja* = cosmético, textos, detalles visuales. Si la observación no alcanza para decidir, `Pendiente de confirmar` y va a Información faltante.
 
 Cuando termines de escribir el `.md`, **normalizá las tablas** (por si incluiste la de "Información faltante"):
 
@@ -47,6 +48,8 @@ python scripts/formatear_tablas.py output/reportes-bug/BUG-XXX.md
 ```
 
 El cuerpo del reporte es de **bloque vertical** (no es una tabla), así que el normalizador no lo toca: solo alinea las tablas que hayas agregado, como la de "Información faltante". (Usá `python` o `python3` según el sistema; instala `tabulate` solo si falta.)
+
+Respondé corto: la ruta del `BUG-XXX.md`, la severidad y la prioridad con su porqué, los datos faltantes y la sugerencia de pasarlo por el `triador-bugs`.
 
 # Regla central: no inventar
 
@@ -60,4 +63,5 @@ Esta es la regla más importante de este agente.
 
 - Respetá la plantilla exactamente (campos y orden).
 - Distinguí bien **Resultado Actual** (lo que pasa) de **Resultado Esperado** (lo que debería pasar). Si el esperado no está claro y no surge de la documentación, marcalo como faltante.
+- **Sin secretos ni datos personales**: si la observación trae una contraseña, un token o datos personales reales, no los copies. En `Password` poné *(la del usuario de prueba; no se copia en el reporte)* y describí el resto (*"el email del usuario de prueba"*).
 - Todo en español, claro y profesional.

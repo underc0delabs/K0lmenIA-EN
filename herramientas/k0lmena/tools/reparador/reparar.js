@@ -597,7 +597,7 @@ async function main() {
     return;
   }
 
-  const origen = a.fallos ? desde(a.fallos) : (a.reporte ? desde(a.reporte) : path.join(K0, 'reports', 'web', 'cucumber-report.json'));
+  const origen = a.fallos ? desde(a.fallos) : (a.reporte ? desde(a.reporte) : path.resolve(K0, (process.env.REPORT_DIR || '').trim() || 'reports/web', 'cucumber-report.json')); // el mismo REPORT_DIR que npm test
   if (!fs.existsSync(origen)) throw new Error(`No encontré ${origen}. Corré primero npm test (o pasá --reporte / --fallos).`);
   const fallas = a.fallos ? fallasDeAnalista(origen, a.historia) : fallasDelReporte(origen, a.historia);
   archivar(carpeta, GENERADOS, 'reparaciones.json'); // la corrida anterior pasa a historial/ (últimas 5)

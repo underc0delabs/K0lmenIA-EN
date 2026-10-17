@@ -4,7 +4,7 @@ Corre una colección de Postman con Newman y deja el reporte HTML de la corrida 
 
 Uso (desde la raíz del repo; en Mac/Linux, python3):
     python scripts/correr_newman.py <coleccion> [--historia HU-001] [--titulo "Auth API"]
-                                    [--carpeta "Login"] [--environment env] [--base-url URL]
+                                    [--carpeta "Login"] [--environment env] [--base-url URL] [--datos datos.csv]
 
 <coleccion> puede ser una colección de Postman (.json), una carpeta de **Bruno** (con bruno.json) o un
 export de **Insomnia** (v4 .json o v5 .yaml): las de Bruno e Insomnia se convierten antes a Postman con
@@ -74,11 +74,14 @@ def main():
     ap.add_argument("--carpeta", help="solo esta carpeta de la colección (--folder de Newman)")
     ap.add_argument("--environment", help="Postman: archivo .json del environment; Bruno/Insomnia: nombre del environment")
     ap.add_argument("--base-url", help="pisa API_BASEURL del .env")
+    ap.add_argument("--datos", help="CSV o JSON de datos (-d de Newman): una iteración por fila, cada una es un caso del reporte")
     a = ap.parse_args()
 
     coleccion = Path(a.coleccion)
     if not coleccion.exists():
         sys.exit(f"No existe la colección {coleccion}.")
+    if a.datos and not Path(a.datos).is_file():
+        sys.exit(f"No existe el archivo de datos {a.datos}.")
     formato = convertir_coleccion.detectar_formato(coleccion)
     if formato is None:
         sys.exit(f"No reconozco {coleccion}: tiene que ser una colección de Postman (.json), una carpeta de "
@@ -115,6 +118,8 @@ def _correr(a, coleccion, env, crudo, resultados, reporte):
         cmd += ["-e", a.environment]
     if a.carpeta:
         cmd += ["--folder", a.carpeta]
+    if a.datos:
+        cmd += ["-d", a.datos]
     propia = base_url_propia(coleccion, a.environment)
     base = a.base_url or (None if propia else env.get("API_BASEURL"))
     if base:

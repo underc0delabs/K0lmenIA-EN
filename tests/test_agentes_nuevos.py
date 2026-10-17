@@ -11,6 +11,14 @@ import seleccionar_casos as sc
 
 
 # ------------------------------------------------------------------ selector de casos
+def test_rangos_git_diff_desde_la_base_comun():
+    # El diff va desde la base común (A...B) y el log son los commits de B que no están en A (A..B).
+    assert sc.rangos_git("main..feature/pagos") == ("main...feature/pagos", "main..feature/pagos")
+    assert sc.rangos_git("main...feature/pagos") == ("main...feature/pagos", "main..feature/pagos")
+    assert sc.rangos_git("v2.3..v2.4") == ("v2.3...v2.4", "v2.3..v2.4")
+    assert sc.rangos_git("HEAD~3") == ("HEAD~3", "HEAD~3")
+
+
 def test_tokens_con_sinonimos_camelcase_y_sin_keys():
     t = sc.tokens("src/checkout/paymentCard.ts PROJ-55 fix")
     assert "pago" in t and "tarjeta" in t       # payment → pago, card → tarjeta

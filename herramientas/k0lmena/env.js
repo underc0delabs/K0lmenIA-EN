@@ -9,9 +9,18 @@ const envFile = process.env.K0LMENA_ENV_FILE
   ? path.resolve(process.env.K0LMENA_ENV_FILE)
   : path.resolve(__dirname, '../../.env');
 
+// BASEURL definida en la terminal (ej. BASEURL=https://otra npm test) pisa a APP_URL para esa corrida.
+const baseurlDeLaTerminal = process.env.BASEURL;
+
 require('dotenv').config({ path: envFile, quiet: true });
 
-// Compatibilidad con el resto de k0lmenIA: el ejecutor-e2e usa APP_URL.
-if (!process.env.BASEURL && process.env.APP_URL) process.env.BASEURL = process.env.APP_URL;
+// La URL de la app va en un solo lugar: APP_URL. BASEURL (el nombre que usan los steps y las
+// herramientas de k0lmena) se arma desde ahí, así las dos valen siempre lo mismo. Un BASEURL viejo
+// en el .env solo se usa si APP_URL está vacía.
+const url = baseurlDeLaTerminal || process.env.APP_URL || process.env.BASEURL || '';
+if (url) {
+  process.env.APP_URL = url;
+  process.env.BASEURL = url;
+}
 
 module.exports = { envFile };

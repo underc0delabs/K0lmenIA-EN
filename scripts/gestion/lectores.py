@@ -15,6 +15,16 @@ from comun import ErrorGestion, necesitar, normalizar_estado
 PRIORIDADES = {"crítica": "Crítica", "critica": "Crítica", "alta": "Alta", "media": "Media", "baja": "Baja"}
 
 
+def prioridad_de_tags(tags):
+    """La prioridad de un escenario BDD desde sus tags: un tag explícito (@critica/@alta/@media/@baja)
+    manda; si no hay, @smoke vale Alta; si no, Media."""
+    for t in tags:
+        p = PRIORIDADES.get(str(t).lower())
+        if p:
+            return p
+    return "Alta" if any(str(t).lower() == "smoke" for t in tags) else "Media"
+
+
 def _pasos_desde_texto(pasos, datos, resultado):
     """'1. Ir a...\\n2. Completar...' -> [{accion, datos, resultado}]. El resultado esperado del
     caso va en el último paso y los datos de prueba en el primero."""
@@ -132,7 +142,7 @@ def leer_feature(ruta):
             todas = tags_feature + tags_regla + tags
             casos.append({
                 "id": cid, "titulo": titulo, "descripcion": "", "precondiciones": "",
-                "prioridad": "Alta" if any(t.lower() == "smoke" for t in todas) else "Media",
+                "prioridad": prioridad_de_tags(todas),
                 "etiquetas": list(dict.fromkeys(t for t in todas if not re.match(r"^CP(-API)?-\d+$", t))),
                 "tipo": "cucumber", "gherkin": gherkin.strip(), "pasos": [],
             })

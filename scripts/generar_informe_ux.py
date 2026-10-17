@@ -17,7 +17,9 @@ El análisis (opcional) aporta:
   "hallazgos": {"U-03": {"severidad": "Alta", "nota": "..."}},
   "descartados": [{"id": "U-07", "motivo": "..."}],
   "hallazgos_manuales": [{"heuristica": "H1", "severidad": "Alta", "titulo": "Después de pagar no hay confirmación",
-                           "detalle": "...", "flujo": "Checkout", "captura": "capturas/manual-1.png"}],
+                           "detalle": "...", "correccion": "...", "flujo": "Checkout", "url": "https://...",
+                           "captura": "capturas/manual-1.png"}],
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -28,7 +30,7 @@ import sys
 from pathlib import Path
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, two_col, gauge,
+from _estilos_reporte import (falta_informacion, avisar_analisis, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, two_col, gauge,
                               nivel_badge, _pastilla, miniatura, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -74,7 +76,7 @@ def build_html(datos, analisis, hist_html=""):
         hallazgos.append(h)
     for i, m in enumerate(analisis.get("hallazgos_manuales") or [], 1):
         hallazgos.append({"id": f"M-{i:02d}", "heuristica": m.get("heuristica", "H1"), "severidad": m.get("severidad", "Media"), "titulo": m.get("titulo", ""),
-                          "detalle": m.get("detalle", ""), "manual": True, "flujo": m.get("flujo"), "donde": [{"captura": m.get("captura"), "url": m.get("url")}]})
+                          "detalle": m.get("detalle", ""), "correccion": m.get("correccion"), "manual": True, "flujo": m.get("flujo"), "donde": [{"captura": m.get("captura"), "url": m.get("url")}]})
     vivos = [h for h in hallazgos if not h.get("_desc")]
     # Puntaje por heurística (con los manuales incluidos)
     puntajes = {k: max(0, 100 - sum(PESO.get(h["severidad"], 4) for h in vivos if h["heuristica"] == k)) for k in heur}
@@ -108,6 +110,7 @@ def build_html(datos, analisis, hist_html=""):
             mas = f' · y {len(h["donde"]) - 1} más' if len(h.get("donde") or []) > 1 else ""
             donde = f'<p class="muted mono">{e(corto(d.get("url")))} · {e(d.get("resolucion") or "")}{e(mas)}</p>' if d.get("url") else ""
             nota = f'<p><i>{e(h["_nota"])}</i></p>' if h.get("_nota") else ""
+            nota += f'<p><b>Cómo corregirlo:</b> {e(h["correccion"])}</p>' if h.get("correccion") else ""
             descartado = f'<p class="muted">Descartado: {e(h["_desc"])}</p>' if h.get("_desc") else ""
             manual = '<span class="manual">revisión manual</span>' if h.get("manual") else ""
             clase = "item descartado" if h.get("_desc") else "item"
@@ -128,6 +131,7 @@ def build_html(datos, analisis, hist_html=""):
                    f'{e(p.get("hallazgos", 0))} hallazgo(s)</figcaption></figure>' for p in datos.get("pantallas") or [] if p.get("captura"))
     if figs:
         body.append(section("Páginas revisadas", f'<div class="lado">{figs}</div>'))
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]
@@ -157,6 +161,7 @@ def main():
     if a.analisis:
         with open(a.analisis, encoding="utf-8") as f:
             analisis = json.load(f)
+        avisar_analisis(analisis, [h.get("id") for h in datos.get("hallazgos") or []])
     hist_html = _historial.seccion("ux", Path(a.datos_json).resolve().parent, datos)
     with open(a.salida, "w", encoding="utf-8") as f:
         f.write(build_html(datos, analisis, hist_html=hist_html))

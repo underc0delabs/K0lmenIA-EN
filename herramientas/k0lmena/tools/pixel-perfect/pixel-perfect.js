@@ -23,8 +23,9 @@
 // nombre de la pantalla (01-inicio-1366x768.png) y se compara solo píxel a píxel.
 //
 // Deja todo en output/pixel-perfect/<HU o host>/: referencia/ (se conserva entre corridas),
-// actual/, diferencias/, recortes/, pixel-perfect.json e informe-pixel-perfect.html. Cada
-// comparación REEMPLAZA a la anterior (menos la referencia). Solo navega con GET.
+// actual/, diferencias/, recortes/, pixel-perfect.json e informe-pixel-perfect.html. La comparación
+// anterior pasa a historial/ (últimas 5; la referencia se conserva). Sin --ocultar, se reutilizan las
+// zonas ocultas con las que se creó la referencia. Solo navega con GET.
 const fs = require('fs');
 const path = require('path');
 const { archivar } = require('../historial/historial.js');
@@ -74,6 +75,8 @@ function parsearResoluciones(txt) {
   });
 }
 
+// Zonas ocultas: si no se pasa --ocultar, se usan las de la referencia (si no, cambian solas y dan diferencias falsas).
+const ocultarEfectivo = (a, ref) => (a.ocultar.length ? a.ocultar : (ref && ref.config && ref.config.ocultar) || []);
 const idPantalla = (n, url, res) => `${String(n).padStart(2, '0')}-${slug(url)}-${res}`;
 
 async function descubrir(page, inicio, a) {
@@ -267,6 +270,7 @@ async function main() {
   const refArch = path.join(dirRef, 'referencia.json');
   const hayRef = fs.existsSync(refArch) && !a.referencia;
   const ref = hayRef ? JSON.parse(fs.readFileSync(refArch, 'utf8')) : null;
+  a.ocultar = ocultarEfectivo(a, ref);
 
   archivar(carpeta, GENERADOS, 'pixel-perfect.json'); // la corrida anterior pasa a historial/ (últimas 5)
   for (const n of GENERADOS) fs.rmSync(path.join(carpeta, n), { recursive: true, force: true });
@@ -429,4 +433,4 @@ if (require.main === module) {
   main().catch((e) => { console.error(`Error: ${e.message}`); process.exit(1); });
 }
 
-module.exports = { argumentos, parsearResoluciones, hallazgosDe, idPantalla, descubrir, GENERADOS };
+module.exports = { argumentos, parsearResoluciones, hallazgosDe, idPantalla, ocultarEfectivo, descubrir, GENERADOS };

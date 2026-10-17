@@ -25,7 +25,8 @@ JSON de entrada:
 
 "falta_info" (opcional, por caso): el caso depende de información que falta (skill
 investigacion-contexto). Se marca en el detalle del caso y se avisa debajo del resumen;
-con "falta_informacion" se agrega la sección "Falta información" al final.
+con "falta_informacion" (un objeto por ítem: id, que_falta, pregunta, estado) se agrega la sección
+"Falta información" al final.
 
 Estados:  Aprobado | Fallido | Bloqueado
 Prioridad: Crítica | Alta | Media | Baja
@@ -124,7 +125,8 @@ def build_html(data, dir_html=None):
     body.append(_duraciones(casos))
     body.append(section("Detalle de casos", _tabla(casos, dir_html), f"{len(casos)} casos · clic en la evidencia para ampliarla"))
 
-    faltan = data.get("falta_informacion") or []
+    # Lo esperado es un objeto por ítem; un "FI-01" suelto se acepta como {"id": "FI-01"} (no corta el reporte).
+    faltan = [f if isinstance(f, dict) else {"id": str(f)} for f in (data.get("falta_informacion") or [])]
     if faltan:
         filas = [[f'<span class="id mono">{e(f.get("id", ""))}</span>', e(f.get("que_falta", "")),
                   e(f.get("pregunta", "")) or '<span class="muted">—</span>', e(f.get("estado", "Abierto"))] for f in faltan]

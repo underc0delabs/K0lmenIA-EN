@@ -5,6 +5,7 @@
 //                            [--resoluciones 1366x768,390x844] [--tags "@HU-001"] [--historia HU-001]
 //                            [--url https://mi-app.com] [--paginas url1,url2] [--max-paginas 6]
 //                            [--base chromium] [--tolerancia-px 6] [--umbral 0.1] [--ocultar ".banner"] [--headed]
+//                            [--reintentos 2]
 //
 // Dos modos (por defecto, suite si hay .feature en web/features; si no, páginas):
 //   suite   → corre la suite web de k0lmena (npm test) una vez por navegador y resolución, cada una
@@ -16,6 +17,14 @@
 //             contra el navegador base: errores de JavaScript, de consola y recursos que fallan solo
 //             en un navegador, desborde horizontal, elementos que faltan o se corren, cambios de
 //             estilo y porcentaje de la pantalla que se ve distinto.
+//
+// Contra los falsos positivos: lo que falla solo en un navegador se confirma antes de informarlo.
+// En suite, el escenario se repite en ese navegador (--reintentos, 2 por defecto): si pasa, es
+// "Inestable" y no una diferencia. En páginas, la página se recarga en todos los navegadores: si el
+// error no se repite es intermitente, y si aparece en otro, se descarta. Además los errores se
+// comparan por su origen y sus palabras propias (cada motor los redacta distinto), se ignora el ruido
+// de consola de cada motor, se ocultan las barras de scroll y los corrimientos por la medida del texto
+// pesan poco (importan si algo queda fuera de la pantalla).
 //
 // Los navegadores que no están instalados se informan con el comando para instalarlos
 // (npx playwright install firefox webkit). WebKit es el motor de Safari; en Windows y Linux es una
@@ -39,8 +48,83 @@ const NAVEGADORES = ['chromium', 'firefox', 'webkit'];
 const NOMBRE = { chromium: 'Chromium (Chrome, Edge)', firefox: 'Firefox', webkit: 'WebKit (Safari)' };
 const SEV_ORDEN = { 'Crítica': 0, 'Alta': 1, 'Media': 2, 'Baja': 3 };
 
+// ------------------------------------------------------------------ errores y recursos entre motores
+// Cada motor redacta distinto el MISMO error: Chromium "Cannot read properties of undefined (reading
+// 'total')", Firefox "can't access property \"total\", e is undefined", WebKit "undefined is not an
+// object (evaluating 'e.total')". Comparar el texto exacto marcaba como "solo en Firefox" errores que
+// pasan en todos. Se comparan por el lugar del código (archivo:línea:columna) o por las palabras
+// propias del error (nombres de variables, propiedades y URLs), sin el vocabulario de cada motor.
+const GENERICAS = new Set(('cannot can not read properties property access accessing undefined null is are of the to on in at for from with ' +
+  'reading setting set get function object objects not defined uncaught error typeerror referenceerror syntaxerror rangeerror evaluating ' +
+  'invalid unexpected token failed execute because was has been this that its value values type too much recursion maximum call stack ' +
+  'size exceeded promise rejection unhandled script line column constructor instance assignment const variable before initialization ' +
+  'lexical declaration').split(' '));
+
+/** URL sin query ni hash: el mismo recurso con otro cache-buster es el mismo recurso. */
+function claveRecurso(u) {
+  try { const x = new URL(u); return `${x.origin}${x.pathname}`; } catch { return String(u).split(/[?#]/)[0]; }
+}
+
+/** Palabras propias de un mensaje de error (sin las genéricas de cada motor) y sus URLs. */
+function tokensError(texto) {
+  const s = new Set();
+  const URLS = /(?:https?|file):\/\/[^\s'"`)]+/g;
+  for (const u of String(texto).match(URLS) || []) s.add(claveRecurso(u.replace(/:\d+(:\d+)?$/, '')));
+  for (const w of String(texto).replace(URLS, ' ').match(/[A-Za-z_$][\w$]*/g) || []) {
+    const l = w.toLowerCase();
+    if (l.length >= 3 && !GENERICAS.has(l)) s.add(l);
+  }
+  return s;
+}
+
+/** archivo:línea:columna del primer frame con URL de un stack (Chromium "at f (url:l:c)", Firefox/WebKit "f@url:l:c"). */
+function origenDe(stack) {
+  const m = String(stack || '').match(/((?:https?|file):\/\/[^\s)]+?):(\d+):(\d+)/);
+  return m ? `${claveRecurso(m[1])}:${m[2]}:${m[3]}` : null;
+}
+
+/** ¿Son el mismo error (o mensaje de consola) en dos motores? */
+function mismoError(a, b) {
+  if (a.origen && b.origen && a.origen === b.origen) return true;
+  if (a.mensaje === b.mensaje) return true;
+  const ta = tokensError(a.mensaje);
+  const tb = tokensError(b.mensaje);
+  return [...ta].some((t) => tb.has(t));
+}
+
+// Mensajes de consola que dependen del motor y no de la app: no son incompatibilidades.
+const RUIDO_CONSOLA = [
+  /^Failed to load resource/i, // Chromium y WebKit lo escriben por cada recurso que falla (Firefox no); los recursos se revisan aparte
+  /source ?map/i,
+  /downloadable font/i,
+  /^Cookie\b.*(rejected|expired|SameSite)/i,
+  /Partitioned cookie|storage access/i,
+  /Feature Policy|Permissions[- ]Policy/i,
+  /Quirks Mode|Layout was forced|character encoding/i,
+  /preload(ed)?\b.*\bnot used/i,
+];
+const esRuidoConsola = (t) => RUIDO_CONSOLA.some((r) => r.test(t));
+
+// Pedidos cancelados (el navegador abortó la descarga: navegación, lazy load, precarga): no son fallas.
+const esCancelado = (t) => /ABORT|cancel/i.test(String(t || ''));
+// Recursos que cada navegador pide por su cuenta (Firefox pide /favicon.ico aunque la página no lo declare).
+const esRecursoPropioDelNavegador = (u) => /\/favicon\.ico$|apple-touch-icon/i.test(claveRecurso(u)) || /^(data|blob):/i.test(u);
+
+// Los errores de los dos motores (o de las dos recargas) se comparan en estos tipos de hallazgo.
+const DE_EJECUCION = new Set(['Error de JavaScript', 'Error de consola', 'Recurso que falla', 'Respuesta distinta']);
+const VISUALES = new Set(['Elemento faltante', 'Bloque desplazado', 'Elemento corrido', 'Estilo distinto', 'Se ve distinto']);
+
+/** Distancia máxima por canal entre dos colores #rrggbb (o Infinity si alguno no es un color). */
+function distanciaColor(a, b) {
+  const p = (c) => (/^#[0-9a-f]{6}$/i.test(c) ? [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)) : null);
+  const x = p(a);
+  const y = p(b);
+  if (!x || !y) return a === b ? 0 : Infinity;
+  return Math.max(...x.map((v, i) => Math.abs(v - y[i])));
+}
+
 function argumentos(argv) {
-  const a = { navegadores: NAVEGADORES, base: 'chromium', maxPaginas: 6, profundidad: 1, tolerancia: 6, umbral: 0.1, ocultar: [], headed: false };
+  const a = { navegadores: NAVEGADORES, base: 'chromium', maxPaginas: 6, profundidad: 1, tolerancia: 6, umbral: 0.1, ocultar: [], headed: false, reintentos: 2 };
   for (let i = 0; i < argv.length; i++) {
     const k = argv[i];
     const v = () => argv[++i];
@@ -59,6 +143,7 @@ function argumentos(argv) {
     else if (k === '--ocultar') a.ocultar = v().split(',').map((x) => x.trim()).filter(Boolean);
     else if (k === '--salida') a.salida = v();
     else if (k === '--headed') a.headed = true;
+    else if (k === '--reintentos') a.reintentos = parseInt(v(), 10);
     else if (k === '-h' || k === '--help') a.ayuda = true;
     else throw new Error(`Opción desconocida: ${k}`);
   }
@@ -66,6 +151,7 @@ function argumentos(argv) {
   if (malos.length) throw new Error(`Navegador desconocido: ${malos.join(', ')}. Opciones: ${NAVEGADORES.join(', ')}.`);
   if (a.modo && !['suite', 'paginas'].includes(a.modo)) throw new Error('--modo: suite o paginas.');
   if (!a.navegadores.includes(a.base)) a.base = a.navegadores[0];
+  if (!Number.isInteger(a.reintentos) || a.reintentos < 0 || a.reintentos > 5) throw new Error('--reintentos: un número de 0 a 5.');
   return a;
 }
 
@@ -132,6 +218,26 @@ function leerCucumber(archivo) {
   return [...salida.values()];
 }
 
+// cucumber-js con node directo (sin shell: los nombres de .feature con espacios o & no rompen nada).
+function correrCucumber(env, extra = []) {
+  let bin = null;
+  try {
+    const pkg = require.resolve('@cucumber/cucumber/package.json', { paths: [K0] });
+    const b = require(pkg).bin;
+    bin = path.join(path.dirname(pkg), typeof b === 'string' ? b : b['cucumber-js']);
+  } catch { /* sin package.json exportado: se usa npx */ }
+  const opciones = { cwd: K0, env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 };
+  if (bin && fs.existsSync(bin)) return spawnSync(process.execPath, [bin, '--profile', 'web', ...extra], opciones);
+  return spawnSync('npx cucumber-js --profile web', { ...opciones, shell: true });
+}
+
+function envSuite(a, c, dir) {
+  const env = { ...process.env, BROWSER: c.navegador, REPORT_DIR: dir, VIEWPORT_WIDTH: String(c.res.ancho),
+    VIEWPORT_HEIGHT: String(c.res.alto), EVIDENCE: 'captura', HEADLESS: a.headed ? 'false' : 'true' };
+  if (a.tags) env.TAGS = a.tags;
+  return env;
+}
+
 function correrSuite(a, combos, carpeta, rel) {
   const dirSuite = path.join(carpeta, 'suite');
   const dirCap = path.join(carpeta, 'capturas');
@@ -141,10 +247,7 @@ function correrSuite(a, combos, carpeta, rel) {
     fs.mkdirSync(dir, { recursive: true });
     process.stdout.write(`Suite web en ${c.id.padEnd(18)} `);
     const t0 = Date.now();
-    const env = { ...process.env, BROWSER: c.navegador, REPORT_DIR: dir, VIEWPORT_WIDTH: String(c.res.ancho),
-      VIEWPORT_HEIGHT: String(c.res.alto), EVIDENCE: 'captura', HEADLESS: a.headed ? 'false' : 'true' };
-    if (a.tags) env.TAGS = a.tags;
-    const r = spawnSync('npx cucumber-js --profile web', { cwd: K0, env, shell: true, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    const r = correrCucumber(envSuite(a, c, dir));
     const escenarios = leerCucumber(path.join(dir, 'cucumber-report.json'));
     for (const e of escenarios) {
       if (e._captura) {
@@ -164,10 +267,42 @@ function correrSuite(a, combos, carpeta, rel) {
   return corridas;
 }
 
+// Un escenario que falla solo en un navegador se repite ahí (a.reintentos veces, hasta que pase):
+// una falla de una sola vez es inestabilidad (tiempos, datos, red), no una incompatibilidad.
+// Guarda en cada escenario `reintentos`: el estado de cada repetición.
+function confirmarSuite(a, combos, corridas, carpeta) {
+  if (!a.reintentos) return 0;
+  const { filas } = analizarSuite(corridas);
+  let repetidos = 0;
+  for (const f of filas.filter((x) => x.clase === 'Diferencia entre navegadores')) {
+    for (const [comboId, r] of Object.entries(f.resultados)) {
+      if (r.estado !== 'Fallido') continue;
+      const c = combos.find((x) => x.id === comboId);
+      const esc = corridas.find((x) => x.id === comboId).escenarios.find((e) => e.clave === f.clave);
+      esc.reintentos = [];
+      for (let i = 1; i <= a.reintentos; i++) {
+        const dir = path.join(carpeta, 'suite', `${comboId}-repeticion`, String(repetidos + 1));
+        fs.mkdirSync(dir, { recursive: true });
+        process.stdout.write(`Repito en ${comboId.padEnd(18)} ${f.escenario.slice(0, 50)} (${i}/${a.reintentos}) `);
+        correrCucumber(envSuite(a, c, dir), [`${f.uri}:${f.linea}`]);
+        const otra = leerCucumber(path.join(dir, 'cucumber-report.json')).find((e) => e.clave === f.clave);
+        const estado = otra ? otra.estado : 'Sin resultado';
+        esc.reintentos.push(estado);
+        repetidos++;
+        console.log(`→ ${estado}`);
+        if (estado === 'Aprobado') break;
+      }
+    }
+  }
+  return repetidos;
+}
+
 const comboTxt = (id) => { const [n, r] = id.split('-'); return `${NOMBRE[n] ? NOMBRE[n].split(' ')[0] : n} ${r || ''}`.trim(); };
 const listaTxt = (ids) => ids.map(comboTxt).join(', ');
 
-function analizarSuite(corridas, base) {
+const POR_TIEMPO = /timeout|timed out|exceeded|tiempo de espera/i;
+
+function analizarSuite(corridas) {
   const claves = new Map();
   for (const c of corridas) for (const e of c.escenarios) if (!claves.has(e.clave)) claves.set(e.clave, e);
   const filas = [];
@@ -176,27 +311,46 @@ function analizarSuite(corridas, base) {
     const res = {};
     for (const c of corridas) {
       const e = c.escenarios.find((x) => x.clave === clave);
-      res[c.id] = e ? { estado: e.estado, paso: e.paso, error: e.error, captura: e.captura, duracion_s: e.duracion_s }
+      // Falló, pero pasó al repetirlo: inestable en ese navegador, no incompatible.
+      const estado = e && e.estado === 'Fallido' && (e.reintentos || []).includes('Aprobado') ? 'Inestable' : e && e.estado;
+      res[c.id] = e ? { estado, paso: e.paso, error: e.error, captura: e.captura, duracion_s: e.duracion_s, ...(e.reintentos ? { reintentos: e.reintentos } : {}) }
         : { estado: c.error ? 'Sin resultado' : 'No corrió' };
     }
     const estados = Object.values(res).map((x) => x.estado);
     const fallan = Object.entries(res).filter(([, x]) => x.estado === 'Fallido').map(([k]) => k);
     const pasan = Object.entries(res).filter(([, x]) => x.estado === 'Aprobado').map(([k]) => k);
+    const inestables = Object.entries(res).filter(([, x]) => x.estado === 'Inestable').map(([k]) => k);
     let clase;
     if (estados.every((s) => s === 'Aprobado')) clase = 'Pasa en todos';
-    else if (fallan.length && !pasan.length) clase = 'Falla en todos';
-    else if (fallan.length && pasan.length) clase = 'Diferencia entre navegadores';
+    else if (fallan.length && !pasan.length && !inestables.length) clase = 'Falla en todos';
+    else if (fallan.length) clase = 'Diferencia entre navegadores';
+    else if (inestables.length && estados.every((s) => s === 'Aprobado' || s === 'Inestable')) clase = 'Inestable';
     else clase = 'Sin resultado completo';
     filas.push({ clave, escenario: e0.escenario, feature: e0.feature, uri: e0.uri, linea: e0.linea, historia: e0.historia,
       caso: e0.caso, clase, resultados: res });
     const ident = [e0.historia, e0.caso].filter(Boolean).join(' · ');
     if (clase === 'Diferencia entre navegadores') {
       const err = res[fallan[0]];
-      hallazgos.push({ tipo: 'Falla solo en algunos navegadores', severidad: 'Alta',
-        titulo: `${ident ? `${ident} · ` : ''}${e0.escenario}: falla en ${listaTxt(fallan)} y pasa en ${listaTxt(pasan)}`,
-        detalle: `Paso que falla: ${err.paso || '—'}. ${(err.error || '').split('\n')[0].slice(0, 220)}`,
-        escenario: clave, fallan, pasan, error: err.error, paso: err.paso,
-        evidencias: [...fallan, ...pasan.slice(0, 1)].map((k) => ({ combo: k, estado: res[k].estado, captura: res[k].captura })).filter((x) => x.captura) });
+      const pasanTodos = [...pasan, ...inestables];
+      const repetido = fallan.every((k) => (res[k].reintentos || []).length);
+      const porTiempo = POR_TIEMPO.test(err.error || '');
+      const notas = [];
+      if (repetido) notas.push(`Se repitió y volvió a fallar (${fallan.map((k) => `${comboTxt(k)}: ${res[k].reintentos.length + 1} de ${res[k].reintentos.length + 1}`).join(', ')}).`);
+      else notas.push('Falló una sola vez: sin repetir no se sabe si es del navegador o inestable.');
+      if (porTiempo) notas.push('Falla por tiempo de espera: puede ser que ese motor sea más lento (revisá las esperas del paso) y no una incompatibilidad.');
+      hallazgos.push({ tipo: 'Falla solo en algunos navegadores', severidad: repetido && !porTiempo ? 'Alta' : 'Media', confirmado: repetido,
+        titulo: `${ident ? `${ident} · ` : ''}${e0.escenario}: falla en ${listaTxt(fallan)} y pasa en ${listaTxt(pasanTodos)}`,
+        detalle: `Paso que falla: ${err.paso || '—'}. ${(err.error || '').split('\n')[0].slice(0, 220)} ${notas.join(' ')}`.trim(),
+        escenario: clave, fallan, pasan: pasanTodos, error: err.error, paso: err.paso,
+        evidencias: [...fallan, ...pasanTodos.slice(0, 1)].map((k) => ({ combo: k, estado: res[k].estado, captura: res[k].captura })).filter((x) => x.captura) });
+    } else if (clase === 'Inestable') {
+      const err = res[inestables[0]];
+      hallazgos.push({ tipo: 'Inestable', severidad: 'Baja', confirmado: false,
+        titulo: `${ident ? `${ident} · ` : ''}${e0.escenario}: falló en ${listaTxt(inestables)} y pasó al repetirlo`,
+        detalle: 'No es una diferencia entre navegadores: el escenario es inestable (tiempos, datos o red). Analizalo con el analista-fallos. ' +
+          `Primer intento: ${err.paso || '—'}. ${(err.error || '').split('\n')[0].slice(0, 200)}`,
+        escenario: clave, fallan: [], pasan: Object.keys(res), inestables, error: err.error, paso: err.paso,
+        evidencias: inestables.map((k) => ({ combo: k, estado: 'Inestable', captura: res[k].captura })).filter((x) => x.captura) });
     } else if (clase === 'Falla en todos') {
       const err = res[fallan[0]];
       hallazgos.push({ tipo: 'Falla en todos los navegadores', severidad: 'Media',
@@ -211,62 +365,123 @@ function analizarSuite(corridas, base) {
 }
 
 // ------------------------------------------------------------------ modo páginas
+// Contexto de cada combinación. Firefox no soporta isMobile: en mobile solo emula el tamaño y la
+// pantalla táctil, y sus diferencias visuales en mobile pesan menos (ver analizarPaginas).
+function opcionesContexto(c) {
+  const movil = c.res.ancho < 768;
+  return { viewport: { width: c.res.ancho, height: c.res.alto }, deviceScaleFactor: 1, locale: process.env.LOCALE || 'es-AR',
+    ...(movil ? { hasTouch: true, ...(c.navegador !== 'firefox' ? { isMobile: true } : {}) } : {}) };
+}
+
+// Lo que pasa al ejecutar la página: errores de JavaScript (con el lugar del código), de consola
+// (sin el ruido propio de cada motor), recursos que fallan y qué recursos se pidieron.
+function escuchar(page, m) {
+  m._errores = [];
+  m._consola = [];
+  m._fallidos = [];
+  m._pedidos = new Set();
+  page.on('pageerror', (e) => m._errores.push({ mensaje: String(e.message || e).split('\n')[0].slice(0, 300), origen: origenDe(e.stack) }));
+  page.on('console', (msg) => {
+    if (msg.type() !== 'error') return;
+    const mensaje = msg.text().slice(0, 300);
+    if (esRuidoConsola(mensaje)) return;
+    const loc = msg.location() || {};
+    m._consola.push({ mensaje, origen: loc.url ? `${claveRecurso(loc.url)}:${loc.lineNumber}:${loc.columnNumber}` : null });
+  });
+  page.on('request', (rq) => m._pedidos.add(claveRecurso(rq.url())));
+  page.on('requestfailed', (rq) => {
+    const f = rq.failure();
+    if (f && !esCancelado(f.errorText) && !esRecursoPropioDelNavegador(rq.url())) m._fallidos.push({ url: rq.url(), error: f.errorText });
+  });
+  page.on('response', (rs) => {
+    if (rs.status() >= 400 && rs.request().resourceType() !== 'document' && !esRecursoPropioDelNavegador(rs.url())) {
+      m._fallidos.push({ url: rs.url(), error: `HTTP ${rs.status()}` });
+    }
+  });
+}
+
+// Deja en m lo escuchado, sin repetidos (los detalles para comparar y los textos para el informe).
+function cerrarEscucha(m) {
+  const unicos = (xs) => [...new Map(xs.map((x) => [x.mensaje, x])).values()];
+  m.errores_js_det = unicos(m._errores);
+  m.errores_consola_det = unicos(m._consola);
+  m.errores_js = m.errores_js_det.map((x) => x.mensaje);
+  m.errores_consola = m.errores_consola_det.map((x) => x.mensaje);
+  m.recursos_fallidos = [...new Map(m._fallidos.map((r) => [claveRecurso(r.url), r])).values()];
+  delete m._errores; delete m._consola; delete m._fallidos;
+}
+
+// Abre la página en un contexto nuevo y mide solo lo de ejecución (para la recarga de confirmación).
+async function medirEjecucion(browser, c, u) {
+  const ctx = await browser.newContext(opcionesContexto(c));
+  const m = { url: u, combo: c.id };
+  try {
+    const page = await ctx.newPage();
+    escuchar(page, m);
+    const { resp } = await cargar(page, u);
+    m.status = resp ? resp.status() : 0;
+    await recorrerScroll(page);
+  } catch (e) {
+    m.error = String(e.message || e).split('\n')[0].slice(0, 200);
+  } finally {
+    if (m._errores) cerrarEscucha(m);
+    await ctx.close().catch(() => {});
+  }
+  return m;
+}
+
 async function recorrerPaginas(a, combos, paginas, carpeta, rel) {
   const pw = require('playwright');
   const dirCap = path.join(carpeta, 'capturas');
   const medidas = {}; // `${pagina}|${combo}` → datos
   for (const c of combos) {
     const browser = await pw[c.navegador].launch({ headless: !a.headed });
-    const movil = c.res.ancho < 768;
-    for (const [i, u] of paginas.entries()) {
-      const id = `${String(i + 1).padStart(2, '0')}-${slug(u)}`;
-      process.stdout.write(`[${c.id.padEnd(18)}] ${u} `);
-      const ctx = await browser.newContext({ viewport: { width: c.res.ancho, height: c.res.alto }, deviceScaleFactor: 1,
-        locale: process.env.LOCALE || 'es-AR', ...(movil && c.navegador !== 'firefox' ? { isMobile: true, hasTouch: true } : {}) });
-      const page = await ctx.newPage();
-      const m = { pagina: id, url: u, combo: c.id, navegador: c.navegador, resolucion: c.res.id, errores_js: [], errores_consola: [], recursos_fallidos: [] };
-      page.on('pageerror', (e) => m.errores_js.push(String(e.message || e).split('\n')[0].slice(0, 300)));
-      page.on('console', (msg) => { if (msg.type() === 'error') m.errores_consola.push(msg.text().slice(0, 300)); });
-      page.on('requestfailed', (rq) => {
-        const f = rq.failure();
-        if (f && !/ABORTED|NS_BINDING_ABORTED|cancelled/i.test(f.errorText)) m.recursos_fallidos.push({ url: rq.url(), error: f.errorText });
-      });
-      page.on('response', (rs) => { if (rs.status() >= 400 && rs.request().resourceType() !== 'document') m.recursos_fallidos.push({ url: rs.url(), error: `HTTP ${rs.status()}` }); });
-      try {
-        const { resp, ms } = await cargar(page, u);
-        m.status = resp ? resp.status() : 0;
-        m.tiempo_ms = ms;
-        await recorrerScroll(page);
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await visual.estabilizar(page, { ocultar: a.ocultar });
-        const med = await visual.medirElementos(page);
-        m.elementos = med.elementos;
-        m.alto = med.alto;
-        m.desborde = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-        const arch = path.join(dirCap, `${id}-${c.id}.png`);
-        const alto = Math.min(med.alto, 10000);
-        await page.screenshot({ path: arch, fullPage: alto === med.alto, timeout: 30000,
-          ...(alto < med.alto ? { clip: { x: 0, y: 0, width: c.res.ancho, height: alto } } : {}) });
-        m.captura = rel(arch);
-        m._archivo = arch;
-        console.log(`→ ${m.status} · ${m.errores_js.length} error(es) JS`);
-      } catch (e) {
-        m.error = String(e.message || e).split('\n')[0].slice(0, 200);
-        console.log(`→ error: ${m.error}`);
+    try {
+      for (const [i, u] of paginas.entries()) {
+        const id = `${String(i + 1).padStart(2, '0')}-${slug(u)}`;
+        process.stdout.write(`[${c.id.padEnd(18)}] ${u} `);
+        const ctx = await browser.newContext(opcionesContexto(c));
+        const page = await ctx.newPage();
+        const m = { pagina: id, url: u, combo: c.id, navegador: c.navegador, resolucion: c.res.id };
+        escuchar(page, m);
+        try {
+          const { resp, ms } = await cargar(page, u);
+          m.status = resp ? resp.status() : 0;
+          m.tiempo_ms = ms;
+          // Mismo ancho útil en todos los motores (ver CSS_SIN_SCROLLBAR).
+          await page.addStyleTag({ content: visual.CSS_SIN_SCROLLBAR }).catch(() => {});
+          await recorrerScroll(page);
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await visual.estabilizar(page, { ocultar: a.ocultar });
+          const med = await visual.medirElementos(page);
+          m.elementos = med.elementos;
+          m.alto = med.alto;
+          m.desborde = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+          const arch = path.join(dirCap, `${id}-${c.id}.png`);
+          const alto = Math.min(med.alto, 10000);
+          await page.screenshot({ path: arch, fullPage: alto === med.alto, timeout: 30000,
+            ...(alto < med.alto ? { clip: { x: 0, y: 0, width: c.res.ancho, height: alto } } : {}) });
+          m.captura = rel(arch);
+          m._archivo = arch;
+          console.log(`→ ${m.status} · ${m._errores.length} error(es) JS`);
+        } catch (e) {
+          m.error = String(e.message || e).split('\n')[0].slice(0, 200);
+          console.log(`→ error: ${m.error}`);
+        }
+        cerrarEscucha(m);
+        medidas[`${id}|${c.id}`] = m;
+        await ctx.close().catch(() => {});
       }
-      m.errores_js = [...new Set(m.errores_js)];
-      m.errores_consola = [...new Set(m.errores_consola)];
-      m.recursos_fallidos = [...new Map(m.recursos_fallidos.map((r) => [r.url, r])).values()];
-      medidas[`${id}|${c.id}`] = m;
-      await ctx.close();
+    } finally {
+      await browser.close().catch(() => {});
     }
-    await browser.close();
   }
   return medidas;
 }
 
 const textoEl = (e) => (e.texto ? `“${e.texto.slice(0, 50)}”` : e.desc);
 const caja = (e) => ({ x: e.x, y: e.y, w: e.w, h: e.h });
+const bajarA = (sev, tope) => (SEV_ORDEN[sev] < SEV_ORDEN[tope] ? tope : sev);
 
 function analizarPaginas(a, combos, paginas, medidas, carpeta, rel) {
   const dirDif = path.join(carpeta, 'diferencias');
@@ -281,40 +496,68 @@ function analizarPaginas(a, combos, paginas, medidas, carpeta, rel) {
       const base = cs.find((c) => c.navegador === a.base) || cs[0];
       const mb = medidas[`${id}|${base.id}`];
       const fila = { pagina: id, url: u, resolucion: res, base: base.id, resultados: {} };
-      // Lo que pasa en todos no es un problema de navegador (lo ve el explorador-web).
-      const enTodos = (campo, f = (x) => x) => {
-        const conj = cs.map((c) => new Set((medidas[`${id}|${c.id}`] || {})[campo] ? medidas[`${id}|${c.id}`][campo].map(f) : []));
-        return new Set([...conj[0]].filter((x) => conj.every((s) => s.has(x))));
-      };
-      const jsTodos = enTodos('errores_js');
-      const recTodos = enTodos('recursos_fallidos', (r) => r.url);
       for (const c of cs) {
         const m = medidas[`${id}|${c.id}`];
         const r = { estado: 'OK', captura: m && m.captura, errores_js: m ? m.errores_js.length : 0, desborde: m ? m.desborde : null,
           tiempo_ms: m && m.tiempo_ms, status: m && m.status };
         fila.resultados[c.id] = r;
         if (!m || m.error) { r.estado = 'Error'; r.error = m ? m.error : 'sin datos'; continue; }
+        // Solo se compara contra los navegadores que cargaron la página: si uno no cargó, lo del
+        // resto no pasa a ser "exclusivo".
+        const otros = cs.filter((x) => x.id !== c.id).map((x) => medidas[`${id}|${x.id}`]).filter((x) => x && !x.error);
+        if (!otros.length) continue;
+        const movilFirefox = c.navegador === 'firefox' && c.res.ancho < 768;
         const propios = [];
-        const h = (x) => { propios.push(x); hallazgos.push({ pagina: id, url: u, resolucion: res, navegador: c.navegador, combo: c.id, ...x }); };
-        for (const err of m.errores_js.filter((x) => !jsTodos.has(x))) {
-          h({ tipo: 'Error de JavaScript', severidad: 'Alta', titulo: `Error de JavaScript solo en ${NOMBRE[c.navegador]}`, detalle: err, captura: m.captura });
+        const h = (x) => {
+          if (movilFirefox && VISUALES.has(x.tipo)) {
+            x.severidad = 'Baja';
+            x.detalle += ' Firefox no emula un teléfono (sin isMobile): puede mostrar partes de la versión de escritorio. Confirmalo en Firefox para Android antes de reportarlo.';
+          }
+          propios.push(x);
+          hallazgos.push({ pagina: id, url: u, resolucion: res, navegador: c.navegador, combo: c.id, ...x });
+        };
+
+        // Errores de JavaScript y de consola: exclusivos si ningún otro motor tuvo el mismo error
+        // (mismo lugar del código o mismas palabras propias). Si los otros también tuvieron errores
+        // sin pareja, puede ser el mismo con otro mensaje: pesa menos.
+        const revisarErrores = (campo, tipo, severidad) => {
+          const deOtros = otros.flatMap((o) => o[campo] || []);
+          const sinPar = (m[campo] || []).filter((e) => !deOtros.some((x) => mismoError(e, x)));
+          const otrosSinPar = deOtros.filter((x) => !(m[campo] || []).some((e) => mismoError(e, x)));
+          for (const err of sinPar.slice(0, 5)) {
+            const dudoso = otrosSinPar.length > 0;
+            h({ tipo, severidad: dudoso ? 'Baja' : severidad, titulo: `${tipo} solo en ${NOMBRE[c.navegador]}`,
+              detalle: err.mensaje + (dudoso ? ' (Los otros navegadores también tuvieron errores en esta página con otro texto: puede ser el mismo error redactado por otro motor.)' : ''),
+              error_det: err, captura: m.captura });
+          }
+        };
+        revisarErrores('errores_js_det', 'Error de JavaScript', 'Alta');
+        revisarErrores('errores_consola_det', 'Error de consola', 'Media');
+
+        // Recursos: falla en este y otro navegador lo cargó bien → del navegador. Si ningún otro lo
+        // pidió, cada motor eligió otro archivo (srcset, formato de fuente, precarga): pesa menos.
+        for (const rf of m.recursos_fallidos.slice(0, 8)) {
+          const k = claveRecurso(rf.url);
+          const fallaEn = (o) => o.recursos_fallidos.some((x) => claveRecurso(x.url) === k);
+          if (otros.every(fallaEn)) continue;
+          const nadieMasLoPidio = otros.every((o) => o._pedidos && !o._pedidos.has(k));
+          h({ tipo: 'Recurso que falla', severidad: nadieMasLoPidio ? 'Baja' : 'Media', titulo: `No carga en ${NOMBRE[c.navegador]}: ${k.split('/').pop() || k}`,
+            detalle: `${rf.url} → ${rf.error}` + (nadieMasLoPidio ? ' (Los otros navegadores no pidieron este archivo: cada motor elige su versión de imágenes, fuentes o precargas.)' : ''),
+            recurso: k, captura: m.captura });
         }
-        const consolaOtros = new Set(cs.filter((x) => x.id !== c.id).flatMap((x) => (medidas[`${id}|${x.id}`] || {}).errores_consola || []));
-        for (const err of m.errores_consola.filter((x) => !consolaOtros.has(x) && !m.errores_js.some((j) => x.includes(j))).slice(0, 5)) {
-          h({ tipo: 'Error de consola', severidad: 'Media', titulo: `Error de consola solo en ${NOMBRE[c.navegador]}`, detalle: err, captura: m.captura });
-        }
-        for (const rf of m.recursos_fallidos.filter((x) => !recTodos.has(x.url)).slice(0, 5)) {
-          h({ tipo: 'Recurso que falla', severidad: 'Media', titulo: `No carga en ${NOMBRE[c.navegador]}: ${rf.url.split('/').pop() || rf.url}`,
-            detalle: `${rf.url} → ${rf.error}`, captura: m.captura });
-        }
-        const otrosDesb = cs.filter((x) => x.id !== c.id).map((x) => (medidas[`${id}|${x.id}`] || {}).desborde || 0);
+
+        const otrosDesb = otros.map((x) => x.desborde || 0);
         if (m.desborde > 4 && otrosDesb.some((d) => d <= 4)) {
           h({ tipo: 'Desborde horizontal', severidad: 'Media', titulo: `La página se sale ${m.desborde} px de ancho solo en ${NOMBRE[c.navegador]}`,
             detalle: 'Aparece scroll horizontal en este navegador y no en los demás: un elemento se renderiza más ancho.', captura: m.captura });
         }
-        if (m.status && mb && mb.status && m.status !== mb.status) {
-          h({ tipo: 'Respuesta distinta', severidad: 'Alta', titulo: `Responde ${m.status} en ${NOMBRE[c.navegador]} y ${mb.status} en ${NOMBRE[base.navegador]}`,
-            detalle: 'El servidor responde distinto según el navegador (detección de user agent).', captura: m.captura });
+        if (m.status && mb && !mb.error && mb.status && m.status !== mb.status) {
+          const bloqueo = [403, 429, 503].includes(m.status);
+          h({ tipo: 'Respuesta distinta', severidad: bloqueo ? 'Media' : 'Alta', titulo: `Responde ${m.status} en ${NOMBRE[c.navegador]} y ${mb.status} en ${NOMBRE[base.navegador]}`,
+            detalle: bloqueo
+              ? 'Puede ser una protección contra robots (Cloudflare, WAF) que bloquea a ese navegador automatizado, no a las personas: confirmalo a mano.'
+              : 'El servidor responde distinto según el navegador (detección de user agent).',
+            status_nav: m.status, captura: m.captura });
         }
         if (c.id !== base.id && mb && !mb.error && m._archivo && mb._archivo) {
           const cmp = visual.compararPng(mb._archivo, m._archivo, { umbral: a.umbral });
@@ -332,30 +575,38 @@ function analizarPaginas(a, combos, paginas, medidas, carpeta, rel) {
             if (cajaNav) { fs.writeFileSync(`${pref}-nav.png`, visual.recorteMarcado(m._archivo, v, cajaNav, [20, 168, 149])); x.nav_captura = rel(`${pref}-nav.png`); }
             return x;
           };
-          for (const f of el.faltantes.filter((x) => ['a', 'button', 'input', 'select', 'textarea', 'img', 'h1', 'h2', 'h3', 'form'].includes(x.tag)).slice(0, 8)) {
+          for (const f of filtrarFaltantes(el.faltantes, m.elementos).filter((x) => ['a', 'button', 'input', 'select', 'textarea', 'img', 'h1', 'h2', 'h3', 'form'].includes(x.tag)).slice(0, 8)) {
             h(conRecorte({ tipo: 'Elemento faltante', severidad: ['a', 'button', 'input', 'select', 'textarea', 'form'].includes(f.tag) ? 'Alta' : 'Media',
               titulo: `${textoEl(f)} no aparece en ${nombreNav}`, detalle: `${f.desc} está en ${NOMBRE[base.navegador]} y no se ve en ${nombreNav}.` }, caja(f), null));
           }
+          // Corrimientos: cada motor mide distinto el texto (fuentes, interlineado, suavizado), así que
+          // lo que se corre unos píxeles es normal. Importa cuando queda fuera de la pantalla.
+          const fuera = (e) => e.x + e.w > c.res.ancho + 2 || e.x < -2;
           for (const b of el.bloques.filter((x) => Math.hypot(x.dx, x.dy) >= 12).slice(0, 3)) {
-            h(conRecorte({ tipo: 'Bloque desplazado', severidad: Math.hypot(b.dx, b.dy) >= 40 ? 'Media' : 'Baja',
+            h(conRecorte({ tipo: 'Bloque desplazado', severidad: 'Baja',
               titulo: `${b.elementos} elementos desplazados ${b.dx ? `${b.dx} px en X ` : ''}${b.dy ? `${b.dy} px en Y` : ''} en ${nombreNav}`,
-              detalle: `Desde ${textoEl(b.desde)}: algo de arriba se renderiza con otro tamaño en ${nombreNav}.` }, caja(b.desde),
+              detalle: `Desde ${textoEl(b.desde)}: algo de arriba se renderiza con otro tamaño en ${nombreNav}. Suele ser la medida del texto en cada motor; importa si tapa o corta algo.` }, caja(b.desde),
             { ...caja(b.desde), x: b.desde.x + b.dx, y: b.desde.y + b.dy }));
           }
           for (const mv of el.movidos.filter((x) => Math.hypot(x.dx, x.dy) >= 12).slice(0, 8)) {
-            h(conRecorte({ tipo: 'Elemento corrido', severidad: mv.severidad, titulo: `${textoEl(mv)} se corre ${mv.dx >= 0 ? '+' : ''}${mv.dx} px en X y ${mv.dy >= 0 ? '+' : ''}${mv.dy} px en Y en ${nombreNav}`,
+            const saleDePantalla = fuera(mv.actual) && !fuera(mv);
+            h(conRecorte({ tipo: 'Elemento corrido', severidad: saleDePantalla ? 'Alta' : bajarA(mv.severidad, 'Media'),
+              titulo: saleDePantalla
+                ? `${textoEl(mv)} queda fuera de la pantalla en ${nombreNav}`
+                : `${textoEl(mv)} se corre ${mv.dx >= 0 ? '+' : ''}${mv.dx} px en X y ${mv.dy >= 0 ? '+' : ''}${mv.dy} px en Y en ${nombreNav}`,
               detalle: `${mv.desc}: (${mv.x}, ${mv.y}) en ${NOMBRE[base.navegador]} y (${mv.actual.x}, ${mv.actual.y}) en ${nombreNav}.`,
               delta: { dx: mv.dx, dy: mv.dy, dw: mv.dw, dh: mv.dh } }, caja(mv), caja(mv.actual)));
           }
-          for (const s of (el.estilos || []).filter((x) => x.prop === 'fondo' || x.prop === 'color').slice(0, 4)) {
+          // Colores: los motores convierten y redondean distinto; menos de 8 por canal no se ve.
+          for (const s of (el.estilos || []).filter((x) => (x.prop === 'fondo' || x.prop === 'color') && distanciaColor(x.de, x.a) > 8).slice(0, 4)) {
             const ej = s.elementos[0];
             h(conRecorte({ tipo: 'Estilo distinto', severidad: 'Media', titulo: `${s.elementos.length === 1 ? textoEl(ej) : `${s.elementos.length} elementos`}: ${s.nombre} ${s.de} → ${s.a} en ${nombreNav}`,
               detalle: `El ${s.nombre} se calcula distinto en ${nombreNav} (una propiedad CSS no soportada o con otro valor por defecto).`,
               estilo: { propiedad: s.prop, de: s.de, a: s.a } }, caja(ej), caja(ej.actual)));
           }
           if (cmp.pct > 15 && !propios.some((x) => ['Elemento faltante', 'Bloque desplazado', 'Elemento corrido'].includes(x.tipo))) {
-            h({ tipo: 'Se ve distinto', severidad: cmp.pct > 35 ? 'Media' : 'Baja', titulo: `El ${cmp.pct} % de la pantalla se ve distinto en ${nombreNav}`,
-              detalle: 'Cambia el renderizado (fuentes, suavizado, imágenes o estilos) aunque los elementos estén en su lugar: compará las capturas.',
+            h({ tipo: 'Se ve distinto', severidad: 'Baja', titulo: `El ${cmp.pct} % de la pantalla se ve distinto en ${nombreNav}`,
+              detalle: 'Cambia el renderizado (fuentes, suavizado, imágenes o estilos) aunque los elementos estén en su lugar: es normal entre motores; mirá las capturas solo si algo se ve roto.',
               captura: m.captura, base_captura: mb.captura, nav_captura: m.captura });
           }
         }
@@ -366,8 +617,81 @@ function analizarPaginas(a, combos, paginas, medidas, carpeta, rel) {
       filas.push(fila);
     }
   }
-  for (const k of Object.keys(medidas)) { delete medidas[k]._archivo; delete medidas[k].elementos; }
+  for (const k of Object.keys(medidas)) { delete medidas[k]._archivo; delete medidas[k].elementos; delete medidas[k]._pedidos; }
   return { filas, hallazgos };
+}
+
+// Un elemento "falta" solo si en el otro navegador no hay ninguno con la misma etiqueta y el mismo
+// texto: las claves se numeran por orden de aparición y un elemento de más arriba corre la numeración.
+function filtrarFaltantes(faltantes, elementosNav) {
+  const hay = new Set(elementosNav.filter((e) => e.texto).map((e) => `${e.tag}|${e.texto}`));
+  return faltantes.filter((f) => !(f.texto && hay.has(`${f.tag}|${f.texto}`)));
+}
+
+// ¿El hallazgo de ejecución aparece en esta medición?
+function aparece(hz, m) {
+  if (!m || m.error) return false;
+  if (hz.tipo === 'Error de JavaScript') return m.errores_js_det.some((x) => mismoError(hz.error_det, x));
+  if (hz.tipo === 'Error de consola') return m.errores_consola_det.some((x) => mismoError(hz.error_det, x));
+  if (hz.tipo === 'Recurso que falla') return m.recursos_fallidos.some((x) => claveRecurso(x.url) === hz.recurso);
+  if (hz.tipo === 'Respuesta distinta') return m.status === hz.status_nav;
+  return true;
+}
+
+// Los errores, recursos y respuestas que salieron solo en un navegador se confirman recargando la
+// página en todos los navegadores de esa resolución: si no se repite, era intermitente (red,
+// tiempos); si ahora aparece también en otro, no era del navegador.
+async function confirmarPaginas(a, combos, hallazgos) {
+  const aConfirmar = hallazgos.filter((hz) => DE_EJECUCION.has(hz.tipo) && hz.severidad !== 'Baja');
+  if (!aConfirmar.length || !a.reintentos) return { confirmados: 0, intermitentes: 0, descartados: [] };
+  const pantallas = new Map(); // `${url}|${resolucion}` → combos de esa resolución
+  for (const hz of aConfirmar) pantallas.set(`${hz.url}|${hz.resolucion}`, combos.filter((c) => c.res.id === hz.resolucion));
+  const nuevas = {};
+  const pw = require('playwright');
+  for (const nav of [...new Set(combos.map((c) => c.navegador))]) {
+    const browser = await pw[nav].launch({ headless: !a.headed });
+    try {
+      for (const [clave, cs] of pantallas) {
+        const url = clave.slice(0, clave.lastIndexOf('|'));
+        for (const c of cs.filter((x) => x.navegador === nav)) {
+          process.stdout.write(`Confirmo [${c.id.padEnd(18)}] ${url} `);
+          const m = await medirEjecucion(browser, c, url);
+          nuevas[`${url}|${c.id}`] = m;
+          console.log(m.error ? `→ error: ${m.error}` : '→ ok');
+        }
+      }
+    } finally {
+      await browser.close().catch(() => {});
+    }
+  }
+  return aplicarConfirmacion(aConfirmar, combos, nuevas, hallazgos);
+}
+
+// Separado de confirmarPaginas para poder probarlo sin navegador.
+function aplicarConfirmacion(aConfirmar, combos, nuevas, hallazgos) {
+  const descartados = [];
+  let confirmados = 0;
+  let intermitentes = 0;
+  for (const hz of aConfirmar) {
+    const otra = nuevas[`${hz.url}|${hz.combo}`];
+    if (!otra || otra.error) continue; // sin segunda medición, queda como estaba
+    const otros = combos.filter((c) => c.res.id === hz.resolucion && c.id !== hz.combo).map((c) => nuevas[`${hz.url}|${c.id}`]);
+    if (!aparece(hz, otra)) {
+      hz.confirmado = false;
+      hz.severidad = 'Baja';
+      hz.detalle += ' No se repitió al recargar la página: probablemente fue intermitente (red o tiempos), no del navegador.';
+      intermitentes++;
+    } else if (otros.some((o) => aparece(hz, o))) {
+      descartados.push(hz);
+    } else {
+      hz.confirmado = true;
+      hz.detalle += ' Confirmado: se repitió al recargar y no apareció en los otros navegadores.';
+      confirmados++;
+    }
+  }
+  for (const d of descartados) hallazgos.splice(hallazgos.indexOf(d), 1);
+  return { confirmados, intermitentes, descartados: descartados.map((d) => ({ tipo: d.tipo, navegador: d.navegador, url: d.url, detalle: d.detalle,
+    motivo: 'Al recargar también apareció en otro navegador: no es del navegador.' })) };
 }
 
 // El mismo error (o recurso) en varias páginas y resoluciones es un solo hallazgo con la lista de
@@ -447,14 +771,16 @@ async function main() {
   let datos;
   if (modo === 'suite') {
     const corridas = correrSuite(a, combos, carpeta, rel);
-    const { filas, hallazgos } = analizarSuite(corridas, a.base);
+    const repetidos = confirmarSuite(a, combos, corridas, carpeta);
+    const { filas, hallazgos } = analizarSuite(corridas);
     const cuenta = (c) => filas.filter((f) => f.clase === c).length;
     datos = { corridas: corridas.map((c) => ({ id: c.id, navegador: c.navegador, resolucion: c.res, duracion_s: c.duracion_s, error: c.error,
       reporte: c.reporte, aprobados: c.escenarios.filter((e) => e.estado === 'Aprobado').length,
       fallidos: c.escenarios.filter((e) => e.estado === 'Fallido').length, total: c.escenarios.length })),
     escenarios: filas, hallazgos,
     resumen: { escenarios: filas.length, pasan_en_todos: cuenta('Pasa en todos'), diferencias: cuenta('Diferencia entre navegadores'),
-      fallan_en_todos: cuenta('Falla en todos'), incompletos: cuenta('Sin resultado completo') } };
+      fallan_en_todos: cuenta('Falla en todos'), inestables: cuenta('Inestable'), incompletos: cuenta('Sin resultado completo'),
+      repeticiones: repetidos, confirmados: hallazgos.filter((h) => h.confirmado).length } };
   } else {
     const pw = require('playwright');
     const b = await pw[a.base].launch();
@@ -464,14 +790,18 @@ async function main() {
     console.log(`${paginas.length} página(s) × ${combos.length} combinación(es) de navegador y resolución`);
     const medidas = await recorrerPaginas(a, combos, paginas, carpeta, rel);
     const { filas, hallazgos } = analizarPaginas(a, combos, paginas, medidas, carpeta, rel);
+    const confirmacion = await confirmarPaginas(a, combos, hallazgos);
     const conProblemas = filas.filter((f) => Object.values(f.resultados).some((r) => r.estado === 'Con problemas')).length;
     const pcts = filas.flatMap((f) => Object.values(f.resultados).map((r) => r.pct).filter((x) => x != null));
     datos = { paginas: filas, medidas: Object.values(medidas), hallazgos,
       resumen: { paginas: paginas.length, pantallas: filas.length, comparaciones: pcts.length,
         sin_diferencias: filas.filter((f) => Object.values(f.resultados).every((r) => r.estado === 'OK')).length,
         con_problemas: conProblemas, pct_max: pcts.length ? Math.max(...pcts) : 0, pct_prom: pcts.length ? Math.round(pcts.reduce((s, x) => s + x, 0) / pcts.length * 100) / 100 : 0,
-        errores_js_exclusivos: hallazgos.filter((h) => h.tipo === 'Error de JavaScript').length } };
+        errores_js_exclusivos: hallazgos.filter((h) => h.tipo === 'Error de JavaScript' && h.severidad !== 'Baja').length,
+        confirmados: confirmacion.confirmados, intermitentes: confirmacion.intermitentes, descartados_al_confirmar: confirmacion.descartados.length },
+      descartados: confirmacion.descartados };
   }
+  for (const h of datos.hallazgos) { delete h.error_det; delete h.status_nav; }
   datos.hallazgos = agrupar(datos.hallazgos);
   datos.hallazgos.sort((x, y) => SEV_ORDEN[x.severidad] - SEV_ORDEN[y.severidad] || (y.pantallas || []).length - (x.pantallas || []).length);
   datos.hallazgos.forEach((h, i) => { h.id = `X-${String(i + 1).padStart(2, '0')}`; });
@@ -491,8 +821,8 @@ async function main() {
   const salida = path.join(carpeta, 'cross-browser.json');
   fs.writeFileSync(salida, JSON.stringify(resultado, null, 2), 'utf8');
   const r = resultado.resumen;
-  if (modo === 'suite') console.log(`\nEscenarios: ${r.escenarios} · pasan en todos: ${r.pasan_en_todos} · diferencias entre navegadores: ${r.diferencias} · fallan en todos: ${r.fallan_en_todos}`);
-  else console.log(`\nPantallas: ${r.pantallas} · sin diferencias: ${r.sin_diferencias} · con problemas: ${r.con_problemas} · hallazgos: ${r.hallazgos}`);
+  if (modo === 'suite') console.log(`\nEscenarios: ${r.escenarios} · pasan en todos: ${r.pasan_en_todos} · diferencias entre navegadores: ${r.diferencias} · inestables: ${r.inestables} · fallan en todos: ${r.fallan_en_todos}`);
+  else console.log(`\nPantallas: ${r.pantallas} · sin diferencias: ${r.sin_diferencias} · con problemas: ${r.con_problemas} · hallazgos: ${r.hallazgos} (confirmados al recargar: ${r.confirmados}, intermitentes: ${r.intermitentes}, descartados: ${r.descartados_al_confirmar})`);
   console.log(`Datos: ${relRaiz(salida)}`);
   if (generarInforme(carpeta)) console.log(`Informe: ${relRaiz(path.join(carpeta, 'informe-cross-browser.html'))}`);
 }
@@ -501,4 +831,5 @@ if (require.main === module) {
   main().catch((e) => { console.error(`Error: ${e.message}`); process.exit(1); });
 }
 
-module.exports = { argumentos, leerCucumber, analizarSuite, sinAnsi, NOMBRE, GENERADOS };
+module.exports = { argumentos, leerCucumber, analizarSuite, analizarPaginas, aplicarConfirmacion, filtrarFaltantes, sinAnsi, NOMBRE, GENERADOS,
+  claveRecurso, tokensError, origenDe, mismoError, esRuidoConsola, esCancelado, esRecursoPropioDelNavegador, distanciaColor, opcionesContexto };

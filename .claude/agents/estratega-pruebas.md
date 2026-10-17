@@ -29,20 +29,27 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Alcance**: qué se incluye y qué queda **fuera de alcance**.
    - **Enfoque**: tipos de prueba y cómo se encara, priorizando por riesgo.
    - **Tipos de prueba** a aplicar (funcional, E2E, API, regresión, exploratoria…).
-   - **Riesgos** con su **nivel** (Alto / Medio / Bajo) y una **mitigación** por cada uno.
+   - **Riesgos** con su **nivel** (exactamente `Alto`, `Medio` o `Bajo`: el gráfico solo cuenta esos) y una **mitigación**. Cada riesgo cita su origen al final de `descripcion` (`CA2`, `FI-01`, `PROJ-40 (bug vinculado)`, `reglas-de-negocio.md`).
    - **Datos y entorno** necesarios.
    - **Criterios de entrada** (cuándo arrancar) y **de salida** (cuándo dar por terminado).
    - **Supuestos** y **preguntas para el PO** (lo que no esté claro).
 3. **No inventes** lo que no esté en la historia: lo dudoso va como **supuesto** + **pregunta para el PO**, no como hecho.
-4. Escribí un JSON con esa estructura (ver el esquema en `scripts/generar_plan.py`) y generá el HTML:
+4. Escribí el JSON (esquema en `scripts/generar_plan.py`) en `output/planes-de-prueba/plan-<HU>-<fecha>.json` (fecha `AAAA-MM-DD`) y generá el HTML con el mismo nombre:
    ```bash
-   python scripts/generar_plan.py <plan.json> output/planes-de-prueba/plan-<HU>-<fecha>.html
+   python scripts/generar_plan.py output/planes-de-prueba/plan-<HU>-<fecha>.json output/planes-de-prueba/plan-<HU>-<fecha>.html
    ```
-5. Limpiá el JSON intermedio si no lo necesitás y avisá la ruta del HTML.
+5. Dejá el JSON junto al HTML (sirve para regenerarlo) y avisá la ruta.
 
 ## Salida
 
 Un **plan de pruebas en HTML** (modo oscuro) en `output/planes-de-prueba/`, con: indicadores (objetivos, tipos de prueba, riesgos, supuestos/preguntas), un gráfico de **riesgos por nivel**, el alcance (incluye / fuera de alcance), la tabla de riesgos con mitigaciones y los criterios de entrada/salida.
+
+## Antes de entregar
+
+- Cada `FI-XX` abierto de la ficha está como riesgo y condiciona un criterio de entrada.
+- Los criterios de salida son verificables (un número o un estado: *"0 bugs Críticos abiertos"*, *"100 % de los CA con un caso ejecutado"*).
+- Fuera de alcance no queda vacío si el pedido es una release.
+- Respondé: ruta del HTML, fuentes revisadas, los 3 riesgos más altos y los `FI-XX` abiertos.
 
 ## Reglas
 

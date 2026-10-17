@@ -54,7 +54,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Responsive interactivo** (con `browser_resize` a 390x844): que los menús, modales y formularios se puedan usar, no solo que no desborden.
    - **Estados y errores**: recargar en medio de un flujo, abrir una URL interna directamente, consola del navegador (`browser_console_messages`) mientras interactuás.
    Por cada problema, sacá una captura `<carpeta>/capturas/manual/ex-XX.png` (si Playwright la deja en otro lado, movela con Bash; en el análisis va como `capturas/manual/ex-XX.png`) y anotá pasos, esperado y obtenido. Si no sabés cuál es el comportamiento esperado, no lo inventes: registralo como **Falta información** (`FI-XX`).
-4. **Escribí el análisis** en `<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `mision`, `duracion_min`, `areas_exploradas`, `notas` (por ID de hallazgo), `descartados`, `severidades`, `exploratorios` (`EX-01`, … con `titulo`, `severidad`, `pagina`, `pasos`, `esperado`, `obtenido`, `evidencia`), `falta_informacion`, `recomendaciones` (acción, por qué y prioridad) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_exploratorio.py`.
+4. **Escribí el análisis** en `<carpeta>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `mision`, `duracion_min`, `areas_exploradas`, `notas` (por ID de hallazgo), `descartados`, `severidades`, `exploratorios` (`EX-01`, … con `titulo`, `severidad`, `pagina`, `pasos`, `esperado`, `obtenido`, `correccion`, `evidencia`), `falta_informacion` (`id`, `que_falta`, `pregunta`), `recomendaciones` (acción, por qué y prioridad) y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_exploratorio.py`.
 5. **Regenerá el informe** con tu análisis (el script ya dejó uno sin análisis; este lo reemplaza):
    ```bash
    python scripts/generar_informe_exploratorio.py <carpeta>/exploracion.json <carpeta>/informe-exploratorio.html --analisis <carpeta>/analisis.json
@@ -72,14 +72,25 @@ El script propone una severidad; la ajustás con criterio (y lo explicás en `no
 | Página que no abre o responde 5xx                            | Crítica            |
 | Página 4xx, link interno roto, imagen rota, error de JS      | Alta               |
 | Script o CSS que no carga                                    | Alta               |
-| Scroll horizontal en mobile o tablet                         | Alta               |
+| Scroll horizontal en mobile (menos de 768 px)                | Alta               |
 | Link externo roto, error de consola, otro recurso que falla  | Media              |
-| Scroll horizontal en desktop, falta de meta viewport         | Media              |
+| Scroll horizontal en tablet (768 px) o desktop, sin viewport | Media              |
 | Texto chico, objetivos táctiles chicos, imágenes sin alt     | Baja               |
+| Página lenta (más de `--lenta-ms`; Media si tarda el doble)  | Baja               |
 
 ## Credenciales
 
 Si la exploración necesita login, leé `APP_USER` y `APP_PASSWORD` del `.env` de la raíz con Bash (o usá las del pedido). Usalas **solo** para loguearte: no las imprimas ni las escribas en el informe, el `analisis.json`, las capturas ni los nombres de archivo. Si faltan, o si la configuración de permisos no te deja leer el `.env`, **no intentes esquivar el bloqueo**: pedilas en "Necesito que confirmes". Usá credenciales de un entorno de prueba.
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`H-03`, no `H-3`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada hallazgo manual tiene página, pasos, esperado, obtenido, `correccion` (cómo corregirlo) y una captura que existe dentro de la carpeta, con ruta relativa.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 
@@ -88,6 +99,6 @@ Si la exploración necesita login, leé `APP_USER` y `APP_PASSWORD` del `.env` d
 - **No es una prueba de seguridad ni de carga**: no hagas fuzzing, inyecciones ni ráfagas de requests. Para eso están `analista-seguridad` (escaneo pasivo autorizado) y `performance-mapper`.
 - **Links no verificables** (403, 429, timeouts) no son links rotos: van aparte en el informe para que alguien los revise a mano.
 - **Trazabilidad**: si la exploración es de una historia, usá `--historia HU-XXX` y citala en el análisis; los `FI-XX` siguen la convención del proyecto.
-- **Una corrida por carpeta**: correr de nuevo `npm run explorar` borra la corrida anterior (incluido tu `analisis.json` y las capturas manuales). Si la persona quiere conservar una corrida, que use otra `--historia` o copie la carpeta antes.
+- **Una corrida por carpeta**: correr de nuevo `npm run explorar` mueve la corrida anterior a `historial/` (con tu `analisis.json` y las capturas manuales; últimas 5). Por eso la exploración manual y el análisis van **después** del último recorrido.
 - **Ahorro de tokens**: el recorrido de muchas páginas lo hace el script; con Playwright MCP explorás solo lo que necesita criterio humano. No vuelvas a recorrer a mano lo que el script ya revisó.
 - **Si algo de la exploración vale la pena repetir**, sugerí automatizarlo con `web-mapper` (después corre con `npm test`, sin tokens).

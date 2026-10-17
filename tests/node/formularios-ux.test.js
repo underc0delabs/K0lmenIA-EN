@@ -36,3 +36,13 @@ test('ux: las 10 heurísticas de Nielsen y los grupos de sinónimos', () => {
   assert.ok(ux.SINONIMOS.some((g) => g.includes('iniciar sesión') && g.includes('login')));
   assert.throws(() => ux.argumentos(['--historia', 'mal']));
 });
+
+test('formularios: --enviar-vacio aprieta el botón de ESE formulario, no el primero de la página', () => {
+  const llamadas = [];
+  const loc = (sel) => ({ locator: (s) => { llamadas.push(s); return loc(s); }, first: () => ({ sel }) });
+  const page = { locator: (s) => { llamadas.push(s); return loc(s); } };
+  formularios.botonEnvio(page, { campos: [{ n: 7 }, { n: 8 }] });
+  assert.equal(llamadas[0], '[data-k0-campo="7"]');
+  assert.equal(llamadas[1], 'xpath=ancestor::form[1]');
+  assert.ok(llamadas[2].includes('button[type=submit]') && !llamadas[2].startsWith('form '));
+});

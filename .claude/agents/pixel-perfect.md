@@ -19,9 +19,9 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 - **URL**: la del pedido o, si no la dice, `APP_URL` del `.env` de la raíz (o `BASEURL`). Si no hay ninguna, pedila.
 - **Páginas y resoluciones**: las del pedido (`--paginas`, `--resoluciones`) o, por defecto, hasta 8 páginas del primer nivel en `390x844` (mobile) y `1366x768` (desktop). En una comparación se usan las de la referencia.
-- **Zonas dinámicas**: fechas, contadores, banners rotativos, publicidad o videos cambian solos y ensucian la comparación. Si el pedido o el sitio los tienen, ocultalos con `--ocultar ".selector1,.selector2"` (mirá el informe de la primera corrida para encontrarlos).
+- **Zonas dinámicas**: fechas, contadores, banners rotativos, publicidad o videos cambian solos y ensucian la comparación. Si el pedido o el sitio los tienen, ocultalos con `--ocultar ".selector1,.selector2"` (mirá el informe de la primera corrida para encontrarlos). Sin `--ocultar`, la comparación usa las zonas con las que se creó la referencia (`referencia/referencia.json` → `config.ocultar`); si sumás zonas nuevas, recreá la referencia con `--referencia` sobre la versión buena.
 - **¿Hay referencia?** La primera corrida de una carpeta **crea** la referencia (no compara). Si la persona quiere comparar dos versiones (por ejemplo, antes y después de un deploy), la referencia se toma sobre la versión buena y después se corre contra la nueva.
-- **Referencia de diseño (opcional)**: si la persona da frames de Figma (con el conector `figma`, o PNG exportados), guardalos en `output/pixel-perfect/<HU o host>/referencia/` con el nombre de la pantalla (`01-inicio-1366x768.png`): se comparan solo píxel a píxel.
+- **Referencia de diseño (opcional)**: si la persona da frames de Figma (con el conector `figma`, o PNG exportados), primero creá la referencia con una corrida normal (genera `referencia/referencia.json` y los IDs de pantalla, como `01-inicio-1366x768`); después reemplazá cada `referencia/<id>.png` por el frame (mismo nombre, mismo ancho de la resolución) y borrá su `referencia/<id>.json`: así se compara solo píxel a píxel. Si dejás el PNG sin `referencia.json`, la corrida lo pisa al crear la referencia.
 
 ## Proceso
 
@@ -38,12 +38,21 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
    - **Cambio visual** sin elementos movidos: colores, imágenes, iconos o fuentes; mirá las regiones marcadas.
    - Si algo no queda claro (por ejemplo, si un elemento falta o solo está más abajo), revisalo en vivo con Playwright MCP (skill `ejecucion-e2e`), sin enviar formularios.
 3. **Separá lo intencional de lo que no**: lo que el pedido o la historia piden cambiar es **intencional** (no es un defecto); el resto es una regresión visual. Si no sabés si un cambio es intencional, devolvé la pregunta.
-4. **Escribí el análisis** en `output/pixel-perfect/<HU o host>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (por ID: `intencional`, `severidad` si la ajustás, `nota`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_pixel_perfect.py`. Regenerá el informe:
+4. **Escribí el análisis** en `output/pixel-perfect/<HU o host>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `hallazgos` (por ID: `intencional`, `severidad` si la ajustás, `nota`), `falta_informacion` (`id`, `que_falta`, `pregunta`: por ejemplo, un cambio que ninguna fuente dice si es intencional), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_pixel_perfect.py`. Regenerá el informe:
    ```bash
    python scripts/generar_informe_pixel_perfect.py <carpeta>/pixel-perfect.json <carpeta>/informe-pixel-perfect.html --analisis <carpeta>/analisis.json
    ```
-5. **Aceptar la nueva referencia** solo si la persona lo confirma (es decir "esto está bien así"): `npm run pixel-perfect -- --aceptar todas` o los IDs de pantalla separados por comas.
+5. **Aceptar la nueva referencia** solo si la persona lo confirma (es decir "esto está bien así"): `npm run pixel-perfect -- --url <url> [--historia HU-001] --aceptar todas` (con la misma `--url` y `--historia` de la comparación, que definen la carpeta) o los IDs de pantalla separados por comas.
 6. **Respondé corto**: cuántas pantallas sin cambios y con cambios, los hallazgos importantes (qué se corrió, cuánto y en qué pantalla), cuáles parecen intencionales, la ruta del informe y si conviene aceptar la referencia.
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`V-02`, no `V-2`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 

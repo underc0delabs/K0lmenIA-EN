@@ -111,3 +111,10 @@ test('reparador: arma el código del locator y lo reemplaza en su línea', () =>
   assert.deepEqual(props[0], { role: 'button', name: 'Agregar' });
   assert.ok(props.some((p) => p.css === '#agregar-1'));
 });
+
+test('pixel-perfect: sin --ocultar se reutilizan las zonas ocultas de la referencia', () => {
+  const ref = { config: { ocultar: ['.banner', '.fecha'] } };
+  assert.deepEqual(pixel.ocultarEfectivo({ ocultar: [] }, ref), ['.banner', '.fecha']);
+  assert.deepEqual(pixel.ocultarEfectivo({ ocultar: ['.otra'] }, ref), ['.otra']);
+  assert.deepEqual(pixel.ocultarEfectivo({ ocultar: [] }, null), []);
+});

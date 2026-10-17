@@ -18,7 +18,7 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 ## Qué necesitás antes de arrancar
 
 - **El cambio** (al menos uno):
-  - un **rango de git** del repositorio de la aplicación (`main..feature/pagos`, `v2.3..v2.4`) y dónde está ese repositorio (`--repo`);
+  - un **rango de git** del repositorio de la aplicación (`main..feature/pagos`, `v2.3..v2.4`) y dónde está ese repositorio (`--repo`; si no lo dice, `REPO_RUTA_LOCAL` del `.env`). **Nunca** pases `--git` sin `--repo`: por defecto el script usa el repo de k0lmenIA. Con `main..feature/pagos` el script toma los archivos desde la base común, así que no entran los cambios que `main` sumó después;
   - los **archivos cambiados** de un PR;
   - **historias o issues** (keys de Jira o Azure DevOps): leelos con el conector (skill `investigacion-contexto`: descripción, comentarios, subtareas y vínculos) para entender qué tocan;
   - las **notas de la release** o la descripción del PR.
@@ -28,17 +28,17 @@ Trabajás como subagente: **no podés hacerle una pregunta a la persona y espera
 
 ## Proceso
 
-1. **Prepará el cambio**: si viene de Jira, Azure DevOps o un PR, resumilo en `output/seleccion-casos/<nombre>/cambios.json` con `titulo`, `historias` (las HU locales que toca, si las sabés), `palabras` (las áreas funcionales: "pago", "tarjeta", "carrito"), `archivos` y `texto`. El formato está en el encabezado de `scripts/seleccionar_casos.py`. Si el equipo tiene `input/mapa-componentes.json` (carpetas del código → historias), se usa solo.
+1. **Prepará el cambio**: si viene de Jira, Azure DevOps o un PR, resumilo en `output/seleccion-casos/_cambios-<nombre>.json` (afuera de la carpeta de la corrida, que se archiva al repetirla) con `titulo`, `historias` (las HU locales que toca, si las sabés), `palabras` (las áreas funcionales: "pago", "tarjeta", "carrito"), `archivos` y `texto`. El formato está en el encabezado de `scripts/seleccionar_casos.py`. Si el equipo tiene `input/mapa-componentes.json` (carpetas del código → historias), se usa solo.
 2. **Seleccioná**, desde la raíz del repo:
    ```bash
-   python scripts/seleccionar_casos.py --nombre <release o PR> [--git <rango> --repo <ruta>] [--archivos a,b] [--historias HU-003,PROJ-55] [--cambios <carpeta>/cambios.json] [--texto-archivo notas.md] [--presupuesto-min 60]
+   python scripts/seleccionar_casos.py --nombre <release o PR> [--git <rango> --repo <ruta>] [--archivos a,b] [--historias HU-003,PROJ-55] [--cambios output/seleccion-casos/_cambios-<nombre>.json] [--texto-archivo notas.md] [--presupuesto-min 60]
    ```
    Cada caso recibe un puntaje (historia afectada, coincidencia de conceptos con el cambio —con sinónimos en español e inglés—, prioridad, último resultado, inestable, bugs abiertos) y un grupo: **Imprescindible**, **Recomendado**, **Regresión mínima** (smoke y prioridad Crítica) o **No seleccionado**. Deja `seleccion.json`, `seleccion.csv` (lo manual, para ejecutar) e `informe-seleccion.html` en `output/seleccion-casos/<nombre>/`; con el mismo nombre, la corrida anterior **pasa a `historial/`** (se guardan las últimas 5, con su evidencia) y el informe muestra qué es nuevo, qué se resolvió y la evolución.
 3. **Revisá la selección con criterio** (`seleccion.json` → `casos`, `sin_cobertura`): el puntaje es una heurística.
    - Subí a imprescindible lo que el cambio toca aunque las palabras no coincidan (por ejemplo, el cálculo del total afecta a los cupones), y bajá lo que coincide por casualidad.
-   - **Cambios sin cobertura**: áreas que cambiaron y ningún caso prueba. Son el mayor riesgo: recomendá generar casos (`generador-casos-manuales` o `generador-casos-bdd`).
+   - **Cambios sin cobertura**: áreas que cambiaron y ningún caso prueba. Son el mayor riesgo: recomendá generar casos (`generador-casos-manuales` o `generador-casos-bdd`). Salen de una heurística sobre el nombre del archivo: verificá cada uno antes de reportarlo (config, estilos, tests o código sin comportamiento no son huecos; un área cubierta por `output/casos-api/` tampoco, porque el script no lee esos casos) y explicá en `recomendaciones` cuáles quedan.
    - Estimá el **riesgo** del cambio (Alto, Medio o Bajo) por lo que toca (pagos, datos, seguridad y permisos pesan más) y por su tamaño.
-4. **Escribí el análisis** en `output/seleccion-casos/<nombre>/analisis.json`: `veredicto`, `riesgo`, `resumen` (para alguien no técnico), `ajustes` (por `HU-XXX:CP-XXX`: `grupo` y `motivo`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_seleccion.py`. Aplicalo y regenerá (cambian también el CSV y los comandos):
+4. **Escribí el análisis** en `output/seleccion-casos/<nombre>/analisis.json`: `veredicto`, `riesgo`, `resumen` (para alguien no técnico), `ajustes` (por `HU-XXX:CP-XXX`: `grupo` —exactamente `Imprescindible`, `Recomendado`, `Regresión mínima` o `No seleccionado`; otro valor se ignora sin avisar— y `motivo`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_seleccion.py`. Aplicalo y regenerá (cambian también el CSV y los comandos):
    ```bash
    python scripts/seleccionar_casos.py --solo-informe --nombre <nombre>
    ```

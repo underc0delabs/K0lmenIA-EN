@@ -9,9 +9,9 @@ Antes de suponer, **buscar**. Una historia casi nunca tiene toda la información
 
 ## 1. ¿Ya hay una ficha?
 
-Buscá `output/contexto/contexto-<HU>.md`.
+Buscá `output/contexto/contexto-<HU>.md`. `<HU>` es el `HU-XXX` que usan los casos y reportes; si la historia solo tiene key, usá la key (`contexto-PROJ-12.md`). Antes de crear una ficha, buscá con Grep la key y el `HU-XXX` en `output/contexto/` para no duplicarla, y anotá los dos en el encabezado **Historia**.
 
-- Si existe y la historia **no cambió** desde entonces (compará la fecha de última modificación de la historia —`updated` en Jira; las demás herramientas, en la tabla de equivalencias— con la fecha de la ficha), **reusala** y no vuelvas a investigar: ahorra tokens.
+- Si existe y la historia **no cambió** desde entonces (compará la fecha de última modificación de la historia —`updated` en Jira; las demás herramientas, en la tabla de equivalencias; si la historia es un archivo de `input/historias/`, su fecha de modificación— con la fecha de la ficha) y el dossier de `input/documentacion/` no es más nuevo que la ficha, **reusala** y no vuelvas a investigar: ahorra tokens.
 - Si cambió, o la persona pide actualizarla, investigá de nuevo y reemplazá la ficha (conservá los `FI-XX` que sigan abiertos, con el mismo ID).
 
 ## 2. Primero, la documentación del proyecto
@@ -22,7 +22,7 @@ Si existe `input/documentacion/INDICE.md` (lo arma el agente `documentador-proye
 - **Documentos del proyecto** (`proyecto/`): abrí solo los que sirvan para la historia — `reglas-de-negocio.md`, `mensajes.md` y `estados-y-permisos.md` (buscá el módulo o el campo, no los leas enteros), `mapa-funcional.md` (los campos y textos reales de la pantalla) y `api/` (contratos).
 - **Citá la fuente original** que figura en el documento (`src/...:línea`, el PR, el comentario), no solo el archivo de `input/documentacion/`.
 - Las **Contradicciones y dudas** del dossier se registran como `FI-XX` en la ficha (sección 5).
-- Si no hay documentación o está marcada como *Revisar*, seguí con las fuentes de la sección 3 y, en la respuesta, sugerí pedirle al `documentador-proyecto` que la arme o la actualice (no lo invoques vos).
+- Si no hay documentación o está marcada como *Revisar* o *Desactualizado* (cambió el código; ver `input/documentacion/cambios.md`), seguí con las fuentes de la sección 3 y, en la respuesta, sugerí pedirle al `documentador-proyecto` que la arme o la actualice (no lo invoques vos).
 
 ## 3. Dónde buscar (en este orden)
 

@@ -8,9 +8,10 @@ Uso (desde la raíz del repo):
     python scripts/analizar_fallos.py [--historia HU-001] [--suites web,api,mobile]
         → toma la corrida actual (herramientas/k0lmena/reports/<suite>/cucumber-report.json) como
           corrida 1, REEMPLAZA el análisis anterior y genera output/fallos/<HU o suite>/informe-fallos.html
-    python scripts/analizar_fallos.py --agregar-reintento [--historia HU-001]
-        → después de volver a correr los fallidos (npm test con TAGS=@CP-001 or …), suma la corrida
-          actual como un reintento y recalcula: lo que falló y después pasó queda como Inestable.
+    python scripts/analizar_fallos.py --agregar-reintento --suites web [--historia HU-001]
+        → después de volver a correr los fallidos (npm test -- web con TAGS=@CP-001 or …), suma la corrida
+          actual de esas suites como un reintento y recalcula: lo que falló y después pasó queda como Inestable.
+          Pasá solo las suites reintentadas: las demás siguen en el análisis con sus corridas anteriores.
     python scripts/analizar_fallos.py --solo-informe [--analisis analisis.json]
         → regenera el informe (con el análisis del agente) sin tocar las corridas.
 
@@ -275,8 +276,9 @@ def main():
         print(f"Reintento {cid} ({', '.join(copiadas)}) agregado")
     if not (carpeta / "corridas.json").exists():
         sys.exit("No hay corridas guardadas en esa carpeta.")
-
-    datos = analizar(carpeta, historia, suites)
+    # Se analizan todas las suites guardadas: un reintento de una sola suite (--suites web) no saca a las demás del análisis.
+    guardadas = {x for c in json.loads((carpeta / "corridas.json").read_text(encoding="utf-8"))["corridas"] for x in c.get("suites", [])}
+    datos = analizar(carpeta, historia, [x for x in SUITES if x in guardadas] or suites)
     (carpeta / "fallos.json").write_text(json.dumps(datos, ensure_ascii=False, indent=2), encoding="utf-8")
     r = datos["resumen"]
     print(f'Escenarios: {r["escenarios"]} · aprobados: {r["aprobados"]} · con fallas: {r["fallidos"]} (siguen fallando: {r["siguen_fallando"]})')

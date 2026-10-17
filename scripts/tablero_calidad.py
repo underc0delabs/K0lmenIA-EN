@@ -11,7 +11,9 @@ Fuentes (las que existan; lo que falta se informa en "sin_datos", nunca se inven
   - Ejecuciones en vivo: output/ejecuciones/_resultados-*.json
   - npm test: herramientas/k0lmena/reports/{web,api,mobile}/cucumber-report.json y su historial/
   - Inventario de casos (manuales, BDD y automatizados en k0lmena) con su último resultado, los inestables,
-    los bugs abiertos y el tiempo estimado de ejecución manual (el mismo de seleccionar_casos.py)
+    los bugs abiertos y el tiempo estimado de ejecución manual (el mismo de seleccionar_casos.py). Con eso
+    calcula el ahorro al automatizar: lo que costaría correr a mano los casos automatizados menos lo que
+    tardan corriendo solos (ahorro por corrida y acumulado en el período).
   - Cobertura de criterios: output/cobertura/*/cobertura.json (el más reciente)
   - Bugs: output/reportes-bug/BUG-*.md (severidad, estado e historia)
   - Fallos e inestables: output/fallos/*/fallos.json (el más reciente)
@@ -150,11 +152,11 @@ def corridas(r):
 
 
 def resultados_periodo(r):
-    """Último resultado de cada caso ejecutado dentro del rango (en vivo y npm test)."""
+    """Último resultado de cada caso (historia + id) ejecutado dentro del rango (en vivo y npm test con su historial)."""
     ultimo = {}
     for x in sorted(rec.de_ejecuciones(None) + rec.de_cucumber(None), key=lambda x: x["momento"]):
         if r == (None, None) or _en(x["momento"], r):
-            ultimo[x["id"]] = x
+            ultimo[rec.clave_caso(x)] = x  # historia + id: los CP se numeran por historia
     return Counter(x["estado"] for x in ultimo.values())
 
 
@@ -259,18 +261,26 @@ def recolectar(desde=None, hasta=None):
     historias = {}
     for c in casos:
         h = historias.setdefault(c["historia"], {"historia": c["historia"], "casos": 0, "automatizados": 0, "aprobados": 0,
-                                                 "fallidos": 0, "bloqueados": 0, "sin_ejecutar": 0, "inestables": 0, "minutos_manual": 0})
+                                                 "fallidos": 0, "bloqueados": 0, "sin_ejecutar": 0, "inestables": 0,
+                                                 "minutos_manual": 0, "minutos_automatizado": 0, "minutos_corrida_auto": 0})
         h["casos"] += 1
         h["automatizados"] += bool(c.get("automatizado"))
         est = (c.get("resultado") or {}).get("estado")
         h[{"Aprobado": "aprobados", "Fallido": "fallidos", "Bloqueado": "bloqueados"}.get(est, "sin_ejecutar")] += 1
         h["inestables"] += bool(c.get("inestable"))
-        if not c.get("automatizado"):
+        if c.get("automatizado"):
+            # Lo que costaría a mano y ahora corre solo (ahorro por corrida), y lo que tardó automatizado.
+            h["minutos_automatizado"] += c.get("minutos_manual") or 0
+            h["minutos_corrida_auto"] += (c.get("duracion_s") or 0) / 60
+        else:
             h["minutos_manual"] += c.get("minutos_manual") or 0
     for hu, h in historias.items():
         h["bugs_abiertos"] = bg["por_historia"].get(hu, 0)
         h["cobertura"] = (cob or {}).get("por_historia", {}).get(hu)
         h["minutos_manual"] = round(h["minutos_manual"], 1)
+        h["minutos_automatizado"] = round(h["minutos_automatizado"], 1)
+        h["minutos_corrida_auto"] = round(h["minutos_corrida_auto"], 1)
+        h["ahorro_por_corrida"] = round(max(0, h["minutos_automatizado"] - h["minutos_corrida_auto"]), 1)
 
     resumen = {
         "casos": len(casos), "historias": len(historias),
@@ -285,8 +295,15 @@ def recolectar(desde=None, hasta=None):
         "bugs_abiertos": bg["abiertos"], "bugs_criticos_abiertos": len(bg["criticos_abiertos"]),
         "inestables": len(inestables) or (fl or {}).get("inestables", 0),
         "minutos_manual": round(sum(c.get("minutos_manual") or 0 for c in manuales), 1),
+        # Ahorro al automatizar: lo que costaría ejecutar a mano los casos automatizados, menos lo que
+        # tardan corriendo solos. Es por corrida (cada vez que se corre npm test se ahorra ese tiempo).
+        "minutos_automatizado": round(sum(c.get("minutos_manual") or 0 for c in automatizados), 1),
+        "minutos_corrida_auto": round(sum((c.get("duracion_s") or 0) / 60 for c in automatizados), 1),
         "corridas": len(corr),
     }
+    resumen["ahorro_por_corrida"] = round(max(0, resumen["minutos_automatizado"] - resumen["minutos_corrida_auto"]), 1)
+    # Ahorro acumulado estimado: el ahorro por corrida por las corridas del período.
+    resumen["ahorro_acumulado"] = round(resumen["ahorro_por_corrida"] * len(corr), 1)
     if len(corr) >= 2:
         mitad = len(corr) // 2
         prom = lambda xs: sum(x["pct_aprobados"] for x in xs) / len(xs)
@@ -343,6 +360,15 @@ def build_html(datos, analisis=None, hist_html=""):
     p = datos.get("periodo") or {}
     periodo = (f'{p.get("desde") or "el inicio"} al {p.get("hasta") or "hoy"}') if (p.get("desde") or p.get("hasta")) else "todo lo registrado"
     pct = lambda v: "—" if v is None else f"{v} %"
+
+    def fmt_min(m):
+        """Minutos → "45 min" o "2 h 30 min" para que el ahorro se lea de un vistazo."""
+        m = int(round(m or 0))
+        if m < 60:
+            return f"{m} min"
+        h, r_ = divmod(m, 60)
+        return f"{h} h {r_} min" if r_ else f"{h} h"
+
     body = []
 
     malos = r["bugs_criticos_abiertos"] or r["fallidos_periodo"]
@@ -365,7 +391,11 @@ def build_html(datos, analisis=None, hist_html=""):
          f'{r["bugs_criticos_abiertos"]} críticos o altos · {datos["bugs"]["reportados_periodo"]} reportados en el período', "bicho"),
         ("Inestables", r["inestables"], "warn" if r["inestables"] else "ok", "fallan de forma intermitente", "warn"),
         ("Sin ejecutar", r["sin_ejecutar"], "warn" if r["sin_ejecutar"] else "", "casos sin ningún resultado", "lista"),
-        ("Ejecución manual", f'{r["minutos_manual"]} min', "", "lo que no está automatizado", "persona"),
+        ("Ejecución manual pendiente", fmt_min(r["minutos_manual"]), "", "lo que no está automatizado", "persona"),
+        ("Ahorro por corrida", fmt_min(r.get("ahorro_por_corrida")), "ok" if r.get("ahorro_por_corrida") else "",
+         f'{fmt_min(r.get("minutos_automatizado"))} a mano vs {fmt_min(r.get("minutos_corrida_auto"))} automatizado', "rayo"),
+        ("Ahorro acumulado", fmt_min(r.get("ahorro_acumulado")), "ok" if r.get("ahorro_acumulado") else "",
+         f'{r["corridas"]} corrida(s) en el período', "objetivo"),
         ("Corridas", r["corridas"], "", "en vivo y npm test en el período", "lista"),
     ]) + "</div>")
 
@@ -395,10 +425,11 @@ def build_html(datos, analisis=None, hist_html=""):
                                                                                  ("Bloqueados", NEUTRO), ("Sin ejecutar", AVISO)])))
         notas = analisis.get("notas") or {}
         body.append(section("Detalle por historia", table(
-            ["Historia", "Casos", "Automatizados", "Aprobados", "Fallidos", "Sin ejecutar", "Inestables", "Bugs abiertos", "Cobertura", "Manual (min)", "Nota"],
+            ["Historia", "Casos", "Automatizados", "Aprobados", "Fallidos", "Sin ejecutar", "Inestables", "Bugs abiertos", "Cobertura", "Manual pendiente", "Ahorro/corrida", "Nota"],
             [[f'<b>{e(h["historia"])}</b>', h["casos"], f'{h["automatizados"]} ({round(h["automatizados"] / h["casos"] * 100) if h["casos"] else 0} %)',
               h["aprobados"], h["fallidos"], h["sin_ejecutar"], h["inestables"], h["bugs_abiertos"],
-              "—" if h["cobertura"] is None else f'{h["cobertura"]} %', h["minutos_manual"], e(notas.get(h["historia"], ""))] for h in hs])))
+              "—" if h["cobertura"] is None else f'{h["cobertura"]} %', fmt_min(h["minutos_manual"]),
+              fmt_min(h.get("ahorro_por_corrida")), e(notas.get(h["historia"], ""))] for h in hs])))
 
     if datos["alertas"]:
         orden = {"Crítica": 0, "Alta": 1, "Media": 2, "Baja": 3}

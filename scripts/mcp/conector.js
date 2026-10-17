@@ -172,4 +172,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { comandoActivacion, conRutasAbsolutas, conVariablesDelEnv, CATALOGO };
+module.exports = { activar, comandoActivacion, conRutasAbsolutas, conVariablesDelEnv, CATALOGO };

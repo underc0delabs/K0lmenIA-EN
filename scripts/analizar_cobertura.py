@@ -16,7 +16,8 @@ Fuentes que lee (las que existan; lo que no está, no se inventa):
   - Automatización: herramientas/k0lmena/{web,api,mobile}/features/**/*.feature con @HU-XXX
     (@CP-XXX, @bloqueado, @falta-info).
   - Gestión: output/gestion/HU-XXX-<herramienta>.json (qué CP es qué key remota).
-  - Resultados: npm test (reports/<suite>/cucumber-report.json) y ejecuciones en vivo; vale el más reciente.
+  - Resultados: npm test (reports/<suite>/cucumber-report.json y su historial/) y ejecuciones en vivo; vale el
+    más reciente de cada caso.
   - Bugs: output/reportes-bug/BUG-*.md de la historia (y los CP que mencionan).
   - Falta información: FI-XX de la ficha de contexto y de los casos.
 
@@ -24,8 +25,8 @@ Huecos que marca: criterio sin casos, caso sin criterio, caso sin automatizar (p
 automatizado bloqueado, automatizado sin resultado, último resultado fallido, caso sin subir a la
 herramienta de gestión (si la historia ya usa una), falta información abierta.
 
-Deja output/cobertura/<HU o todas>/cobertura.json e informe-cobertura.html (cada corrida reemplaza
-a la anterior).
+Deja output/cobertura/<HU o todas>/cobertura.json e informe-cobertura.html (la corrida anterior pasa a
+historial/).
 """
 import argparse
 import datetime

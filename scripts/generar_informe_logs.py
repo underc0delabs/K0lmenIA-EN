@@ -15,6 +15,7 @@ El análisis (opcional) aporta:
   "veredicto": "...", "veredicto_tono": "bad", "resumen": "...",
   "firmas": {"L-01": {"causa": "La base rechaza la conexión: pool agotado", "accion": "...", "bug": "BUG-012"}},
   "escenarios": {"CP-004": {"causa": "El 500 del servidor viene de L-01"}},
+  "falta_informacion": [{"id": "FI-01", "que_falta": "...", "pregunta": "..."}],   // "descripcion" vale como alias de que_falta
   "recomendaciones": [{"accion": "...", "motivo": "...", "prioridad": "Alta"}],
   "proximos_pasos": ["..."]
 }
@@ -25,7 +26,7 @@ import sys
 from pathlib import Path
 
 import _historial
-from _estilos_reporte import (e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, line_chart, two_col,
+from _estilos_reporte import (falta_informacion, e, page, meta, section, kpi_tiles, banner, doc_list, table, bar_chart, line_chart, two_col,
                               nivel_badge, estado_pill, _pastilla, CRITICO, AVISO, NEUTRO, OK, SERIES)
 from generar_informe_exploratorio import CSS_EXTRA
 
@@ -112,6 +113,7 @@ def build_html(datos, analisis, hist_html=""):
     v = datos.get("ventana") or {}
     filas.append(["Período analizado", e(f'{(v.get("desde") or "todo")[:19]} → {(v.get("hasta") or "todo")[:19]}')])
     body.append(section("Fuentes", table(["Archivo", "Líneas"], filas)))
+    body.append(falta_informacion(analisis.get("falta_informacion")))
     if analisis.get("recomendaciones"):
         filas = [[f'<strong style="color:var(--ink)">{e(x.get("accion"))}</strong>', e(x.get("motivo")), nivel_badge(x.get("prioridad"))]
                  for x in analisis["recomendaciones"]]

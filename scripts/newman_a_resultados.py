@@ -8,8 +8,9 @@ Uso:
     python scripts/newman_a_resultados.py <newman.json> <salida-resultados.json> [titulo]
 
 Cómo mapea cada request ejecutado a un "caso":
-  - Sin asserts fallidos            -> Aprobado.
+  - Con asserts y ninguno fallido   -> Aprobado.
   - Con al menos un assert fallido  -> Fallido (motivo = primer assert que falló).
+  - Sin ningún pm.test              -> Bloqueado (motivo = "Sin validaciones (pm.test)"): no se verificó nada.
   - El request no se pudo hacer      -> Bloqueado (motivo = error de red/conexión).
 
 id y prioridad se pueden codificar (opcional) en el NOMBRE del request en Postman:
@@ -107,6 +108,8 @@ def convertir(nm, titulo_arg=""):
 
         if ex.get("requestError"):
             estado, motivo = "Bloqueado", fmt_request_error(ex.get("requestError"))
+        elif not ex.get("assertions"):  # sin pm.test no hay nada verificado: no puede quedar Aprobado
+            estado, motivo = "Bloqueado", "Sin validaciones (pm.test)"
         else:
             fallidas = [a for a in (ex.get("assertions") or []) if a.get("error")]
             if fallidas:

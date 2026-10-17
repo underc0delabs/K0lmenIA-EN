@@ -170,6 +170,23 @@ def test_portal_descubre_carpetas_y_toma_el_ultimo_informe(tmp_path):
     assert h["mi-herramienta-nueva"] == []
 
 
+def test_portal_prefiere_el_reporte_completo_de_k0lmena(tmp_path):
+    k0 = tmp_path / "reports"
+    _escribir(k0 / "web" / "front-report.html", "x", _ts("2026-10-05 12:01"))
+    _escribir(k0 / "web" / "index.html", "x", _ts("2026-10-05 12:00"))
+    _escribir(k0 / "web" / "features" / "abc.html", "x", _ts("2026-10-05 12:00"))
+    _escribir(k0 / "web" / "cucumber-report.json", [{"elements": [_escenario("a", [], "passed")]}])
+    _escribir(k0 / "web" / "historial" / "2026-10-01T10-00-00" / "front-report.html", "x", _ts("2026-10-01 10:01"))
+    _escribir(k0 / "web" / "historial" / "2026-10-01T10-00-00" / "index.html", "x", _ts("2026-10-01 10:00"))
+    _escribir(k0 / "web" / "historial" / "2026-10-01T10-00-00" / "cucumber-report.json", [])
+
+    k = portal.descubrir(tmp_path / "output", k0)["k0lmena"]
+    assert len(k) == 1 and k[0]["unidad"] == "web" and k[0]["html"].name == "index.html"
+    assert [o_.name for o_ in k[0]["otros"]] == ["front-report.html"]
+    assert k[0]["estado"] == "1/1 escenarios aprobados"
+    assert k[0]["historial"] == 1 and k[0]["anterior"].name == "index.html"
+
+
 def test_portal_html_con_links_relativos(tmp_path):
     o = tmp_path / "output"
     _escribir(o / "accesibilidad" / "mi-app.com" / "informe-accesibilidad.html", "x")
@@ -213,3 +230,41 @@ def test_portal_historia_y_filtros(tmp_path):
     assert 'id="filtros"' in html and 'data-vista="hist"' in html
     assert 'data-herr="permisos" data-hist="HU-002" data-tono="bad"' in html
     assert html.count('data-nav="HU-002"') == 0  # la vista por historia no duplica el índice
+
+
+def test_tablero_calcula_el_ahorro_al_automatizar(monkeypatch):
+    # 2 casos automatizados (10 y 20 min a mano, 0,5 y 1 min automatizado) y 1 manual (15 min pendientes).
+    casos = [
+        {"historia": "HU-001", "id": "CP-001", "automatizado": [{"bloqueado": False}], "minutos_manual": 10,
+         "duracion_s": 30, "resultado": {"estado": "Aprobado"}, "inestable": False},
+        {"historia": "HU-001", "id": "CP-002", "automatizado": [{"bloqueado": False}], "minutos_manual": 20,
+         "duracion_s": 60, "resultado": {"estado": "Aprobado"}, "inestable": False},
+        {"historia": "HU-002", "id": "CP-001", "automatizado": [], "minutos_manual": 15, "resultado": None, "inestable": False},
+    ]
+    monkeypatch.setattr(tablero, "inventario", lambda: casos)
+    monkeypatch.setattr(tablero, "corridas", lambda r: [{"fecha": "2026-10-17T10:00", "pct_aprobados": 100},
+                                                        {"fecha": "2026-10-17T11:00", "pct_aprobados": 100}])
+    monkeypatch.setattr(tablero, "resultados_periodo", lambda r: {"Aprobado": 2})
+    monkeypatch.setattr(tablero, "cobertura", lambda: None)
+    monkeypatch.setattr(tablero, "bugs", lambda r: {"abiertos": 0, "criticos_abiertos": [], "por_historia": {},
+                                                    "por_severidad": {}, "total": 0, "reportados_periodo": 0})
+    monkeypatch.setattr(tablero, "fallos", lambda: {"inestables": 0})
+    monkeypatch.setattr(tablero, "extras", lambda: {"accesibilidad": [], "rendimiento": [], "performance": [], "seguridad": [], "tokens": []})
+    r = tablero.recolectar()["resumen"]
+    assert r["minutos_automatizado"] == 30 and r["minutos_corrida_auto"] == 1.5
+    assert r["ahorro_por_corrida"] == 28.5  # 30 a mano − 1,5 automatizado
+    assert r["ahorro_acumulado"] == 57.0    # 28,5 × 2 corridas
+    assert r["minutos_manual"] == 15        # lo manual pendiente no entra en el ahorro
+
+
+def test_tablero_no_mezcla_el_mismo_cp_de_dos_historias(tmp_path):
+    _escribir(tmp_path / "output" / "ejecuciones" / "_resultados-HU-001-a.json",
+              {"historia": "HU-001", "casos": [{"id": "CP-001", "estado": "Aprobado"}]})
+    _escribir(tmp_path / "output" / "ejecuciones" / "_resultados-HU-002-a.json",
+              {"historia": "HU-002", "casos": [{"id": "CP-001", "estado": "Fallido"}]})
+    tablero.usar_raiz(tmp_path)
+    try:
+        periodo = tablero.resultados_periodo((None, None))
+    finally:
+        tablero.usar_raiz(RAIZ_REAL)
+    assert periodo == {"Aprobado": 1, "Fallido": 1}

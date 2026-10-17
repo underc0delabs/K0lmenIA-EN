@@ -49,6 +49,10 @@ def test_leer_feature_completo(tmp_path):
     assert list(casos) == ["CP-001", "CP-002", "CP-003"]
     assert casos["CP-001"]["prioridad"] == "Alta"  # @smoke, en minúscula
     assert "HU-001" in casos["CP-001"]["etiquetas"]
+    # Un tag de prioridad explícito manda sobre @smoke
+    assert lectores.prioridad_de_tags(["smoke", "critica"]) == "Crítica"
+    assert lectores.prioridad_de_tags(["alta"]) == "Alta"
+    assert lectores.prioridad_de_tags(["HU-001"]) == "Media"  # sin tag ni smoke
     # Los dos Examples con tags quedan dentro del Scenario Outline
     assert casos["CP-002"]["gherkin"].count("Examples:") == 2
     # El escenario dentro de la Rule hereda el Background de la feature y el de la regla

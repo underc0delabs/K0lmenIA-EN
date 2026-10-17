@@ -22,6 +22,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { consumeHealingEvents, flushHealingHistory } from "../utils/autoHealing";
 import { crearGif, htmlGif, modoEvidencia } from "../../tools/evidencia/gif";
+const { sesionActiva } = require("../../tools/login/sesion");
 
 setDefaultTimeout(60 * 1000);
 
@@ -180,7 +181,17 @@ BeforeAll(async function () {
   }
 });
 
-Before(async function () {
+// Sesión guardada con npm run login (SESION en el .env). Se resuelve una vez por proceso, así el
+// aviso de "no existe el archivo" no se repite en cada escenario.
+let sesionResuelta: string | null | undefined;
+function archivoSesionActiva(): string | null {
+  if (sesionResuelta === undefined) {
+    sesionResuelta = sesionActiva(process.env.SESION, (msg: string) => originalConsoleLog(`[sesion] ${msg}`));
+  }
+  return sesionResuelta ?? null;
+}
+
+Before(async function (scenario: ITestCaseHookParameter) {
   nodeLogs.length = 0;
 
   for (const ctx of contexts) {
@@ -201,12 +212,16 @@ Before(async function () {
   const locale = (process.env.LOCALE ?? "es-AR").trim();
   const timezoneId = (process.env.TIMEZONE ?? "America/Argentina/Mendoza").trim();
 
+  // Los escenarios @sin-sesion (por ejemplo, los que prueban el propio login) arrancan sin sesión.
+  const sinSesion = (scenario?.pickle?.tags ?? []).some((t) => t.name === "@sin-sesion");
+  const storageState = sinSesion ? undefined : archivoSesionActiva() ?? undefined;
+
   for (const browser of browsers) {
     const recordVideo =
       videoMode() === "off"
         ? undefined
         : { dir: path.join(getReportRootAbs(), "videos", ".tmp"), size: viewport };
-    const context = await browser.newContext({ viewport, locale, timezoneId, recordVideo });
+    const context = await browser.newContext({ viewport, locale, timezoneId, recordVideo, storageState });
     contexts.push(context);
 
     await startTracingIfEnabled(context);

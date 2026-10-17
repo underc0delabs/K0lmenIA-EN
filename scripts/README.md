@@ -42,7 +42,7 @@ Actuales:
 - `avisar.py` — avisos a Slack y Teams por webhook del `.env`; `--desde-cucumber` resume un `npm test`.
 - `generar_informe_monitoreo.py` — informe de `npm run monitorear` (monitoreo sintético) con la disponibilidad y los tiempos.
 - `cambios_documentacion.py` — documentación incremental del `documentador-proyecto`: estado de lo documentado y qué documentos y casos afecta un cambio.
-- `convertir_coleccion.py` — Bruno e Insomnia a Postman v2.1 (lo usa `correr_newman.py`); `resumir_graphql.py` — resumen de un schema GraphQL (introspección, SDL o JSON).
+- `convertir_coleccion.py` — Bruno e Insomnia a Postman v2.1 (lo usa `correr_newman.py`); `resumir_graphql.py` — resumen de un schema GraphQL (introspección, SDL o JSON); `resumir_openapi.py` — resumen de un Swagger/OpenAPI para automatizarlo (base URL, autenticación, endpoints, bodies y status).
 - `evaluar_agentes.py` — evals de los agentes (`evals/`): preparar el workspace aislado, correr con `claude -p`, verificar y armar el informe con regresiones.
 - `metricas_tokens.py` — uso de tokens y costo estimado por agente a partir de las transcripciones de Claude Code (solo conteos).
 - `generar_onboarding.py` — plan de onboarding del `guia-onboarding` (HTML con checklist y Markdown).

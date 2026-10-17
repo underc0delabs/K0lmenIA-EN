@@ -37,8 +37,9 @@ Lo que no esté definido en ninguna fuente **no se inventa**: va como **Falta in
 
 1. **Corré el recorrido** desde la raíz del repo:
    ```bash
-   npm run permisos -- --url <url> [--historia HU-001] [--roles admin,operador] [--paginas url1,url2] [--max-paginas 25] [--profundidad 2] [--endpoints "GET /api/usuarios,GET /api/pedidos/1"] [--api-base <url de la API>] [--mapa si|no]
+   npm run permisos -- --url <url> [--historia HU-001] [--roles admin,operador] [--paginas url1,url2] [--max-paginas 25] [--profundidad 2] [--endpoints "GET /api/usuarios,GET /api/pedidos/1"] [--api-base <url de la API>] [--mapa si|no] [--capturas 60]
    ```
+   Las capturas se toman en orden de visita hasta `--capturas` (60 por defecto): si las visitas (roles × rutas) son más, subilo para que cada hallazgo tenga su captura; un hallazgo sin captura se confirma a mano antes de informarlo.
    Inicia sesión con cada rol, recorre el sitio con cada uno (qué rutas ve en su navegación) y después abre **todas** las rutas encontradas con **todos** los roles, como si escribiera la URL a mano (también las del mapa funcional del documentador, con `--mapa si`, y las de `--paginas`). Para cada visita registra status, si pide login, si muestra "acceso denegado", a dónde redirige, título, menús y botones visibles, con captura. Bloquea cualquier navegación que no sea `GET` (salvo el formulario de login) y no sigue links de cierre de sesión ni de borrado. Deja en `output/permisos/<HU o host>/` `permisos.json`, `informe-permisos.html` y `capturas/`; la corrida anterior **pasa a `historial/`** (últimas 5) y el informe muestra qué es nuevo y qué se resolvió.
 2. **Revisá los hallazgos automáticos** (`permisos.json` → `hallazgos`, `roles`, `matriz`):
    - **Ruta protegida accesible sin login** (Crítica) y **ruta que solo aparece con sesión y abre sin login** (Alta, a confirmar: puede ser pública).
@@ -48,12 +49,22 @@ Lo que no esté definido en ninguna fuente **no se inventa**: va como **Falta in
    - **Configuración** (Alta): un rol sin credenciales o que no pudo iniciar sesión. Decí qué variable falta; no es un bug de la app.
    Mirá las capturas de los dudosos (con Read). Descartá solo con un motivo verificable.
 3. **Botones visibles pero acción denegada**: si un rol ve un botón de una acción que según la regla no le corresponde (por ejemplo, "Eliminar" para un invitado), es un hallazgo (Media) aunque no lo presiones. **No hagas clic** en botones con efecto (crear, guardar, eliminar, aprobar, enviar) salvo confirmación explícita y en un ambiente de prueba; si la tenés, usá Playwright MCP (skill `ejecucion-e2e`) con la sesión del rol y registrá la respuesta.
-4. **Escribí el análisis** en `output/permisos/<HU o host>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `esperado` (por rol, ruta → `permitido` o `denegado`, con `*` al final para un prefijo: `{"operador": {"/admin*": "denegado"}}`), `fuente_esperado`, `hallazgos` (ajustes de severidad o nota por `P-XX`), `descartados`, `adicionales` (los que encontraste a mano, con `rol` y `url`), `falta_informacion`, `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_permisos.py`. Con `esperado`, el informe agrega las diferencias `E-XX`: un rol que entra a algo que no debería (**Crítica**) o que no puede entrar a algo que debería (Alta).
+4. **Escribí el análisis** en `output/permisos/<HU o host>/analisis.json`: `veredicto`, `resumen` (para alguien no técnico), `esperado` (por rol, ruta → `permitido` o `denegado`, con `*` al final para un prefijo: `{"operador": {"/admin*": "denegado"}}`), `fuente_esperado`, `hallazgos` (ajustes de severidad o nota por `P-XX`), `descartados`, `adicionales` (los que encontraste a mano, con `rol`, `url`, `correccion` y `captura`: `capturas/manual/pm-XX.png`, si Playwright la deja en otro lado (por defecto `output/ejecuciones/evidencia/`), movela con Bash), `falta_informacion` (`id`, `que_falta`, `pregunta`), `recomendaciones` y `proximos_pasos`. El formato está en el encabezado de `scripts/generar_informe_permisos.py`. Las claves de `esperado` son los id de rol tal cual: `anonimo` (sin tilde) y los nombres de `PERMISOS_ROLES` con las mismas mayúsculas; una clave distinta no se compara. Con `esperado`, el informe agrega las diferencias `E-XX`: un rol que entra a algo que no debería (**Crítica**) o que no puede entrar a algo que debería (Alta).
 5. **Regenerá el informe** con tu análisis:
    ```bash
    python scripts/generar_informe_permisos.py output/permisos/<HU o host>/permisos.json output/permisos/<HU o host>/informe-permisos.html --analisis output/permisos/<HU o host>/analisis.json
    ```
 6. **Respondé corto**: roles probados (y los que no se pudieron, con la variable que falta), cuántas rutas y endpoints, los hallazgos críticos con el rol y la ruta, las diferencias con lo esperado, los `FI-XX` abiertos y la ruta del informe. Para los bugs confirmados, ofrecé el `generador-reportes-bug`.
+
+## Antes de entregar
+
+Revisá tu trabajo antes de responder (es la definición de terminado):
+
+- El `analisis.json` es JSON válido y el informe se regeneró sin error. El script avisa por consola (`[aviso] analisis.json · …`) los IDs que no existen y las severidades fuera de la escala: corregilos y regenerá.
+- Cada ID que citás (`notas`, `severidades`, `hallazgos`, `descartados`) existe en el JSON de la herramienta, con su formato (`P-01`, no `P-1`), y las severidades son `Crítica`, `Alta`, `Media` o `Baja`.
+- Cada hallazgo manual tiene página, pasos, esperado, obtenido, `correccion` (cómo corregirlo) y una captura que existe dentro de la carpeta, con ruta relativa.
+- Cada descarte tiene un motivo verificable, y lo que ninguna fuente define va en `falta_informacion` (`{"id": "FI-01", "que_falta": "…", "pregunta": "…"}`), no en el veredicto.
+- No quedan credenciales, tokens ni datos personales en el análisis, el informe ni las capturas.
 
 ## Reglas
 

@@ -39,7 +39,8 @@ sys.path.insert(0, str(RAIZ / "scripts"))
 from seleccionar_casos import tokens  # noqa: E402  (misma normalización y sinónimos)
 
 DUPLICADO, RELACIONADO, DISTINTO = "Duplicado probable", "Relacionado", "Distinto"
-CERRADOS = {"cerrado", "resuelto", "closed", "resolved", "done", "hecho", "rechazado", "rejected", "fixed", "won't fix"}
+CERRADOS = {"cerrado", "cerrada", "resuelto", "resuelta", "closed", "resolved", "done", "hecho", "listo", "finalizado", "finalizada",
+            "rechazado", "rejected", "removed", "fixed", "won't fix"}
 RE_CAMPO = re.compile(r"^\*\*(.+?):\*\*\s*(.*)$")
 RE_PANTALLA = re.compile(r"^\s*\[([^\]]+)\]")
 RE_CITA = re.compile(r"[\"“«']([^\"”»']{6,})[\"”»']")

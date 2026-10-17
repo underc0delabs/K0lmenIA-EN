@@ -2,6 +2,8 @@
 
 Cómo conectar k0lmenIA por MCP a **Jira y Confluence** (Atlassian), **Figma**, el **repositorio de la aplicación** (GitHub, GitLab, Azure Repos o Bitbucket), **otras herramientas de gestión de proyecto** (Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack y Shortcut), **QMetry**, **AIO Tests**, **k0lmenaTMT**, **Azure DevOps** y **Appium**. Xray se integra sin MCP (ver abajo).
 
+> **La forma fácil:** corré `npm run configurar` en una terminal. Te pregunta qué herramientas usa tu equipo, pide solo sus datos y activa los conectores que hagan falta. Lo de abajo es el detalle, para configurar a mano o algo puntual.
+
 Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae solo los que vienen habilitados para todos (Playwright y **Atlassian: Jira y Confluence**). Los demás están en un catálogo (`scripts/mcp/catalogo.json`) y cada persona activa los que usa con `npm run conector -- activar <nombre>`. Ninguno lleva secretos: las credenciales se leen del `.env` de la raíz o se autorizan con tu cuenta (OAuth).
 
 ## Resumen

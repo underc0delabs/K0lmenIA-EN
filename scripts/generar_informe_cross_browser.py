@@ -41,7 +41,7 @@ from generar_informe_pixel_perfect import CSS_PP, JS_PP, deltas, antes_despues
 COLOR_NAV = {"chromium": SERIES[2], "firefox": SERIES[3], "webkit": SERIES[4]}
 CORTO = {"chromium": "Chromium", "firefox": "Firefox", "webkit": "WebKit"}
 CLASE = {"Pasa en todos": (OK, "✓"), "Diferencia entre navegadores": (CRITICO, "✕"), "Falla en todos": (SERIO, "!"),
-         "Sin resultado completo": (NEUTRO, "–")}
+         "Inestable": (AVISO, "~"), "Sin resultado completo": (NEUTRO, "–")}
 ESTADO_PAG = {"OK": (OK, "✓"), "Con problemas": (CRITICO, "✕"), "Diferencias menores": (AVISO, "!"), "Error": (NEUTRO, "⊘")}
 SEV = ["Crítica", "Alta", "Media", "Baja"]
 
@@ -190,6 +190,7 @@ def build_html(datos, analisis, hist_html=""):
              f'{round(r.get("pasan_en_todos", 0) / n * 100) if n else 0} % de los escenarios', "ok", {"pct": r.get("pasan_en_todos", 0) / n * 100 if n else 0}),
             ("Diferencias", r.get("diferencias", 0), "bad" if r.get("diferencias") else "ok", "fallan solo en algunos navegadores", "bad"),
             ("Fallan en todos", r.get("fallan_en_todos", 0), "warn" if r.get("fallan_en_todos") else "ok", "bug o test roto (analista-fallos)", "warn"),
+            ("Inestables", r.get("inestables", 0), "warn" if r.get("inestables") else "ok", "fallaron y pasaron al repetirlos: no son del navegador", "warn"),
             ("Sin resultado", r.get("incompletos", 0), "warn" if r.get("incompletos") else "", "no corrieron en algún navegador", "blk"),
         ]) + "</div>")
     else:
@@ -200,7 +201,8 @@ def build_html(datos, analisis, hist_html=""):
             ("Sin diferencias", r.get("sin_diferencias", 0), "ok" if pant and r.get("sin_diferencias") == pant else "",
              f'{round(r.get("sin_diferencias", 0) / pant * 100) if pant else 0} % de las pantallas', "ok", {"pct": r.get("sin_diferencias", 0) / pant * 100 if pant else 0}),
             ("Con problemas", r.get("con_problemas", 0), "bad" if r.get("con_problemas") else "ok", "algo falla o falta en un navegador", "bad"),
-            ("Errores JS exclusivos", r.get("errores_js_exclusivos", 0), "bad" if r.get("errores_js_exclusivos") else "ok", "solo en un navegador", "codigo"),
+            ("Errores JS exclusivos", r.get("errores_js_exclusivos", 0), "bad" if r.get("errores_js_exclusivos") else "ok",
+             f'solo en un navegador · {r.get("confirmados", 0)} confirmado(s) al recargar, {r.get("descartados_al_confirmar", 0)} descartado(s)', "codigo"),
             ("Se ve distinto", f'{r.get("pct_prom", 0)} %', "warn" if r.get("pct_max", 0) > 15 else "ok", f'promedio · máximo {r.get("pct_max", 0)} %', "imagen"),
         ]) + "</div>")
     if analisis.get("resumen"):
@@ -218,7 +220,8 @@ def build_html(datos, analisis, hist_html=""):
                                                                             ("Fallidos", CRITICO, [c["fallidos"] for c in corridas])], ancho=660)),
                 section("Escenarios por resultado", donut_panel([(r.get(k, 0), CLASE[c][0], c) for k, c in
                                                                  (("pasan_en_todos", "Pasa en todos"), ("diferencias", "Diferencia entre navegadores"),
-                                                                  ("fallan_en_todos", "Falla en todos"), ("incompletos", "Sin resultado completo")) if r.get(k)],
+                                                                  ("fallan_en_todos", "Falla en todos"), ("inestables", "Inestable"),
+                                                                  ("incompletos", "Sin resultado completo")) if r.get(k)],
                                                                 round(r.get("pasan_en_todos", 0) / r["escenarios"] * 100) if r.get("escenarios") else 0,
                                                                 "pasan en todos"))))
         filas = []
@@ -229,7 +232,7 @@ def build_html(datos, analisis, hist_html=""):
             for c in corridas:
                 x = f["resultados"].get(c["id"]) or {}
                 img = miniatura(x.get("captura"), f'{f["escenario"]} · {combo_txt(c["id"])}', "s") if x.get("captura") else ""
-                fila.append(f'<div class="celda">{estado_pill(x.get("estado") if x.get("estado") in ("Aprobado", "Fallido") else "N/A")}{img}</div>')
+                fila.append(f'<div class="celda">{estado_pill(x.get("estado") if x.get("estado") in ("Aprobado", "Fallido") else ("Inestable" if x.get("estado") == "Inestable" else "N/A"))}{img}</div>')
             filas.append(fila)
         if filas:
             body.append(section("Matriz de escenarios", f'<div class="matriz">{table(["Escenario", "Resultado"] + [combo_txt(c["id"]) for c in corridas], filas)}</div>',

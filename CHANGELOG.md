@@ -2,6 +2,47 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-17 — Ahorro al automatizar en el tablero
+- El tablero de calidad calcula el **ahorro de tiempo al automatizar**: el tiempo estimado de ejecución manual de los casos automatizados menos lo que tardan corriendo solos (`npm test`). Muestra el **ahorro por corrida** y el **acumulado** del período en los indicadores, y una columna de ahorro por historia. Usa el tiempo manual que ya se guardaba por caso y la duración real de la última corrida.
+
+## 2026-10-17 — Prioridad en BDD y agente de pentest
+- **Tag de prioridad en BDD**: los escenarios llevan `@critica`/`@alta`/`@media`/`@baja` (el equivalente de la columna *Prioridad* de los casos manuales). `scripts/gestion/lectores.py` lo lee (un tag explícito manda; `@smoke` sigue valiendo `Alta`); los mappers conservan ese tag en los `.feature` que generan. Antes un caso "Crítica" llegaba a la gestión como "Media". El tiempo estimado de ejecución manual ya se guardaba (columna *Tiempo estimado (min)* en manuales; calculado con `estimacion.py` en BDD), base para medir el ahorro al automatizar.
+- **Nuevo agente `pentester-web`** (ethical hacking autorizado): intenta vulnerar un sitio **propio o con permiso escrito** con el escaneo activo de OWASP ZAP más verificación manual del OWASP Top 10 (control de acceso, autenticación, inyección, XSS, configuración, CSRF/SSRF) con Playwright MCP, confirma cada hallazgo y entrega el informe HTML (modo activo) más un `reporte-pentest.md` con pasos para reproducir y corrección. Solo URLs de `SEGURIDAD_URLS_AUTORIZADAS`, con `PENTEST_AUTORIZADO=si`, nunca producción sin autorización y sin técnicas destructivas (DoS, fuerza bruta masiva, borrado de datos).
+- `herramientas/zap/escanear.py` suma `--activo` (full scan, gated por autorización) y `generar_informe_seguridad.py` distingue informe pasivo de activo (`--modo`).
+
+## 2026-10-17 — Revisión de calidad de los agentes
+- **Sin falsos verdes**: un `Then` que falla porque la app no cumple ya no se marca `@bloqueado` en web-mapper y mobile-mapper (`npm test` nunca lo corría y el bug quedaba oculto): queda activo con `# POSIBLE BUG`. Un request de Newman sin `pm.test` sale *Bloqueado* ("Sin validaciones"), no *Aprobado*.
+- **Trazabilidad**: los casos manuales conservan los `CP-XXX` que la historia ya tenía (BDD, automatización, gestión); un `Scenario Outline` es un solo caso; `CP-API` se numera por historia o contrato. El informe de cierre y el tablero distinguen el mismo `CP` de dos historias (clave historia + ID) y toman los resultados de `npm test` también de `historial/`. La regla de HU contra key de la herramienta quedó en *Convenciones de IDs*.
+- **Falta información** con un formato único (`{id, que_falta, pregunta}`) en todos los informes HTML; los datos de prueba y los casos de API ya no suponen reglas: las marcan como `FI-XX`.
+- **Autorrevisión antes de entregar** en los generadores y analistas, y los scripts de informe avisan por stderr IDs o severidades del `analisis.json` que no existen.
+- **Efectos y seguridad**: el ejecutor de API confirma los métodos con efecto; los mappers nunca contra producción; `--enviar-vacio` aprieta el botón del formulario correcto; el informe de seguridad enmascara secretos de la evidencia de ZAP.
+- **Referencias corregidas**: `--dry-run` del publicador antes del subcomando, `--repo` obligatorio en el selector (diff desde la base común), `--aceptar` de pixel-perfect con su `--url`, reintentos de fallos por suite, `correr_newman.py --datos`, `formatear_tablas.py` con su archivo, estimación con etiquetas como texto, estados cerrados en español en el triador, plantillas de casos y cobertura sin supuestos presentados como hechos.
+- `npm run debug` deja sus reportes en `reports/debug/` (ya no se mezclan con el reporte web) y la validación de los mappers web usa `REPORT_DIR=reports/validacion` para no pisar el último `npm test`.
+
+## 2026-10-17 — npm test arma el reporte completo
+- `npm test` genera solo, al terminar cada suite de web y API, el reporte completo de k0lmena (`reports/<suite>/index.html`, el de `npm run report:web` / `report:api`). Antes quedaba solo el HTML básico de Cucumber (`front-report.html`), y ese era el que enlazaba el portal de informes después de automatizar con el `web-mapper`.
+- El portal muestra una sola entrada por suite con el reporte completo (el básico queda como "otro" y las páginas de `features/` no salen como informes aparte); el historial guarda también el reporte completo de cada corrida.
+
+## 2026-10-16 — npm run configurar
+- **`npm run configurar`**: asistente en español para dejar el proyecto listo sin saber nombres de variables ni de conectores. Pregunta la URL de la app y el usuario de prueba, dónde están las historias, dónde guardan los casos, dónde está el código y si usan Figma (opciones numeradas); pide solo los datos de lo elegido (los tokens no se muestran), los escribe en el `.env` (lo crea si no existe) y activa los conectores. Se puede correr de nuevo: Enter deja lo que ya estaba. `npm run conector` queda para lo puntual.
+
+## 2026-10-16 — APIs desde un Swagger que funcionan
+- `scripts/resumir_openapi.py`: resume un Swagger 2.0 u OpenAPI 3.x (JSON o YAML, por URL o archivo) con el `API_BASEURL` correcto (server + basePath, servers relativos y con variables), el step de autenticación de cada `securityScheme`, parámetros, body de ejemplo (JSON, formulario o multipart) y status documentados. Lo usan el `generador-casos-api` y el `api-mapper` en lugar de leer la spec a mano.
+- Steps de API (`api/steps/comunes.steps.ts`): URL unida con una sola barra (antes `/v2/v2/pet` o `hostpet`), API key en header o query, autenticación básica, parámetros de query, formularios (`con el formulario:`), respuestas de texto plano, búsqueda de un elemento en una lista, tipos de la spec (`integer`, …), ids int64 sin perder precisión, timeout por request, `{variables}` sin valor que cortan con un mensaje claro y todas las credenciales ocultas en el reporte. Los steps que ya existían no cambian de texto.
+- Datos únicos por escenario: `{aleatorio}`, `{uuid}`, `{timestamp}` y `{ahora}`.
+- El `api-mapper` verifica cada `Then` contra la API, hace que cada escenario cree los datos que lee y marca `@difiere-de-la-spec` cuando la API no cumple la spec (para separar bugs de tests mal hechos). El `generador-casos-api` solo usa los status del contrato.
+
+## 2026-10-16 — Cross-browser sin falsos positivos y la URL en un solo lugar
+- **Cross-browser**: lo que falla solo en un navegador se confirma antes de informarlo. En suite, el escenario se repite en ese navegador (`--reintentos`, 2 por defecto) y si pasa queda *Inestable*; en páginas, la página se recarga en todos los navegadores y lo intermitente baja a *Baja* o se descarta.
+- Los errores se comparan por su origen (archivo:línea:columna) y sus palabras propias, porque cada motor redacta distinto el mismo error (antes un error de todos los navegadores salía como "solo en Firefox"). Se ignora el ruido de consola de cada motor, los recursos se comparan sin query string y sin el favicon, y lo que un navegador pidió y los otros no pesa menos.
+- Sin barras de scroll al comparar (Firefox las dibuja ocupando ancho), colores normalizados en sRGB (oklch y otros formatos), corrimientos por la medida del texto en *Baja* salvo que algo quede fuera de la pantalla, "faltantes" que estaban con el mismo texto, y Firefox en mobile (no emula un teléfono) con sus diferencias visuales en *Baja*.
+- El agente ya no intenta reproducir en Firefox con Playwright MCP (abre Chromium): usa el script o la suite con `BROWSER=firefox`.
+- **La URL de la app va solo en `APP_URL`**: k0lmena arma `BASEURL` desde ahí (`env.js`); `BASEURL` en el `.env` queda como nombre viejo y `npm run doctor` avisa si sobra o no coincide.
+
+## 2026-10-16 — Sesión guardada con npm run login
+- `npm run login` (k0lmena `tools/login`): abre el navegador, te logueás a mano (captcha, 2FA o SSO incluidos) y guarda la sesión (cookies, localStorage e IndexedDB) en `.auth/` (gitignored). `--nombre <rol>` guarda una por rol.
+- Con `SESION=si` (o `SESION=<rol>`) en el `.env`, las suites web de k0lmena y el navegador de los agentes (Playwright MCP, con `--isolated --storage-state`) arrancan logueados. Los escenarios `@sin-sesion` arrancan sin sesión.
+
 ## 2026-10-14 (3) — Estilo k0lmena en la web, los diagramas, el PDF y los informes
 - La web de documentación, los diagramas (y sus imágenes), el PDF y todos los informes HTML (los de Python y los reportes de k0lmena) usan el estilo de https://k0lmena.com: fondo noche y carbón, ámbar, miel y naranja, patrón de panal, etiquetas `// sección` y viñetas hexagonales.
 - Tipografía de k0lmena incrustada: Saira (títulos), Inter (texto) y JetBrains Mono (código), con licencia OFL (`docs/assets/fuentes/` y `scripts/fuentes/`); reemplazan a Geist.

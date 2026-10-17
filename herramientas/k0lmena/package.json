@@ -34,6 +34,7 @@
     "permisos": "node -r ./env.js tools/permisos/permisos.js",
     "resiliencia": "node -r ./env.js tools/resiliencia/resiliencia.js",
     "monitorear": "node -r ./env.js tools/monitoreo/monitorear.js",
+    "login": "node -r ./env.js tools/login/login.js",
     "debug": "cross-env CUCUMBER_DEBUG=1 npx cucumber-js --profile debug",
     "record": "node -r ./env.js tools/generator/codegen.js",
     "record:generator": "ts-node -r ./env.js tools/generator/record-generator.ts"
