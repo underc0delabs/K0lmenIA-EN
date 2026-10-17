@@ -156,7 +156,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>revisor-casos</code></td><td>Revisa la calidad de los casos existentes: puntaje, problemas, duplicados, tiempo de ejecución manual y la versión mejorada</td></tr>
 <tr><td><code>generador-charters</code></td><td>Charters de exploración por sesiones (hojas y plantilla de notas) y el informe de las sesiones</td></tr>
 <tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
-<tr><td rowspan="17"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="18"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman, Bruno o Insomnia con Newman (REST y GraphQL)</td></tr>
 <tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
@@ -184,6 +184,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>reparador-automatizacion</code></td><td>Repara los locators y esperas que se rompieron: diagnostica con el DOM guardado al fallar, propone un locator único, lo aplica con respaldo y lo verifica</td></tr>
 <tr><td><code>verificador-datos</code></td><td>Verifica datos en PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB y suma verificaciones de BD a los tests</td></tr>
 <tr><td><code>analista-seguridad</code></td><td>Escaneo de seguridad web pasivo con OWASP ZAP e informe HTML con hallazgos, evidencia y cómo corregirlos</td></tr>
+<tr><td><code>pentester-web</code></td><td>Pentest web autorizado (ethical hacking): escaneo activo de OWASP ZAP más verificación manual del OWASP Top 10 con Playwright; confirma cada hallazgo y arma el informe con pasos para reproducir y cómo corregir. Solo URLs autorizadas y con permiso</td></tr>
 <tr><td rowspan="2"><b>🗂️ Gestión</b></td>
   <td><code>gestor-pruebas</code></td><td>Carpetas, casos, vínculos con la historia y ciclos en Xray, QMetry, AIO Tests o Azure DevOps</td></tr>
 <tr><td><code>publicador-resultados</code></td><td>Sube los resultados de <code>npm test</code> al ciclo con sus evidencias</td></tr>
@@ -762,7 +763,14 @@ El **analista-seguridad** revisa la seguridad de tu aplicación con **OWASP ZAP*
 El agente te confirma la URL, corre el escaneo, analiza los hallazgos (prioriza, descarta falsos positivos y los explica en español) y genera el **informe de seguridad** en HTML: hallazgos por riesgo, dónde aparece cada uno, evidencia, cómo se corrige y recomendaciones priorizadas. Queda en `output/seguridad/`. Detalle en [`herramientas/zap/README.md`](herramientas/zap/README.md).
 
 > [!IMPORTANT]
-> Solo se escanean sitios autorizados en el `.env`, y nunca en modo activo. Un escaneo pasivo sin hallazgos no garantiza que el sitio sea seguro: no reemplaza una prueba de penetración.
+> El analista-seguridad solo escanea sitios autorizados en el `.env`, y siempre en modo **pasivo**. Un escaneo pasivo sin hallazgos no garantiza que el sitio sea seguro: no reemplaza una prueba de penetración.
+
+Cuando sí querés una **prueba de penetración autorizada**, está el **pentester-web** (ethical hacking): intenta vulnerar tu plataforma con el escaneo **activo** de OWASP ZAP (envía ataques) más verificación manual del **OWASP Top 10** con Playwright (control de acceso e IDOR, autenticación y sesión, inyección, XSS, configuración, CSRF/SSRF). Confirma cada hallazgo y entrega el informe más un `reporte-pentest.md` con pasos para reproducir y cómo corregir.
+
+- Pedí: *"Intentá hackear https://staging.mi-app.com y pasame lo que encuentres"*.
+
+> [!WARNING]
+> El pentest activo es intrusivo (envía ataques y puede modificar datos). Solo corre sobre URLs de `SEGURIDAD_URLS_AUTORIZADAS`, con `PENTEST_AUTORIZADO=si` en el `.env`, sobre un sitio **propio o con autorización por escrito** y nunca contra producción sin ese permiso. No hace DoS, fuerza bruta masiva ni borra datos.
 
 ---
 
@@ -881,7 +889,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 42 agentes
+│   ├── agents/             Los 43 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

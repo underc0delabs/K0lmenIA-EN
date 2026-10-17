@@ -115,7 +115,7 @@
     <div class="k">Project documentation</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">QA agents for Claude Code: test design, automation with k0lmena and integration with Xray, QMetry, AIO Tests and Azure DevOps. The agents work in Spanish.</div>
-    <div class="chips"><span>42 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
+    <div class="chips"><span>43 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>MIT License</span></div>
 </section>
@@ -321,6 +321,7 @@
     <div class="tarjeta c-verde"><h4>analista-logs</h4><p>Server logs (app, nginx, Apache, JSON, syslog) grouped by signature with their stack trace and crossed with the run: which server error happened while each scenario failed.</p><div class="usa"><b>Uses</b> analizar_logs.py, generar_informe_logs.py</div><div class="salida"><code>output/logs/</code></div></div>
     <div class="tarjeta c-verde"><h4>reparador-automatizacion</h4><p>When a test fails because of a locator or a wait: diagnoses it with the DOM saved at failure time, proposes the new locator, applies it with a backup and verifies it. If it's a bug, it doesn't touch the test.</p><div class="usa"><b>Skills</b> automatizacion-k0lmena, ejecucion-e2e<br><b>Uses</b> npm run reparar, generar_informe_reparacion.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/reparaciones/</code></div></div>
     <div class="tarjeta c-naranja"><h4>analista-seguridad</h4><p>Passive web security scan with OWASP ZAP and a report with findings, evidence and how to fix them.</p><div class="usa"><b>Uses</b> OWASP ZAP (Docker), generar_informe_seguridad.py</div><div class="salida"><code>output/seguridad/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>pentester-web</h4><p>Authorized penetration test (ethical hacking): active OWASP ZAP scan plus manual OWASP Top 10 verification with Playwright; confirms each finding and builds the report with steps to reproduce and how to fix. Authorized URLs only, with permission.</p><div class="usa"><b>Skills</b> ejecucion-e2e, investigacion-contexto<br><b>Uses</b> active OWASP ZAP (Docker), generar_informe_seguridad.py<br><b>Connectors</b> playwright, playwright-headless</div><div class="salida"><code>output/seguridad/</code></div></div>
   </div>
 
   <div class="subtitulo-grupo"><h3>Test management</h3></div>
@@ -1155,6 +1156,18 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one 
     </ol></div>
   <div class="codigo"><pre>python herramientas/zap/escanear.py --url https://staging.mi-app.com --historia HU-001</pre></div>
   <p>Output in <code>output/seguridad/&lt;HU or host&gt;/&lt;date&gt;/</code>. Details in <code>herramientas/zap/README.md</code>.</p>
+
+  <div class="guia"><h4>pentester-web</h4>
+    <div class="pedido">Intentá hackear https://staging.mi-app.com y pasame lo que encuentres.</div>
+    <p><i>Try to hack https://staging.mi-app.com and report what you find.</i></p>
+    <ol>
+      <li><b>Confirms</b> the URL (authorized), the active-pentest authorization (<code>PENTEST_AUTORIZADO=si</code>), the environment (no production without permission) and the scope.</li>
+      <li><b>Active scan</b> with the ZAP full scan (sends attacks) plus <b>manual OWASP Top 10 verification</b> with Playwright: broken access control and IDOR, authentication and session, injection, XSS, misconfiguration, CSRF/SSRF.</li>
+      <li><b>Confirms</b> each finding (discards false positives) and measures the real impact on your site.</li>
+      <li><b>Builds the HTML report</b> (active mode) and a <code>reporte-pentest.md</code> with steps to reproduce and how to fix.</li>
+    </ol></div>
+  <div class="codigo"><pre>python herramientas/zap/escanear.py --url https://staging.mi-app.com --historia HU-001 --activo --confirmar</pre></div>
+  <p><b>Authorized</b> ethical hacking: only URLs in <code>SEGURIDAD_URLS_AUTORIZADAS</code>, with <code>PENTEST_AUTORIZADO=si</code>, on a site you own or have written permission for, and never against production without authorization. Not destructive.</p>
 </section>
 
 <!-- ======================================================= 13 CONNECTORS -->
@@ -1260,7 +1273,7 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one 
 ├── evals/                  <span class="c">Agent evals: cases with traps and checks</span>
 ├── .github/workflows/      <span class="c">CI (tests), synthetic monitoring and evals (manual)</span>
 ├── .claude/
-│   ├── agents/             <span class="c">The 42 agents</span>
+│   ├── agents/             <span class="c">The 43 agents</span>
 │   ├── skills/             <span class="c">Context, design, performance guide, execution, k0lmena</span>
 │   └── settings.json       <span class="c">Enabled connectors and permissions</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>
