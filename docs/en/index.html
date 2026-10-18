@@ -99,6 +99,7 @@
   <a href="#tokens">Token usage</a>
   <a href="#onboarding">Onboarding</a>
   <a href="#seguridad">Web security</a>
+  <a href="#streaming">Streaming and cameras</a>
   <a href="#conectores">MCP connectors</a>
   <div class="grupo">Reference</div>
   <a href="#convenciones">Conventions</a>
@@ -115,14 +116,14 @@
     <div class="k">Project documentation</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">QA agents for Claude Code: test design, automation with k0lmena and integration with Xray, QMetry, AIO Tests and Azure DevOps. The agents work in Spanish.</div>
-    <div class="chips"><span>43 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
+    <div class="chips"><span>48 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>MIT License</span></div>
 </section>
 <section class="solo-impresion indice">
   <h2>Contents</h2>
   <ol>
-    <li><span>1</span>What is k0lmenIA</li><li><span>2</span>Architecture</li><li><span>3</span>How to use it</li><li><span>4</span>Agents</li><li><span>5</span>Requirements</li><li><span>6</span>Installation</li><li><span>7</span>Configuration: the .env file</li><li><span>8</span>Project documentation</li><li><span>9</span>Context research and missing information</li><li><span>10</span>Task guide: design and execution</li><li><span>11</span>Automation with k0lmena</li><li><span>12</span>Performance testing</li><li><span>13</span>Test management: Xray, QMetry, AIO Tests and Azure DevOps</li><li><span>14</span>Database checks</li><li><span>15</span>Exploratory testing</li><li><span>16</span>Accessibility</li><li><span>17</span>Web performance</li><li><span>18</span>Failure analysis</li><li><span>19</span>Server logs</li><li><span>20</span>Coverage and traceability</li><li><span>21</span>Visual regression (pixel perfect)</li><li><span>22</span>Cross-browser</li><li><span>23</span>Repairing the automation</li><li><span>24</span>Selecting cases for a change</li><li><span>25</span>Case review and estimated time</li><li><span>26</span>Charters and exploratory sessions</li><li><span>27</span>Emails</li><li><span>28</span>Translations and languages</li><li><span>29</span>Usability</li><li><span>30</span>Forms</li><li><span>31</span>Role permissions</li><li><span>32</span>Resilience</li><li><span>33</span>Bug triage and questions</li><li><span>34</span>Run history</li><li><span>35</span>Quality dashboard and report portal</li><li><span>36</span>Notifications and synthetic monitoring</li><li><span>37</span>Agent evals</li><li><span>38</span>Token usage</li><li><span>39</span>Onboarding</li><li><span>40</span>Web security</li><li><span>41</span>MCP connectors</li><li><span>42</span>Conventions</li><li><span>43</span>Repository structure</li><li><span>44</span>Troubleshooting</li><li><span>45</span>Extending the project</li>
+    <li><span>1</span>What is k0lmenIA</li><li><span>2</span>Architecture</li><li><span>3</span>How to use it</li><li><span>4</span>Agents</li><li><span>5</span>Requirements</li><li><span>6</span>Installation</li><li><span>7</span>Configuration: the .env file</li><li><span>8</span>Project documentation</li><li><span>9</span>Context research and missing information</li><li><span>10</span>Task guide: design and execution</li><li><span>11</span>Automation with k0lmena</li><li><span>12</span>Performance testing</li><li><span>13</span>Test management: Xray, QMetry, AIO Tests and Azure DevOps</li><li><span>14</span>Database checks</li><li><span>15</span>Exploratory testing</li><li><span>16</span>Accessibility</li><li><span>17</span>Web performance</li><li><span>18</span>Failure analysis</li><li><span>19</span>Server logs</li><li><span>20</span>Coverage and traceability</li><li><span>21</span>Visual regression (pixel perfect)</li><li><span>22</span>Cross-browser</li><li><span>23</span>Repairing the automation</li><li><span>24</span>Selecting cases for a change</li><li><span>25</span>Case review and estimated time</li><li><span>26</span>Charters and exploratory sessions</li><li><span>27</span>Emails</li><li><span>28</span>Translations and languages</li><li><span>29</span>Usability</li><li><span>30</span>Forms</li><li><span>31</span>Role permissions</li><li><span>32</span>Resilience</li><li><span>33</span>Bug triage and questions</li><li><span>34</span>Run history</li><li><span>35</span>Quality dashboard and report portal</li><li><span>36</span>Notifications and synthetic monitoring</li><li><span>37</span>Agent evals</li><li><span>38</span>Token usage</li><li><span>39</span>Onboarding</li><li><span>40</span>Web security</li><li><span>41</span>Streaming and cameras</li><li><span>42</span>MCP connectors</li><li><span>43</span>Conventions</li><li><span>44</span>Repository structure</li><li><span>45</span>Troubleshooting</li><li><span>46</span>Extending the project</li>
   </ol>
 </section>
 
@@ -164,7 +165,7 @@
     <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
   </div>
   <div class="metricas">
-    <div class="metrica"><div class="n">42</div><div class="t">specialized agents</div></div>
+    <div class="metrica"><div class="n">48</div><div class="t">specialized agents</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">types of automation</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">test management tools</div></div>
     <div class="metrica"><div class="n">0</div><div class="t">tokens to run the suites</div></div>
@@ -308,6 +309,11 @@
     <div class="tarjeta c-naranja"><h4>generador-reporte-cierre</h4><p>Closing report of the test round with a go/no-go recommendation.</p><div class="usa"><b>Uses</b> recolectar_resultados.py, generar_informe_cierre.py</div><div class="salida"><code>output/informes-cierre/</code></div></div>
     <div class="tarjeta c-naranja"><h4>tablero-calidad</h4><p>Dashboard per sprint or release: pass rate and trend, % automated, coverage, bugs, flaky tests and a management summary.</p><div class="usa"><b>Uses</b> tablero_calidad.py, portal_informes.py</div><div class="salida"><code>output/tablero/</code></div></div>
     <div class="tarjeta c-naranja"><h4>analista-cobertura</h4><p>Traceability matrix (story → criteria → test cases → automation → results) and what's left to test.</p><div class="usa"><b>Skills</b> investigacion-contexto<br><b>Uses</b> analizar_cobertura.py, generar_informe_cobertura.py<br><b>Connectors</b> atlassian, azure-devops</div><div class="salida"><code>output/cobertura/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-streaming</h4><p>Streaming and playback with ffprobe/ffmpeg (RTSP/ONVIF, RTMP, HLS, DASH, WebRTC, VOD): that the source comes up, codec, resolution, FPS, bitrate, audio, keyframes, startup latency, continuity, stability (soak with reconnection) and concurrent load.</p><div class="usa"><b>Skills</b> verificacion-streaming, investigacion-contexto<br><b>Uses</b> npm run streaming (ffprobe/ffmpeg), generar_informe_streaming.py</div><div class="salida"><code>output/streaming/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-onvif</h4><p>ONVIF control of an IP camera: device info, profiles and stream URIs, snapshot, clock/drift, timezone and NTP, firmware vs. the site standard, PTZ (optional) and event capabilities. Returns the RTSP URI for probador-streaming.</p><div class="usa"><b>Skills</b> control-onvif, investigacion-contexto<br><b>Uses</b> npm run onvif (onvif-zeep), generar_informe_onvif.py</div><div class="salida"><code>output/streaming/onvif-*/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>calidad-imagen</h4><p>Camera image quality: captures a frame and detects black frames, blur and freeze with OpenCV, and with vision a dirty or blocked lens, a moved camera, backlight and night IR; compares against a reference.</p><div class="usa"><b>Skills</b> calidad-de-imagen, investigacion-contexto<br><b>Uses</b> npm run calidad-imagen (ffmpeg + OpenCV), generar_informe_calidad.py</div><div class="salida"><code>output/streaming/calidad-*/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>verificador-grabaciones</h4><p>Camera or NVR recordings over ONVIF (Recording/Search): what's recorded, the covered range, gaps and whether the expected retention is met. Reports if the device doesn't support it over ONVIF.</p><div class="usa"><b>Skills</b> control-onvif, investigacion-contexto<br><b>Uses</b> npm run grabaciones (onvif-zeep), generar_informe_grabaciones.py</div><div class="salida"><code>output/streaming/grabaciones-*/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-seguridad-camaras</h4><p>Passive security analysis of IP cameras/NVR: open ports and insecure services (Telnet, FTP, HTTP without TLS, RTSP without authentication) and firmware to review CVEs. It does not test credentials or attack.</p><div class="usa"><b>Skills</b> seguridad-camaras, investigacion-contexto<br><b>Uses</b> npm run seguridad-camaras, generar_informe_seguridad_camaras.py</div><div class="salida"><code>output/streaming/seguridad-camaras-*/</code></div></div>
   </div>
 
   <div class="subtitulo-grupo"><h3>Automation with k0lmena</h3><span class="etiqueta sin">then runs with no tokens</span></div>
@@ -338,6 +344,10 @@
     <tr><td><code>ejecucion-api</code></td><td>Running collections with Newman: base_url, token, assertions and results</td><td>ejecutor-api</td></tr>
     <tr><td><code>automatizacion-k0lmena</code></td><td>k0lmena conventions: features, steps, locators, tags, database steps and performance scripts</td><td>the mappers, verificador-datos, reparador-automatizacion and verificador-correos</td></tr>
     <tr><td><code>guia-performance</code></td><td>Plan a performance test step by step with the person</td><td>the main conversation and performance-mapper</td></tr>
+    <tr><td><code>verificacion-streaming</code></td><td>Verify streaming and playback with ffprobe/ffmpeg: protocols, properties, continuity, stability and load</td><td>probador-streaming</td></tr>
+    <tr><td><code>control-onvif</code></td><td>ONVIF camera control: services, profiles, snapshot, safe PTZ, clock/NTP, events and recordings</td><td>probador-onvif, verificador-grabaciones</td></tr>
+    <tr><td><code>calidad-de-imagen</code></td><td>Assess image quality: OpenCV (black, blur, freeze) and judgment with vision</td><td>calidad-imagen</td></tr>
+    <tr><td><code>seguridad-camaras</code></td><td>Passive security analysis of IP cameras: ports, insecure services and firmware/CVEs</td><td>analista-seguridad-camaras</td></tr>
   </table></div>
 </section>
 
@@ -1170,6 +1180,60 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one 
   <p><b>Authorized</b> ethical hacking: only URLs in <code>SEGURIDAD_URLS_AUTORIZADAS</code>, with <code>PENTEST_AUTORIZADO=si</code>, on a site you own or have written permission for, and never against production without authorization. Not destructive.</p>
 </section>
 
+<!-- ======================================================= STREAMING AND CAMERAS -->
+<section class="seccion" id="streaming">
+  <div class="kicker">Guides</div>
+  <h2>Streaming and cameras</h2>
+  <p class="bajada">Five agents for video and security-camera QA: verify the stream plays well, control the camera over <b>ONVIF</b>, check image quality, review recordings and analyze device security. They cover IP cameras (RTSP/ONVIF), live streams (RTMP/HLS/DASH), WebRTC served over HTTP and VOD playback.</p>
+  <div class="aviso warn"><span class="ico">!</span><p>Only your own devices or streams, or ones you're authorized in writing to test, declared in <code>STREAMING_FUENTES_AUTORIZADAS</code>, <code>ONVIF_HOSTS_AUTORIZADOS</code> or <code>CAMARAS_AUTORIZADAS</code> in the <code>.env</code>. Everything is read-only (no recording or re-streaming), except PTZ, which moves the camera and is confirmed.</p></div>
+
+  <div class="guia"><h4>probador-streaming</h4>
+    <div class="pedido">Test the camera rtsp://cam.local/stream and check stability.</div>
+    <ol>
+      <li><b>ffprobe</b> reads the properties: codec, resolution, FPS, bitrate, audio and keyframes (GOP).</li>
+      <li><b>ffmpeg</b> measures startup latency, continuity (dropped frames, errors) and, with <code>--estabilidad</code>, a soak with reconnection; with <code>--conexiones</code>, a bounded load test.</li>
+      <li><b>Builds the HTML report</b> with properties, continuity and findings by severity.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run streaming -- --fuente rtsp://cam.local/stream --estabilidad 60 --conexiones 10 --confirmar</pre></div>
+
+  <div class="guia"><h4>probador-onvif</h4>
+    <div class="pedido">Test the camera 192.168.1.50 over ONVIF.</div>
+    <ol>
+      <li><b>Reads</b> device info, capabilities, profiles and stream URIs, snapshot and events.</li>
+      <li><b>Checks</b> the clock (drift vs. real time), timezone, NTP and firmware against the site standard.</li>
+      <li><b>PTZ</b> optional (<code>--ptz --confirmar</code>): moves the camera minimally and stops it. Returns the RTSP URI for probador-streaming.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run onvif -- --host 192.168.1.50 --confirmar</pre></div>
+
+  <div class="guia"><h4>calidad-imagen</h4>
+    <div class="pedido">Does the camera look OK? Check if it's blurry or moved.</div>
+    <ol>
+      <li><b>OpenCV</b> detects black frames, blur and freeze (and, with a reference, whether the camera moved).</li>
+      <li><b>With vision</b>, the agent looks at the capture and judges a dirty or blocked lens, backlight and IR that doesn't switch at night.</li>
+      <li><b>Builds the report</b> with the capture, metrics and findings per camera.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run calidad-imagen -- --fuente rtsp://cam.local/stream --referencia ref.jpg --confirmar</pre></div>
+
+  <div class="guia"><h4>verificador-grabaciones</h4>
+    <div class="pedido">Is the NVR 192.168.1.60 recording and meeting 30 days of retention?</div>
+    <ol>
+      <li><b>Queries</b> over ONVIF (Recording/Search) the recorded range, the count and the tracks.</li>
+      <li><b>Detects</b> gaps and compares the covered days with the expected retention; warns if the last recording is old.</li>
+      <li>If the device doesn't support it over ONVIF, it reports so (it may need the NVR API).</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run grabaciones -- --host 192.168.1.60 --retencion 30 --confirmar</pre></div>
+
+  <div class="guia"><h4>analista-seguridad-camaras</h4>
+    <div class="pedido">Review the security of cameras 192.168.1.50 and .51.</div>
+    <ol>
+      <li><b>Passive scan</b> of ports and insecure services: Telnet, FTP, HTTP without TLS, RTSP without authentication.</li>
+      <li><b>Reads</b> the firmware (if ONVIF credentials are given) and reminds you to review its CVEs. It doesn't test credentials or attack.</li>
+      <li><b>Builds the report</b> with ports, insecure services and findings per camera.</li>
+    </ol></div>
+  <div class="codigo"><pre>npm run seguridad-camaras -- --host 192.168.1.50,192.168.1.51 --confirmar</pre></div>
+  <p>Requirements: <b>ffmpeg</b> (streaming and image quality) and, for ONVIF and quality, <code>onvif-zeep</code> and <code>opencv-python-headless</code> (installed automatically). Output in <code>output/streaming/</code>.</p>
+</section>
+
 <!-- ======================================================= 13 CONNECTORS -->
 <section class="seccion" id="conectores">
   <div class="kicker">Guides</div>
@@ -1273,7 +1337,7 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one 
 ├── evals/                  <span class="c">Agent evals: cases with traps and checks</span>
 ├── .github/workflows/      <span class="c">CI (tests), synthetic monitoring and evals (manual)</span>
 ├── .claude/
-│   ├── agents/             <span class="c">The 43 agents</span>
+│   ├── agents/             <span class="c">The 48 agents</span>
 │   ├── skills/             <span class="c">Context, design, performance guide, execution, k0lmena</span>
 │   └── settings.json       <span class="c">Enabled connectors and permissions</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>

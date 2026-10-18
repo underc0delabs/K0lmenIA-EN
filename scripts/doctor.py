@@ -185,6 +185,11 @@ def revisar_herramientas(ctx):
         linea(OK, f"Java ({java.splitlines()[0]})")
     else:
         linea(AVISO, "Java no está instalado (lo necesita JMeter)", "Instalá Java 8+ (por ejemplo, Temurin 21: https://adoptium.net)")
+    if shutil.which("ffmpeg") and shutil.which("ffprobe"):
+        linea(OK, "ffmpeg y ffprobe (streaming, playback y calidad de imagen)")
+    else:
+        linea(AVISO, "ffmpeg/ffprobe no están instalados (para probador-streaming y calidad-imagen)",
+              "Instalá ffmpeg: winget install Gyan.FFmpeg · brew install ffmpeg · apt install ffmpeg")
     if not shutil.which("docker"):
         linea(AVISO, "Docker no está instalado (lo necesitan el escaneo de seguridad con ZAP y Mailpit)",
               "Instalá Docker Desktop: https://www.docker.com/products/docker-desktop/")

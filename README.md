@@ -11,7 +11,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-22c55e?style=flat-square)](#licencia)
 [![Idioma](https://img.shields.io/badge/idioma-español-0ea5e9?style=flat-square)](#)
-[![Agentes](https://img.shields.io/badge/agentes-19-8b5cf6?style=flat-square)](#-agentes)
+[![Agentes](https://img.shields.io/badge/agentes-48-8b5cf6?style=flat-square)](#-agentes)
 [![Suites sin tokens](https://img.shields.io/badge/suites-sin%20tokens-10b981?style=flat-square)](#️-automatización-con-k0lmena)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-D97757?style=flat-square&logo=anthropic&logoColor=white)](https://docs.claude.com/en/docs/claude-code/overview)
 
@@ -889,7 +889,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 43 agentes
+│   ├── agents/             Los 48 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)
