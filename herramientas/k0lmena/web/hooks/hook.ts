@@ -1,5 +1,6 @@
 "use strict";
-import "dotenv/config";
+import { config } from "dotenv";
+config();
 import {
   chromium,
   firefox,

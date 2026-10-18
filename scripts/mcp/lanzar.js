@@ -13,9 +13,9 @@ const path = require('path');
 const VERSIONES = {
   '@playwright/mcp': '0.0.83',
   '@smartbear/mcp': '0.42.0',
-  'appium-mcp': '1.95.3',
+  'appium-mcp': '1.97.1',
   '@azure-devops/mcp': '2.10.0',
-  'mcp-remote': '0.14.3',
+  'mcp-remote': '0.15.1',
 };
 
 const RAIZ = path.resolve(__dirname, '..', '..');

@@ -2,6 +2,11 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-18 — Dependencias de k0lmena al día
+- Actualizadas a su última versión compatible: `@playwright/test` 1.64.1, `@types/node` 26.6.5, el stack de WebdriverIO 9.32.x, `dotenv` 18, `js-yaml` 5, `axe-core` 4.14.0, `mssql` 12.7.9, `mysql2` 3.24.6; y los servers MCP `appium-mcp` 1.97.1 y `mcp-remote` 0.15.1. `dotenv/config` se reemplazó por `config()` explícito (dotenv 18 cambió la resolución de tipos).
+- **Se mantienen a propósito**: TypeScript en 6.x (TS 7 es la reescritura nativa y rompe `ts-node`, del que depende todo el framework) y el stack de WebdriverIO en 9.x (`@wdio/browserstack-service` todavía no tiene la 10). Se subirán cuando el ecosistema (ts-node / browserstack-service) acompañe.
+- Verificado con `npm run test:repo` (80/0), `pytest` (320) y `tsc --noEmit`.
+
 ## 2026-10-17 — Modelo por agente (ahorro de tokens)
 - Cada agente fija su `model:` en el frontmatter para no gastar de más: `haiku` para los mecánicos (corren un script y arman el JSON/HTML), `sonnet` para la mayoría del trabajo de QA y `opus` solo para los que más razonan o son sensibles (analista-historias, analista-seguridad, pentester-web). El criterio queda documentado en `CLAUDE.md`; el costo real por agente lo mide `scripts/metricas_tokens.py`.
 
