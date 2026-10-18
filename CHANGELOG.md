@@ -2,6 +2,9 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-18 — SECURITY.md y riesgo de dependencias documentado
+- Nuevo `SECURITY.md`: alcance de seguridad del proyecto, manejo de secretos, y las 39 vulnerabilidades transitivas de `npm audit` que quedan como **riesgo aceptado** (son de herramientas de dev/test y su "fix" rompería el framework). Documenta por qué el riesgo es bajo en este contexto, cómo se resolverán cuando upstream publique los parches, y fija la próxima revisión: **2026-11-18**.
+
 ## 2026-10-18 — Dependencias de k0lmena al día
 - Actualizadas a su última versión compatible: `@playwright/test` 1.64.1, `@types/node` 26.6.5, el stack de WebdriverIO 9.32.x, `dotenv` 18, `js-yaml` 5, `axe-core` 4.14.0, `mssql` 12.7.9, `mysql2` 3.24.6; y los servers MCP `appium-mcp` 1.97.1 y `mcp-remote` 0.15.1. `dotenv/config` se reemplazó por `config()` explícito (dotenv 18 cambió la resolución de tipos).
 - **Se mantienen a propósito**: TypeScript en 6.x (TS 7 es la reescritura nativa y rompe `ts-node`, del que depende todo el framework) y el stack de WebdriverIO en 9.x (`@wdio/browserstack-service` todavía no tiene la 10). Se subirán cuando el ecosistema (ts-node / browserstack-service) acompañe.
