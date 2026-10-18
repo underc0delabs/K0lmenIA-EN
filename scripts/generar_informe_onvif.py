@@ -28,7 +28,7 @@ PRUEBA_NOMBRE = {
     "device_information": "Información del dispositivo", "capabilities": "Capacidades",
     "system_date_time": "Reloj / zona horaria", "ntp": "NTP",
     "profiles": "Perfiles y stream URI", "snapshot": "Snapshot", "events": "Eventos / movimiento",
-    "ptz_presets": "PTZ · presets", "ptz_move": "PTZ · movimiento",
+    "events_live": "Eventos en vivo (pull-point)", "ptz_presets": "PTZ · presets", "ptz_move": "PTZ · movimiento",
 }
 PRUEBA_TONO = {"ok": "ok", "fallo": "bad", "n/a": "blk"}
 
@@ -92,6 +92,23 @@ def generar(onvif_json, salida, analisis_json=None):
                  for p in perfiles]
         cuerpo += section("Perfiles y stream", table(["Perfil", "Token", "URI RTSP"], filas),
                           sub="Pasá la URI RTSP al probador-streaming para verificar el video")
+
+    # Eventos en vivo (pull-point)
+    ev = (res.get("eventos") or {}).get("en_vivo")
+    if ev:
+        if ev.get("suscripcion") != "ok":
+            cuerpo += section("Eventos en vivo", banner(f"No se pudo suscribir al pull-point: {e(ev.get('error', 'sin detalle'))}", "bad"))
+        else:
+            tono = "ok" if ev.get("movimiento") else "warn"
+            txt = ("Se detectó movimiento en vivo." if ev.get("movimiento")
+                   else f"No llegó ningún evento de movimiento en {ev.get('pedido_s')}s.")
+            filas = [["Suscripción", "OK (pull-point)"],
+                     ["Espera", f"{ev.get('pedido_s')} s"],
+                     ["Mensajes recibidos", e(ev.get("mensajes", 0))],
+                     ["Movimiento detectado", "Sí" if ev.get("movimiento") else "No"],
+                     ["Topics vistos", e(", ".join(ev.get("topics") or []) or "—")]]
+            cuerpo += section("Eventos en vivo", banner(txt, tono) + table(["Dato", "Valor"], filas),
+                              sub="Suscripción pull-point ONVIF para ver la detección de movimiento")
 
     # Snapshot
     snap = res.get("snapshot", {})

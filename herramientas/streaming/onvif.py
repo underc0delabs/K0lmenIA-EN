@@ -174,7 +174,76 @@ def descargar_snapshot(uri, usuario, password, carpeta):
     return {"ok": False, "error": "No se pudo descargar el snapshot (auth o formato)."}
 
 
-def probar(host, puerto, usuario, password, carpeta, hacer_ptz, env):
+def _parse_notificacion(nm):
+    """De una NotificationMessage saca el topic y si indica movimiento (SimpleItem booleano en true)."""
+    topic = ""
+    try:
+        raw = getattr(getattr(nm, "Topic", None), "_value_1", None)
+        if isinstance(raw, str):
+            topic = raw
+        elif raw is not None:
+            topic = getattr(raw, "text", None) or (raw.itertext and "".join(raw.itertext())) or ""
+        topic = str(topic).strip()
+    except Exception:
+        topic = ""
+    movimiento = False
+    try:
+        el = getattr(getattr(nm, "Message", None), "_value_1", None)
+        if el is not None and hasattr(el, "iter"):
+            for e in el.iter():
+                tag = getattr(e, "tag", "")
+                if isinstance(tag, str) and tag.endswith("SimpleItem"):
+                    nombre = (e.get("Name") or "").lower()
+                    valor = (e.get("Value") or "").lower()
+                    if any(k in nombre for k in ("ismotion", "motion", "state", "isactive")) and valor in ("true", "1"):
+                        movimiento = True
+    except Exception:
+        pass
+    return topic, movimiento
+
+
+def eventos_en_vivo(cam, segundos):
+    """Suscribe un PullPoint de ONVIF y espera `segundos` a que llegue un evento (p. ej. movimiento)."""
+    import datetime as _dt
+    import time as _time
+    res = {"pedido_s": segundos, "suscripcion": None, "mensajes": 0, "movimiento": False, "topics": []}
+    try:
+        ev = cam.create_events_service()
+        ev.CreatePullPointSubscription()
+        pull = cam.create_pullpoint_service()
+    except Exception as ex:
+        res["suscripcion"] = "fallo"
+        res["error"] = str(ex)
+        return res
+    res["suscripcion"] = "ok"
+    topics = set()
+    fin = _time.monotonic() + segundos
+    try:
+        while _time.monotonic() < fin and not res["movimiento"]:
+            restante = min(10, max(1, int(fin - _time.monotonic())))
+            try:
+                msgs = pull.PullMessages({"Timeout": _dt.timedelta(seconds=restante), "MessageLimit": 100})
+            except Exception:
+                msgs = pull.PullMessages({"Timeout": f"PT{restante}S", "MessageLimit": 100})
+            for nm in (getattr(msgs, "NotificationMessage", None) or []):
+                res["mensajes"] += 1
+                topic, movimiento = _parse_notificacion(nm)
+                if topic:
+                    topics.add(topic)
+                if movimiento:
+                    res["movimiento"] = True
+    except Exception as ex:
+        res["error_pull"] = str(ex)
+    finally:
+        try:
+            pull.Unsubscribe()
+        except Exception:
+            pass
+    res["topics"] = sorted(topics)[:20]
+    return res
+
+
+def probar(host, puerto, usuario, password, carpeta, hacer_ptz, env, eventos_segundos=0):
     from onvif import ONVIFCamera
     res = {"host": host, "puerto": puerto, "hallazgos": [], "pruebas": {}}
     h = res["hallazgos"]
@@ -251,16 +320,30 @@ def probar(host, puerto, usuario, password, carpeta, hacer_ptz, env):
             res["pruebas"]["snapshot"] = "fallo"
             h.append({"severidad": "Media", "texto": f"GetSnapshotUri falló: {ex}"})
 
-    # Eventos / detección de movimiento (solo capacidad)
+    # Eventos / detección de movimiento (capacidad y, con --eventos N, en vivo)
     try:
         if res.get("capacidades", {}).get("eventos"):
             ev = cam.create_events_service()
             props = ev.GetEventProperties()
             res["eventos"] = {"disponible": True, "topics": bool(_val(props, "TopicSet"))}
             res["pruebas"]["events"] = "ok"
+            if eventos_segundos and eventos_segundos > 0:
+                print(f"[onvif]   esperando eventos {eventos_segundos}s (generá movimiento frente a la cámara) …", file=sys.stderr)
+                en_vivo = eventos_en_vivo(cam, eventos_segundos)
+                res["eventos"]["en_vivo"] = en_vivo
+                if en_vivo.get("suscripcion") != "ok":
+                    res["pruebas"]["events_live"] = "fallo"
+                    h.append({"severidad": "Media", "texto": f"No se pudo suscribir a los eventos en vivo (pull-point): {en_vivo.get('error', 'sin detalle')}"})
+                elif en_vivo.get("movimiento"):
+                    res["pruebas"]["events_live"] = "ok"
+                else:
+                    res["pruebas"]["events_live"] = "ok"
+                    h.append({"severidad": "Baja", "texto": f"No llegó ningún evento de movimiento en {eventos_segundos}s ({en_vivo.get('mensajes', 0)} mensaje(s) recibidos). ¿Generaste movimiento y está activada la detección en la cámara?"})
         else:
             res["eventos"] = {"disponible": False}
             res["pruebas"]["events"] = "n/a"
+            if eventos_segundos and eventos_segundos > 0:
+                h.append({"severidad": "Baja", "texto": "Se pidió esperar eventos pero la cámara no declara capacidad de eventos por ONVIF."})
     except Exception as ex:
         res["pruebas"]["events"] = "fallo"
         h.append({"severidad": "Baja", "texto": f"Servicio de eventos presente pero GetEventProperties falló: {ex}"})
@@ -298,6 +381,7 @@ def main():
     ap.add_argument("--password", default=None, help="Contraseña ONVIF (o ONVIF_PASSWORD del .env).")
     ap.add_argument("--historia", default="", help="HU-XXX para la trazabilidad y la carpeta de salida.")
     ap.add_argument("--ptz", action="store_true", help="Hace un movimiento PTZ mínimo (acción con efecto; exige --confirmar).")
+    ap.add_argument("--eventos", type=int, default=0, help="Segundos que espera eventos en vivo (pull-point) para ver la detección de movimiento (0 = no).")
     ap.add_argument("--confirmar", action="store_true", help="Saltea la confirmación (la persona ya autorizó).")
     args = ap.parse_args()
 
@@ -330,11 +414,13 @@ def main():
         print(f"[aviso] no se pudo archivar la corrida anterior: {ex}", file=sys.stderr)
 
     print(f"[onvif] Consultando {args.host}:{args.puerto} …", file=sys.stderr)
-    res = probar(args.host, args.puerto, usuario, password, carpeta, args.ptz, env)
+    eventos_segundos = args.eventos or int(env.get("ONVIF_EVENTOS_ESPERA_S") or 0)
+    res = probar(args.host, args.puerto, usuario, password, carpeta, args.ptz, env, eventos_segundos)
     datos = {
         "generado": datetime.datetime.now().isoformat(timespec="seconds"),
         "historia": args.historia or None,
         "ptz_ejecutado": bool(args.ptz),
+        "eventos_esperados_s": eventos_segundos or None,
         "resultado": res,
     }
     (carpeta / "onvif.json").write_text(json.dumps(datos, ensure_ascii=False, indent=2), encoding="utf-8")
