@@ -170,6 +170,8 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>probador-resiliencia</code></td><td>Simula que la API falla o tarda, que la red se corta y que no cargan los recursos, y revisa qué ve la persona: pantallas en blanco, errores sin aviso, spinners infinitos, recuperación</td></tr>
 <tr><td><code>probador-salesforce</code></td><td>Prueba una org de Salesforce (sandbox): releva acceso (perfiles, permisos, OWD, FLS), validaciones, flows, triggers, cobertura de Apex y límites con la CLI <code>sf</code>, deriva y corre pruebas por perfil en Lightning. Nunca producción; no toca metadata</td></tr>
 <tr><td><code>probador-billeteras</code></td><td>Prueba billeteras virtuales y pagos en sandbox: conservación del saldo, idempotencia, doble gasto y concurrencia, límites, KYC/AML, conciliación con la pasarela y seguridad de tokens y tarjetas (PCI). Dinero y tarjetas de prueba, nunca reales</td></tr>
+<tr><td><code>probador-shopify</code></td><td>Prueba una tienda Shopify: releva en solo lectura la vidriera (tema, errores de Liquid, políticas, catálogo) y la Admin API (productos y stock, mercados, envíos, descuentos, webhooks) y corre Theme Check; prueba el checkout con Bogus Gateway o el modo de prueba en mobile y desktop</td></tr>
+<tr><td><code>probador-wordpress</code></td><td>Prueba WordPress y WooCommerce: releva en solo lectura la vidriera, la REST API de WooCommerce (plugins y templates desactualizados, pasarelas y su modo, envíos, cupones, webhooks, cron) y WP-CLI; prueba checkout, pagos de prueba, envíos, cupones, correos y roles</td></tr>
 <tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
 <tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
@@ -892,7 +894,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 51 agentes
+│   ├── agents/             Los 57 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

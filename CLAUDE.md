@@ -349,6 +349,60 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | de tokens; informe HTML. Dinero y        |                                       |
 |                            | tarjetas de prueba, nunca reales         |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `probador-shopify`         | Prueba una tienda Shopify: releva en     | `output/shopify/`                     |
+|                            | solo lectura la vidriera (tema, errores  |                                       |
+|                            | de Liquid, políticas, catálogo) y la     |                                       |
+|                            | Admin API (productos y stock, mercados,  |                                       |
+|                            | envíos, descuentos, webhooks) y Theme    |                                       |
+|                            | Check; prueba checkout con Bogus Gateway |                                       |
+|                            | o modo de prueba en mobile y desktop;    |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-wordpress`       | Prueba WordPress / WooCommerce: releva   | `output/wordpress/`                   |
+|                            | en solo lectura la vidriera, la REST API |                                       |
+|                            | de WooCommerce (plugins y templates      |                                       |
+|                            | desactualizados, pasarelas y su modo,    |                                       |
+|                            | envíos, cupones, webhooks, cron) y WP-   |                                       |
+|                            | CLI; prueba checkout, pagos de prueba,   |                                       |
+|                            | envíos, cupones, correos y roles;        |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-prestashop`      | Prueba PrestaShop (1.6/1.7/8.x): releva  | `output/prestashop/`                  |
+|                            | en solo lectura la vidriera y la         |                                       |
+|                            | Webservice API (productos y stock,       |                                       |
+|                            | combinaciones, transportistas, zonas,    |                                       |
+|                            | monedas, vales, multistore y configs de  |                                       |
+|                            | rendimiento) y, con --local, versión y   |                                       |
+|                            | modo dev; prueba smoke local, checkout,  |                                       |
+|                            | pagos de prueba, stock, redondeo y       |                                       |
+|                            | rendimiento; informe HTML                |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-vtex`            | Prueba VTEX: releva en solo lectura la   | `output/vtex/`                        |
+|                            | vidriera y el Catalog System público     |                                       |
+|                            | (SKUs, precio, stock) y, con app de      |                                       |
+|                            | lectura, canales de venta, envíos        |                                       |
+|                            | (SLAs) y promociones; prueba smoke en    |                                       |
+|                            | workspace de QA, checkout/orderForm,     |                                       |
+|                            | pagos sandbox, canales, promos y OMS;    |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-sap`             | Prueba SAP (S/4HANA o ECC) en mandante   | `output/sap/`                         |
+|                            | de QA: SAP GUI (T-codes con Scripting    |                                       |
+|                            | API) y Fiori/UI5 (OData), autorizaciones |                                       |
+|                            | y roles (PFCG/SU53/SoD), procesos O2C/   |                                       |
+|                            | P2P/R2R de punta a punta; smoke,         |                                       |
+|                            | regresión tras transporte, rendimiento   |                                       |
+|                            | y seguridad; informe HTML                |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-desktop`         | Prueba apps de escritorio Windows        | `output/desktop/`                     |
+|                            | (WinForms/WPF/UWP/Electron/Java/Qt):     |                                       |
+|                            | releva el árbol de controles (pywinauto) |                                       |
+|                            | y prueba con Appium+WinAppDriver,        |                                       |
+|                            | pywinauto o Playwright (Electron);       |                                       |
+|                            | funcional, instalación, archivos, SO,    |                                       |
+|                            | regresión, rendimiento y seguridad;      |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 ```
 
 ---
@@ -428,6 +482,9 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/generar_informe_calidad.py`, `generar_informe_grabaciones.py` y `generar_informe_seguridad_camaras.py` → los informes de `npm run calidad-imagen` (OpenCV + visión), `npm run grabaciones` (ONVIF Recording) y `npm run seguridad-camaras` (escaneo pasivo) (`calidad-imagen`, `verificador-grabaciones`, `analista-seguridad-camaras`).
 - `herramientas/salesforce/inventario.py` (`npm run salesforce`) y `scripts/generar_informe_salesforce.py` → inventario de QA de una org de Salesforce (sandbox) en solo lectura con la CLI `sf` (perfiles, validaciones, flows, triggers, cobertura de Apex, sharing, límites) e informe HTML (`probador-salesforce`).
 - `scripts/generar_informe_billeteras.py` → informe HTML de billeteras y pagos (hallazgos, pruebas, conservación del saldo y conciliación) desde el `analisis.json` que arma el agente (`probador-billeteras`).
+- `herramientas/ecommerce/shopify.py` (`npm run shopify`), `herramientas/ecommerce/wordpress.py` (`npm run wordpress`), `herramientas/ecommerce/prestashop.py` (`npm run prestashop`), `herramientas/ecommerce/vtex.py` (`npm run vtex`) y `scripts/generar_informe_ecommerce.py` → relevamiento funcional de solo lectura de tiendas Shopify (vidriera, Admin API de lectura, Theme Check), WordPress / WooCommerce (vidriera, REST API de lectura, WP-CLI), PrestaShop (vidriera, Webservice API de lectura, versión y modo dev de la instalación local) y VTEX (vidriera, Catalog System público, y canales de venta, envíos y promociones con app de lectura), con hallazgos, sugerencias de prueba e informe HTML (`probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`). Solo `ECOMMERCE_URLS_AUTORIZADAS`.
+- `herramientas/sap/sap_gui.py` (`npm run sap`) y `scripts/generar_informe_sap.py` → relevamiento de solo lectura de una sesión de SAP GUI for Windows por la Scripting API (sistema, mandante, usuario, transacción) e informe HTML del probador de SAP (GUI y Fiori): hallazgos, pruebas, autorizaciones y procesos de negocio (`probador-sap`). Requiere `pywin32` (opcional, solo Windows).
+- `herramientas/desktop/controles.py` (`npm run desktop`) y `scripts/generar_informe_desktop.py` → relevamiento de solo lectura del árbol de controles de una app de escritorio de Windows (pywinauto, UI Automation) e informe HTML del probador de escritorio: hallazgos, pruebas y compatibilidad (`probador-desktop`). Requiere `pywinauto` (opcional, solo Windows).
 - `scripts/generar_informe_investigacion.py` → el paquete del relevamiento de un proyecto completo: web HTML con **mapas conceptuales** (arquitectura y cómo funciona) y el árbol de épicas/historias/tareas, `resumen.md` breve y `presentacion-investigacion.html` (imprime a PDF), con comparación contra el relevamiento anterior (`investigador-proyecto`).
 - `scripts/buscar_duplicados.py` → similitud entre bugs para el `triador-bugs` (duplicados, regresiones, relacionados).
 - `scripts/metricas_tokens.py` → **uso de tokens** de los agentes: lee las transcripciones de Claude Code del proyecto (solo conteos, nunca el texto), atribuye el uso a cada agente y estima el costo por agente, día y modelo con oportunidades (qué conviene automatizar en k0lmena); lo suma el tablero de calidad.
@@ -476,6 +533,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - Monitoreo sintético: `output/monitoreo/<nombre>/` con `monitoreo.json`, `informe-monitoreo.html` e `historial/` (30 corridas).
 - Evals: `evals/resultados/<fecha>/` con `resultados.json` e `informe-evals.html` (no se versiona).
 - Uso de tokens: `output/metricas-tokens/<nombre>/` con `metricas.json` e `informe-metricas.html`. Onboarding: `output/onboarding/<persona>/` (nombre en minúsculas, sin acentos y con guiones) con `plan.json`, `plan-onboarding.html` y `plan-onboarding.md`.
+- E-commerce: `output/shopify/<HU o host>/` y `output/wordpress/<HU o host>/` con `<plataforma>.json`, `analisis.json`, `informe-<plataforma>.html` y `capturas/`. La corrida anterior pasa a `historial/` (últimas 5).
 - Selección de casos: `output/seleccion-casos/<nombre>/` con `seleccion.json`, `seleccion.csv` (lo manual) e `informe-seleccion.html`; el cambio que arma el agente va en `output/seleccion-casos/_cambios-<nombre>.json` (fuera de la carpeta de la corrida, que se archiva al repetirla).
 - Datos de prueba: `datos-HU-001.md` (o `.csv`)
 - Casos de API: `casos-api-HU-001.md` (o `casos-api-<tema>.md` si no salen de una historia)
@@ -492,14 +550,14 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 ## Arquitectura (cómo crece el repo)
 
-El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF) y **salesforce** (CLI `sf`)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
+El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting) y **desktop** (pywinauto)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
 ### Modelo por agente (costo de tokens)
 
 Cada agente fija su modelo en el frontmatter (`model:`) para no gastar de más. Criterio por niveles:
 
 - **`haiku`** — trabajo mecánico que sobre todo corre un script y arma el JSON/HTML (tablero-calidad, analista-cobertura, analista-logs, generador-reporte-html, selector-casos-de-prueba, publicador-resultados, generador-charters, guia-onboarding).
-- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce` y `probador-billeteras`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
+- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce`, `probador-billeteras`, `probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`, `probador-sap` y `probador-desktop`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
 - **`opus`** — lo que más razona o es sensible: `analista-historias`, `analista-seguridad`, `pentester-web`, `analista-seguridad-camaras`.
 
 Un agente nuevo lleva su `model:` según este criterio. El costo real por agente lo mide `scripts/metricas_tokens.py` (lo resume el tablero de calidad): si uno queda flojo en Haiku/Sonnet, se sube; si otro no necesita Opus, se baja.

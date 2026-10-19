@@ -40,6 +40,7 @@ NOMBRES = {
     "triage": "Triage de bugs", "tablero": "Tablero de calidad", "monitoreo": "Monitoreo sintético",
     "evals": "Evals de los agentes", "k0lmena": "npm test (k0lmena)", "metricas-tokens": "Uso de tokens",
     "onboarding": "Onboarding",
+    "shopify": "Shopify", "wordpress": "WordPress / WooCommerce", "salesforce": "Salesforce", "billeteras": "Billeteras y pagos",
 }
 # Orden de las tarjetas: primero lo que más se mira.
 ORDEN = ["tablero", "informes-cierre", "ejecuciones", "k0lmena", "fallos", "cobertura", "monitoreo", "planes-de-prueba",

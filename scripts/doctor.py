@@ -195,6 +195,16 @@ def revisar_herramientas(ctx):
     else:
         linea(AVISO, "Salesforce CLI (sf) no está instalada (solo para probador-salesforce)",
               "Instalala si vas a probar Salesforce: npm install --global @salesforce/cli")
+    if shutil.which("shopify"):
+        linea(OK, "Shopify CLI instalada (Theme Check del probador-shopify)")
+    else:
+        linea(AVISO, "Shopify CLI no está instalada (solo para Theme Check del probador-shopify)",
+              "Instalala si vas a revisar el código de un tema: npm install --global @shopify/cli")
+    if shutil.which("wp"):
+        linea(OK, "WP-CLI instalada (para probador-wordpress --wp-cli)")
+    else:
+        linea(AVISO, "WP-CLI no está instalada (opcional para probador-wordpress)",
+              "Instalala si tenés el sitio local: https://wp-cli.org (o poné WORDPRESS_WP_CLI en el .env si corre en Docker)")
     if not shutil.which("docker"):
         linea(AVISO, "Docker no está instalado (lo necesitan el escaneo de seguridad con ZAP y Mailpit)",
               "Instalá Docker Desktop: https://www.docker.com/products/docker-desktop/")

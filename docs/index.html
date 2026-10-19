@@ -107,7 +107,7 @@
     <div class="k">Documentación del proyecto</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">Agentes de QA para Claude Code: diseño de pruebas, automatización con k0lmena e integración con Xray, QMetry, AIO Tests y Azure DevOps — todo en español.</div>
-    <div class="chips"><span>51 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
+    <div class="chips"><span>53 agentes</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Suites sin tokens</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>Licencia MIT</span></div>
 </section>
@@ -156,7 +156,7 @@
     <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
   </div>
   <div class="metricas">
-    <div class="metrica"><div class="n">51</div><div class="t">agentes especializados</div></div>
+    <div class="metrica"><div class="n">53</div><div class="t">agentes especializados</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">tipos de automatización</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">herramientas de gestión</div></div>
     <div class="metrica"><div class="n">0</div><div class="t">tokens para correr las suites</div></div>
@@ -306,6 +306,8 @@
     <div class="tarjeta c-naranja"><h4>analista-seguridad-camaras</h4><p>Seguridad pasiva de cámaras IP/NVR: puertos abiertos y servicios inseguros (Telnet, FTP, HTTP sin TLS, RTSP sin autenticación) y el firmware para revisar CVEs. No prueba credenciales ni ataca.</p><div class="usa"><b>Skills</b> seguridad-camaras, investigacion-contexto<br><b>Usa</b> npm run seguridad-camaras, generar_informe_seguridad_camaras.py</div><div class="salida"><code>output/streaming/seguridad-camaras-*/</code></div></div>
     <div class="tarjeta c-naranja"><h4>probador-salesforce</h4><p>Prueba una org de Salesforce (sandbox): releva en solo lectura con la CLI sf (perfiles, permisos, OWD/FLS, validaciones, flows, triggers, cobertura de Apex, límites), deriva pruebas por riesgo, corre tests de Apex y ejecuta por perfil en Lightning con Playwright. Nunca producción; no toca metadata.</p><div class="usa"><b>Skills</b> pruebas-salesforce, pruebas-tokens, ejecucion-e2e, investigacion-contexto<br><b>Usa</b> npm run salesforce, generar_informe_salesforce.py<br><b>Conectores</b> salesforce, playwright</div><div class="salida"><code>output/salesforce/</code></div></div>
     <div class="tarjeta c-naranja"><h4>probador-billeteras</h4><p>Billeteras virtuales y pagos en sandbox: conservación del saldo y ledger, estados de transacción, idempotencia, doble gasto y concurrencia, límites, KYC/AML, conciliación con la pasarela y seguridad de tokens y tarjetas (PCI). Dinero y tarjetas de prueba, nunca reales.</p><div class="usa"><b>Skills</b> pruebas-billeteras, pruebas-tokens, tecnicas-de-diseno, ejecucion-e2e, investigacion-contexto<br><b>Usa</b> generar_informe_billeteras.py; ejecutor-api, verificador-datos<br><b>Conectores</b> playwright</div><div class="salida"><code>output/billeteras/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-shopify</h4><p>Prueba una tienda Shopify: releva en solo lectura la vidriera (tema publicado, errores de Liquid, políticas, catálogo y carrito) y la Admin API (tienda de desarrollo, productos y stock, mercados, envíos, descuentos, webhooks), corre Theme Check, deriva pruebas por riesgo y las ejecuta en mobile y desktop con Bogus Gateway o el modo de prueba. No cambia la tienda.</p><div class="usa"><b>Skills</b> pruebas-shopify, pruebas-ecommerce, ejecucion-e2e, investigacion-contexto<br><b>Usa</b> npm run shopify, generar_informe_ecommerce.py<br><b>Conectores</b> playwright</div><div class="salida"><code>output/shopify/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-wordpress</h4><p>Prueba WordPress y WooCommerce: releva en solo lectura la vidriera, la REST API de WooCommerce (base pendiente, cron, plugins y templates desactualizados, páginas, pasarelas y su modo, envíos, cupones, webhooks) y WP-CLI, deriva pruebas por riesgo y prueba checkout, pagos, envíos, cupones, correos y roles. No actualiza ni cambia nada.</p><div class="usa"><b>Skills</b> pruebas-wordpress, pruebas-ecommerce, ejecucion-e2e, investigacion-contexto<br><b>Usa</b> npm run wordpress, generar_informe_ecommerce.py<br><b>Conectores</b> playwright</div><div class="salida"><code>output/wordpress/</code></div></div>
   </div>
 
   <div class="subtitulo-grupo"><h3>Automatización con k0lmena</h3><span class="etiqueta sin">después corre sin tokens</span></div>
@@ -344,6 +346,9 @@
     <tr><td><code>pruebas-salesforce</code></td><td>Probar una org de Salesforce: ambientes, acceso (perfiles, OWD, FLS), validaciones, flows, triggers, Apex, datos, Lightning y releases</td><td>probador-salesforce</td></tr>
     <tr><td><code>pruebas-tokens</code></td><td>Probar tokens (JWT, OAuth, sesión, API keys) y la tokenización de tarjetas (PCI): ciclo de vida, firma, claims, ataques típicos y manejo seguro</td><td>probador-billeteras, probador-salesforce, pentester-web</td></tr>
     <tr><td><code>pruebas-billeteras</code></td><td>Probar billeteras y pagos: saldo y ledger, transacciones, idempotencia, doble gasto, límites, KYC/AML y conciliación</td><td>probador-billeteras</td></tr>
+    <tr><td><code>pruebas-ecommerce</code></td><td>Probar cualquier tienda online: catálogo, precios, stock, carrito, checkout, impuestos, envíos, cupones, pagos de prueba y correos</td><td>probador-shopify, probador-wordpress</td></tr>
+    <tr><td><code>pruebas-shopify</code></td><td>Probar Shopify: tienda de desarrollo, temas y Theme Check, Liquid, apps, checkout y Bogus Gateway, Markets, envíos, descuentos y webhooks</td><td>probador-shopify</td></tr>
+    <tr><td><code>pruebas-wordpress</code></td><td>Probar WordPress y WooCommerce: plugins, templates sobrescritos, cron, checkout clásico o de bloques, pasarelas, envíos, cupones y roles</td><td>probador-wordpress</td></tr>
   </table></div>
 </section>
 
@@ -1320,7 +1325,7 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># un p
 ├── evals/                  <span class="c">Evals de los agentes: casos con trampas y chequeos</span>
 ├── .github/workflows/      <span class="c">CI (tests), monitoreo sintético y evals (manuales)</span>
 ├── .claude/
-│   ├── agents/             <span class="c">Los 51 agentes</span>
+│   ├── agents/             <span class="c">Los 53 agentes</span>
 │   ├── skills/             <span class="c">Contexto, diseño, guía de performance, ejecución, k0lmena</span>
 │   └── settings.json       <span class="c">Conectores habilitados y permisos</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>
