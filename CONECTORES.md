@@ -56,6 +56,8 @@ Claude Code **arranca directo, sin pedir aprobar conectores**: `.mcp.json` trae 
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 | appium-mcp                       | Appium (mobile-mapper)                  | appium-mcp                              | Oficial | stdio        | No                       |
 +----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
+| salesforce                       | Salesforce (probador-salesforce)        | @salesforce/mcp (Salesforce DX)         | Oficial | stdio        | No                       |
++----------------------------------+-----------------------------------------+-----------------------------------------+---------+--------------+--------------------------+
 ```
 
 > **Para crear carpetas, casos, ciclos y publicar resultados no hace falta ningún MCP**: lo hace la integración propia `scripts/gestion/` (agentes `gestor-pruebas` y `publicador-resultados`), que soporta **Xray Cloud, Xray Server/Data Center, QTM4J y AIO Tests** con sus APIs oficiales. Configuración en [`scripts/gestion/README.md`](scripts/gestion/README.md). La excepción es **Azure DevOps**, que se integra por su MCP (ver [Azure DevOps](#azure-devops)). Los MCP de esta página son opcionales, para consultar o explorar la herramienta desde el chat.
@@ -170,6 +172,10 @@ npm run conector -- desactivar azure-devops
 +--------------------------+---------------------------------+------------------------------------------+
 | `azure-devops.js`        | azure-devops                    | Arma el PAT en el formato del server y   |
 |                          |                                 | elige las áreas habilitadas              |
++--------------------------+---------------------------------+------------------------------------------+
+| `salesforce.js`          | salesforce                      | Apunta a la org de `SALESFORCE_ORG` (de  |
+|                          |                                 | la lista autorizada) y acota el server a |
+|                          |                                 | SOQL de solo lectura y tests de Apex     |
 +--------------------------+---------------------------------+------------------------------------------+
 | `aio-tests.js`           | aio-tests                       | Conecta con la URL de tu tenant vía      |
 |                          |                                 | `mcp-remote`, con el token en el header  |
@@ -546,6 +552,30 @@ Se activa con `npm run conector -- activar appium-mcp`. `ANDROID_HOME` se toma d
 
 ---
 
+## Salesforce (para el probador-salesforce)
+
+Es el server MCP **oficial de Salesforce DX**, [`@salesforce/mcp`](https://github.com/salesforcecli/mcp), que usa el agente `probador-salesforce` para consultar una org. **k0lmenIA lo arranca acotado a solo lectura**: habilita únicamente el toolset `data` (consultas **SOQL**) y la herramienta `run_apex_test` (tests de Apex). No habilita metadata (deploy/retrieve) ni la gestión de usuarios/permisos.
+
+Requiere la **CLI de Salesforce** (`npm install --global @salesforce/cli`, Node.js 18+) y la org **autorizada localmente** antes de usarla:
+
+```bash
+sf org login web --alias mi-sandbox-qa --instance-url https://test.salesforce.com
+```
+
+```
++-----------------------------+---------------+-------------------------------------------------------------+
+| Variable                    | Obligatoria   | Descripción                                                 |
++=============================+===============+=============================================================+
+| SALESFORCE_ORGS_AUTORIZADAS | Sí            | Alias de las orgs permitidas (sandbox), separados por coma  |
++-----------------------------+---------------+-------------------------------------------------------------+
+| SALESFORCE_ORG              | Sí            | El alias de la org con la que se conecta (de la lista)      |
++-----------------------------+---------------+-------------------------------------------------------------+
+```
+
+El conector apunta a **una** org concreta (`SALESFORCE_ORG`), que tiene que estar en `SALESFORCE_ORGS_AUTORIZADAS`; nunca `ALLOW_ALL_ORGS`. La autorización vive en la CLI local, así que **por `.mcp.json` no viaja ningún token**. Se activa con `npm run conector -- activar salesforce`. El relevamiento de solo lectura (sin este MCP, con la CLI directa) lo hace `npm run salesforce` (ver `herramientas/salesforce/README.md`).
+
+---
+
 ## Buenas prácticas
 
 - **Las herramientas de escritura modifican datos compartidos** (crear o editar casos, importar resultados). Por eso los conectores no se agregan a `permissions.allow`: Claude Code pide confirmación antes de cada acción.
@@ -564,6 +594,7 @@ Se activa con `npm run conector -- activar appium-mcp`. `ANDROID_HOME` se toma d
 - Xray Cloud GraphQL API (integración propia): https://docs.getxray.app/display/XRAYCLOUD/GraphQL+API
 - Xray Server/DC REST API (integración propia): https://docs.getxray.app/display/XRAY/REST+API
 - Appium MCP (oficial): https://github.com/appium/appium-mcp
+- Salesforce DX MCP Server (oficial): https://github.com/salesforcecli/mcp
 - Azure DevOps MCP Server (oficial): https://github.com/microsoft/azure-devops-mcp
 - Linear MCP Server: https://linear.app/docs/mcp
 - ClickUp MCP Server: https://developer.clickup.com/docs/connect-an-ai-assistant-to-clickups-mcp-server-1

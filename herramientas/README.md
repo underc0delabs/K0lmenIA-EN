@@ -12,6 +12,8 @@ herramientas/
 ├── k0lmena/         # Framework de automatización (integrado): web, api, mobile y performance
 │   ├── web/ api/ mobile/ performance/
 │   └── README.md    # instalación, npm test y cómo lo usan los mappers
+├── streaming/       # ffmpeg/ONVIF: video, cámaras y grabaciones (agentes de streaming)
+├── salesforce/      # CLI sf: inventario de QA de una org de Salesforce (probador-salesforce)
 └── ...              # otras: una subcarpeta + su README
 ```
 

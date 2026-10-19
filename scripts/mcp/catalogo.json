@@ -195,6 +195,17 @@
           "appium-mcp"
         ]
       }
+    },
+    "salesforce": {
+      "descripcion": "Salesforce DX (probador-salesforce): consultas SOQL de solo lectura y tests de Apex en UNA org autorizada (sandbox)",
+      "variables": "SALESFORCE_ORG, SALESFORCE_ORGS_AUTORIZADAS (la org se autoriza antes con sf org login web)",
+      "servidor": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "scripts/mcp/salesforce.js"
+        ]
+      }
     }
   }
 }

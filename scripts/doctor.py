@@ -190,6 +190,11 @@ def revisar_herramientas(ctx):
     else:
         linea(AVISO, "ffmpeg/ffprobe no están instalados (para probador-streaming y calidad-imagen)",
               "Instalá ffmpeg: winget install Gyan.FFmpeg · brew install ffmpeg · apt install ffmpeg")
+    if shutil.which("sf"):
+        linea(OK, "Salesforce CLI (sf) instalada (para probador-salesforce)")
+    else:
+        linea(AVISO, "Salesforce CLI (sf) no está instalada (solo para probador-salesforce)",
+              "Instalala si vas a probar Salesforce: npm install --global @salesforce/cli")
     if not shutil.which("docker"):
         linea(AVISO, "Docker no está instalado (lo necesitan el escaneo de seguridad con ZAP y Mailpit)",
               "Instalá Docker Desktop: https://www.docker.com/products/docker-desktop/")

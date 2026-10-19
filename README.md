@@ -11,7 +11,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-22c55e?style=flat-square)](#licencia)
 [![Idioma](https://img.shields.io/badge/idioma-español-0ea5e9?style=flat-square)](#)
-[![Agentes](https://img.shields.io/badge/agentes-48-8b5cf6?style=flat-square)](#-agentes)
+[![Agentes](https://img.shields.io/badge/agentes-51-8b5cf6?style=flat-square)](#-agentes)
 [![Suites sin tokens](https://img.shields.io/badge/suites-sin%20tokens-10b981?style=flat-square)](#️-automatización-con-k0lmena)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-D97757?style=flat-square&logo=anthropic&logoColor=white)](https://docs.claude.com/en/docs/claude-code/overview)
 
@@ -141,7 +141,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 
 <table>
 <tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="14"><b>🧠 Análisis<br>y diseño</b></td>
+<tr><td rowspan="15"><b>🧠 Análisis<br>y diseño</b></td>
   <td><code>documentador-proyecto</code></td><td>Arma la documentación del proyecto en <code>input/documentacion/</code>: lee el repositorio (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura), las historias con sus comentarios, PRs y links, y hace un mapa funcional de la web</td></tr>
 <tr><td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
 <tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
@@ -153,10 +153,11 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>triador-bugs</code></td><td>Antes de cargar un bug, busca si ya existe en Jira, Azure DevOps o los bugs locales, detecta regresiones de bugs cerrados y sugiere severidad, componente, responsable e historia</td></tr>
 <tr><td><code>consultor-proyecto</code></td><td>Preguntale cómo funciona cualquier parte del producto: responde con la documentación del proyecto, citando de dónde sale cada dato o diciendo que no está documentado</td></tr>
 <tr><td><code>guia-onboarding</code></td><td>Plan de incorporación para un QA nuevo: el producto, su entorno, los agentes para su rol, las primeras tareas y un checklist</td></tr>
+<tr><td><code>investigador-proyecto</code></td><td>Releva el proyecto entero por MCP (Jira, Azure DevOps, Confluence, repo, Figma) y arma un informe para un QA nuevo: de qué se trata, módulos, flujos, equipo, ambigüedades y contradicciones con sus fuentes, y preguntas priorizadas para el equipo</td></tr>
 <tr><td><code>revisor-casos</code></td><td>Revisa la calidad de los casos existentes: puntaje, problemas, duplicados, tiempo de ejecución manual y la versión mejorada</td></tr>
 <tr><td><code>generador-charters</code></td><td>Charters de exploración por sesiones (hojas y plantilla de notas) y el informe de las sesiones</td></tr>
 <tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
-<tr><td rowspan="18"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
+<tr><td rowspan="20"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
   <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
 <tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman, Bruno o Insomnia con Newman (REST y GraphQL)</td></tr>
 <tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
@@ -167,6 +168,8 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>probador-formularios</code></td><td>Valida cada campo de los formularios sin enviarlos: obligatorios, largos, formatos, límites y mensajes</td></tr>
 <tr><td><code>probador-permisos</code></td><td>Inicia sesión con cada rol y arma la matriz de qué ve y qué abre cada uno (también por URL directa y en la API), comparada con la regla documentada</td></tr>
 <tr><td><code>probador-resiliencia</code></td><td>Simula que la API falla o tarda, que la red se corta y que no cargan los recursos, y revisa qué ve la persona: pantallas en blanco, errores sin aviso, spinners infinitos, recuperación</td></tr>
+<tr><td><code>probador-salesforce</code></td><td>Prueba una org de Salesforce (sandbox): releva acceso (perfiles, permisos, OWD, FLS), validaciones, flows, triggers, cobertura de Apex y límites con la CLI <code>sf</code>, deriva y corre pruebas por perfil en Lightning. Nunca producción; no toca metadata</td></tr>
+<tr><td><code>probador-billeteras</code></td><td>Prueba billeteras virtuales y pagos en sandbox: conservación del saldo, idempotencia, doble gasto y concurrencia, límites, KYC/AML, conciliación con la pasarela y seguridad de tokens y tarjetas (PCI). Dinero y tarjetas de prueba, nunca reales</td></tr>
 <tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
 <tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
@@ -889,7 +892,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 48 agentes
+│   ├── agents/             Los 51 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

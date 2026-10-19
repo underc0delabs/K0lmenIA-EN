@@ -325,6 +325,30 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | prueba credenciales. Solo                |                                       |
 |                            | CAMARAS_AUTORIZADAS                      |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `investigador-proyecto`    | Releva el proyecto ENTERO por MCP (Jira, | `output/investigacion/`               |
+|                            | Azure DevOps, Confluence, repo, Figma):  |                                       |
+|                            | resumen, módulos, flujos, integraciones, |                                       |
+|                            | equipo, estado del backlog, ambigüedades |                                       |
+|                            | y contradicciones con sus fuentes, y     |                                       |
+|                            | preguntas priorizadas para un QA nuevo;  |                                       |
+|                            | informe HTML y Markdown                  |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-salesforce`      | Prueba una org de Salesforce (SANDBOX):  | `output/salesforce/`                  |
+|                            | releva acceso (perfiles, permisos, OWD,  |                                       |
+|                            | FLS), validaciones, flows, triggers,     |                                       |
+|                            | cobertura de Apex y límites con la CLI   |                                       |
+|                            | sf, deriva y corre pruebas por perfil en |                                       |
+|                            | Lightning; informe HTML. Nunca           |                                       |
+|                            | producción; no toca metadata             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-billeteras`      | Prueba billeteras virtuales y pagos en   | `output/billeteras/`                  |
+|                            | sandbox: conservación del saldo, estados |                                       |
+|                            | de transacción, idempotencia, doble      |                                       |
+|                            | gasto y concurrencia, límites, KYC/AML,  |                                       |
+|                            | conciliación con la pasarela y seguridad |                                       |
+|                            | de tokens; informe HTML. Dinero y        |                                       |
+|                            | tarjetas de prueba, nunca reales         |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 ```
 
 ---
@@ -402,6 +426,9 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/generar_informe_permisos.py` y `generar_informe_resiliencia.py` → los informes de `npm run permisos` y `npm run resiliencia` (`probador-permisos`, `probador-resiliencia`).
 - `scripts/generar_informe_streaming.py` y `generar_informe_onvif.py` → los informes de `npm run streaming` (ffprobe/ffmpeg: propiedades, continuidad, estabilidad y carga) y `npm run onvif` (control ONVIF: perfiles, snapshot, PTZ, eventos) (`probador-streaming`, `probador-onvif`).
 - `scripts/generar_informe_calidad.py`, `generar_informe_grabaciones.py` y `generar_informe_seguridad_camaras.py` → los informes de `npm run calidad-imagen` (OpenCV + visión), `npm run grabaciones` (ONVIF Recording) y `npm run seguridad-camaras` (escaneo pasivo) (`calidad-imagen`, `verificador-grabaciones`, `analista-seguridad-camaras`).
+- `herramientas/salesforce/inventario.py` (`npm run salesforce`) y `scripts/generar_informe_salesforce.py` → inventario de QA de una org de Salesforce (sandbox) en solo lectura con la CLI `sf` (perfiles, validaciones, flows, triggers, cobertura de Apex, sharing, límites) e informe HTML (`probador-salesforce`).
+- `scripts/generar_informe_billeteras.py` → informe HTML de billeteras y pagos (hallazgos, pruebas, conservación del saldo y conciliación) desde el `analisis.json` que arma el agente (`probador-billeteras`).
+- `scripts/generar_informe_investigacion.py` → el paquete del relevamiento de un proyecto completo: web HTML con **mapas conceptuales** (arquitectura y cómo funciona) y el árbol de épicas/historias/tareas, `resumen.md` breve y `presentacion-investigacion.html` (imprime a PDF), con comparación contra el relevamiento anterior (`investigador-proyecto`).
 - `scripts/buscar_duplicados.py` → similitud entre bugs para el `triador-bugs` (duplicados, regresiones, relacionados).
 - `scripts/metricas_tokens.py` → **uso de tokens** de los agentes: lee las transcripciones de Claude Code del proyecto (solo conteos, nunca el texto), atribuye el uso a cada agente y estima el costo por agente, día y modelo con oportunidades (qué conviene automatizar en k0lmena); lo suma el tablero de calidad.
 - `scripts/generar_onboarding.py` → el plan de onboarding del `guia-onboarding` (HTML con checklist y Markdown).
@@ -465,14 +492,14 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 ## Arquitectura (cómo crece el repo)
 
-El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP y **streaming** (ffmpeg/ONVIF)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
+El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF) y **salesforce** (CLI `sf`)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
 ### Modelo por agente (costo de tokens)
 
 Cada agente fija su modelo en el frontmatter (`model:`) para no gastar de más. Criterio por niveles:
 
 - **`haiku`** — trabajo mecánico que sobre todo corre un script y arma el JSON/HTML (tablero-calidad, analista-cobertura, analista-logs, generador-reporte-html, selector-casos-de-prueba, publicador-resultados, generador-charters, guia-onboarding).
-- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores, auditores, documentador, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
+- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce` y `probador-billeteras`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
 - **`opus`** — lo que más razona o es sensible: `analista-historias`, `analista-seguridad`, `pentester-web`, `analista-seguridad-camaras`.
 
 Un agente nuevo lleva su `model:` según este criterio. El costo real por agente lo mide `scripts/metricas_tokens.py` (lo resume el tablero de calidad): si uno queda flojo en Haiku/Sonnet, se sube; si otro no necesita Opus, se baja.

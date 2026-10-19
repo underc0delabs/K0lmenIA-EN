@@ -16,6 +16,7 @@ const VERSIONES = {
   'appium-mcp': '1.97.1',
   '@azure-devops/mcp': '2.10.0',
   'mcp-remote': '0.15.1',
+  '@salesforce/mcp': '0.30.15',
 };
 
 const RAIZ = path.resolve(__dirname, '..', '..');
