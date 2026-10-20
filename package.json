@@ -52,6 +52,7 @@
     "sast": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['herramientas/seguridad/sast.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "mensajeria": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['herramientas/mensajeria/mensajeria.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "soap": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['herramientas/soap/wsdl.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
+    "seo": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['herramientas/seo/seo.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "monitorear": "npm --prefix herramientas/k0lmena run monitorear --",
     "portal": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/portal_informes.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",
     "tablero": "node -e \"const r=require('child_process').spawnSync(process.platform==='win32'?'python':'python3',['scripts/tablero_calidad.py',...process.argv.slice(1)],{stdio:'inherit'});process.exit(r.status===null?1:r.status)\" --",

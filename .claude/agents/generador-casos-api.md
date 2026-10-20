@@ -40,7 +40,7 @@ Aplicá el skill **`tecnicas-de-diseno`** (clases de equivalencia, valores lími
 
 ## Casos de GraphQL
 
-Aplicás el skill `pruebas-graphql` (errores parciales, nulabilidad, autorización por campo, profundidad/complejidad y paginación). En GraphQL casi todo va por `POST` a un único endpoint y **un error puede volver con status 200**: el resultado esperado tiene que decir qué hay en `data` y en `errors`, no solo el status. Por operación (query, mutation o subscription), cubrí lo que el schema y el contrato respalden:
+Aplicás el skill `pruebas-graphql` (errores parciales, nulabilidad, autorización por campo, profundidad/complejidad y paginación); para **gRPC** desde el `.proto`, el skill `pruebas-grpc`. En GraphQL casi todo va por `POST` a un único endpoint y **un error puede volver con status 200**: el resultado esperado tiene que decir qué hay en `data` y en `errors`, no solo el status. Por operación (query, mutation o subscription), cubrí lo que el schema y el contrato respalden:
 
 - **Positivos** — la operación con argumentos válidos: `errors` ausente y los campos pedidos en `data` con su tipo.
 - **Variables inválidas** — argumento obligatorio (`!`) faltante, tipo incorrecto (texto en un `Int`), valor de enum inexistente, input con un campo de más o de menos → error de validación (`errors[0].message` y, si el servidor lo da, `extensions.code`, por ejemplo `GRAPHQL_VALIDATION_FAILED` / `BAD_USER_INPUT`).

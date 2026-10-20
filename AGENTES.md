@@ -1,6 +1,6 @@
 # Catálogo de agentes
 
-Los 63 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
+Los 71 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
 
 **Leyenda**
 - **Tokens**: *en cada uso* = trabaja con el modelo cada vez que lo pedís; *una vez* = genera algo que después corre solo, sin agentes ni tokens (`npm test`, `npm run perf`).
@@ -16,7 +16,7 @@ Los 63 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | estratega-pruebas        | Análisis y diseño                             | Plan de pruebas (alcance, riesgos, criterios)                                     | investigacion-contexto                                             | generar_plan.py                                                    | atlassian, azure-devops, figma                                            | output/planes-de-prueba/                                |
 | generador-casos-manuales | Análisis y diseño                             | Casos manuales en Excel, Markdown y cobertura                                     | investigacion-contexto, tecnicas-de-diseno                         | generar_casos.py, formatear_tablas.py                              | atlassian, azure-devops, figma                                            | output/casos-de-prueba/manuales/                        |
 | generador-casos-bdd      | Análisis y diseño                             | Escenarios Gherkin y cobertura                                                    | investigacion-contexto, tecnicas-de-diseno                         | formatear_tablas.py                                                | atlassian, azure-devops, figma                                            | output/casos-de-prueba/bdd/                             |
-| generador-casos-api      | Análisis y diseño                             | Casos de API desde un contrato                                                    | investigacion-contexto, tecnicas-de-diseno, pruebas-graphql                         | resumir_openapi.py, resumir_graphql.py, formatear_tablas.py        | atlassian, azure-devops                                                   | output/casos-api/                                       |
+| generador-casos-api      | Análisis y diseño                             | Casos de API desde un contrato                                                    | investigacion-contexto, tecnicas-de-diseno, pruebas-graphql, pruebas-grpc                         | resumir_openapi.py, resumir_graphql.py, formatear_tablas.py        | atlassian, azure-devops                                                   | output/casos-api/                                       |
 | generador-datos-prueba   | Análisis y diseño                             | Datos válidos, inválidos y de borde                                               | investigacion-contexto, tecnicas-de-diseno                         | formatear_tablas.py                                                | atlassian, azure-devops                                                   | output/datos-de-prueba/                                 |
 | selector-casos-de-prueba | Análisis y diseño                             | Qué casos correr para un cambio (por riesgo)                                      | investigacion-contexto                                             | seleccionar_casos.py, generar_informe_seleccion.py                 | atlassian, azure-devops                                                   | output/seleccion-casos/                                 |
 | revisor-casos            | Análisis y diseño                             | Calidad de los casos, duplicados y tiempo de ejecución                            | investigacion-contexto, tecnicas-de-diseno                         | revisar_casos.py, generar_informe_revision.py, estimacion.py       | atlassian, azure-devops                                                   | output/revision-casos/                                  |
@@ -27,7 +27,7 @@ Los 63 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | guia-onboarding          | Análisis y diseño                             | Plan de incorporación de un QA nuevo al proyecto                                  | —                                                                  | generar_onboarding.py, doctor.py                                   | —                                                                         | output/onboarding/                                      |
 | investigador-proyecto    | Análisis y diseño                             | Releva el proyecto entero por MCP: resumen, ambigüedades y preguntas para QA nuevo | relevamiento-proyecto, investigacion-contexto                      | generar_informe_investigacion.py                                   | atlassian, azure-devops, github, gitlab, figma                            | output/investigacion/                                   |
 | ejecutor-e2e             | Ejecución en vivo                             | Corre casos en el navegador con evidencia                                         | ejecucion-e2e                                                      | Playwright MCP, generar_reporte.py                                 | playwright, playwright-headless                                           | output/ejecuciones/                                     |
-| ejecutor-api             | Ejecución en vivo                             | Corre una colección de Postman, Bruno o Insomnia                                  | ejecucion-api, pruebas-graphql                                                      | Newman, correr_newman.py                                           | —                                                                         | output/ejecuciones/                                     |
+| ejecutor-api             | Ejecución en vivo                             | Corre una colección de Postman, Bruno o Insomnia                                  | ejecucion-api, pruebas-graphql, pruebas-grpc                                                      | Newman, correr_newman.py                                           | —                                                                         | output/ejecuciones/                                     |
 | analista-seguridad       | Ejecución en vivo                             | Escaneo de seguridad web pasivo e informe                                         | —                                                                  | OWASP ZAP (Docker), escanear.py, generar_informe_seguridad.py      | —                                                                         | output/seguridad/                                       |
 | pentester-web            | Ejecución en vivo                             | Pentest web autorizado (activo) e informe                                         | ejecucion-e2e, investigacion-contexto                              | OWASP ZAP activo (Docker), escanear.py, generar_informe_seguridad.py| playwright · playwright-headless                                          | output/seguridad/                                       |
 | probador-salesforce      | Ejecución en vivo                             | Prueba una org de Salesforce (sandbox): acceso, validaciones, flows, Apex, sharing | pruebas-salesforce, pruebas-tokens, ejecucion-e2e, investigacion-contexto | herramientas/salesforce/inventario.py, generar_informe_salesforce.py | salesforce, playwright, playwright-headless                               | output/salesforce/                                      |
@@ -44,6 +44,14 @@ Los 63 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | probador-ia              | Ejecución en vivo                             | Funciones de IA/LLM: golden set, alucinaciones, grounding, seguridad de prompt | pruebas-ia, ejecucion-api, ejecucion-e2e, investigacion-contexto | generar_informe_ia.py                                                      | playwright                                                                | output/ia/                                              |
 | probador-mensajeria      | Ejecución en vivo                             | Mensajería/eventos (Kafka/RabbitMQ/SQS/MQTT/WebSocket/SSE): entrega, orden, idempotencia, DLQ | pruebas-async, guia-performance, investigacion-contexto | herramientas/mensajeria/mensajeria.py, generar_informe_mensajeria.py | — | output/mensajeria/ |
 | probador-soap            | Ejecución en vivo                             | Servicios SOAP desde el WSDL: operaciones, XSD, SOAP Faults, WS-Security | pruebas-soap, ejecucion-api, investigacion-contexto | herramientas/soap/wsdl.py, generar_informe_soap.py | — | output/soap/ |
+| probador-contratos | Ejecución en vivo | Contract testing (Pact): consumer-driven y bi-direccional para REST/GraphQL/gRPC/eventos | pruebas-contratos, ejecucion-api, investigacion-contexto | generar_informe_generico.py | — | output/contratos/ |
+| analista-seo | Análisis (solo lectura) | SEO y GEO: indexabilidad, on-page, datos estructurados, hreflang y crawlers de IA | pruebas-seo, investigacion-contexto | herramientas/seo/seo.py, generar_informe_generico.py | — | output/seo/ |
+| probador-datos | Análisis (solo lectura) | Datos y pipelines (ETL): calidad, reconciliación, esquema, transformaciones, idempotencia | pruebas-datos, investigacion-contexto | generar_informe_generico.py | — | output/datos/ |
+| probador-dynamics | Ejecución en vivo | Dynamics 365 y otros CRM/ERP (sandbox): roles, lógica, procesos end-to-end | pruebas-dynamics, ejecucion-e2e, investigacion-contexto | generar_informe_generico.py | playwright, playwright-headless | output/dynamics/ |
+| probador-blockchain | Ejecución en vivo | Blockchain/Web3 y smart contracts (testnet/local): funcional, gas, seguridad on-chain | pruebas-blockchain, ejecucion-api, investigacion-contexto | generar_informe_generico.py | — | output/blockchain/ |
+| probador-ivr | Ejecución en vivo | Voz/IVR y voicebots: árbol de menús (DTMF/voz), enrutamiento, telefonía, cumplimiento | pruebas-ivr, investigacion-contexto | generar_informe_generico.py | — | output/ivr/ |
+| probador-juegos | Ejecución en vivo | Videojuegos: mecánicas, guardado, compatibilidad, rendimiento, multijugador, monetización | pruebas-juegos, investigacion-contexto | generar_informe_generico.py | — | output/juegos/ |
+| probador-pos | Ejecución en vivo | POS y hardware: venta, pagos y periféricos, fiscal, offline y conciliación | pruebas-pos, investigacion-contexto | generar_informe_generico.py | — | output/pos/ |
 | probador-streaming       | Ejecución en vivo                             | Streaming y playback de video (cámaras, live, VOD) con ffprobe/ffmpeg             | verificacion-streaming, investigacion-contexto                     | herramientas/streaming/probar.py, generar_informe_streaming.py      | —                                                                         | output/streaming/                                       |
 | probador-onvif           | Ejecución en vivo                             | Control ONVIF de una cámara IP: info, perfiles, stream URI, snapshot, PTZ y eventos | control-onvif, investigacion-contexto                              | herramientas/streaming/onvif.py, generar_informe_onvif.py           | —                                                                         | output/streaming/onvif-*/                               |
 | calidad-imagen           | Ejecución en vivo                             | Calidad de imagen de cámaras: negro, desenfoque, congelamiento (OpenCV) + lente sucia, movida, contraluz, IR (visión) | calidad-de-imagen, investigacion-contexto                          | herramientas/streaming/calidad_imagen.py, generar_informe_calidad.py | —                                                                         | output/streaming/calidad-*/                             |
@@ -65,7 +73,7 @@ Los 63 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | analista-cobertura       | Reportes                                      | Matriz de trazabilidad y qué falta probar                                         | investigacion-contexto                                             | analizar_cobertura.py, generar_informe_cobertura.py                | atlassian, azure-devops                                                   | output/cobertura/                                       |
 | tablero-calidad          | Reportes                                      | Tablero de calidad por sprint o release: aprobados, automatizado, cobertura, bugs | —                                                                  | tablero_calidad.py, portal_informes.py, avisar.py                  | —                                                                         | output/tablero/                                         |
 | web-mapper               | Automatización (k0lmena)                      | Automatiza casos web                                                              | automatizacion-k0lmena, ejecucion-e2e, investigacion-contexto      | k0lmena (Playwright + Cucumber)                                    | playwright, playwright-headless                                           | herramientas/k0lmena/web/ + output/mapeos/              |
-| api-mapper               | Automatización (k0lmena)                      | Automatiza APIs desde Postman o Swagger                                           | automatizacion-k0lmena, investigacion-contexto, tecnicas-de-diseno, pruebas-graphql | k0lmena (axios + Cucumber)                                         | —                                                                         | herramientas/k0lmena/api/ + output/mapeos/              |
+| api-mapper               | Automatización (k0lmena)                      | Automatiza APIs desde Postman o Swagger                                           | automatizacion-k0lmena, investigacion-contexto, tecnicas-de-diseno, pruebas-graphql, pruebas-grpc | k0lmena (axios + Cucumber)                                         | —                                                                         | herramientas/k0lmena/api/ + output/mapeos/              |
 | mobile-mapper            | Automatización (k0lmena)                      | Automatiza casos mobile                                                           | automatizacion-k0lmena, investigacion-contexto                     | k0lmena (WebdriverIO + Appium)                                     | appium-mcp                                                                | herramientas/k0lmena/mobile/ + output/mapeos/           |
 | performance-mapper       | Automatización (k0lmena)                      | Carga, estrés, soak y picos con informe                                           | automatizacion-k0lmena, guia-performance                           | k6, Artillery, JMeter, generar_informe_performance.py              | —                                                                         | herramientas/k0lmena/performance/ + output/performance/ |
 | verificador-datos        | Automatización (k0lmena)                      | Consulta y verifica datos en bases                                                | automatizacion-k0lmena                                             | k0lmena tools/bd (npm run bd)                                      | —                                                                         | chat (+ output/verificaciones-datos/)                   |
@@ -355,6 +363,78 @@ Gastan tokens en cada corrida: sirven para casos sueltos. Lo que se repite convi
 - **Confirma**: invocar **operaciones con efecto** (escritura), contra QA. Relevar el WSDL y las consultas son de lectura. La explotación (XXE, WS-Security) queda para `analista-seguridad`/`pentester-web`.
 - **Tokens**: en cada uso (el relevamiento del WSDL lo hace el script, sin tokens).
 
+### probador-contratos
+- **Cuándo**: para contract testing entre servicios (Pact/consumer-driven), compatibilidad entre consumidor y proveedor, o validar una API contra su OpenAPI, en REST, GraphQL, gRPC o eventos.
+- **Pedido de ejemplo**: *"Corré las pruebas de contrato entre el front y pagos-api"* · *"¿Este cambio en la API rompe a algún consumidor?"* · *"Verificá el proveedor contra los pacts"*.
+- **Entradas**: qué servicios son consumidor y proveedor, el protocolo, si usan Pact/PactFlow (broker) o una OpenAPI, y cómo se preparan los provider states. Ambientes de QA.
+- **Usa**: skills `pruebas-contratos`, `ejecucion-api` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Coordina con los agentes de API y el `probador-mensajeria` (eventos).
+- **Entrega**: en `output/contratos/<HU>/`, `informe-contratos.html` (interacciones, verificaciones, compatibilidad y Falta información) y `analisis.json`.
+- **Confirma**: publicar pacts y correr verificaciones con efecto (provider states que escriben), en QA.
+- **Tokens**: en cada uso.
+
+### analista-seo
+- **Cuándo**: para analizar el SEO y el GEO de un sitio: indexabilidad, datos estructurados, hreflang, o aparecer en AI Overviews/ChatGPT/Perplexity. Solo lectura.
+- **Pedido de ejemplo**: *"Hacé un análisis SEO de esta página"* · *"¿Está indexable y tiene datos estructurados?"* · *"¿Permitimos a los crawlers de IA? (GEO)"*.
+- **Entradas**: la URL o lista de URLs, si es SSR o CSR, idiomas/regiones, keywords objetivo, y si se quiere aparecer en motores con IA.
+- **Usa**: skills `pruebas-seo` e `investigacion-contexto`; `npm run seo` (`herramientas/seo/seo.py`) y `scripts/generar_informe_generico.py`. Deriva CWV al `auditor-rendimiento-web` y hreflang/idiomas al `analista-traductor`.
+- **Entrega**: en `output/seo/<pagina o sitio>/`, `informe-seo.html` (hallazgos priorizados, on-page, datos estructurados, estado del GEO) y `analisis.json`.
+- **Confirma**: nada con efecto (solo lectura): no modifica el sitio; permitir/bloquear crawlers lo recomienda.
+- **Tokens**: en cada uso (el relevamiento lo hace el script).
+
+### probador-datos
+- **Cuándo**: para probar datos y pipelines (ETL/ELT, data warehouse): calidad de datos, reconciliación origen↔destino, validación de esquema, transformaciones e idempotencia.
+- **Pedido de ejemplo**: *"Reconciliá origen y destino del ETL"* · *"Revisá la calidad de datos del warehouse"* · *"¿El pipeline es idempotente?"*.
+- **Entradas**: origen y destino (conexiones del `.env`), las transformaciones/filtros esperados, la clave de negocio, la ventana de frescura y si hay SCD/incremental. Nunca producción para escrituras.
+- **Usa**: skills `pruebas-datos` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Se apoya en el `verificador-datos` (consultas de solo lectura).
+- **Entrega**: en `output/datos/<HU>/`, `informe-datos.html` (reconciliación, calidad por dimensión, hallazgos) y `analisis.json`.
+- **Confirma**: cualquier escritura o reprocesar un pipeline (tiene efecto); nunca en producción. Las consultas son de lectura.
+- **Tokens**: en cada uso.
+
+### probador-dynamics
+- **Cuándo**: para probar Microsoft Dynamics 365 u otro CRM/ERP de bajo código (sandbox): roles, lógica (flows, plugins, BPF, roll-ups), formularios y procesos de negocio end-to-end.
+- **Pedido de ejemplo**: *"Probá el proceso de Sales en Dynamics"* · *"Revisá los roles de seguridad y qué ve cada uno"* · *"¿El SLA de Customer Service escala bien?"*.
+- **Entradas**: el CRM/ERP y módulos, el entorno/sandbox, usuarios por rol, los procesos en alcance y, para la Web API, la URL de Dataverse con credenciales de lectura.
+- **Usa**: skills `pruebas-dynamics`, `ejecucion-e2e` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Se apoya en `probador-permisos` y `verificador-correos`.
+- **Entrega**: en `output/dynamics/<HU>/`, `informe-dynamics.html` (acceso por rol, lógica verificada, procesos) y `analisis.json`.
+- **Confirma**: crear/editar registros y disparar flujos con efecto, en sandbox (nunca producción). Relevar por la Web API es de lectura.
+- **Tokens**: en cada uso.
+
+### probador-blockchain
+- **Cuándo**: para probar smart contracts o una dApp Web3 (testnet o nodo local): funcional, tokens, gas, seguridad on-chain e integración con la wallet.
+- **Pedido de ejemplo**: *"Probá el smart contract en Sepolia"* · *"¿Es vulnerable a reentrancy?"* · *"Verificá las invariantes del token"*.
+- **Entradas**: la cadena/red y chain id, la testnet o nodo, el código fuente/ABI y las direcciones de QA, si es upgradeable, los estándares de token y las invariantes de negocio. Nunca mainnet con fondos reales.
+- **Usa**: skills `pruebas-blockchain`, `ejecucion-api` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Coordina el análisis estático con `analista-codigo-seguro` y recomienda auditoría formal para lo crítico.
+- **Entrega**: en `output/blockchain/<HU>/`, `informe-blockchain.html` (funcional, invariantes, gas, hallazgos de seguridad) y `analisis.json`.
+- **Confirma**: enviar transacciones (gastan gas/fondos de testnet) y desplegar; las llamadas view y el análisis estático son de lectura.
+- **Tokens**: en cada uso (corre en opus por lo sensible de la seguridad).
+
+### probador-ivr
+- **Cuándo**: para probar un IVR, un árbol de menús telefónico, un voicebot o un contact center de voz.
+- **Pedido de ejemplo**: *"Probá el árbol del IVR"* · *"¿Siempre se puede llegar a un humano?"* · *"Revisá el voicebot de atención"*.
+- **Entradas**: el diagrama del árbol y los prompts, el modo de ingreso (DTMF/voz), idiomas, reintentos y salida al operador, horarios, si hay pagos por voz (PCI) y si es IVR o voicebot. Número de QA y herramienta de testing de voz si existe.
+- **Usa**: skills `pruebas-ivr` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Para la NLU/LLM del voicebot, el `probador-ia`.
+- **Entrega**: en `output/ivr/<HU>/`, `informe-ivr.html` (recorrido del árbol, pruebas por rama, hallazgos) y `analisis.json`.
+- **Confirma**: operaciones con efecto por teléfono (pagos, cambios); recorrer el árbol en QA es seguro.
+- **Tokens**: en cada uso (mucho del testing de IVR es manual asistido).
+
+### probador-juegos
+- **Cuándo**: para probar un videojuego (Unity/Unreal/Godot/HTML5/mobile/consola/PC): mecánicas, guardado, compatibilidad, rendimiento, multijugador o monetización.
+- **Pedido de ejemplo**: *"Probá las mecánicas y la progresión"* · *"¿Hay soft-locks o formas de romper el mundo?"* · *"Revisá el multijugador y el anti-cheat"*.
+- **Entradas**: el motor y las plataformas objetivo, el género y las mecánicas críticas, single/multijugador, si hay compras in-app/loot boxes, los FPS/tiempos objetivo y cómo se guarda. Build de QA por plataforma.
+- **Usa**: skills `pruebas-juegos` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Para IA de NPCs, el `probador-ia`; carga, `performance-mapper`; traducciones, `analista-traductor`.
+- **Entrega**: en `output/juegos/<HU>/`, `informe-juegos.html` (smoke por plataforma, mecánicas, rendimiento, multijugador, hallazgos) y `analisis.json`.
+- **Confirma**: compras in-app (sandbox) y acciones con efecto en servidores compartidos.
+- **Tokens**: en cada uso (mucho es exploratorio manual).
+
+### probador-pos
+- **Cuándo**: para probar un punto de venta (POS), una caja, pagos en tienda, periféricos o hardware de venta.
+- **Pedido de ejemplo**: *"Probá el flujo de venta y el cierre de caja"* · *"¿Qué pasa si se corta la luz a mitad de la venta?"* · *"Probá el pago con tarjeta y la impresora"*.
+- **Entradas**: el hardware (pinpad/adquirente, impresora, balanza, cajón) y si hay simuladores/SDK, los medios de pago y la pasarela (modo de prueba), si funciona offline y cómo concilia, la integración fiscal y el país, y qué requiere autorización de supervisor.
+- **Usa**: skills `pruebas-pos` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Se apoya en el `probador-billeteras` (conciliación de dinero y pasarelas).
+- **Entrega**: en `output/pos/<HU>/`, `informe-pos.html` (flujo de venta, pagos, periféricos, fiscal, offline, cierre de caja) y `analisis.json`.
+- **Confirma**: cobros (solo en modo de prueba) y operaciones fiscales con efecto; el recorrido del flujo en QA es seguro.
+- **Tokens**: en cada uso.
+
 ### probador-streaming
 - **Cuándo**: para probar que un stream o un video reproduzca bien — cámaras IP (RTSP/ONVIF), transmisiones en vivo (RTMP/HLS/DASH), WebRTC servido por HTTP y playback de VOD.
 - **Pedido de ejemplo**: *"Probá la cámara rtsp://cam.local/stream"* · *"Revisá el playback de https://cdn.mi-app.com/live/index.m3u8"*.
@@ -636,6 +716,15 @@ Los skills se cargan solo cuando hacen falta.
 | pruebas-async          | Probar mensajería/eventos (async): brokers (Kafka/RabbitMQ/SQS/MQTT/WebSocket/SSE), entrega, orden, idempotencia, DLQ, esquemas, consumer lag y outbox | probador-mensajeria |
 | pruebas-graphql        | Probar APIs GraphQL: schema/introspección, queries/mutations/subscriptions, errores parciales y nulabilidad, autorización por campo, N+1, profundidad/complejidad y paginación | ejecutor-api, api-mapper, generador-casos-api |
 | pruebas-soap           | Probar servicios SOAP: WSDL, sobre, SOAP 1.1/1.2, validación XSD, SOAP Faults, WS-Security, mustUnderstand, tipos y contrato | probador-soap |
+| pruebas-contratos | Contract testing (Pact): consumer-driven y por proveedor, broker/can-i-deploy, compatibilidad, REST/GraphQL/gRPC/eventos | probador-contratos |
+| pruebas-seo | SEO y GEO: indexabilidad, on-page, datos estructurados, hreflang, Core Web Vitals y optimización para motores con IA | analista-seo |
+| pruebas-datos | Datos y pipelines (ETL): calidad, reconciliación, esquema/drift, transformaciones, SCD, idempotencia, PII | probador-datos |
+| pruebas-grpc | gRPC (Protobuf, modos de RPC, status codes, deadlines, compatibilidad) y WebSocket en la familia de API | ejecutor-api, api-mapper, generador-casos-api |
+| pruebas-dynamics | Dynamics 365 y otros CRM/ERP: entornos, roles, modelo de datos, lógica, procesos end-to-end, Web API | probador-dynamics |
+| pruebas-blockchain | Blockchain/Web3 y smart contracts: funcional, tokens, gas, seguridad (reentrancy, acceso, oráculos), proxies | probador-blockchain |
+| pruebas-ivr | Voz/IVR y voicebots: árbol de menús, DTMF/ASR, prompts, colas y transferencias, telefonía, PCI | probador-ivr |
+| pruebas-juegos | Videojuegos: mecánicas, guardado, compatibilidad, rendimiento, multijugador, monetización, exploratorias | probador-juegos |
+| pruebas-pos | POS y hardware: flujo de venta, pagos y periféricos, fiscal, offline y conciliación, cierres de caja | probador-pos |
 
 ## Herramientas y scripts: quién usa qué
 

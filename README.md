@@ -894,7 +894,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 63 agentes
+│   ├── agents/             Los 71 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

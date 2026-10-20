@@ -2,6 +2,20 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-19 — Contratos, SEO/GEO, datos, gRPC, Dynamics/CRM-ERP, blockchain, IVR, juegos y POS
+Gran ampliación de dominios para "testear todo tipo de proyecto":
+- **`probador-contratos`** (sonnet) + skill `pruebas-contratos`: contract testing (Pact) consumer-driven y bi-direccional para REST, GraphQL, gRPC y eventos; verificación de proveedor, `can-i-deploy` y compatibilidad.
+- **`analista-seo`** (sonnet) + skill `pruebas-seo`: **SEO y GEO** (optimización para buscadores y para motores con IA). Herramienta `herramientas/seo/seo.py` (`npm run seo`, solo `urllib`/regex de la stdlib): on-page, datos estructurados, hreflang, robots/sitemap y acceso de los crawlers de IA (GPTBot/ClaudeBot/PerplexityBot).
+- **`probador-datos`** (sonnet) + skill `pruebas-datos`: datos y pipelines (ETL) — calidad por dimensiones, reconciliación origen↔destino, esquema/drift, transformaciones, SCD, idempotencia y PII; se apoya en `verificador-datos`.
+- **gRPC en la familia de API**: nuevo skill `pruebas-grpc` (Protobuf, modos de RPC, status codes, deadlines, compatibilidad) cableado en `ejecutor-api`, `api-mapper` y `generador-casos-api`; **WebSocket** se cubre en `pruebas-async` (`probador-mensajeria`).
+- **`probador-dynamics`** (sonnet) + skill `pruebas-dynamics`: Microsoft Dynamics 365 y otros CRM/ERP de bajo código (roles, lógica —flows/plugins/BPF/roll-ups—, procesos end-to-end, Web API de lectura + Playwright por rol).
+- **`probador-blockchain`** (opus) + skill `pruebas-blockchain`: blockchain/Web3 y smart contracts en testnet/local (funcional, tokens, gas, seguridad —reentrancy, control de acceso, oráculos, proxies—, Hardhat/Foundry, invariantes).
+- **`probador-ivr`** (sonnet) + skill `pruebas-ivr`: voz/IVR y voicebots (árbol de menús DTMF/ASR, prompts, enrutamiento y colas, telefonía SIP/VoIP, grabación y PCI).
+- **`probador-juegos`** (sonnet) + skill `pruebas-juegos`: videojuegos (mecánicas, guardado, compatibilidad, rendimiento, multijugador/anti-cheat, monetización, exploratorias).
+- **`probador-pos`** (sonnet) + skill `pruebas-pos`: punto de venta y hardware (flujo de venta y arqueo, pinpad y periféricos, fiscal, offline/sincronización, conciliación).
+- Nuevo **`scripts/generar_informe_generico.py`**: informe HTML reutilizable (mismo estilo de la casa) que usan los probadores sin informe propio, para no duplicar generadores. Nuevas carpetas `herramientas/seo/`.
+- Documentación al día a **71 agentes** y **37 skills** (README, AGENTES.md, CLAUDE.md, README de skills, `package.json`). Tests: nuevos `test_seo.py` y `test_informe_generico.py`.
+
 ## 2026-10-19 — Mensajería/eventos (async), GraphQL y SOAP
 Ampliando la cobertura de APIs y sistemas distribuidos:
 - **`probador-mensajeria`** (sonnet) + skill `pruebas-async`: prueba sistemas **asíncronos / event-driven** — Kafka, RabbitMQ/AMQP, SQS/SNS, MQTT, WebSocket y SSE. Cubre entrega (at-least-once/exactly-once), orden por clave/partición, **idempotencia y deduplicación**, reintentos y **DLQ** (mensajes envenenados), esquemas y compatibilidad (Avro/JSON Schema), consumer lag y contrapresión, patrón **outbox** y seguridad. Herramienta `herramientas/mensajeria/mensajeria.py` (`npm run mensajeria`, publica/consume/inspecciona con brokers de import perezoso + verificaciones puras de orden/duplicados/esquema) e informe `scripts/generar_informe_mensajeria.py`.
