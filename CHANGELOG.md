@@ -2,6 +2,16 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-19 — Observabilidad, búsqueda, documentos y revisor de contenido/typos
+- **Test de integridad** (`tests/test_integridad.py`): verifica que cada `npm run`, script y herramienta que menciona un agente exista, que cada skill tenga su carpeta con el name correcto, que todos los agentes tengan tarjeta en el sitio y que el conteo de agentes sea coherente en README, AGENTES.md y la web (ES/EN). Auditoría completa del proyecto: 0 inconsistencias.
+
+Cuatro familias nuevas (de 71 a 75 agentes, 42 skills):
+- **`analista-observabilidad`** (sonnet) + skill `pruebas-observabilidad`: valida que el servicio emita bien **logs** (trace id, sin PII), **métricas** (Prometheus RED/USE, cardinalidad), **trazas** (OpenTelemetry), **healthchecks** (liveness/readiness), error tracking, SLOs y que las **alertas** disparen. Herramienta `herramientas/observabilidad/observabilidad.py` (`npm run observabilidad`, healthchecks y `/metrics` por urllib).
+- **`probador-busqueda`** (sonnet) + skill `pruebas-busqueda`: **búsqueda y relevancia** (Elasticsearch/OpenSearch, Algolia, Solr, DB full-text) — ranking, typos/fuzzy, sinónimos, facetas, cero-resultados, indexación, seguridad y **golden set** con métricas (precision@k, nDCG).
+- **`probador-documentos`** (sonnet) + skill `pruebas-documentos`: **documentos generados** (PDF/Excel/CSV) — datos y totales, **placeholders sin reemplazar**, formato/locale, layout, metadata y seguridad. Herramienta `herramientas/documentos/documentos.py` (`npm run documentos`, pypdf/openpyxl).
+- **`revisor-contenido`** (sonnet) + skill `pruebas-contenido`: **contenido y typos** en el idioma principal — ortografía (LanguageTool opcional), placeholders y claves de i18n a la vista, palabras duplicadas, Lorem ipsum y consistencia de microcopy (complementa al `analista-traductor`). Herramienta `herramientas/contenido/contenido.py` (`npm run contenido`, heurística sin dependencias).
+- Todas reutilizan `generar_informe_generico.py`. Cableado: `package.json`, `CLAUDE.md`, `AGENTES.md`, README y README de skills, **dashboard** `portal_informes.py`, y el **sitio web (ES/EN) a 75 agentes** con sus tarjetas y skills (PDF e imágenes regenerados). Tests: nuevo `test_herramientas_calidad.py`.
+
 ## 2026-10-19 — Sync de documentación, sitio web, imágenes, PDF y dashboard
 Puesta al día de todo lo público y el dashboard con los agentes/skills agregados:
 - **Sitio web** (`docs/index.html` + `docs/en/index.html`): contador a **71 agentes**, **18 tarjetas de agente nuevas** (prestashop, vtex, sap, desktop, mobile, dependencias, código seguro, ia, mensajería, soap, contratos, seo, datos, dynamics, blockchain, ivr, juegos, pos) y **21 filas de skills nuevas**, en español e inglés.

@@ -116,7 +116,7 @@
     <div class="k">Project documentation</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">QA agents for Claude Code: test design, automation with k0lmena and integration with Xray, QMetry, AIO Tests and Azure DevOps. The agents work in Spanish.</div>
-    <div class="chips"><span>71 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
+    <div class="chips"><span>75 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>MIT License</span></div>
 </section>
@@ -165,7 +165,7 @@
     <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
   </div>
   <div class="metricas">
-    <div class="metrica"><div class="n">71</div><div class="t">specialized agents</div></div>
+    <div class="metrica"><div class="n">75</div><div class="t">specialized agents</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">types of automation</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">test management tools</div></div>
     <div class="metrica"><div class="n">0</div><div class="t">tokens to run the suites</div></div>
@@ -337,6 +337,10 @@
     <div class="tarjeta c-naranja"><h4>probador-ivr</h4><p>Voice/IVR and voicebots: menu tree (DTMF/voice), prompts, routing and queues, telephony (SIP/VoIP) and compliance (PCI).</p><div class="usa"><b>Skills</b> pruebas-ivr, investigacion-contexto<br><b>Uses</b> generar_informe_generico.py</div><div class="salida"><code>output/ivr/</code></div></div>
     <div class="tarjeta c-naranja"><h4>probador-juegos</h4><p>Video games (Unity/Unreal/Godot/HTML5/mobile): mechanics, saves, compatibility, performance, multiplayer, monetization and world-breaking exploratory testing.</p><div class="usa"><b>Skills</b> pruebas-juegos, investigacion-contexto<br><b>Uses</b> generar_informe_generico.py</div><div class="salida"><code>output/juegos/</code></div></div>
     <div class="tarjeta c-naranja"><h4>probador-pos</h4><p>Point of sale (POS) and hardware: sale and cash count, payments and peripherals, fiscal, offline and reconciliation, cash close.</p><div class="usa"><b>Skills</b> pruebas-pos, investigacion-contexto<br><b>Uses</b> generar_informe_generico.py</div><div class="salida"><code>output/pos/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-observabilidad</h4><p>Analyzes observability: validates logs (trace id, no PII), metrics (Prometheus RED/USE), traces (OTel), healthchecks (liveness/readiness), error tracking, SLOs and that alerts fire; read-only survey of health and /metrics.</p><div class="usa"><b>Skills</b> pruebas-observabilidad, ejecucion-api, investigacion-contexto<br><b>Uses</b> npm run observabilidad, generar_informe_generico.py</div><div class="salida"><code>output/observabilidad/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-busqueda</h4><p>Tests search and relevance (Elasticsearch/Algolia/Solr/DB): ranking and boosting, typos and synonyms, facets, zero-results, indexing and security, with a golden set and metrics (precision@k, nDCG).</p><div class="usa"><b>Skills</b> pruebas-busqueda, ejecucion-api, ejecucion-e2e, investigacion-contexto<br><b>Uses</b> generar_informe_generico.py<br><b>Connectors</b> playwright</div><div class="salida"><code>output/busqueda/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>probador-documentos</h4><p>Tests generated documents (PDF/Excel/CSV): correct data and totals, unreplaced placeholders, format/locale, layout, metadata and security; extracts content with pypdf/openpyxl.</p><div class="usa"><b>Skills</b> pruebas-documentos, investigacion-contexto<br><b>Uses</b> npm run documentos, generar_informe_generico.py</div><div class="salida"><code>output/documentos/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>revisor-contenido</h4><p>Reviews content and typos in the main language: spelling, visible placeholders and i18n keys, duplicate words, Lorem ipsum and microcopy consistency (distinct from analista-traductor).</p><div class="usa"><b>Skills</b> pruebas-contenido, ejecucion-e2e, investigacion-contexto<br><b>Uses</b> npm run contenido, generar_informe_generico.py<br><b>Connectors</b> playwright</div><div class="salida"><code>output/contenido/</code></div></div>
   </div>
 
   <div class="subtitulo-grupo"><h3>Automation with k0lmena</h3><span class="etiqueta sin">then runs with no tokens</span></div>
@@ -398,6 +402,10 @@
     <tr><td><code>pruebas-ivr</code></td><td>Voice/IVR and voicebots: menu tree, DTMF/ASR, prompts, queues and transfers, telephony and PCI</td><td>probador-ivr</td></tr>
     <tr><td><code>pruebas-juegos</code></td><td>Video games: mechanics, saves, compatibility, performance, multiplayer, monetization and exploratory</td><td>probador-juegos</td></tr>
     <tr><td><code>pruebas-pos</code></td><td>POS and hardware: sale flow, payments and peripherals, fiscal, offline and reconciliation, cash close</td><td>probador-pos</td></tr>
+    <tr><td><code>pruebas-observabilidad</code></td><td>Test observability: logs (trace id, no PII), Prometheus metrics (RED/USE, cardinality), OTel traces, healthchecks, SLOs and alerts</td><td>analista-observabilidad</td></tr>
+    <tr><td><code>pruebas-busqueda</code></td><td>Test search and relevance: ranking, typos/fuzzy, synonyms, facets, zero-results, indexing and golden set (precision@k, nDCG)</td><td>probador-busqueda</td></tr>
+    <tr><td><code>pruebas-documentos</code></td><td>Test generated documents (PDF/Excel/CSV): data and calculations, placeholders, format/locale, layout, metadata, security and PDF a11y</td><td>probador-documentos</td></tr>
+    <tr><td><code>pruebas-contenido</code></td><td>Review content and typos: spelling/grammar, placeholders, visible i18n keys, duplicate words, microcopy and consistency</td><td>revisor-contenido</td></tr>
     <tr><td><code>pruebas-accesibilidad</code></td><td>Accessibility (a11y) on web (WCAG 2.2, axe-core), mobile (TalkBack/VoiceOver, labels) and desktop (UI Automation, accessible names)</td><td>analista-accesibilidad, probador-mobile, probador-desktop</td></tr>
   </table></div>
 </section>
@@ -1389,7 +1397,7 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one 
 ├── evals/                  <span class="c">Agent evals: cases with traps and checks</span>
 ├── .github/workflows/      <span class="c">CI (tests), synthetic monitoring and evals (manual)</span>
 ├── .claude/
-│   ├── agents/             <span class="c">The 71 agents</span>
+│   ├── agents/             <span class="c">The 75 agents</span>
 │   ├── skills/             <span class="c">Context, design, performance guide, execution, k0lmena</span>
 │   └── settings.json       <span class="c">Enabled connectors and permissions</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>

@@ -190,6 +190,10 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>probador-ivr</code></td><td>Voz/IVR y voicebots: árbol de menús (DTMF/voz), prompts, enrutamiento y colas, telefonía (SIP/VoIP) y cumplimiento (PCI).</td></tr>
 <tr><td><code>probador-juegos</code></td><td>Videojuegos (Unity/Unreal/Godot/HTML5/mobile): mecánicas, guardado, compatibilidad, rendimiento, multijugador, monetización y exploratorias para romper el mundo.</td></tr>
 <tr><td><code>probador-pos</code></td><td>Punto de venta (POS) y hardware: venta y arqueo, pagos y periféricos, fiscal, offline y conciliación, cierres de caja.</td></tr>
+<tr><td><code>analista-observabilidad</code></td><td>Analiza la observabilidad de un servicio: valida logs (trace id, sin PII), métricas (Prometheus, RED/USE), trazas (OTel), healthchecks (liveness/readiness), SLOs y que las alertas disparen</td></tr>
+<tr><td><code>probador-busqueda</code></td><td>Prueba la búsqueda y la relevancia (Elasticsearch/Algolia/Solr/DB): ranking, typos, sinónimos, facetas, indexación y un golden set con métricas (precision@k, nDCG); contra ambientes de QA</td></tr>
+<tr><td><code>probador-documentos</code></td><td>Prueba documentos generados (PDF/Excel/CSV): datos y totales, placeholders sin reemplazar, formato/locale, layout, metadata y seguridad; extrae el contenido con pypdf/openpyxl</td></tr>
+<tr><td><code>revisor-contenido</code></td><td>Revisa el contenido y los typos en el idioma principal: ortografía, placeholders, claves de i18n a la vista, palabras duplicadas y consistencia de microcopy</td></tr>
 <tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
 <tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
@@ -912,7 +916,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 71 agentes
+│   ├── agents/             Los 75 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

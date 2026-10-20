@@ -1,6 +1,6 @@
 # Catálogo de agentes
 
-Los 71 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
+Los 75 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué skills, scripts, herramientas y conectores usa, y qué entrega. No hace falta nombrar al agente: Claude Code elige el que corresponde según el pedido (también se lo podés pedir por su nombre).
 
 **Leyenda**
 - **Tokens**: *en cada uso* = trabaja con el modelo cada vez que lo pedís; *una vez* = genera algo que después corre solo, sin agentes ni tokens (`npm test`, `npm run perf`).
@@ -52,6 +52,10 @@ Los 71 agentes de k0lmenIA: para qué sirve cada uno, cómo pedírselo, qué ski
 | probador-ivr | Ejecución en vivo | Voz/IVR y voicebots: árbol de menús (DTMF/voz), enrutamiento, telefonía, cumplimiento | pruebas-ivr, investigacion-contexto | generar_informe_generico.py | — | output/ivr/ |
 | probador-juegos | Ejecución en vivo | Videojuegos: mecánicas, guardado, compatibilidad, rendimiento, multijugador, monetización | pruebas-juegos, investigacion-contexto | generar_informe_generico.py | — | output/juegos/ |
 | probador-pos | Ejecución en vivo | POS y hardware: venta, pagos y periféricos, fiscal, offline y conciliación | pruebas-pos, investigacion-contexto | generar_informe_generico.py | — | output/pos/ |
+| analista-observabilidad | Análisis (solo lectura) | Observabilidad: logs (trace id, sin PII), métricas (Prometheus RED/USE), trazas, healthchecks, SLOs y alertas | pruebas-observabilidad, ejecucion-api, investigacion-contexto | herramientas/observabilidad/observabilidad.py, generar_informe_generico.py | — | output/observabilidad/ |
+| probador-busqueda | Ejecución en vivo | Búsqueda y relevancia (Elastic/Algolia/Solr/DB): ranking, typos, sinónimos, facetas, indexación, golden set | pruebas-busqueda, ejecucion-api, ejecucion-e2e, investigacion-contexto | generar_informe_generico.py | playwright | output/busqueda/ |
+| probador-documentos | Ejecución en vivo | Documentos generados (PDF/Excel/CSV): datos y totales, placeholders, formato, layout, metadata y seguridad | pruebas-documentos, investigacion-contexto | herramientas/documentos/documentos.py, generar_informe_generico.py | — | output/documentos/ |
+| revisor-contenido | Análisis (solo lectura) | Contenido y typos (idioma principal): ortografía, placeholders, claves i18n a la vista, duplicados y microcopy | pruebas-contenido, ejecucion-e2e, investigacion-contexto | herramientas/contenido/contenido.py, generar_informe_generico.py | playwright, playwright-headless | output/contenido/ |
 | probador-streaming       | Ejecución en vivo                             | Streaming y playback de video (cámaras, live, VOD) con ffprobe/ffmpeg             | verificacion-streaming, investigacion-contexto                     | herramientas/streaming/probar.py, generar_informe_streaming.py      | —                                                                         | output/streaming/                                       |
 | probador-onvif           | Ejecución en vivo                             | Control ONVIF de una cámara IP: info, perfiles, stream URI, snapshot, PTZ y eventos | control-onvif, investigacion-contexto                              | herramientas/streaming/onvif.py, generar_informe_onvif.py           | —                                                                         | output/streaming/onvif-*/                               |
 | calidad-imagen           | Ejecución en vivo                             | Calidad de imagen de cámaras: negro, desenfoque, congelamiento (OpenCV) + lente sucia, movida, contraluz, IR (visión) | calidad-de-imagen, investigacion-contexto                          | herramientas/streaming/calidad_imagen.py, generar_informe_calidad.py | —                                                                         | output/streaming/calidad-*/                             |
@@ -435,6 +439,42 @@ Gastan tokens en cada corrida: sirven para casos sueltos. Lo que se repite convi
 - **Confirma**: cobros (solo en modo de prueba) y operaciones fiscales con efecto; el recorrido del flujo en QA es seguro.
 - **Tokens**: en cada uso.
 
+### analista-observabilidad
+- **Cuándo**: para validar la observabilidad de un servicio: que emita bien logs, métricas y trazas, los healthchecks (liveness/readiness), el error tracking y que las alertas/SLOs disparen.
+- **Pedido de ejemplo**: *"Revisá la observabilidad del servicio de pagos"* · *"¿Los logs llevan trace id y no filtran PII?"* · *"¿Las métricas y healthchecks están bien?"*.
+- **Entradas**: la URL del servicio y las rutas de health/metrics, el stack de observabilidad (Prometheus/Grafana, OTel, ELK…), las métricas y SLOs oficiales, y qué está prohibido loguear.
+- **Usa**: skills `pruebas-observabilidad`, `ejecucion-api` e `investigacion-contexto`; `npm run observabilidad` (`herramientas/observabilidad/observabilidad.py`) y `scripts/generar_informe_generico.py`. Se apoya en `analista-logs`, `performance-mapper` y `probador-resiliencia` (para provocar alertas).
+- **Entrega**: en `output/observabilidad/<svc>/`, `informe-observabilidad.html` (estado de los tres pilares, healthchecks, métricas faltantes, PII en logs, alertas) y `analisis.json`.
+- **Confirma**: generar tráfico más allá de unos pocos requests y provocar condiciones de alerta en ambientes compartidos; consultar health/metrics es de lectura.
+- **Tokens**: en cada uso.
+
+### probador-busqueda
+- **Cuándo**: para probar la búsqueda y la relevancia (Elasticsearch/OpenSearch, Algolia, Solr, DB full-text): ranking, typos, sinónimos, facetas, autocompletar e indexación.
+- **Pedido de ejemplo**: *"Probá el buscador del sitio"* · *"¿La búsqueda tolera typos y trae lo relevante arriba?"* · *"Revisá las facetas y el cero-resultados"*.
+- **Entradas**: el motor y el endpoint/UI de búsqueda, las consultas importantes con su resultado esperado (golden set), el boosting/reglas, sinónimos/stemming e idiomas, el delay de indexación y si hay documentos con permisos.
+- **Usa**: skills `pruebas-busqueda`, `ejecucion-api`, `ejecucion-e2e` e `investigacion-contexto`; `scripts/generar_informe_generico.py`. Se apoya en `generador-datos-prueba` y `performance-mapper`.
+- **Entrega**: en `output/busqueda/<HU>/`, `informe-busqueda.html` (golden set con posición esperada/obtenida, métricas precision@k/nDCG, facetas, indexación, hallazgos) y `analisis.json`.
+- **Confirma**: reindexar o cargar datos al índice (tiene efecto); buscar es de lectura.
+- **Tokens**: en cada uso.
+
+### probador-documentos
+- **Cuándo**: para probar documentos generados por la app (PDF, Excel, CSV): facturas, reportes, estados de cuenta, etiquetas.
+- **Pedido de ejemplo**: *"Probá la factura PDF que genera el checkout"* · *"¿El reporte Excel tiene los totales bien?"* · *"Revisá que no queden {{variables}} en el PDF"*.
+- **Entradas**: qué documentos genera y en qué formato, cómo se generan (UI/API), la fuente de la verdad de cada dato y cómo se calculan los totales, el locale, si deben ir con contraseña/firma, y un documento de referencia si hay.
+- **Usa**: skills `pruebas-documentos` e `investigacion-contexto`; `npm run documentos` (`herramientas/documentos/documentos.py`, pypdf/openpyxl) y `scripts/generar_informe_generico.py`. Para obtener el documento, el `ejecutor-api` o el `ejecutor-e2e`/`web-mapper`.
+- **Entrega**: en `output/documentos/<HU>/`, `informe-documentos.html` (datos esperado vs. obtenido, totales recalculados, placeholders, formato y layout, hallazgos) y `analisis.json`.
+- **Confirma**: generar el documento si implica una acción con efecto (crear un pedido/factura). Con datos de prueba, nunca reales.
+- **Tokens**: en cada uso.
+
+### revisor-contenido
+- **Cuándo**: para revisar los textos y el contenido en el idioma principal: typos, ortografía, placeholders sin reemplazar, claves de i18n a la vista, microcopy y consistencia (distinto de las traducciones, que cubre el `analista-traductor`).
+- **Pedido de ejemplo**: *"Revisá los textos del sitio por typos"* · *"¿Quedan {{variables}} o claves de traducción a la vista?"* · *"Revisá el microcopy y la consistencia de términos"*.
+- **Entradas**: la URL o páginas, el idioma principal, y si hay un glosario/guía de estilo del proyecto. Usuarios de prueba si hay login.
+- **Usa**: skills `pruebas-contenido`, `ejecucion-e2e` e `investigacion-contexto`; `npm run contenido` (`herramientas/contenido/contenido.py`, heurística + LanguageTool opcional) y `scripts/generar_informe_generico.py`.
+- **Entrega**: en `output/contenido/<HU>/`, `informe-contenido.html` (problemas por página y tipo —placeholders, i18n a la vista, duplicados, ortografía—, inconsistencias de microcopy, hallazgos) y `analisis.json`.
+- **Confirma**: nada con efecto (solo lectura): recorre y lee el texto.
+- **Tokens**: en cada uso.
+
 ### probador-streaming
 - **Cuándo**: para probar que un stream o un video reproduzca bien — cámaras IP (RTSP/ONVIF), transmisiones en vivo (RTMP/HLS/DASH), WebRTC servido por HTTP y playback de VOD.
 - **Pedido de ejemplo**: *"Probá la cámara rtsp://cam.local/stream"* · *"Revisá el playback de https://cdn.mi-app.com/live/index.m3u8"*.
@@ -727,6 +767,10 @@ Los skills se cargan solo cuando hacen falta.
 | pruebas-ivr | Voz/IVR y voicebots: árbol de menús, DTMF/ASR, prompts, colas y transferencias, telefonía, PCI | probador-ivr |
 | pruebas-juegos | Videojuegos: mecánicas, guardado, compatibilidad, rendimiento, multijugador, monetización, exploratorias | probador-juegos |
 | pruebas-pos | POS y hardware: flujo de venta, pagos y periféricos, fiscal, offline y conciliación, cierres de caja | probador-pos |
+| pruebas-observabilidad | Probar observabilidad: logs estructurados (trace id, sin PII), métricas Prometheus (RED/USE, cardinalidad), trazas OTel, healthchecks (liveness/readiness), SLOs y alertas | analista-observabilidad |
+| pruebas-busqueda | Probar búsqueda y relevancia: ranking y boosting, typos/fuzzy, sinónimos y stemming, facetas, cero-resultados, indexación y golden set (precision@k, nDCG) | probador-busqueda |
+| pruebas-documentos | Probar documentos generados (PDF/Excel/CSV): datos y cálculos, placeholders sin reemplazar, formato/locale, layout, metadata, seguridad y a11y del PDF | probador-documentos |
+| pruebas-contenido | Revisar contenido y typos (idioma principal): ortografía/gramática, placeholders, claves i18n a la vista, palabras duplicadas, microcopy y consistencia | revisor-contenido |
 
 ## Herramientas y scripts: quién usa qué
 
