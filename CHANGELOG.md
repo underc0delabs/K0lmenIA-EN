@@ -2,6 +2,13 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-19 — Sync de documentación, sitio web, imágenes, PDF y dashboard
+Puesta al día de todo lo público y el dashboard con los agentes/skills agregados:
+- **Sitio web** (`docs/index.html` + `docs/en/index.html`): contador a **71 agentes**, **18 tarjetas de agente nuevas** (prestashop, vtex, sap, desktop, mobile, dependencias, código seguro, ia, mensajería, soap, contratos, seo, datos, dynamics, blockchain, ivr, juegos, pos) y **21 filas de skills nuevas**, en español e inglés.
+- **Imágenes y PDF**: regenerados con `node docs/generar.js` (los 8 PNG de diagramas y los 2 PDF ES/EN, que ahora reflejan los 71 agentes).
+- **README**: tabla de agentes completada con las 18 filas nuevas (el catálogo detallado sigue en `AGENTES.md`).
+- **Dashboard central** (`scripts/portal_informes.py` → `output/index.html`): ya centralizaba todos los informes HTML de los agentes (auto-descubre `output/`); se le sumaron los **nombres legibles y el orden** de las ~18 plataformas nuevas (prestashop, vtex, sap, desktop, mobile, ia, mensajería, soap, dependencias, sast, contratos, seo, datos, dynamics, blockchain, ivr, juegos, pos, streaming) para que no salgan con nombre genérico.
+
 ## 2026-10-19 — Accesibilidad multiplataforma, caos server-side y doctor
 Mejoras sobre agentes existentes:
 - **Accesibilidad mobile/desktop**: nuevo skill `pruebas-accesibilidad` (a11y en web, mobile y desktop con el mapeo de WCAG a cada plataforma) y el `analista-accesibilidad` ahora audita **web** (axe-core + Playwright), **mobile** (Appium: etiquetas accesibles, objetivos táctiles, TalkBack/VoiceOver) y **desktop** (UI Automation con `controles.py`: controles sin nombre accesible, teclado, alto contraste). El `probador-mobile` deriva la a11y mobile al `analista-accesibilidad`.

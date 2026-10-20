@@ -41,12 +41,20 @@ NOMBRES = {
     "evals": "Evals de los agentes", "k0lmena": "npm test (k0lmena)", "metricas-tokens": "Uso de tokens",
     "onboarding": "Onboarding",
     "shopify": "Shopify", "wordpress": "WordPress / WooCommerce", "salesforce": "Salesforce", "billeteras": "Billeteras y pagos",
+    "prestashop": "PrestaShop", "vtex": "VTEX", "sap": "SAP (GUI y Fiori)", "desktop": "Apps de escritorio",
+    "mobile": "Apps móviles", "ia": "IA / LLM", "mensajeria": "Mensajería y eventos", "soap": "SOAP",
+    "dependencias": "Dependencias (SCA)", "sast": "Código seguro (SAST)", "contratos": "Contract testing",
+    "seo": "SEO y GEO", "datos": "Datos y pipelines", "dynamics": "Dynamics / CRM-ERP", "blockchain": "Blockchain / Web3",
+    "ivr": "Voz / IVR", "juegos": "Videojuegos", "pos": "Punto de venta (POS)", "streaming": "Streaming y cámaras",
 }
 # Orden de las tarjetas: primero lo que más se mira.
 ORDEN = ["tablero", "informes-cierre", "ejecuciones", "k0lmena", "fallos", "cobertura", "monitoreo", "planes-de-prueba",
          "seleccion-casos", "exploratorias", "accesibilidad", "rendimiento", "performance", "seguridad", "permisos",
          "resiliencia", "pixel-perfect", "cross-browser", "formularios", "ux", "correos", "traductor", "logs",
-         "reparaciones", "revision-casos", "charters", "triage", "evals"]
+         "reparaciones", "revision-casos", "charters", "triage", "evals",
+         "mobile", "shopify", "wordpress", "prestashop", "vtex", "dynamics", "salesforce", "sap",
+         "desktop", "ia", "mensajeria", "soap", "contratos", "datos", "seo", "dependencias", "sast",
+         "blockchain", "billeteras", "pos", "ivr", "juegos", "streaming"]
 IGNORAR = {"historial", "evidencia", "capturas", "videos", "recortes", "diferencias", "lighthouse", "referencia",
            "actual", "respaldo", "suite", "eml", "sesiones", "node_modules"}
 _SELLO = re.compile(r"[-_]?\d{4}-?\d{2}-?\d{2}([-_T]?\d{2}-?\d{2}(-?\d{2})?)?$")
