@@ -2,20 +2,20 @@
 
 # 🪖 k0lmenIA
 
-### Agentes de QA para Claude Code
+### QA agents for Claude Code
 
-**Diseñá, ejecutá y automatizá pruebas conversando en español.**<br>
-Análisis de historias, casos de prueba, automatización con k0lmena y gestión en Xray, QMetry, AIO Tests o Azure DevOps.
+**Design, run and automate tests just by chatting.**<br>
+Story analysis, test cases, automation with k0lmena and test management in Xray, QMetry, AIO Tests or Azure DevOps.
 
 <br>
 
-[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-22c55e?style=flat-square)](#licencia)
-[![Idioma](https://img.shields.io/badge/idioma-español-0ea5e9?style=flat-square)](#)
-[![Agentes](https://img.shields.io/badge/agentes-51-8b5cf6?style=flat-square)](#-agentes)
-[![Suites sin tokens](https://img.shields.io/badge/suites-sin%20tokens-10b981?style=flat-square)](#️-automatización-con-k0lmena)
+[![MIT License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](#license)
+[![Language](https://img.shields.io/badge/language-English-0ea5e9?style=flat-square)](#)
+[![Agents](https://img.shields.io/badge/agents-76-8b5cf6?style=flat-square)](#-agents)
+[![Token-free suites](https://img.shields.io/badge/suites-no%20tokens-10b981?style=flat-square)](#️-automation-with-k0lmena)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-D97757?style=flat-square&logo=anthropic&logoColor=white)](https://docs.claude.com/en/docs/claude-code/overview)
 
-**Automatización**
+**Automation**
 
 ![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![Cucumber](https://img.shields.io/badge/Cucumber-23D96C?style=flat-square&logo=cucumber&logoColor=white)
@@ -33,9 +33,9 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-20+-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3-3776AB?style=flat-square&logo=python&logoColor=white)
-![MCP](https://img.shields.io/badge/MCP-conectores-111827?style=flat-square)
+![MCP](https://img.shields.io/badge/MCP-connectors-111827?style=flat-square)
 
-**Bases de datos**
+**Databases**
 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
@@ -43,7 +43,7 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=flat-square)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
 
-**Integraciones**
+**Integrations**
 
 ![Jira](https://img.shields.io/badge/Jira-0052CC?style=flat-square&logo=jira&logoColor=white)
 ![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=flat-square&logo=confluence&logoColor=white)
@@ -55,924 +55,924 @@ Análisis de historias, casos de prueba, automatización con k0lmena y gestión 
 
 <br>
 
-[**📖 Documentación web**](https://underc0delabs.github.io/k0lmenIA/) · [**📄 Documentación en PDF**](docs/k0lmenIA-documentacion.pdf) · [**🇬🇧 English**](https://underc0delabs.github.io/k0lmenIA/en/) ([PDF](docs/k0lmenIA-documentation.pdf)) · [**🚀 Empezar**](#-instalación) · [**🌐 qarmy.ar**](https://qarmy.ar) · [**▶️ YouTube**](https://www.youtube.com/@QARMY-UC?sub_confirmation=1) · [**💬 WhatsApp**](https://whatsapp.com/channel/0029VaSzkgD1CYoTmiX8Uv26)
+[**📖 Web documentation**](https://underc0delabs.github.io/k0lmenIA/) · [**📄 PDF documentation**](docs/k0lmenIA-documentation.pdf) · [**🚀 Get started**](#-installation) · [**🌐 qarmy.ar**](https://qarmy.ar) · [**▶️ YouTube**](https://www.youtube.com/@QARMY-UC?sub_confirmation=1) · [**💬 WhatsApp**](https://whatsapp.com/channel/0029VaSzkgD1CYoTmiX8Uv26)
 
 </div>
 
 ---
 
-## ✨ Qué ofrece
+## ✨ What it offers
 
-> Pensado para QAs manuales: no hace falta programar. Se trabaja conversando con Claude Code dentro de VS Code.
+> Built for manual QAs: no coding required. You work by chatting with Claude Code inside VS Code.
 
-|                                       |                                                                                                                                                                                       |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🧠 **Diseño de pruebas**              | Analiza historias, arma el plan, escribe casos manuales (Excel), BDD (Gherkin) y de API, genera datos y redacta bugs.                                                                 |
-| 🤖 **Automatización sin tokens**      | Los agentes *mapper* recorren tu app **una sola vez** y escriben la automatización en k0lmena. Después corre con `npm test`, sin agentes.                                             |
-| 🌐 **Web, API, mobile y performance** | Playwright + Cucumber, axios + Cucumber (REST y GraphQL; colecciones de Postman, Bruno o Insomnia), WebdriverIO + Appium (dispositivo, emulador o BrowserStack), k6, Artillery y JMeter.                                                         |
-| 📸 **Evidencia completa**             | Captura (y GIF) de cada test que pasa; video, logs, trace y error de cada test que falla, en reportes HTML.                                                                           |
-| 🗂️ **Gestión de pruebas**             | Carpetas, casos, ciclos y resultados con evidencias en **Xray** (Cloud y Server/DC), **QMetry (QTM4J)** y **AIO Tests**; casos y suites en **Azure DevOps Test Plans**.               |
-| 🗄️ **Verificación en base de datos**  | Revisa lo que dejaron guardado tus pruebas en **PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB**, a pedido o, si lo pedís, como steps dentro de los tests. Solo lectura por defecto. |
-| 🔌 **Conectado**                      | Lee historias de **Jira**, **Azure DevOps**, **Linear**, **ClickUp**, **monday.com**, **Asana**, **Trello**, **Notion**, **YouTrack** o **Shortcut**, el repositorio de **GitHub, GitLab, Azure Repos o Bitbucket**, documentación de **Confluence** o de la Wiki de Azure DevOps y diseños de **Figma** por MCP.                                            |
-| 🔎 **Investiga antes de suponer**     | Lee la historia de Jira con **todos sus comentarios, subtareas, épica e issues vinculados**, más Confluence y Figma, y arma una ficha de contexto.                                    |
-| 🛡️ **No inventa**                     | Lo que no está en ninguna fuente queda marcado como **Falta información** (`FI-01`) en todos los reportes, con la pregunta para el PO.                                                |
+|                                        |                                                                                                                                                                                                                                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🧠 **Test design**                      | Analyzes stories, builds the plan, writes manual (Excel), BDD (Gherkin) and API cases, generates data and writes bug reports.                                                                                                                                                                           |
+| 🤖 **Token-free automation**            | The *mapper* agents walk through your app **only once** and write the automation in k0lmena. After that it runs with `npm test`, no agents involved.                                                                                                                                                    |
+| 🌐 **Web, API, mobile and performance** | Playwright + Cucumber, axios + Cucumber (REST and GraphQL; Postman, Bruno or Insomnia collections), WebdriverIO + Appium (device, emulator or BrowserStack), k6, Artillery and JMeter.                                                                                                                  |
+| 📸 **Full evidence**                    | Screenshot (and GIF) of every passing test; video, logs, trace and error of every failing test, in HTML reports.                                                                                                                                                                                        |
+| 🗂️ **Test management**                 | Folders, cases, cycles and results with evidence in **Xray** (Cloud and Server/DC), **QMetry (QTM4J)** and **AIO Tests**; cases and suites in **Azure DevOps Test Plans**.                                                                                                                              |
+| 🗄️ **Database verification**           | Checks what your tests left stored in **PostgreSQL, MySQL/MariaDB, SQL Server or MongoDB**, on demand or, if you ask for it, as steps inside the tests. Read-only by default.                                                                                                                           |
+| 🔌 **Connected**                        | Reads stories from **Jira**, **Azure DevOps**, **Linear**, **ClickUp**, **monday.com**, **Asana**, **Trello**, **Notion**, **YouTrack** or **Shortcut**, the **GitHub, GitLab, Azure Repos or Bitbucket** repository, **Confluence** or Azure DevOps Wiki documentation and **Figma** designs over MCP. |
+| 🔎 **Researches before assuming**       | Reads the Jira story with **all its comments, subtasks, epic and linked issues**, plus Confluence and Figma, and builds a context sheet.                                                                                                                                                                |
+| 🛡️ **Doesn't make things up**          | Whatever isn't in any source is flagged as **Missing info** (`MI-01`) in every report, with the question for the PO.                                                                                                                                                                                    |
 
 <p align="center">
-  <img src="docs/assets/img/arquitectura.png" alt="Arquitectura de k0lmenIA" width="100%">
+  <img src="docs/assets/img/architecture.png" alt="k0lmenIA architecture" width="100%">
 </p>
 
 <p align="center">
-  <img src="docs/assets/img/relaciones.png" alt="Cómo se relacionan agentes, skills, plantillas, scripts, herramientas y conectores MCP" width="100%">
+  <img src="docs/assets/img/relationships.png" alt="How agents, skills, templates, scripts, tools and MCP connectors relate to each other" width="100%">
 </p>
 
 <p align="center">
-  <img src="docs/assets/img/uso.png" alt="Cómo se usa k0lmenIA" width="100%">
+  <img src="docs/assets/img/usage.png" alt="How to use k0lmenIA" width="100%">
 </p>
 
 ---
 
-## 📚 Contenido
+## 📚 Contents
 
-- [Agentes](#-agentes)
-- [Requisitos](#-requisitos)
-- [Instalación](#-instalación)
-- [Configuración: el archivo `.env`](#️-configuración-el-archivo-env)
-- [Cómo se usa](#-cómo-se-usa)
-- [Investigación de contexto y "Falta información"](#-investigación-de-contexto-y-falta-información)
-- [Documentación del proyecto](#-documentación-del-proyecto)
-- [Automatización con k0lmena](#️-automatización-con-k0lmena)
-- [Pruebas de performance](#-pruebas-de-performance)
-- [Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps](#️-gestión-de-pruebas-xray-qmetry-aio-tests-y-azure-devops)
-- [Pruebas exploratorias](#-pruebas-exploratorias)
-- [Accesibilidad](#-accesibilidad)
-- [Rendimiento web](#-rendimiento-web)
-- [Análisis de fallos](#-análisis-de-fallos)
-- [Cobertura y trazabilidad](#-cobertura-y-trazabilidad)
-- [Selección de casos por cambio](#-selección-de-casos-por-cambio)
-- [Regresión visual (pixel perfect)](#-regresión-visual-pixel-perfect)
+- [Agents](#-agents)
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Configuration: the `.env` file](#️-configuration-the-env-file)
+- [How to use it](#-how-to-use-it)
+- [Context research and "Missing info"](#-context-research-and-missing-info)
+- [Project documentation](#-project-documentation)
+- [Automation with k0lmena](#️-automation-with-k0lmena)
+- [Performance testing](#-performance-testing)
+- [Test management: Xray, QMetry, AIO Tests and Azure DevOps](#️-test-management-xray-qmetry-aio-tests-and-azure-devops)
+- [Exploratory testing](#-exploratory-testing)
+- [Accessibility](#-accessibility)
+- [Web performance](#-web-performance)
+- [Failure analysis](#-failure-analysis)
+- [Coverage and traceability](#-coverage-and-traceability)
+- [Change-based case selection](#-change-based-case-selection)
+- [Visual regression (pixel perfect)](#️-visual-regression-pixel-perfect)
 - [Cross-browser](#-cross-browser)
-- [Reparación de la automatización](#-reparación-de-la-automatización)
-- [Correos](#-correos)
-- [Revisión de casos y tiempo de ejecución](#-revisión-de-casos-y-tiempo-de-ejecución)
-- [Exploratorias por sesiones](#-exploratorias-por-sesiones)
-- [Usabilidad (heurísticas de Nielsen)](#-usabilidad-heurísticas-de-nielsen)
-- [Formularios](#-formularios)
-- [Permisos por rol](#-permisos-por-rol)
-- [Resiliencia](#-resiliencia)
-- [Triage de bugs y consultas](#-triage-de-bugs-y-consultas)
+- [Automation repair](#-automation-repair)
+- [Emails](#️-emails)
+- [Case review and execution time](#-case-review-and-execution-time)
+- [Session-based exploratory testing](#-session-based-exploratory-testing)
+- [Usability (Nielsen heuristics)](#-usability-nielsen-heuristics)
+- [Forms](#-forms)
+- [Permissions by role](#-permissions-by-role)
+- [Resilience](#️-resilience)
+- [Bug triage and questions](#-bug-triage-and-questions)
 - [Logs](#-logs)
-- [Traducciones e idiomas](#-traducciones-e-idiomas)
-- [Historial de corridas](#-historial-de-corridas)
-- [Tablero de calidad y portal de informes](#-tablero-de-calidad-y-portal-de-informes)
-- [Avisos y monitoreo sintético](#-avisos-y-monitoreo-sintético)
-- [Evals de los agentes](#-evals-de-los-agentes)
-- [Uso de tokens](#-uso-de-tokens)
+- [Translations and languages](#-translations-and-languages)
+- [Run history](#-run-history)
+- [Quality dashboard and reports portal](#-quality-dashboard-and-reports-portal)
+- [Notifications and synthetic monitoring](#-notifications-and-synthetic-monitoring)
+- [Agent evals](#-agent-evals)
+- [Token usage](#-token-usage)
 - [Onboarding](#-onboarding)
-- [Seguridad web](#️-seguridad-web)
-- [Verificación en base de datos](#️-verificación-en-base-de-datos)
-- [Conectores MCP](#-conectores-mcp)
-- [Referencia](#-referencia): flujo completo, convenciones, estructura, problemas frecuentes y cómo extenderlo
+- [Web security](#️-web-security)
+- [Database verification](#️-database-verification)
+- [MCP connectors](#-mcp-connectors)
+- [Reference](#-reference): end-to-end flow, conventions, structure, common issues and how to extend it
 
 ---
 
-## 🤖 Agentes
+## 🤖 Agents
 
-Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"usá el web-mapper para…"*). **El catálogo completo** —cuándo usar cada agente, un pedido de ejemplo, qué skills, scripts, herramientas y conectores usa, qué entrega y qué te confirma antes— está en [`AGENTES.md`](AGENTES.md).
+Claude Code picks the agent based on what you ask for; you can also name it (*"use the web-mapper to…"*). **The full catalog** —when to use each agent, a sample request, which skills, scripts, tools and connectors it uses, what it delivers and what it confirms with you first— is in [`AGENTS.md`](AGENTS.md).
 
 <table>
-<tr><th>Familia</th><th>Agente</th><th>Qué hace</th></tr>
-<tr><td rowspan="15"><b>🧠 Análisis<br>y diseño</b></td>
-  <td><code>documentador-proyecto</code></td><td>Arma la documentación del proyecto en <code>input/documentacion/</code>: lee el repositorio (GitHub, GitLab, Azure Repos o Bitbucket, solo lectura), las historias con sus comentarios, PRs y links, y hace un mapa funcional de la web</td></tr>
-<tr><td><code>analista-historias</code></td><td>Investiga el contexto (comentarios, subtareas, épica, Confluence, Figma) y detecta ambigüedades, vacíos, riesgos y Falta información</td></tr>
-<tr><td><code>estratega-pruebas</code></td><td>Plan de pruebas (alcance, riesgos, tipos, entorno, criterios) en HTML</td></tr>
-<tr><td><code>generador-casos-manuales</code></td><td>Casos en Excel y Markdown + informe de cobertura</td></tr>
-<tr><td><code>generador-casos-bdd</code></td><td>Escenarios Gherkin (keywords en inglés, contenido en español) + cobertura</td></tr>
-<tr><td><code>generador-casos-api</code></td><td>Casos de API positivos, negativos, de schema y autorización</td></tr>
-<tr><td><code>generador-datos-prueba</code></td><td>Datos válidos, inválidos y de borde (Markdown o CSV)</td></tr>
-<tr><td><code>generador-reportes-bug</code></td><td>Reporte de bug según tu plantilla, con severidad y prioridad justificadas</td></tr>
-<tr><td><code>triador-bugs</code></td><td>Antes de cargar un bug, busca si ya existe en Jira, Azure DevOps o los bugs locales, detecta regresiones de bugs cerrados y sugiere severidad, componente, responsable e historia</td></tr>
-<tr><td><code>consultor-proyecto</code></td><td>Preguntale cómo funciona cualquier parte del producto: responde con la documentación del proyecto, citando de dónde sale cada dato o diciendo que no está documentado</td></tr>
-<tr><td><code>guia-onboarding</code></td><td>Plan de incorporación para un QA nuevo: el producto, su entorno, los agentes para su rol, las primeras tareas y un checklist</td></tr>
-<tr><td><code>investigador-proyecto</code></td><td>Releva el proyecto entero por MCP (Jira, Azure DevOps, Confluence, repo, Figma) y arma un informe para un QA nuevo: de qué se trata, módulos, flujos, equipo, ambigüedades y contradicciones con sus fuentes, y preguntas priorizadas para el equipo</td></tr>
-<tr><td><code>revisor-casos</code></td><td>Revisa la calidad de los casos existentes: puntaje, problemas, duplicados, tiempo de ejecución manual y la versión mejorada</td></tr>
-<tr><td><code>generador-charters</code></td><td>Charters de exploración por sesiones (hojas y plantilla de notas) y el informe de las sesiones</td></tr>
-<tr><td><code>selector-casos-de-prueba</code></td><td>Qué casos correr para un cambio (git, PR, Jira, notas de la release), priorizados por riesgo, con el comando <code>npm test</code> listo y los cambios sin cobertura</td></tr>
-<tr><td rowspan="20"><b>▶️ Ejecución<br>en vivo</b><br><sub>usa tokens</sub></td>
-  <td><code>ejecutor-e2e</code></td><td>Ejecuta casos en un navegador real con Playwright MCP, con evidencia</td></tr>
-<tr><td><code>ejecutor-api</code></td><td>Corre una colección de Postman, Bruno o Insomnia con Newman (REST y GraphQL)</td></tr>
-<tr><td><code>auditor-rendimiento-web</code></td><td>Velocidad de carga con Lighthouse en mobile y desktop: Core Web Vitals, oportunidades de mejora con el ahorro estimado y secuencia de carga</td></tr>
-<tr><td><code>analista-accesibilidad</code></td><td>Auditoría WCAG 2.2 (axe-core, teclado, reflow y revisión manual) con informe HTML: criterios incumplidos, capturas y cómo corregir</td></tr>
-<tr><td><code>explorador-web</code></td><td>Pruebas exploratorias: links e imágenes rotas, errores de JavaScript y consola, responsive en varias resoluciones, con informe HTML y capturas</td></tr>
-<tr><td><code>pixel-perfect</code></td><td>Regresión visual contra una referencia (o el diseño): qué se corrió y cuántos píxeles, qué falta, qué es nuevo y qué cambió de estilo, con comparador deslizable</td></tr>
-<tr><td><code>evaluador-ux</code></td><td>Usabilidad con las 10 heurísticas de Nielsen: medición automática en desktop y mobile más la revisión manual de los flujos</td></tr>
-<tr><td><code>probador-formularios</code></td><td>Valida cada campo de los formularios sin enviarlos: obligatorios, largos, formatos, límites y mensajes</td></tr>
-<tr><td><code>probador-permisos</code></td><td>Inicia sesión con cada rol y arma la matriz de qué ve y qué abre cada uno (también por URL directa y en la API), comparada con la regla documentada</td></tr>
-<tr><td><code>probador-resiliencia</code></td><td>Simula que la API falla o tarda, que la red se corta y que no cargan los recursos, y revisa qué ve la persona: pantallas en blanco, errores sin aviso, spinners infinitos, recuperación</td></tr>
-<tr><td><code>probador-salesforce</code></td><td>Prueba una org de Salesforce (sandbox): releva acceso (perfiles, permisos, OWD, FLS), validaciones, flows, triggers, cobertura de Apex y límites con la CLI <code>sf</code>, deriva y corre pruebas por perfil en Lightning. Nunca producción; no toca metadata</td></tr>
-<tr><td><code>probador-billeteras</code></td><td>Prueba billeteras virtuales y pagos en sandbox: conservación del saldo, idempotencia, doble gasto y concurrencia, límites, KYC/AML, conciliación con la pasarela y seguridad de tokens y tarjetas (PCI). Dinero y tarjetas de prueba, nunca reales</td></tr>
-<tr><td><code>probador-shopify</code></td><td>Prueba una tienda Shopify: releva en solo lectura la vidriera (tema, errores de Liquid, políticas, catálogo) y la Admin API (productos y stock, mercados, envíos, descuentos, webhooks) y corre Theme Check; prueba el checkout con Bogus Gateway o el modo de prueba en mobile y desktop</td></tr>
-<tr><td><code>probador-wordpress</code></td><td>Prueba WordPress y WooCommerce: releva en solo lectura la vidriera, la REST API de WooCommerce (plugins y templates desactualizados, pasarelas y su modo, envíos, cupones, webhooks, cron) y WP-CLI; prueba checkout, pagos de prueba, envíos, cupones, correos y roles</td></tr>
-<tr><td><code>probador-prestashop</code></td><td>Prueba PrestaShop (1.6/1.7/8.x): releva en solo lectura la vidriera y la Webservice API (productos, stock, combinaciones, transportistas, zonas, monedas, vales, multistore y config de rendimiento) y, con --local, versión y modo dev; smoke local, checkout, pagos de prueba, stock, redondeo y rendimiento.</td></tr>
-<tr><td><code>probador-vtex</code></td><td>Prueba VTEX: vidriera, Catalog System público (SKUs, precio, stock) y, con app de lectura, canales de venta, SLAs de envío y promociones; smoke en workspace de QA, checkout/orderForm, pagos sandbox, canales, promos y OMS.</td></tr>
-<tr><td><code>probador-sap</code></td><td>Prueba SAP (S/4HANA o ECC) en mandante de QA: SAP GUI (T-codes con la Scripting API) y Fiori/UI5 (OData), autorizaciones y roles (PFCG/SU53/SoD) y procesos O2C/P2P/R2R de punta a punta; smoke, regresión tras transporte, rendimiento y seguridad.</td></tr>
-<tr><td><code>probador-desktop</code></td><td>Prueba apps de escritorio Windows (WinForms/WPF/UWP/Win32/Electron/Java/Qt): releva el árbol de controles (pywinauto) y prueba con Appium+WinAppDriver, pywinauto o Playwright (Electron); funcional, instalación, archivos, SO, regresión, rendimiento y seguridad.</td></tr>
-<tr><td><code>probador-mobile</code></td><td>Prueba apps móviles (Android/iOS; nativa/híbrida/web) en vivo con Appium: permisos, interrupciones, offline, deep links y push, ciclo de vida, compatibilidad de OS y pantallas, rendimiento y seguridad móvil (MASVS).</td></tr>
-<tr><td><code>analista-dependencias</code></td><td>SCA de dependencias (solo lectura): corre npm audit / pip-audit / osv-scanner, agrega los CVE por severidad, distingue directas de transitivas y vulnerable de desactualizado, y marca licencias a revisar.</td></tr>
-<tr><td><code>analista-codigo-seguro</code></td><td>SAST y secretos (solo lectura): escáner de secretos integrado (redacta el valor) + semgrep si está, triage de falsos positivos y mapeo a OWASP/CWE; complementa el análisis dinámico (ZAP).</td></tr>
-<tr><td><code>probador-ia</code></td><td>Prueba funciones de IA/LLM (chatbot, RAG, clasificador, agente): golden set y evals, alucinaciones y grounding, seguridad de prompt (injection/jailbreak), formato, robustez, latencia y costo.</td></tr>
-<tr><td><code>probador-mensajeria</code></td><td>Prueba mensajería/eventos (Kafka/RabbitMQ/SQS/MQTT/WebSocket/SSE): entrega, orden, idempotencia, DLQ y reintentos, esquemas, consumer lag y outbox; publica/consume con la herramienta.</td></tr>
-<tr><td><code>probador-soap</code></td><td>Prueba servicios SOAP desde el WSDL: operaciones, validación XSD, SOAP Faults, namespaces/SOAPAction, WS-Security e idempotencia; envía los sobres con ejecutor-api.</td></tr>
-<tr><td><code>probador-contratos</code></td><td>Contract testing (Pact): consumer-driven y bi-direccional para REST, GraphQL, gRPC y eventos; verificación del proveedor, can-i-deploy y compatibilidad.</td></tr>
-<tr><td><code>analista-seo</code></td><td>SEO y GEO: indexabilidad, on-page, datos estructurados, hreflang y acceso de los crawlers de IA; releva con npm run seo y deriva los Core Web Vitals al auditor-rendimiento-web.</td></tr>
-<tr><td><code>probador-datos</code></td><td>Datos y pipelines (ETL): calidad por dimensiones, reconciliación origen-destino, validación de esquema, transformaciones e idempotencia; solo lectura con verificador-datos.</td></tr>
-<tr><td><code>probador-dynamics</code></td><td>Dynamics 365 y otros CRM/ERP (sandbox): roles, lógica (flows/plugins/BPF/roll-ups) y procesos end-to-end; Web API de lectura + Playwright por rol.</td></tr>
-<tr><td><code>probador-blockchain</code></td><td>Blockchain/Web3 y smart contracts (testnet/local): funcional, tokens, gas, seguridad (reentrancy, control de acceso, oráculos, proxies), Hardhat/Foundry e invariantes.</td></tr>
-<tr><td><code>probador-ivr</code></td><td>Voz/IVR y voicebots: árbol de menús (DTMF/voz), prompts, enrutamiento y colas, telefonía (SIP/VoIP) y cumplimiento (PCI).</td></tr>
-<tr><td><code>probador-juegos</code></td><td>Videojuegos (Unity/Unreal/Godot/HTML5/mobile): mecánicas, guardado, compatibilidad, rendimiento, multijugador, monetización y exploratorias para romper el mundo.</td></tr>
-<tr><td><code>probador-pos</code></td><td>Punto de venta (POS) y hardware: venta y arqueo, pagos y periféricos, fiscal, offline y conciliación, cierres de caja.</td></tr>
-<tr><td><code>analista-observabilidad</code></td><td>Analiza la observabilidad de un servicio: valida logs (trace id, sin PII), métricas (Prometheus, RED/USE), trazas (OTel), healthchecks (liveness/readiness), SLOs y que las alertas disparen</td></tr>
-<tr><td><code>probador-busqueda</code></td><td>Prueba la búsqueda y la relevancia (Elasticsearch/Algolia/Solr/DB): ranking, typos, sinónimos, facetas, indexación y un golden set con métricas (precision@k, nDCG); contra ambientes de QA</td></tr>
-<tr><td><code>probador-documentos</code></td><td>Prueba documentos generados (PDF/Excel/CSV): datos y totales, placeholders sin reemplazar, formato/locale, layout, metadata y seguridad; extrae el contenido con pypdf/openpyxl</td></tr>
-<tr><td><code>revisor-contenido</code></td><td>Revisa el contenido y los typos en el idioma principal: ortografía, placeholders, claves de i18n a la vista, palabras duplicadas y consistencia de microcopy</td></tr>
-<tr><td><code>analista-mutacion</code></td><td>Mide la calidad real de la suite de tests con mutation testing (Stryker/mutmut/PITest): mutation score por archivo, mutantes sobrevivientes vs. equivalentes y qué test falta. Mejor señal que el coverage</td></tr>
-<tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
-<tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
-<tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
-<tr><td><code>generador-reporte-html</code></td><td>Dashboard HTML de una ejecución</td></tr>
-<tr><td><code>generador-reporte-cierre</code></td><td>Informe de cierre con recomendación go/no-go</td></tr>
-<tr><td><code>tablero-calidad</code></td><td>Tablero de calidad por sprint o release: aprobados y tendencia, % automatizado, cobertura, bugs, inestables y resumen para gerencia</td></tr>
-<tr><td><code>analista-cobertura</code></td><td>Matriz de trazabilidad (HU → criterios → casos → automatización → resultados) y qué falta probar</td></tr>
-<tr><td rowspan="9"><b>⚙️ Automatización<br>k0lmena</b><br><sub>después sin tokens</sub></td>
-  <td><code>web-mapper</code></td><td>Recorre la web siguiendo tus casos y genera <code>.feature</code>, steps y locators</td></tr>
-<tr><td><code>api-mapper</code></td><td>Lee Postman o Swagger/OpenAPI, verifica los endpoints y genera los <code>.feature</code></td></tr>
-<tr><td><code>mobile-mapper</code></td><td>Recorre la app con Appium y genera <code>.feature</code>, steps y locators</td></tr>
-<tr><td><code>performance-mapper</code></td><td>Carga, estrés, soak y picos con k6, Artillery o JMeter; pregunta carga y umbrales</td></tr>
-<tr><td><code>analista-fallos</code></td><td>Cuando <code>npm test</code> falla: separa bugs reales de tests rotos, inestables, de datos o de ambiente, con la evidencia</td></tr>
-<tr><td><code>analista-logs</code></td><td>Logs del servidor agrupados por error y cruzados con los escenarios que fallaron en <code>npm test</code></td></tr>
-<tr><td><code>reparador-automatizacion</code></td><td>Repara los locators y esperas que se rompieron: diagnostica con el DOM guardado al fallar, propone un locator único, lo aplica con respaldo y lo verifica</td></tr>
-<tr><td><code>verificador-datos</code></td><td>Verifica datos en PostgreSQL, MySQL/MariaDB, SQL Server o MongoDB y suma verificaciones de BD a los tests</td></tr>
-<tr><td><code>analista-seguridad</code></td><td>Escaneo de seguridad web pasivo con OWASP ZAP e informe HTML con hallazgos, evidencia y cómo corregirlos</td></tr>
-<tr><td><code>pentester-web</code></td><td>Pentest web autorizado (ethical hacking): escaneo activo de OWASP ZAP más verificación manual del OWASP Top 10 con Playwright; confirma cada hallazgo y arma el informe con pasos para reproducir y cómo corregir. Solo URLs autorizadas y con permiso</td></tr>
-<tr><td rowspan="2"><b>🗂️ Gestión</b></td>
-  <td><code>gestor-pruebas</code></td><td>Carpetas, casos, vínculos con la historia y ciclos en Xray, QMetry, AIO Tests o Azure DevOps</td></tr>
-<tr><td><code>publicador-resultados</code></td><td>Sube los resultados de <code>npm test</code> al ciclo con sus evidencias</td></tr>
+<tr><th>Family</th><th>Agent</th><th>What it does</th></tr>
+<tr><td rowspan="15"><b>🧠 Analysis<br>and design</b></td>
+  <td><code>project-documenter</code></td><td>Builds the project documentation in <code>input/documentation/</code>: reads the repository (GitHub, GitLab, Azure Repos or Bitbucket, read-only), the stories with their comments, PRs and links, and builds a functional map of the website</td></tr>
+<tr><td><code>story-analyst</code></td><td>Researches the context (comments, subtasks, epic, Confluence, Figma) and detects ambiguities, gaps, risks and Missing info</td></tr>
+<tr><td><code>test-strategist</code></td><td>Test plan (scope, risks, types, environment, criteria) in HTML</td></tr>
+<tr><td><code>manual-case-generator</code></td><td>Cases in Excel and Markdown + coverage report</td></tr>
+<tr><td><code>bdd-case-generator</code></td><td>Gherkin scenarios (English keywords and content) + coverage</td></tr>
+<tr><td><code>api-case-generator</code></td><td>Positive, negative, schema and authorization API cases</td></tr>
+<tr><td><code>test-data-generator</code></td><td>Valid, invalid and edge data (Markdown or CSV)</td></tr>
+<tr><td><code>bug-report-generator</code></td><td>Bug report following your template, with justified severity and priority</td></tr>
+<tr><td><code>bug-triager</code></td><td>Before you file a bug, checks whether it already exists in Jira, Azure DevOps or the local bugs, detects regressions of closed bugs and suggests severity, component, assignee and story</td></tr>
+<tr><td><code>project-consultant</code></td><td>Ask it how any part of the product works: it answers from the project documentation, citing where each fact comes from or saying it isn't documented</td></tr>
+<tr><td><code>onboarding-guide</code></td><td>Onboarding plan for a new QA: the product, its environment, the agents for their role, the first tasks and a checklist</td></tr>
+<tr><td><code>project-researcher</code></td><td>Surveys the whole project over MCP (Jira, Azure DevOps, Confluence, repo, Figma) and builds a report for a new QA: what it's about, modules, flows, team, ambiguities and contradictions with their sources, and prioritized questions for the team</td></tr>
+<tr><td><code>case-reviewer</code></td><td>Reviews the quality of existing cases: score, issues, duplicates, manual execution time and the improved version</td></tr>
+<tr><td><code>charter-generator</code></td><td>Session-based exploration charters (sheets and notes template) and the sessions report</td></tr>
+<tr><td><code>test-case-selector</code></td><td>Which cases to run for a change (git, PR, Jira, release notes), prioritized by risk, with the <code>npm test</code> command ready and the uncovered changes</td></tr>
+<tr><td rowspan="20"><b>▶️ Live<br>execution</b><br><sub>uses tokens</sub></td>
+  <td><code>e2e-runner</code></td><td>Runs cases in a real browser with Playwright MCP, with evidence</td></tr>
+<tr><td><code>api-runner</code></td><td>Runs a Postman, Bruno or Insomnia collection with Newman (REST and GraphQL)</td></tr>
+<tr><td><code>web-performance-auditor</code></td><td>Load speed with Lighthouse on mobile and desktop: Core Web Vitals, improvement opportunities with the estimated savings and loading sequence</td></tr>
+<tr><td><code>accessibility-analyst</code></td><td>WCAG 2.2 audit (axe-core, keyboard, reflow and manual review) with an HTML report: failed criteria, screenshots and how to fix them</td></tr>
+<tr><td><code>web-explorer</code></td><td>Exploratory testing: broken links and images, JavaScript and console errors, responsive behavior at several resolutions, with an HTML report and screenshots</td></tr>
+<tr><td><code>pixel-perfect</code></td><td>Visual regression against a baseline (or the design): what shifted and by how many pixels, what's missing, what's new and what changed style, with a slider comparator</td></tr>
+<tr><td><code>ux-evaluator</code></td><td>Usability with Nielsen's 10 heuristics: automated measurement on desktop and mobile plus manual review of the flows</td></tr>
+<tr><td><code>form-tester</code></td><td>Validates every form field without submitting: required fields, lengths, formats, limits and messages</td></tr>
+<tr><td><code>permissions-tester</code></td><td>Logs in with each role and builds the matrix of what each one sees and opens (also by direct URL and in the API), compared against the documented rule</td></tr>
+<tr><td><code>resilience-tester</code></td><td>Simulates the API failing or being slow, the network dropping and resources not loading, and checks what the user sees: blank screens, silent errors, endless spinners, recovery</td></tr>
+<tr><td><code>salesforce-tester</code></td><td>Tests a Salesforce org (sandbox): surveys access (profiles, permissions, OWD, FLS), validations, flows, triggers, Apex coverage and limits with the <code>sf</code> CLI, derives tests and runs them per profile in Lightning. Never production; doesn't touch metadata</td></tr>
+<tr><td><code>wallet-tester</code></td><td>Tests digital wallets and payments in sandbox: balance conservation, idempotency, double spending and concurrency, limits, KYC/AML, reconciliation with the gateway and token and card security (PCI). Test money and cards, never real ones</td></tr>
+<tr><td><code>shopify-tester</code></td><td>Tests a Shopify store: surveys the storefront (theme, Liquid errors, policies, catalog) and the Admin API (products and stock, markets, shipping, discounts, webhooks) read-only and runs Theme Check; tests checkout with Bogus Gateway or test mode on mobile and desktop</td></tr>
+<tr><td><code>wordpress-tester</code></td><td>Tests WordPress and WooCommerce: surveys the storefront, the WooCommerce REST API (outdated plugins and templates, gateways and their mode, shipping, coupons, webhooks, cron) and WP-CLI read-only; tests checkout, test payments, shipping, coupons, emails and roles</td></tr>
+<tr><td><code>prestashop-tester</code></td><td>Tests PrestaShop (1.6/1.7/8.x): surveys the storefront and the Webservice API (products, stock, combinations, carriers, zones, currencies, vouchers, multistore and performance config) read-only and, with --local, the version and dev mode; local smoke, checkout, test payments, stock, rounding and performance.</td></tr>
+<tr><td><code>vtex-tester</code></td><td>Tests VTEX: storefront, public Catalog System (SKUs, price, stock) and, with a read-only app, sales channels, shipping SLAs and promotions; smoke in a QA workspace, checkout/orderForm, sandbox payments, channels, promos and OMS.</td></tr>
+<tr><td><code>sap-tester</code></td><td>Tests SAP (S/4HANA or ECC) in a QA client: SAP GUI (T-codes with the Scripting API) and Fiori/UI5 (OData), authorizations and roles (PFCG/SU53/SoD) and end-to-end O2C/P2P/R2R processes; smoke, regression after transport, performance and security.</td></tr>
+<tr><td><code>desktop-tester</code></td><td>Tests Windows desktop apps (WinForms/WPF/UWP/Win32/Electron/Java/Qt): surveys the control tree (pywinauto) and tests with Appium+WinAppDriver, pywinauto or Playwright (Electron); functional, installation, files, OS, regression, performance and security.</td></tr>
+<tr><td><code>mobile-tester</code></td><td>Tests mobile apps (Android/iOS; native/hybrid/web) live with Appium: permissions, interruptions, offline, deep links and push, lifecycle, OS and screen compatibility, performance and mobile security (MASVS).</td></tr>
+<tr><td><code>dependency-analyst</code></td><td>Dependency SCA (read-only): runs npm audit / pip-audit / osv-scanner, aggregates CVEs by severity, tells direct from transitive and vulnerable from outdated, and flags licenses to review.</td></tr>
+<tr><td><code>secure-code-analyst</code></td><td>SAST and secrets (read-only): built-in secret scanner (redacts the value) + semgrep if available, false-positive triage and mapping to OWASP/CWE; complements dynamic analysis (ZAP).</td></tr>
+<tr><td><code>ai-tester</code></td><td>Tests AI/LLM features (chatbot, RAG, classifier, agent): golden set and evals, hallucinations and grounding, prompt security (injection/jailbreak), format, robustness, latency and cost.</td></tr>
+<tr><td><code>messaging-tester</code></td><td>Tests messaging/events (Kafka/RabbitMQ/SQS/MQTT/WebSocket/SSE): delivery, ordering, idempotency, DLQ and retries, schemas, consumer lag and outbox; publishes/consumes with the tool.</td></tr>
+<tr><td><code>soap-tester</code></td><td>Tests SOAP services from the WSDL: operations, XSD validation, SOAP Faults, namespaces/SOAPAction, WS-Security and idempotency; sends the envelopes with api-runner.</td></tr>
+<tr><td><code>contract-tester</code></td><td>Contract testing (Pact): consumer-driven and bi-directional for REST, GraphQL, gRPC and events; provider verification, can-i-deploy and compatibility.</td></tr>
+<tr><td><code>seo-analyst</code></td><td>SEO and GEO: indexability, on-page, structured data, hreflang and AI crawler access; surveys with npm run seo and hands Core Web Vitals off to the web-performance-auditor.</td></tr>
+<tr><td><code>data-tester</code></td><td>Data and pipelines (ETL): quality by dimension, source-target reconciliation, schema validation, transformations and idempotency; read-only with data-verifier.</td></tr>
+<tr><td><code>dynamics-tester</code></td><td>Dynamics 365 and other CRM/ERP (sandbox): roles, logic (flows/plugins/BPF/roll-ups) and end-to-end processes; read-only Web API + Playwright per role.</td></tr>
+<tr><td><code>blockchain-tester</code></td><td>Blockchain/Web3 and smart contracts (testnet/local): functional, tokens, gas, security (reentrancy, access control, oracles, proxies), Hardhat/Foundry and invariants.</td></tr>
+<tr><td><code>ivr-tester</code></td><td>Voice/IVR and voicebots: menu tree (DTMF/voice), prompts, routing and queues, telephony (SIP/VoIP) and compliance (PCI).</td></tr>
+<tr><td><code>game-tester</code></td><td>Video games (Unity/Unreal/Godot/HTML5/mobile): mechanics, saving, compatibility, performance, multiplayer, monetization and exploratory testing to break the world.</td></tr>
+<tr><td><code>pos-tester</code></td><td>Point of sale (POS) and hardware: sales and cash counts, payments and peripherals, fiscal, offline and reconciliation, register closings.</td></tr>
+<tr><td><code>observability-analyst</code></td><td>Analyzes a service's observability: validates logs (trace id, no PII), metrics (Prometheus, RED/USE), traces (OTel), healthchecks (liveness/readiness), SLOs and that alerts fire</td></tr>
+<tr><td><code>search-tester</code></td><td>Tests search and relevance (Elasticsearch/Algolia/Solr/DB): ranking, typos, synonyms, facets, indexing and a golden set with metrics (precision@k, nDCG); against QA environments</td></tr>
+<tr><td><code>document-tester</code></td><td>Tests generated documents (PDF/Excel/CSV): data and totals, unreplaced placeholders, format/locale, layout, metadata and security; extracts the content with pypdf/openpyxl</td></tr>
+<tr><td><code>content-reviewer</code></td><td>Reviews content and typos in the main language: spelling, placeholders, visible i18n keys, duplicated words and microcopy consistency</td></tr>
+<tr><td><code>mutation-analyst</code></td><td>Measures the real quality of the test suite with mutation testing (Stryker/mutmut/PITest): mutation score per file, surviving vs. equivalent mutants and which test is missing. A better signal than coverage</td></tr>
+<tr><td><code>email-verifier</code></td><td>App emails with a test mailbox (Mailpit): that what's expected arrives, unreplaced variables, links, Outlook and Gmail compatibility, desktop and mobile view</td></tr>
+<tr><td><code>translation-analyst</code></td><td>Every page in every language: untranslated text, visible keys, broken characters, truncated text and formats from another region, with the proposed translation</td></tr>
+<tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox and WebKit (Safari): the suite per browser or the pages compared, with what fails or looks different in each one</td></tr>
+<tr><td><code>html-report-generator</code></td><td>HTML dashboard of a run</td></tr>
+<tr><td><code>closure-report-generator</code></td><td>Closure report with a go/no-go recommendation</td></tr>
+<tr><td><code>quality-dashboard</code></td><td>Quality dashboard per sprint or release: passed and trend, % automated, coverage, bugs, flaky tests and a management summary</td></tr>
+<tr><td><code>coverage-analyst</code></td><td>Traceability matrix (US → criteria → cases → automation → results) and what's left to test</td></tr>
+<tr><td rowspan="9"><b>⚙️ k0lmena<br>automation</b><br><sub>token-free afterwards</sub></td>
+  <td><code>web-mapper</code></td><td>Walks through the website following your cases and generates the <code>.feature</code>, steps and locators</td></tr>
+<tr><td><code>api-mapper</code></td><td>Reads Postman or Swagger/OpenAPI, verifies the endpoints and generates the <code>.feature</code> files</td></tr>
+<tr><td><code>mobile-mapper</code></td><td>Walks through the app with Appium and generates the <code>.feature</code>, steps and locators</td></tr>
+<tr><td><code>performance-mapper</code></td><td>Load, stress, soak and spike with k6, Artillery or JMeter; asks for the load and thresholds</td></tr>
+<tr><td><code>failure-analyst</code></td><td>When <code>npm test</code> fails: separates real bugs from broken, flaky, data or environment tests, with the evidence</td></tr>
+<tr><td><code>log-analyst</code></td><td>Server logs grouped by error and cross-referenced with the scenarios that failed in <code>npm test</code></td></tr>
+<tr><td><code>automation-repairer</code></td><td>Repairs broken locators and waits: diagnoses with the DOM saved on failure, proposes a unique locator, applies it with a backup and verifies it</td></tr>
+<tr><td><code>data-verifier</code></td><td>Verifies data in PostgreSQL, MySQL/MariaDB, SQL Server or MongoDB and adds DB checks to the tests</td></tr>
+<tr><td><code>security-analyst</code></td><td>Passive web security scan with OWASP ZAP and an HTML report with findings, evidence and how to fix them</td></tr>
+<tr><td><code>web-pentester</code></td><td>Authorized web pentest (ethical hacking): OWASP ZAP active scan plus manual verification of the OWASP Top 10 with Playwright; confirms each finding and builds the report with steps to reproduce and how to fix. Authorized URLs only, with permission</td></tr>
+<tr><td rowspan="2"><b>🗂️ Management</b></td>
+  <td><code>test-manager</code></td><td>Folders, cases, links to the story and cycles in Xray, QMetry, AIO Tests or Azure DevOps</td></tr>
+<tr><td><code>results-publisher</code></td><td>Uploads the <code>npm test</code> results to the cycle with their evidence</td></tr>
 </table>
 
 ---
 
-## 📋 Requisitos
+## 📋 Requirements
 
-| Para…                     | Necesitás                                                                                                 |
-| ------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Usar los agentes          | **Claude Code** + cuenta de Claude (Pro, Max, Team o Enterprise) o API de Anthropic. VS Code recomendado. |
-| Casos, reportes y gestión | **Python 3.10+** (`pip install -r requirements.txt`; en Mac/Linux, `pip3`)                                |
-| Ejecutar E2E en vivo      | **Node.js 20+** (22 LTS recomendado) y navegadores de Playwright                                          |
-| Colecciones de Postman    | **Newman**                                                                                                |
-| Automatizar con k0lmena   | **Node.js 20+** (22 LTS recomendado; también lo piden los conectores de Azure DevOps y QMetry)            |
-| Seguridad web (ZAP)       | **Docker** (Docker Desktop)                                                                               |
-| Automatizar mobile        | **Node.js 22+**, JDK y Android SDK (o macOS con Xcode), o BrowserStack                                    |
-| Performance con JMeter    | **Java 8+** (`npm run bootstrap:jmeter` descarga JMeter)                                                  |
+| To…                           | You need                                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Use the agents                | **Claude Code** + a Claude account (Pro, Max, Team or Enterprise) or the Anthropic API. VS Code recommended. |
+| Cases, reports and management | **Python 3.10+** (`pip install -r requirements.txt`; on Mac/Linux, `pip3`)                                   |
+| Run live E2E                  | **Node.js 20+** (22 LTS recommended) and the Playwright browsers                                             |
+| Postman collections           | **Newman**                                                                                                   |
+| Automate with k0lmena         | **Node.js 20+** (22 LTS recommended; the Azure DevOps and QMetry connectors need it too)                     |
+| Web security (ZAP)            | **Docker** (Docker Desktop)                                                                                  |
+| Automate mobile               | **Node.js 22+**, JDK and Android SDK (or macOS with Xcode), or BrowserStack                                  |
+| Performance with JMeter       | **Java 8+** (`npm run bootstrap:jmeter` downloads JMeter)                                                    |
 
 ---
 
-## 🚀 Instalación
+## 🚀 Installation
 
 ```bash
-# 1. Claude Code (macOS / Linux; en Windows seguí la guía oficial, abajo)
+# 1. Claude Code (macOS / Linux; on Windows follow the official guide, below)
 curl -fsSL https://claude.ai/install.sh | bash
 
-# 2. El repositorio (si ya lo tenés clonado con otro nombre, entrá a esa carpeta)
+# 2. The repository (if you already cloned it under another name, go into that folder)
 git clone https://github.com/underc0delabs/k0lmenIA.git
 cd k0lmenIA
-pip install -r requirements.txt   # en Mac/Linux: pip3 install -r requirements.txt
-npm install                       # k0lmena (se instala en herramientas/k0lmena)
-npm run configurar                # preguntas simples: tu app y las herramientas de tu equipo (crea el .env y activa los conectores)
+pip install -r requirements.txt   # on Mac/Linux: pip3 install -r requirements.txt
+npm install                       # k0lmena (installed in tools/k0lmena)
+npm run configure                 # simple questions: your app and your team's tools (creates the .env and enables the connectors)
 
-# 3. Revisá que esté todo listo
-npm run doctor                    # dice qué falta y cómo resolverlo
+# 3. Check that everything is ready
+npm run doctor                    # tells you what's missing and how to fix it
 
-# 4. A trabajar
+# 4. Get to work
 code .
-claude                            # en la terminal de VS Code
+claude                            # in the VS Code terminal
 ```
 
-> En Windows el comando de Python es `python`; en Mac y Linux, `python3` y `pip3`. Si en Mac `pip3` responde *externally-managed-environment*, usá un entorno virtual: `python3 -m venv .venv && source .venv/bin/activate` (`.venv/` ya está en `.gitignore`).
+> On Windows the Python command is `python`; on Mac and Linux, `python3` and `pip3`. If `pip3` answers *externally-managed-environment* on Mac, use a virtual environment: `python3 -m venv .venv && source .venv/bin/activate` (`.venv/` is already in `.gitignore`).
 
 <details>
-<summary><b>Instalar lo opcional</b> (ejecución en vivo, Newman, k0lmena, k6)</summary>
+<summary><b>Install the optional pieces</b> (live execution, Newman, k0lmena, k6)</summary>
 
 ```bash
-npx playwright install                  # ejecución E2E en vivo
-npm install -g newman                   # colecciones de Postman
+npx playwright install                  # live E2E execution
+npm install -g newman                   # Postman collections
 
-npm install                             # k0lmena (desde la raíz; instala en herramientas/k0lmena)
-cd herramientas/k0lmena
+npm install                             # k0lmena (from the root; installs into tools/k0lmena)
+cd tools/k0lmena
 npx playwright install chromium
-npm run bootstrap:k6                    # performance de APIs con k6
-npm run bootstrap:jmeter                # performance con JMeter (necesita Java 8+)
+npm run bootstrap:k6                    # API performance with k6
+npm run bootstrap:jmeter                # performance with JMeter (needs Java 8+)
 ```
 
-Claude Code también se instala con `npm install -g @anthropic-ai/claude-code` (con Node.js 22 LTS cubrís Claude Code y todo el proyecto). Guía oficial: https://docs.claude.com/en/docs/claude-code/overview
+Claude Code can also be installed with `npm install -g @anthropic-ai/claude-code` (Node.js 22 LTS covers Claude Code and the whole project). Official guide: https://docs.claude.com/en/docs/claude-code/overview
 </details>
 
 ---
 
-## ⚙️ Configuración: el archivo `.env`
+## ⚙️ Configuration: the `.env` file
 
-Hay **un solo `.env`, en la raíz**. Lo usan los agentes, k0lmena y los scripts de gestión. Nunca se sube al repo; la plantilla comentada es [`.env.example`](.env.example).
+There is **a single `.env`, at the root**. The agents, k0lmena and the management scripts use it. It is never pushed to the repo; the commented template is [`.env.example`](.env.example).
 
-**La forma fácil:** `npm run configurar`. Pregunta la URL de tu app y qué herramientas usa tu equipo (dónde están las historias, dónde guardan los casos, el código y Figma), pide solo los datos de esas herramientas y activa los conectores. Se puede correr las veces que quieras: Enter deja lo que ya estaba. Lo de abajo es para quien quiera editar el `.env` a mano.
+**The easy way:** `npm run configure`. It asks for your app's URL and which tools your team uses (where the stories live, where you keep the cases, the code and Figma), asks only for those tools' details and enables the connectors. You can run it as many times as you want: Enter keeps what was already there. The table below is for anyone who wants to edit the `.env` by hand.
 
-| Grupo                  | Variables                                                                                                                                   |
+| Group                  | Variables                                                                                                                                   |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| App bajo prueba        | `APP_URL` `APP_USER` `APP_PASSWORD`                                                                                                         |
+| App under test         | `APP_URL` `APP_USER` `APP_PASSWORD`                                                                                                         |
 | API                    | `API_TOKEN` `API_BASEURL`                                                                                                                   |
-| Web (k0lmena)          | `BROWSER` `HEADLESS` `VIEWPORT_WIDTH` `VIEWPORT_HEIGHT` `LOCALE` `TIMEZONE` (la URL es `APP_URL`)                                           |
-| Ejecución y evidencias | `TAGS` `PARALLEL` `EVIDENCE` (`captura` · `ambos` · `off`) `VIDEO` `TRACE` `K0LMENA_AUTO_HEALING`                                           |
+| Web (k0lmena)          | `BROWSER` `HEADLESS` `VIEWPORT_WIDTH` `VIEWPORT_HEIGHT` `LOCALE` `TIMEZONE` (the URL is `APP_URL`)                                          |
+| Execution and evidence | `TAGS` `PARALLEL` `EVIDENCE` (`screenshot` · `both` · `off`) `VIDEO` `TRACE` `K0LMENA_AUTO_HEALING`                                         |
 | Mobile                 | `MOBILE_TARGET` (`device` · `emulator` · `browserstack`) `MOBILE_PLATFORM` `MOBILE_DEVICE_NAME` `MOBILE_APP` `MOBILE_UDID` `BROWSERSTACK_*` |
-| Performance            | `PERF_VUS` `PERF_DURACION` (opcionales)                                                                                                     |
-| Bases de datos         | `DB_CONEXIONES` + por conexión `DB_<NOMBRE>_MOTOR` `_HOST` `_PUERTO` `_BASE` `_USUARIO` `_CLAVE` (o `_URL`) `_ESCRITURA` `_PRODUCCION`      |
-| Gestión                | `GESTION_HERRAMIENTA` `GESTION_PROYECTO` + credenciales de Xray, QTM4J o AIO                                                                |
-| Azure DevOps (MCP)     | `ADO_ORGANIZACION` `ADO_PAT` `ADO_PROYECTO`                                                                                                 |
+| Performance            | `PERF_VUS` `PERF_DURATION` (optional)                                                                                                       |
+| Databases              | `DB_CONNECTIONS` + per connection `DB_<NAME>_ENGINE` `_HOST` `_PORT` `_DATABASE` `_USER` `_PASSWORD` (or `_URL`) `_WRITE` `_PRODUCTION`     |
+| Management             | `MANAGEMENT_TOOL` `MANAGEMENT_PROJECT` + Xray, QTM4J or AIO credentials                                                                     |
+| Azure DevOps (MCP)     | `ADO_ORGANIZATION` `ADO_PAT` `ADO_PROJECT`                                                                                                  |
 
 > [!WARNING]
-> Usá credenciales de un entorno de **prueba**. Los agentes leen los secretos del `.env`: nunca pegues un token en el chat.
+> Use credentials from a **test** environment. The agents read secrets from the `.env`: never paste a token into the chat.
 
 ---
 
-## 💬 Cómo se usa
+## 💬 How to use it
 
-1. Pedí *"Documentá el proyecto"* para juntar el contexto (repositorio, historias, links y web) en `input/documentacion/`; poné tus insumos en `input/` (`historias/`, `api/`, `bugs/`), o pasá una key de Jira, Azure DevOps, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut, una página de Confluence o un link de Figma.
-2. Pedí lo que necesitás en lenguaje natural.
-3. Revisá el resultado en `output/` o en `herramientas/k0lmena/`.
+1. Ask *"Document the project"* to gather the context (repository, stories, links and website) into `input/documentation/`; put your inputs in `input/` (`stories/`, `api/`, `bugs/`), or pass a Jira, Azure DevOps, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack or Shortcut key, a Confluence page or a Figma link.
+2. Ask for what you need in natural language.
+3. Review the result in `output/` or in `tools/k0lmena/`.
 
-| Le pedís                                                                            | Obtenés                                                              |
-| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| *"Documentá el proyecto"* · *"Juntá el contexto de PROJ-12"*                        | Base del proyecto + dossier de la historia en `input/documentacion/` |
-| *"Investigá el contexto de PROJ-12"*                                                | Ficha de contexto con fuentes, hallazgos y Falta información         |
-| *"Analizá la historia HU-001"*                                                      | Ambigüedades y preguntas para el PO                                  |
-| *"Armá el plan de pruebas de HU-001"*                                               | Plan HTML                                                            |
-| *"Generá los casos de HU-001"*                                                      | `casos-HU-001.xlsx` + `.md` + cobertura                              |
-| *"Pasá la historia HU-001 a escenarios BDD"*                                        | `HU-001-<slug>.feature` + cobertura                                  |
-| *"Generá los casos de la API de autenticación"*                                     | Casos de API con sus JSON                                            |
-| *"Tomá la observación de input/bugs/ y armá el reporte"*                            | `BUG-001.md`                                                         |
-| *"¿Este bug ya está cargado en Jira?"*                                              | Duplicados, posibles regresiones y severidad sugerida                |
-| *"¿Qué pasa si un usuario bloqueado intenta pagar?"*                                | Respuesta con la fuente de cada dato                                 |
-| *"Ejecutá el escenario de registro válido contra https://tu-app.com"*               | Reporte HTML de la corrida con evidencia                             |
-| *"Probá los permisos de admin, operador e invitado"*                                | Matriz rol × ruta y rol × endpoint                                   |
-| *"¿Qué ve el usuario si la API se cae o la red está lenta?"*                        | Matriz página × escenario con capturas                               |
-| *"Automatizá en k0lmena los casos de HU-001 contra https://tu-app.com"*             | `.feature` + steps + locators                                        |
-| *"Armá una prueba de carga del login para 20 usuarios"*                             | Script k6/Artillery/JMeter + reporte HTML                            |
-| *"Verificá en la base si se creó el usuario ana@test.com y en qué estado quedó"*    | Consulta y resultado (solo lectura)                                  |
-| *"Sumá al test de registro la verificación en la base de datos"*                    | Steps de BD en el `.feature`                                         |
-| *"Subí los casos de HU-001 a Xray, vinculados a PROJ-12, y creá el ciclo Sprint 5"* | Casos y ciclo en Xray                                                |
-| *"Subí los resultados de la última corrida al ciclo PROJ-60"*                       | Estados y evidencias en el ciclo                                     |
-| *"Armá el informe de cierre de HU-001"*                                             | Resultados, bugs y go/no-go                                          |
-| *"Armá el tablero de calidad del sprint 12"*                                        | Tendencia y resumen para gerencia                                    |
-| *"Avisá en Slack el resultado de la última corrida"*                                | Mensaje en Slack o Teams                                             |
-
----
-
-## 🔎 Investigación de contexto y "Falta información"
-
-Antes de analizar, planificar, escribir casos o automatizar una historia, los agentes **investigan su contexto completo** (skill `investigacion-contexto`) en lugar de suponer:
-
-| Fuente                               | Qué revisan                                                                                                      |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| Documentación del proyecto           | Primero: el índice y el dossier de la historia que arma el `documentador-proyecto` en `input/documentacion/`     |
-| Historia de Jira                     | Descripción, criterios, estado, labels, componentes y adjuntos                                                   |
-| Comentarios                          | **Todos**: las decisiones que se tomaron después (*"acordamos que el límite es 50"*) reemplazan a la descripción |
-| Subtareas, épica e issues vinculados | Reglas generales, historias hermanas y bugs conocidos del flujo                                                  |
-| Confluence y Figma                   | Páginas enlazadas o relacionadas; textos exactos, mensajes y estados del diseño                                  |
-| Contratos y `input/`                 | Swagger, Postman y documentación local                                                                           |
-
-El resultado es una **ficha de contexto** reutilizable (`output/contexto/contexto-HU-XXX.md`) con las fuentes consultadas, los hallazgos por criterio, las decisiones y las contradicciones. Si la historia no cambió, los demás agentes la reusan sin volver a investigar.
-
-**Lo que no aparece en ninguna fuente se marca como "Falta información"** con un ID por historia (`FI-01`, `FI-02`, …), que viaja a todos los reportes:
-
-| Dónde                              | Cómo se ve                                                                                                                            |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Planilla de casos (`.xlsx`)        | Casos resaltados en ámbar, etiqueta `@falta-info`, detalle en Comentarios y hoja **Falta información**                                |
-| Coberturas y análisis              | Sección **Falta información** (qué falta, dónde se buscó, a qué afecta, pregunta para el PO); criterios `Parcial (falta información)` |
-| `.feature` de k0lmena              | Tags `@falta-info @FI-01` y comentario `# FALTA INFORMACIÓN (FI-01): …`                                                               |
-| Reporte de mapeo                   | Estado `Falta información`: el mapper **no usa la app para completar el dato**                                                        |
-| Reportes de k0lmena y de ejecución | Nota visible en el escenario y aviso en el resumen                                                                                    |
-| Informe de cierre                  | Sección **Falta información** con los ítems abiertos como riesgo                                                                      |
-| Xray · QMetry · AIO                | El comentario del resultado aclara que el caso depende de información faltante                                                        |
-
-> *"Investigá el contexto de PROJ-12 y generá los casos"* → ficha de contexto + casos, con lo que falte marcado y las preguntas listas para el PO.
+| You ask                                                                               | You get                                                 |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| *"Document the project"* · *"Gather the context for PROJ-12"*                         | Project base + story dossier in `input/documentation/`  |
+| *"Research the context of PROJ-12"*                                                   | Context sheet with sources, findings and Missing info   |
+| *"Analyze story US-001"*                                                              | Ambiguities and questions for the PO                    |
+| *"Build the test plan for US-001"*                                                    | HTML plan                                               |
+| *"Generate the cases for US-001"*                                                     | `cases-US-001.xlsx` + `.md` + coverage                  |
+| *"Turn story US-001 into BDD scenarios"*                                              | `US-001-<slug>.feature` + coverage                      |
+| *"Generate the cases for the authentication API"*                                     | API cases with their JSON                               |
+| *"Take the observation in input/bugs/ and write the report"*                          | `BUG-001.md`                                            |
+| *"Is this bug already filed in Jira?"*                                                | Duplicates, possible regressions and suggested severity |
+| *"What happens if a blocked user tries to pay?"*                                      | Answer with the source of each fact                     |
+| *"Run the valid signup scenario against https://your-app.com"*                        | HTML report of the run with evidence                    |
+| *"Test the admin, operator and guest permissions"*                                    | Role × route and role × endpoint matrix                 |
+| *"What does the user see if the API goes down or the network is slow?"*               | Page × scenario matrix with screenshots                 |
+| *"Automate the US-001 cases in k0lmena against https://your-app.com"*                 | `.feature` + steps + locators                           |
+| *"Build a load test of the login for 20 users"*                                       | k6/Artillery/JMeter script + HTML report                |
+| *"Check in the database whether user ana@test.com was created and its status"*        | Query and result (read-only)                            |
+| *"Add the database check to the signup test"*                                         | DB steps in the `.feature`                              |
+| *"Upload the US-001 cases to Xray, linked to PROJ-12, and create the Sprint 5 cycle"* | Cases and cycle in Xray                                 |
+| *"Upload the results of the last run to cycle PROJ-60"*                               | Statuses and evidence in the cycle                      |
+| *"Build the closure report for US-001"*                                               | Results, bugs and go/no-go                              |
+| *"Build the quality dashboard for sprint 12"*                                         | Trend and management summary                            |
+| *"Post the result of the last run to Slack"*                                          | Message in Slack or Teams                               |
 
 ---
 
-## 📚 Documentación del proyecto
+## 🔎 Context research and "Missing info"
 
-El **documentador-proyecto** junta el contexto real del proyecto y lo deja en `input/documentacion/`, para que el analista, el estratega y los generadores de casos trabajen sobre lo que existe y no sobre suposiciones:
+Before analyzing, planning, writing cases or automating a story, the agents **research its full context** (skill `context-research`) instead of assuming:
 
-| Fuente                | Qué lee                                                                                                                                                 |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Repositorio de la app | README y docs, validaciones y límites, mensajes, estados, roles y permisos, rutas, contratos de API y los PRs y commits de cada historia (solo lectura) |
-| Historias             | Jira o Azure DevOps con todos sus comentarios, subtareas, épica, vínculos y bugs                                                                        |
-| Links                 | Confluence, Wiki y Figma con su conector; páginas públicas; los privados quedan listados como *No accesible*                                            |
-| La aplicación         | `npm run mapa-funcional`: páginas, menús, formularios con cada campo, botones y mensajes (solo GET, sin enviar nada)                                    |
+| Source                           | What they check                                                                                       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Project documentation            | First: the index and the story dossier that the `project-documenter` builds in `input/documentation/` |
+| Jira story                       | Description, criteria, status, labels, components and attachments                                     |
+| Comments                         | **All of them**: decisions made later (*"we agreed the limit is 50"*) override the description        |
+| Subtasks, epic and linked issues | General rules, sibling stories and known bugs in the flow                                             |
+| Confluence and Figma             | Linked or related pages; exact texts, messages and states in the design                               |
+| Contracts and `input/`           | Swagger, Postman and local documentation                                                              |
 
-Deja una **base del proyecto** (resumen, reglas de negocio, mensajes, estados y permisos, mapa funcional, API y links), un **dossier por historia** (decisiones, PRs y código tocado, pantallas, contradicciones y pistas para probar) y un **índice** (`INDICE.md`). Cada dato lleva su fuente (`src/...:línea`, el PR, el comentario). El skill `investigacion-contexto` lo lee primero, así que lo aprovechan todos los agentes. `input/documentacion/` no se versiona.
+The result is a reusable **context sheet** (`output/context/context-US-XXX.md`) with the sources consulted, the findings per criterion, the decisions and the contradictions. If the story hasn't changed, the other agents reuse it without researching again.
 
-Para leer el repositorio, completá el bloque *Repositorio de la aplicación* del `.env` (`REPO_PROVEEDOR`, `REPO_NOMBRE`, …) y activá su conector: `github` o `gitlab` con `npm run conector`, `azure-devops` para Azure Repos o `atlassian` (con token) para Bitbucket Cloud. Detalle en [`CONECTORES.md`](CONECTORES.md#repositorio-de-la-aplicación).
+**Whatever doesn't appear in any source is flagged as "Missing info"** with an ID per story (`MI-01`, `MI-02`, …), which travels to every report:
 
-**Incremental**: el documentador guarda qué documentó (commit de cada repositorio, fuentes de cada documento, fecha de cada historia) en `input/documentacion/.estado.json`. Al pedirle *"Actualizá la documentación"* rehace solo lo que cambió y deja en `cambios.md` los casos que conviene pasar al `revisor-casos`.
+| Where                      | What it looks like                                                                                                                        |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Case spreadsheet (`.xlsx`) | Cases highlighted in amber, `@missing-info` tag, details in Comments and a **Missing info** sheet                                         |
+| Coverage and analysis      | **Missing info** section (what's missing, where it was searched, what it affects, question for the PO); criteria `Partial (missing info)` |
+| k0lmena `.feature`         | Tags `@missing-info @MI-01` and comment `# MISSING INFO (MI-01): …`                                                                       |
+| Mapping report             | Status `Missing info`: the mapper **doesn't use the app to fill in the data**                                                             |
+| k0lmena and run reports    | Visible note on the scenario and a warning in the summary                                                                                 |
+| Closure report             | **Missing info** section with the open items as risks                                                                                     |
+| Xray · QMetry · AIO        | The result comment states that the case depends on missing information                                                                    |
 
-> *"Documentá el proyecto"* · *"Juntá todo el contexto de PROJ-12 antes de escribir los casos"*
+> *"Research the context of PROJ-12 and generate the cases"* → context sheet + cases, with whatever is missing flagged and the questions ready for the PO.
 
 ---
 
-## ⚙️ Automatización con k0lmena
+## 📚 Project documentation
 
-[k0lmena](https://github.com/underc0delabs/k0lmena) vive en `herramientas/k0lmena/`. Los agentes *mapper* verifican tus casos contra la app real y escriben la automatización **una sola vez**; después la suite corre las veces que quieras, **sin tokens**. Las carpetas vienen vacías: todo lo generan los mappers para tu aplicación.
+The **project-documenter** gathers the project's real context and leaves it in `input/documentation/`, so the analyst, the strategist and the case generators work on what actually exists and not on assumptions:
 
-Los comandos se pueden correr desde la raíz del repo (el `package.json` de la raíz los delega a k0lmena) o dentro de `herramientas/k0lmena`:
+| Source          | What it reads                                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| App repository  | README and docs, validations and limits, messages, statuses, roles and permissions, routes, API contracts and the PRs and commits of each story (read-only) |
+| Stories         | Jira or Azure DevOps with all their comments, subtasks, epic, links and bugs                                                                                |
+| Links           | Confluence, Wiki and Figma with their connector; public pages; private ones are listed as *Not accessible*                                                  |
+| The application | `npm run functional-map`: pages, menus, forms with every field, buttons and messages (GET only, without submitting anything)                                |
+
+It produces a **project base** (summary, business rules, messages, statuses and permissions, functional map, API and links), a **dossier per story** (decisions, PRs and code touched, screens, contradictions and testing hints) and an **index** (`INDEX.md`). Every fact carries its source (`src/...:line`, the PR, the comment). The `context-research` skill reads it first, so every agent benefits from it. `input/documentation/` is not versioned.
+
+To read the repository, fill in the *Application repository* block of the `.env` (`REPO_PROVIDER`, `REPO_NAME`, …) and enable its connector: `github` or `gitlab` with `npm run connector`, `azure-devops` for Azure Repos or `atlassian` (with a token) for Bitbucket Cloud. Details in [`CONNECTORS.md`](CONNECTORS.md#application-repository).
+
+**Incremental**: the documenter records what it documented (commit of each repository, sources of each document, date of each story) in `input/documentation/.status.json`. When you ask it to *"Update the documentation"* it redoes only what changed and lists in `changes.md` the cases worth passing to the `case-reviewer`.
+
+> *"Document the project"* · *"Gather all the context for PROJ-12 before writing the cases"*
+
+---
+
+## ⚙️ Automation with k0lmena
+
+[k0lmena](https://github.com/underc0delabs/k0lmena) lives in `tools/k0lmena/`. The *mapper* agents verify your cases against the real app and write the automation **only once**; after that the suite runs as many times as you want, **with no tokens**. The folders come empty: the mappers generate everything for your application.
+
+You can run the commands from the repo root (the root `package.json` delegates them to k0lmena) or inside `tools/k0lmena`:
 
 ```bash
 npm test                          # web + API
-npm run test:web                  # también: test:api · test:mobile · test:all
-TAGS=@HU-001 npm test             # filtrar por tag (PowerShell: $env:TAGS="@HU-001"; npm test)
-npm run report:web                # regenera el reporte HTML (npm test ya lo arma solo; también: report:api · report:mobile)
+npm run test:web                  # also: test:api · test:mobile · test:all
+TAGS=@US-001 npm test             # filter by tag (PowerShell: $env:TAGS="@US-001"; npm test)
+npm run report:web                # regenerates the HTML report (npm test already builds it; also: report:api · report:mobile)
 ```
 
-| Suite     | Test que pasa                               | Test que falla                                                                    |
-| --------- | ------------------------------------------- | --------------------------------------------------------------------------------- |
-| 🌐 Web    | Captura final (+ GIF opcional)              | Video completo, captura, error, logs del navegador y de Node, trace de Playwright |
-| 🔗 API    | Request y response (`Authorization` oculto) | Lo mismo + la validación que falló                                                |
-| 📱 Mobile | Captura final (+ GIF opcional)              | Video completo, captura, page source y logs del dispositivo                       |
+| Suite    | Passing test                                  | Failing test                                                           |
+| -------- | --------------------------------------------- | ---------------------------------------------------------------------- |
+| 🌐 Web    | Final screenshot (+ optional GIF)             | Full video, screenshot, error, browser and Node logs, Playwright trace |
+| 🔗 API    | Request and response (`Authorization` hidden) | The same + the assertion that failed                                   |
+| 📱 Mobile | Final screenshot (+ optional GIF)             | Full video, screenshot, page source and device logs                    |
 
-- `@bloqueado`: escenario con un paso que el mapper no pudo verificar; no se ejecuta hasta que se resuelva.
-- **Sesión guardada**: `npm run login` abre el navegador, te logueás a mano (sirve con captcha, 2FA o SSO) y la sesión queda en `.auth/`. Con `SESION=si` en el `.env`, `npm test` y el navegador de los agentes arrancan logueados; `@sin-sesion` lo evita en los escenarios que prueban el login.
-- Mobile corre en `device`, `emulator` o `browserstack` según `MOBILE_TARGET`; el mobile-mapper necesita el conector Appium MCP.
-- Extras: `npm run explorar` (recorrido exploratorio con capturas, videos e informe), `npm run accesibilidad` (auditoría WCAG con axe-core), `npm run rendimiento` (Lighthouse), `npm run pixel-perfect` (regresión visual), `npm run cross-browser` (Chromium, Firefox y WebKit), `npm run reparar` (locators rotos), `npm run correos` (Mailpit), `npm run traductor` (idiomas), `npm run ux` (heurísticas), `npm run formularios` (validaciones), `npm run mapa-funcional` (páginas, formularios y mensajes, para la documentación), `npm run permisos` (matriz por rol), `npm run resiliencia` (fallas simuladas), `npm run monitorear` (monitoreo sintético), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` y auto-healing de locators.
+- `@blocked`: a scenario with a step the mapper couldn't verify; it doesn't run until it's resolved.
+- **Saved session**: `npm run login` opens the browser, you log in by hand (works with captcha, 2FA or SSO) and the session is stored in `.auth/`. With `SESSION=yes` in the `.env`, `npm test` and the agents' browser start logged in; `@no-session` skips it in the scenarios that test the login.
+- Mobile runs on `device`, `emulator` or `browserstack` depending on `MOBILE_TARGET`; the mobile-mapper needs the Appium MCP connector.
+- Extras: `npm run explore` (exploratory crawl with screenshots, videos and a report), `npm run accessibility` (WCAG audit with axe-core), `npm run web-performance` (Lighthouse), `npm run pixel-perfect` (visual regression), `npm run cross-browser` (Chromium, Firefox and WebKit), `npm run repair` (broken locators), `npm run emails` (Mailpit), `npm run translator` (languages), `npm run ux` (heuristics), `npm run forms` (validations), `npm run functional-map` (pages, forms and messages, for the documentation), `npm run permissions` (role matrix), `npm run resilience` (simulated failures), `npm run monitor` (synthetic monitoring), `npm run crawler`, `npm run link-tester`, `npm run record`, `npm run debug` and locator auto-healing.
 
-Detalle en [`herramientas/k0lmena/README.md`](herramientas/k0lmena/README.md).
+Details in [`tools/k0lmena/README.md`](tools/k0lmena/README.md).
 
 ---
 
-## ⚡ Pruebas de performance
+## ⚡ Performance testing
 
-Pedí algo como *"quiero hacer una prueba de carga del login"* y Claude te **guía paso a paso**, con una pregunta por vez y una sugerencia justificada en cada una:
+Ask something like *"I want to run a load test of the login"* and Claude **guides you step by step**, one question at a time, with a justified suggestion for each:
 
-1. **Objetivo y tipo de prueba**: qué querés averiguar y qué prueba lo responde (load, stress, soak, spike).
-2. **Herramienta**: **k6** (APIs), **Artillery + Playwright** (flujos en el navegador) o **JMeter** (si tu equipo ya lo usa, traés un `.jmx` o necesitás otros protocolos), con una recomendación y su porqué.
-3. **Ambiente y alcance**: URL (nunca producción sin autorización), endpoints o pasos y su peso.
-4. **Carga**: usuarios concurrentes, rampa, duración y tiempo de pensamiento. Si no sabés cuántos usuarios, te ayuda a calcularlos desde el volumen de negocio.
-5. **Umbrales**: p95, p99 y % de error, desde el requisito o con valores de referencia que confirmás.
-6. **Plan**: lo resume en `output/performance/<HU>/` y te pide confirmación.
+1. **Goal and test type**: what you want to find out and which test answers it (load, stress, soak, spike).
+2. **Tool**: **k6** (APIs), **Artillery + Playwright** (browser flows) or **JMeter** (if your team already uses it, you bring a `.jmx` or you need other protocols), with a recommendation and the reason for it.
+3. **Environment and scope**: URL (never production without authorization), endpoints or steps and their weight.
+4. **Load**: concurrent users, ramp-up, duration and think time. If you don't know how many users, it helps you calculate them from the business volume.
+5. **Thresholds**: p95, p99 and % errors, from the requirement or with reference values that you confirm.
+6. **Plan**: it summarizes it in `output/performance/<US>/` and asks for your confirmation.
 
-Después, el **performance-mapper** escribe el script, lo valida con un smoke, corre cada prueba con carga **solo cuando la confirmás** y arma el **informe de performance**: dashboard HTML con veredicto, capacidad observada, métricas por corrida, gráficos de latencia, throughput, errores y evolución en el tiempo, umbrales, p95 por endpoint, hallazgos y **recomendaciones**. Las tres herramientas usan los mismos perfiles y el mismo formato de reporte.
+Then the **performance-mapper** writes the script, validates it with a smoke run, runs each load test **only when you confirm it** and builds the **performance report**: an HTML dashboard with the verdict, observed capacity, metrics per run, latency, throughput, error and over-time charts, thresholds, p95 per endpoint, findings and **recommendations**. All three tools use the same profiles and the same report format.
 
 ```bash
-npm run perf                                   # lista los scripts
-npm run perf -- <script> smoke                 # valida el script
-npm run perf -- <script> load                  # carga objetivo (pide confirmación)
-npm run perf -- <script> stress --confirmar    # CI o con autorización previa
+npm run perf                                   # lists the scripts
+npm run perf -- <script> smoke                 # validates the script
+npm run perf -- <script> load                  # target load (asks for confirmation)
+npm run perf -- <script> stress --confirm      # CI or with prior authorization
 ```
 
-| Perfil   | Qué hace                                       |
-| -------- | ---------------------------------------------- |
-| `smoke`  | Carga mínima: valida que el script funciona    |
-| `load`   | Sostiene la carga objetivo                     |
-| `stress` | 1x, 2x y 3x: busca el punto de quiebre         |
-| `soak`   | Larga duración: fugas de memoria y degradación |
-| `spike`  | Pico brusco y recuperación                     |
+| Profile  | What it does                                |
+| -------- | ------------------------------------------- |
+| `smoke`  | Minimal load: checks that the script works  |
+| `load`   | Sustains the target load                    |
+| `stress` | 1x, 2x and 3x: looks for the breaking point |
+| `soak`   | Long duration: memory leaks and degradation |
+| `spike`  | Sudden spike and recovery                   |
 
-Cada corrida deja además su propio **reporte HTML** en `herramientas/k0lmena/reports/performance/` con veredicto, latencias p50/p95/p99, errores, umbrales y detalle por endpoint. Si un umbral no se cumple, el comando termina con error. Los scripts quedan versionados: volvés a correrlos con `npm run perf`, sin agentes ni tokens.
+Each run also leaves its own **HTML report** in `tools/k0lmena/reports/performance/` with the verdict, p50/p95/p99 latencies, errors, thresholds and per-endpoint details. If a threshold isn't met, the command exits with an error. The scripts are versioned: you run them again with `npm run perf`, with no agents or tokens.
 
 > [!CAUTION]
-> Una prueba de carga genera tráfico real: corrédla solo contra ambientes de prueba o con autorización.
+> A load test generates real traffic: run it only against test environments or with authorization.
 
 ---
 
-## 🗂️ Gestión de pruebas: Xray, QMetry, AIO Tests y Azure DevOps
+## 🗂️ Test management: Xray, QMetry, AIO Tests and Azure DevOps
 
-Configurá `GESTION_HERRAMIENTA` (`xray-cloud` · `xray-dc` · `qtm4j` · `aio`), `GESTION_PROYECTO` y las credenciales en el `.env`, y pedí:
+Set `MANAGEMENT_TOOL` (`xray-cloud` · `xray-dc` · `qtm4j` · `aio`), `MANAGEMENT_PROJECT` and the credentials in the `.env`, and ask:
 
-- *"Subí los casos de HU-001 a Xray en la carpeta 'HU-001 Registro', vinculados a PROJ-12"* → **gestor-pruebas** crea la carpeta, sube los casos y los vincula a la historia.
-- *"Creá el ciclo Sprint 5 con esos casos"* → crea el ciclo (Test Execution en Xray) vinculado a la historia.
-- *"Subí los resultados de la última corrida al ciclo PROJ-60"* → **publicador-resultados** carga estado, error y evidencias (captura, GIF y video si falló).
+- *"Upload the US-001 cases to Xray in the folder 'US-001 Signup', linked to PROJ-12"* → **test-manager** creates the folder, uploads the cases and links them to the story.
+- *"Create the Sprint 5 cycle with those cases"* → creates the cycle (Test Execution in Xray) linked to the story.
+- *"Upload the results of the last run to cycle PROJ-60"* → **results-publisher** loads the status, error and evidence (screenshot, GIF and video if it failed).
 
-La trazabilidad (`output/gestion/<HU>-<herramienta>.json`) evita duplicados. También hay comandos manuales: [`scripts/gestion/README.md`](scripts/gestion/README.md).
+Traceability (`output/management/<US>-<tool>.json`) prevents duplicates. There are also manual commands: [`scripts/management/README.md`](scripts/management/README.md).
 
 ### Azure DevOps (Test Plans)
 
-Azure DevOps se integra por su conector MCP oficial (`azure-devops`), con `ADO_ORGANIZACION`, `ADO_PAT` y `ADO_PROYECTO` en el `.env` (ver [`CONECTORES.md`](CONECTORES.md#azure-devops)):
+Azure DevOps is integrated through its official MCP connector (`azure-devops`), with `ADO_ORGANIZATION`, `ADO_PAT` and `ADO_PROJECT` in the `.env` (see [`CONNECTORS.md`](CONNECTORS.md#azure-devops)):
 
-- *"Leé la historia 1234 de Azure DevOps y analizala"* → los agentes leen el work item con sus comentarios, tareas, padre, vínculos y la Wiki.
-- *"Subí los casos de `casos-HU-001.xlsx` a Azure Test Plans, plan 'Sprint 5', suite 'HU-001 Registro', vinculados a la historia 1234"* → **gestor-pruebas** convierte los pasos con `scripts/gestion/para_azure_devops.py`, crea los *Test Cases*, los vincula a la historia y los agrega a la suite.
+- *"Read story 1234 from Azure DevOps and analyze it"* → the agents read the work item with its comments, tasks, parent, links and the Wiki.
+- *"Upload the cases from `cases-US-001.xlsx` to Azure Test Plans, plan 'Sprint 5', suite 'US-001 Signup', linked to story 1234"* → **test-manager** converts the steps with `scripts/management/to_azure_devops.py`, creates the *Test Cases*, links them to the story and adds them to the suite.
 
-Por ahora el conector no registra resultados de ejecución: **publicador-resultados** todavía no publica en Azure DevOps.
-
----
-
-## 🔎 Pruebas exploratorias
-
-El **explorador-web** recorre tu sitio (el `APP_URL` del `.env` o la URL que le digas) y busca lo que se rompe sin que nadie lo note: **links rotos** (internos y externos), **imágenes que no cargan**, **errores de JavaScript y de consola**, recursos que fallan y problemas de **responsive** en mobile, tablet y desktop (scroll horizontal, texto chico, botones muy chicos y juntos), con capturas de cada resolución. Después explora a mano con Playwright MCP (menús, formularios sin enviar, búsquedas, la página 404) y arma el **informe exploratorio** en HTML.
-
-- *"Hacé pruebas exploratorias del sitio del .env"*
-- *"Buscá links rotos y problemas de responsive en https://staging.mi-app.com, hasta 50 páginas"*
-
-El recorrido de páginas lo hace un script, sin gastar tokens por página; también lo podés correr solo:
-
-```bash
-npm run explorar -- --url https://staging.mi-app.com --max-paginas 50 --resoluciones 360x740,768x1024,1366x768
-```
-
-Queda en `output/exploratorias/<HU o sitio>/`: el **informe HTML** (indicadores, gráficos, cada hallazgo con su captura, tiempos de carga, responsive por resolución, videos del recorrido y de cada resolución, links rotos y el detalle de cada página), las capturas con los problemas marcados en rojo y los videos. Cada corrida **reemplaza** a la anterior. Solo navega con GET: no envía formularios ni sigue links de cierre de sesión.
+For now the connector doesn't record execution results: **results-publisher** doesn't publish to Azure DevOps yet.
 
 ---
 
-## ♿ Accesibilidad
+## 🔎 Exploratory testing
 
-El **analista-accesibilidad** audita tu sitio contra **WCAG 2.2** (nivel AA por defecto). Primero una auditoría automática: **axe-core** en cada página (contraste, textos alternativos, etiquetas, nombres de botones, idioma, estructura), **navegación con teclado** (elementos sin foco visible, trampas de foco, salto al contenido) y **reflow a 320px**. Después revisa a mano con Playwright MCP lo que una herramienta no puede juzgar: si los textos alternativos describen, los encabezados, los mensajes de error de los formularios, menús y modales con teclado y lo que "oye" un lector de pantalla.
+The **web-explorer** crawls your site (the `APP_URL` in the `.env` or the URL you give it) and looks for what breaks without anyone noticing: **broken links** (internal and external), **images that don't load**, **JavaScript and console errors**, failing resources and **responsive** issues on mobile, tablet and desktop (horizontal scroll, small text, buttons that are too small and too close together), with screenshots at each resolution. Then it explores by hand with Playwright MCP (menus, forms without submitting, searches, the 404 page) and builds the **exploratory report** in HTML.
 
-- *"Revisá la accesibilidad del sitio del .env"*
-- *"Auditá WCAG AA del registro de HU-001 en https://staging.mi-app.com/registro"*
+- *"Run exploratory tests on the site in the .env"*
+- *"Look for broken links and responsive issues on https://staging.my-app.com, up to 50 pages"*
 
-La auditoría automática también corre sola, sin agentes ni tokens:
+A script does the page crawl, without spending tokens per page; you can also run it on its own:
 
 ```bash
-npm run accesibilidad -- --url https://staging.mi-app.com --nivel AA --max-paginas 20
+npm run explore -- --url https://staging.my-app.com --max-pages 50 --resolutions 360x740,768x1024,1366x768
 ```
 
-Queda en `output/accesibilidad/<HU o sitio>/`: el **informe HTML** (cumplimiento, criterios WCAG incumplidos con su nombre y nivel, cada problema con los elementos afectados marcados en rojo, cómo corregirlos y el link a la guía, la navegación con teclado y el orden del foco, la revisión manual y las recomendaciones), las capturas y el video. Cada corrida **reemplaza** a la anterior.
+It ends up in `output/exploratory/<US or site>/`: the **HTML report** (indicators, charts, every finding with its screenshot, load times, responsive by resolution, videos of the crawl and of each resolution, broken links and the details of each page), the screenshots with the issues marked in red and the videos. Each run **replaces** the previous one. It only navigates with GET: it doesn't submit forms or follow logout links.
+
+---
+
+## ♿ Accessibility
+
+The **accessibility-analyst** audits your site against **WCAG 2.2** (level AA by default). First an automated audit: **axe-core** on every page (contrast, alternative text, labels, button names, language, structure), **keyboard navigation** (elements without visible focus, focus traps, skip to content) and **reflow at 320px**. Then it reviews by hand with Playwright MCP what a tool can't judge: whether the alternative texts are descriptive, the headings, the form error messages, menus and modals with the keyboard and what a screen reader "hears".
+
+- *"Check the accessibility of the site in the .env"*
+- *"Audit WCAG AA for the US-001 signup at https://staging.my-app.com/signup"*
+
+The automated audit also runs on its own, with no agents or tokens:
+
+```bash
+npm run accessibility -- --url https://staging.my-app.com --level AA --max-pages 20
+```
+
+It ends up in `output/accessibility/<US or site>/`: the **HTML report** (compliance, failed WCAG criteria with their name and level, every issue with the affected elements marked in red, how to fix them and the link to the guideline, keyboard navigation and focus order, the manual review and the recommendations), the screenshots and the video. Each run **replaces** the previous one.
 
 > [!NOTE]
-> Una auditoría automática detecta entre un 30 y un 50 % de los problemas de accesibilidad. Por eso el agente nunca dice que el sitio "cumple": dice qué no cumple y qué faltó revisar.
+> An automated audit detects between 30 and 50 % of accessibility issues. That's why the agent never says the site "complies": it says what doesn't comply and what was left to review.
 
 ---
 
-## ⚡ Rendimiento web
+## ⚡ Web performance
 
-El **auditor-rendimiento-web** mide qué tan rápido carga cada página para una persona y por qué, con **Lighthouse** en mobile y desktop: puntajes, **Core Web Vitals** (LCP, CLS y TBT) con los umbrales de Google, las **oportunidades de mejora con el ahorro estimado** y los recursos que las causan, el elemento LCP, el peso por tipo de recurso, el código de terceros y la secuencia de carga en capturas.
+The **web-performance-auditor** measures how fast each page loads for a person and why, with **Lighthouse** on mobile and desktop: scores, **Core Web Vitals** (LCP, CLS and TBT) with Google's thresholds, the **improvement opportunities with the estimated savings** and the resources causing them, the LCP element, weight by resource type, third-party code and the loading sequence in screenshots.
 
-- *"Revisá la velocidad del sitio del .env"*
-- *"¿Por qué carga lenta la home en mobile?"*
+- *"Check the speed of the site in the .env"*
+- *"Why is the home page slow on mobile?"*
 
 ```bash
-npm run rendimiento -- --url https://staging.mi-app.com --max-paginas 5 --repeticiones 3
+npm run web-performance -- --url https://staging.my-app.com --max-pages 5 --repetitions 3
 ```
 
-Queda en `output/rendimiento/<HU o sitio>/`, con el reporte nativo de Lighthouse de cada página. Son datos de laboratorio (una carga simulada): sirven para encontrar y comparar problemas. No es una prueba de carga: eso es el **performance-mapper**. Necesita Node 22.19 o superior.
+It ends up in `output/web-performance/<US or site>/`, with the native Lighthouse report for each page. This is lab data (a simulated load): useful for finding and comparing issues. It's not a load test: that's the **performance-mapper**. It needs Node 22.19 or later.
 
 ---
 
-## 🧪 Análisis de fallos
+## 🧪 Failure analysis
 
-Cuando `npm test` falla, el **analista-fallos** separa los **bugs reales** de los **tests rotos**: clasifica cada falla (posible bug, locator o espera, ambiente, datos de prueba, error en la automatización, paso sin definir), vuelve a correr los fallidos para detectar los **inestables**, rescata la captura, el video y el trace, redacta los reportes de bug de los reales y propone cómo arreglar el resto.
+When `npm test` fails, the **failure-analyst** separates **real bugs** from **broken tests**: it classifies each failure (possible bug, locator or wait, environment, test data, automation error, undefined step), reruns the failed ones to detect the **flaky** tests, collects the screenshot, video and trace, writes the bug reports for the real ones and proposes how to fix the rest.
 
-- *"Analizá por qué falló npm test"*
-- *"¿Cuáles de estas fallas son bugs?"*
+- *"Analyze why npm test failed"*
+- *"Which of these failures are bugs?"*
 
 ```bash
-python scripts/analizar_fallos.py                       # analiza la última corrida
-python scripts/analizar_fallos.py --agregar-reintento   # después de volver a correr los fallidos
+python scripts/analyze_failures.py                       # analyzes the last run
+python scripts/analyze_failures.py --add-retry           # after rerunning the failed ones
 ```
 
-Queda en `output/fallos/<HU o suite>/`. Volver a correr los fallidos se hace solo con tu ok, porque corre contra el ambiente.
+It ends up in `output/failures/<US or suite>/`. Rerunning the failed tests only happens with your OK, because it runs against the environment.
 
 ---
 
-## 🧭 Cobertura y trazabilidad
+## 🧭 Coverage and traceability
 
-El **analista-cobertura** responde *"¿qué nos falta probar?"*: cruza criterios de aceptación, casos manuales y BDD, automatización de k0lmena, la herramienta de gestión, los últimos resultados y los bugs, y marca los **huecos**: criterios sin casos, casos sin automatizar, automatizados bloqueados o que nunca corrieron, fallidos, casos sin subir a Xray/QMetry/AIO y falta información abierta.
+The **coverage-analyst** answers *"what's left for us to test?"*: it cross-references acceptance criteria, manual and BDD cases, k0lmena automation, the management tool, the latest results and the bugs, and flags the **gaps**: criteria without cases, cases not automated, automated cases that are blocked or never ran, failed ones, cases not uploaded to Xray/QMetry/AIO and open missing info.
 
-- *"¿Qué nos falta probar de HU-001?"*
-- *"Armá la matriz de trazabilidad de la ronda"*
+- *"What's left to test in US-001?"*
+- *"Build the traceability matrix for the round"*
 
 ```bash
-python scripts/analizar_cobertura.py --historia HU-001
+python scripts/analyze_coverage.py --story US-001
 ```
 
-Queda en `output/cobertura/<HU o todas>/`: el embudo de la historia al resultado, la cobertura por criterio, la matriz caso por caso y los huecos priorizados.
+It ends up in `output/coverage/<US or all>/`: the funnel from story to result, coverage by criterion, the case-by-case matrix and the prioritized gaps.
 
 ---
 
-## 🎯 Selección de casos por cambio
+## 🎯 Change-based case selection
 
-El **selector-casos-de-prueba** responde *"¿qué pruebo con este cambio?"* sin correr toda la regresión: cruza lo que cambió (un rango de git, los archivos de un PR, issues de Jira o Azure DevOps, las notas de la release) con todos los casos —manuales, BDD y automatizados, con su último resultado, los inestables y los bugs abiertos— y arma una selección priorizada por riesgo: **imprescindibles**, **recomendados** y **regresión mínima**, cada uno con su porqué, el tiempo estimado y el ahorro contra correr todo.
+The **test-case-selector** answers *"what do I test with this change?"* without running the whole regression: it cross-references what changed (a git range, the files in a PR, Jira or Azure DevOps issues, the release notes) with all the cases —manual, BDD and automated, with their last result, the flaky ones and the open bugs— and builds a selection prioritized by risk: **must-run**, **recommended** and **minimal regression**, each one with its reason, the estimated time and the savings versus running everything.
 
-- *"¿Qué casos corro para el PR #42?"*
-- *"Armá la regresión de la release 2.4, tengo una hora"*
+- *"Which cases do I run for PR #42?"*
+- *"Build the regression for release 2.4, I have one hour"*
 
 ```bash
-python scripts/seleccionar_casos.py --git main..release/2.4 --repo ../mi-app --nombre release-2.4 --presupuesto-min 60
+python scripts/select_cases.py --git main..release/2.4 --repo ../my-app --name release-2.4 --budget-min 60
 ```
 
-Queda en `output/seleccion-casos/<nombre>/`: el informe, el comando `npm test` con los tags para lo automatizado (listo para copiar en bash o PowerShell), `seleccion.csv` con lo manual y los **cambios sin cobertura** (lo que cambió y ningún caso prueba). Opcional: `input/mapa-componentes.json` relaciona carpetas del código con historias.
+It ends up in `output/case-selection/<name>/`: the report, the `npm test` command with the tags for the automated part (ready to copy into bash or PowerShell), `selection.csv` with the manual part and the **uncovered changes** (what changed that no case tests). Optional: `input/component-map.json` maps code folders to stories.
 
 ---
 
-## 🖼️ Regresión visual (pixel perfect)
+## 🖼️ Visual regression (pixel perfect)
 
-El **pixel-perfect** detecta **si algo se corrió**: toma una referencia de cada página en cada resolución y en cada corrida compara contra ella, píxel a píxel y elemento por elemento. Dice qué se movió y cuántos píxeles, qué bloque se desplazó y por qué (qué apareció o creció arriba), qué cambió de tamaño, de texto o de estilo, qué falta y qué es nuevo. La referencia también puede ser un diseño de Figma.
+The **pixel-perfect** agent detects **whether something shifted**: it takes a baseline of every page at every resolution and on each run compares against it, pixel by pixel and element by element. It tells you what moved and by how many pixels, which block shifted and why (what appeared or grew above it), what changed size, text or style, what's missing and what's new. The baseline can also be a Figma design.
 
-- *"Corré una regresión visual de qarmy.ar"*
-- *"¿Se corrió algo en el checkout después del deploy?"*
+- *"Run a visual regression of qarmy.ar"*
+- *"Did anything shift in the checkout after the deploy?"*
 
 ```bash
-npm run pixel-perfect -- --url https://staging.mi-app.com      # la primera vez crea la referencia
-npm run pixel-perfect -- --url https://staging.mi-app.com      # después compara contra ella
-npm run pixel-perfect -- --aceptar todas                       # acepta los cambios como nueva referencia
+npm run pixel-perfect -- --url https://staging.my-app.com      # the first time it creates the baseline
+npm run pixel-perfect -- --url https://staging.my-app.com      # afterwards it compares against it
+npm run pixel-perfect -- --accept all                          # accepts the changes as the new baseline
 ```
 
-Queda en `output/pixel-perfect/<HU o sitio>/`, con un **comparador deslizable** (referencia ↔ actual), el mapa de diferencias y el antes y después de cada hallazgo. Las zonas que cambian solas (fechas, banners) se ocultan con `--ocultar`.
+It ends up in `output/pixel-perfect/<US or site>/`, with a **slider comparator** (baseline ↔ current), the difference map and the before and after of every finding. Areas that change on their own (dates, banners) are hidden with `--hide`.
 
 ---
 
 ## 🧭 Cross-browser
 
-El **cross-browser** encuentra lo que funciona o se ve distinto según el navegador: **Chromium** (Chrome y Edge), **Firefox** y **WebKit** (el motor de Safari), en desktop y mobile. Si hay automatización, corre la suite de k0lmena en cada navegador y separa lo que falla solo en algunos (compatibilidad) de lo que falla en todos (bug o test roto); si no, recorre las páginas y las compara contra el navegador base.
+The **cross-browser** agent finds what works or looks different depending on the browser: **Chromium** (Chrome and Edge), **Firefox** and **WebKit** (Safari's engine), on desktop and mobile. If there is automation, it runs the k0lmena suite in each browser and separates what fails only in some of them (compatibility) from what fails in all of them (bug or broken test); if not, it crawls the pages and compares them against the base browser.
 
-- *"Probá HU-003 en Chrome, Firefox y Safari"*
-- *"¿Por qué el menú no anda en Safari?"*
+- *"Test US-003 in Chrome, Firefox and Safari"*
+- *"Why doesn't the menu work in Safari?"*
 
 ```bash
-npm run cross-browser -- --historia HU-003                     # suite de k0lmena en los 3 navegadores
-npm run cross-browser -- --modo paginas --url https://staging.mi-app.com
+npm run cross-browser -- --story US-003                     # k0lmena suite in the 3 browsers
+npm run cross-browser -- --mode pages --url https://staging.my-app.com
 ```
 
-Queda en `output/cross-browser/<HU, sitio o suite>/`. Firefox y WebKit se instalan una vez con `cd herramientas/k0lmena && npx playwright install firefox webkit`. WebKit es una muy buena aproximación, pero no reemplaza un Safari real.
+It ends up in `output/cross-browser/<US, site or suite>/`. Firefox and WebKit are installed once with `cd tools/k0lmena && npx playwright install firefox webkit`. WebKit is a very good approximation, but it doesn't replace a real Safari.
 
 ---
 
-## 🔧 Reparación de la automatización
+## 🔧 Automation repair
 
-El **reparador-automatizacion** arregla los tests que fallan porque **la pantalla cambió**: saca del error el locator que no funcionó, lo prueba contra el DOM que k0lmena guarda al fallar (`reports/web/dom/`) y diagnostica (ya no existe, coincide con varios, existe pero no se ve, falló la espera). Propone el locator nuevo más robusto —verificando que encuentre un solo elemento—, lo aplica con respaldo y diff, y vuelve a correr los escenarios para confirmar que pasan. Si lo que falta es algo que el caso verifica, no toca el test: lo marca como posible bug.
+The **automation-repairer** fixes tests that fail because **the screen changed**: it extracts from the error the locator that didn't work, tests it against the DOM that k0lmena saves on failure (`reports/web/dom/`) and diagnoses it (no longer exists, matches several elements, exists but isn't visible, the wait failed). It proposes the most robust new locator —checking that it finds a single element—, applies it with a backup and a diff, and reruns the scenarios to confirm they pass. If what's missing is something the case verifies, it doesn't touch the test: it flags it as a possible bug.
 
-- *"Repará los tests que fallaron por locators"*
-- *"Arreglá la automatización de HU-001 después del rediseño"*
+- *"Repair the tests that failed because of locators"*
+- *"Fix the US-001 automation after the redesign"*
 
 ```bash
-npm run reparar -- --historia HU-001                 # diagnostica y propone (no toca nada)
-npm run reparar -- --aplicar seguras                 # aplica las de confianza alta
-npm run reparar -- --verificar                       # vuelve a correr los escenarios reparados
+npm run repair -- --story US-001                 # diagnoses and proposes (touches nothing)
+npm run repair -- --apply safe                   # applies the high-confidence ones
+npm run repair -- --verify                       # reruns the repaired scenarios
 ```
 
-Queda en `output/reparaciones/<HU o suite>/` (con `cambios.diff` y `respaldo/`). Aplicar lo que no es seguro y volver a correr se hace con tu ok.
+It ends up in `output/repairs/<US or suite>/` (with `changes.diff` and `backup/`). Applying what isn't safe and rerunning only happens with your OK.
 
 ---
 
-## ✅ Revisión de casos y tiempo de ejecución
+## ✅ Case review and execution time
 
-Cada caso de prueba lleva su **tiempo estimado de ejecución manual**, calculado con una fórmula (`scripts/estimacion.py`, explicada en [`plantillas/estimacion-tiempos.md`](plantillas/estimacion-tiempos.md)) según lo que pide cada paso (navegar, completar campos, esperar un correo, verificar), las precondiciones y si es un caso negativo. Aparece en la planilla (columna *Tiempo estimado (min)*, con el total) y viaja a **Xray, QMetry, AIO Tests y Azure DevOps** al subir los casos.
+Every test case carries its **estimated manual execution time**, calculated with a formula (`scripts/estimation.py`, explained in [`templates/time-estimation.md`](templates/time-estimation.md)) based on what each step requires (navigating, filling in fields, waiting for an email, verifying), the preconditions and whether it's a negative case. It appears in the spreadsheet (*Estimated time (min)* column, with the total) and travels to **Xray, QMetry, AIO Tests and Azure DevOps** when the cases are uploaded.
 
-El **revisor-casos** revisa los casos que ya existen: les da un puntaje, marca resultados vagos, pasos sin acción, duplicados e historias sin casos negativos, y propone la versión mejorada.
+The **case-reviewer** reviews the cases that already exist: it gives them a score, flags vague results, steps without an action, duplicates and stories without negative cases, and proposes the improved version.
 
-- *"Revisá los casos de HU-001"* · *"¿Cuánto lleva ejecutar a mano la regresión?"*
-
-```bash
-python scripts/revisar_casos.py --historia HU-001
-python scripts/estimacion.py output/casos-de-prueba/manuales/casos-HU-001.xlsx
-```
-
----
-
-## 🧭 Exploratorias por sesiones
-
-El **generador-charters** arma sesiones de exploración con objetivo: cada charter tiene una misión, áreas, riesgos, heurísticas, datos y un tiempo fijo. Genera las hojas para imprimir y una plantilla de notas por sesión (`BUG:`, `PREGUNTA:`, `CUBIERTO:`…); con las notas arma el informe.
+- *"Review the US-001 cases"* · *"How long does it take to run the regression by hand?"*
 
 ```bash
-python scripts/generar_charters.py --nombre HU-003              # hojas de sesión
-python scripts/generar_charters.py --nombre HU-003 --informe    # informe de las sesiones
+python scripts/review_cases.py --story US-001
+python scripts/estimation.py output/test-cases/manual/cases-US-001.xlsx
 ```
 
 ---
 
-## 🧩 Usabilidad (heurísticas de Nielsen)
+## 🧭 Session-based exploratory testing
 
-El **evaluador-ux** revisa la usabilidad con las **10 heurísticas de Nielsen**: mide lo repetible en desktop y mobile (errores técnicos a la vista, vocabulario inconsistente, placeholders como etiqueta, la página 404…) y recorre a mano los flujos principales.
+The **charter-generator** builds exploration sessions with a goal: each charter has a mission, areas, risks, heuristics, data and a fixed time box. It generates the printable sheets and a notes template per session (`BUG:`, `QUESTION:`, `COVERED:`…); from the notes it builds the report.
 
 ```bash
-npm run ux -- --url https://staging.mi-app.com
+python scripts/generate_charters.py --name US-003              # session sheets
+python scripts/generate_charters.py --name US-003 --report     # sessions report
 ```
 
 ---
 
-## 📝 Formularios
+## 🧩 Usability (Nielsen heuristics)
 
-El **probador-formularios** prueba cada campo **sin enviar el formulario**: obligatorios, largos, emails, números en los límites, teléfonos, nombres con acentos (que tienen que aceptarse), y los mensajes de error de la aplicación o del navegador.
+The **ux-evaluator** reviews usability with **Nielsen's 10 heuristics**: it measures what's repeatable on desktop and mobile (visible technical errors, inconsistent vocabulary, placeholders used as labels, the 404 page…) and walks through the main flows by hand.
 
 ```bash
-npm run formularios -- --url https://staging.mi-app.com/registro
+npm run ux -- --url https://staging.my-app.com
 ```
 
 ---
 
-## 🔐 Permisos por rol
+## 📝 Forms
 
-El **probador-permisos** inicia sesión con cada rol del `.env` (más el anónimo), abre cada ruta y endpoint con cada uno y marca los accesos indebidos: rutas protegidas abiertas sin login, URLs de otro rol, links que después niegan el acceso y APIs sin autenticación. Compara contra la regla documentada (`estados-y-permisos.md` del documentador o la historia); lo que no está definido queda como Falta información. Solo GET: no hace acciones con efecto.
+The **form-tester** tests every field **without submitting the form**: required fields, lengths, emails, numbers at the limits, phone numbers, names with accents (which must be accepted), and the error messages from the application or the browser.
 
 ```bash
-npm run permisos -- --url https://staging.mi-app.com --endpoints "GET /api/usuarios"
+npm run forms -- --url https://staging.my-app.com/signup
 ```
 
 ---
 
-## 🌩️ Resiliencia
+## 🔐 Permissions by role
 
-El **probador-resiliencia** simula desde el navegador que la API responde con error o no responde, que la red está lenta o se corta, que llegan respuestas vacías o rotas y que no cargan los estilos ni los scripts. Después mira qué ve la persona: pantallas en blanco, errores sin aviso, spinners infinitos, mensajes técnicos y si la página se recupera cuando vuelve la red. No genera carga contra el servidor: solo intercepta.
+The **permissions-tester** logs in with each role in the `.env` (plus anonymous), opens every route and endpoint with each one and flags improper access: protected routes open without login, URLs belonging to another role, links that then deny access and APIs without authentication. It compares against the documented rule (the documenter's `statuses-and-permissions.md` or the story); whatever isn't defined is recorded as Missing info. GET only: it doesn't perform actions with side effects.
 
 ```bash
-npm run resiliencia -- --url https://staging.mi-app.com/productos
+npm run permissions -- --url https://staging.my-app.com --endpoints "GET /api/users"
 ```
 
 ---
 
-## 🐞 Triage de bugs y consultas
+## 🌩️ Resilience
 
-- El **triador-bugs**, antes de cargar un bug, busca si ya existe en Jira, Azure DevOps, los bugs locales o los issues del repositorio, detecta **regresiones** de bugs cerrados y sugiere severidad, prioridad, componente, responsable e historia (`scripts/buscar_duplicados.py`). Crear o vincular en la herramienta, solo con tu confirmación.
-- El **consultor-proyecto** responde preguntas del producto (*"¿qué pasa si un usuario bloqueado intenta pagar?"*) con la documentación del proyecto, citando de dónde sale cada dato o diciendo que no está documentado.
+The **resilience-tester** simulates from the browser that the API responds with an error or doesn't respond, that the network is slow or drops, that empty or broken responses arrive and that styles or scripts don't load. Then it looks at what the user sees: blank screens, silent errors, endless spinners, technical messages and whether the page recovers when the network comes back. It doesn't generate load against the server: it only intercepts.
+
+```bash
+npm run resilience -- --url https://staging.my-app.com/products
+```
+
+---
+
+## 🐞 Bug triage and questions
+
+- The **bug-triager**, before you file a bug, checks whether it already exists in Jira, Azure DevOps, the local bugs or the repository issues, detects **regressions** of closed bugs and suggests severity, priority, component, assignee and story (`scripts/find_duplicates.py`). Creating or linking in the tool happens only with your confirmation.
+- The **project-consultant** answers product questions (*"what happens if a blocked user tries to pay?"*) from the project documentation, citing where each fact comes from or saying it isn't documented.
 
 ---
 
 ## 🪵 Logs
 
-El **analista-logs** lee los logs de la aplicación (app, nginx, Apache, JSON, syslog), agrupa los errores por firma, arma la línea de tiempo y los cruza con los escenarios que fallaron en `npm test` (cada escenario guarda su inicio y fin) para encontrar el error del servidor detrás de cada falla.
+The **log-analyst** reads the application logs (app, nginx, Apache, JSON, syslog), groups the errors by signature, builds the timeline and cross-references them with the scenarios that failed in `npm test` (each scenario records its start and end) to find the server error behind each failure.
 
 ```bash
-python scripts/analizar_logs.py --logs "input/logs/*.log" --corrida web
+python scripts/analyze_logs.py --logs "input/logs/*.log" --run web
 ```
 
 ---
 
-## ✉️ Correos
+## ✉️ Emails
 
-El **verificador-correos** revisa los mails que manda tu aplicación —registro, confirmación, recuperar contraseña, pedidos, notificaciones— con **Mailpit**, un buzón de prueba que los atrapa sin entregarlos a nadie: que llegue lo esperado a quien corresponde, sin **variables sin reemplazar** (`{{nombre}}`, `undefined`), con los **links** bien (no rotos ni a `localhost`), las imágenes visibles, versión de texto plano, la **compatibilidad** del HTML con Outlook, Gmail y Apple Mail, y cómo se ve en **desktop y mobile**.
+The **email-verifier** checks the emails your application sends —signup, confirmation, password recovery, orders, notifications— with **Mailpit**, a test mailbox that catches them without delivering them to anyone: that what's expected reaches the right person, with no **unreplaced variables** (`{{name}}`, `undefined`), with working **links** (not broken or pointing to `localhost`), visible images, a plain-text version, HTML **compatibility** with Outlook, Gmail and Apple Mail, and how it looks on **desktop and mobile**.
 
-1. Levantá Mailpit: `docker compose -f herramientas/mailpit/docker-compose.yml up -d` y configurá el SMTP de la app de pruebas a `localhost:1025` (detalle en [`herramientas/mailpit/README.md`](herramientas/mailpit/README.md)).
-2. Pedí: *"Verificá que llegue el mail de bienvenida a ana@test.com"*.
+1. Start Mailpit: `docker compose -f tools/mailpit/docker-compose.yml up -d` and point the test app's SMTP to `localhost:1025` (details in [`tools/mailpit/README.md`](tools/mailpit/README.md)).
+2. Ask: *"Check that the welcome email reaches ana@test.com"*.
 
 ```bash
-npm run correos -- --para ana@test.com --espera input/correos/espera-HU-001.json
+npm run emails -- --to ana@test.com --expect input/emails/expect-US-001.json
 ```
 
-Queda en `output/correos/<HU o buzón>/`. También suma steps de correo a los `.feature` (`Then llega un correo a "ana@test.com" con el asunto "Bienvenida"`), que corren con `npm test`.
+It ends up in `output/emails/<US or mailbox>/`. It also adds email steps to the `.feature` files (`Then an email arrives at "ana@test.com" with the subject "Welcome"`), which run with `npm test`.
 
 ---
 
-## 🌐 Traducciones e idiomas
+## 🌐 Translations and languages
 
-El **analista-traductor** recorre cada página en cada idioma (el primero es la referencia) y encuentra **textos sin traducir** (también en placeholders y textos alternativos), **claves de traducción a la vista** (`checkout.add_to_cart`), caracteres mal codificados (`Ã©`), **textos cortados** porque la traducción es más larga, números y fechas con el **formato de otra región** y el atributo `lang` equivocado. Propone la traducción de lo que falta.
+The **translation-analyst** crawls every page in every language (the first one is the reference) and finds **untranslated text** (also in placeholders and alternative texts), **visible translation keys** (`checkout.add_to_cart`), badly encoded characters (`Ã©`), **truncated text** because the translation is longer, numbers and dates in **another region's format** and the wrong `lang` attribute. It proposes the translation for whatever is missing.
 
-- *"Revisá las traducciones del sitio en inglés y portugués"*
+- *"Check the site's translations in Spanish and Portuguese"*
 
 ```bash
-npm run traductor -- --url https://staging.mi-app.com --idiomas es-AR,en-US,pt-BR
+npm run translator -- --url https://staging.my-app.com --languages en-US,es-AR,pt-BR
 ```
 
-Queda en `output/traductor/<HU o sitio>/`, con el porcentaje traducido por idioma y cada página en todos los idiomas lado a lado. Cambia de idioma con los `hreflang` del sitio, con `--url-idioma` o pidiéndolo al navegador.
+It ends up in `output/translator/<US or site>/`, with the translated percentage per language and every page in all languages side by side. It switches language with the site's `hreflang` links, with `--language-url` or by asking the browser for it.
 
 ---
 
-## 🕒 Historial de corridas
+## 🕒 Run history
 
-Cada herramienta guarda sus **últimas 5 corridas** con su evidencia en `historial/` (dentro de su carpeta de salida; la de `npm test`, en `herramientas/k0lmena/reports/<suite>/historial/`) y cada informe trae la sección **Evolución de las corridas**: qué es nuevo, qué se resolvió, qué sigue y cómo evolucionan los indicadores, con el link al informe de cada corrida. Así podés comparar, por ejemplo, la accesibilidad antes y después de un arreglo, o si una regresión visual ya se resolvió, sin perder la evidencia de la corrida anterior.
-
----
-
-## 📊 Tablero de calidad y portal de informes
-
-- **Tablero de calidad**: *"Armá el tablero del sprint 12"* junta lo que ya dejaron las herramientas (corridas, casos, cobertura, bugs, inestables) y arma un dashboard con la tendencia y un resumen para gerencia en `output/tablero/<nombre>/` (`npm run tablero -- --nombre sprint-12 --desde 2026-10-01 --hasta 2026-10-14`).
-- **Portal de informes**: `output/index.html` muestra el último informe de cada herramienta, con su fecha, veredicto y la corrida anterior, un buscador, filtros por herramienta, historia, estado y fecha, y una vista por historia (todos los informes de una HU juntos). Se actualiza solo cada vez que se arma un informe y se abre con doble clic (`npm run portal -- --abrir`).
+Every tool keeps its **last 5 runs** with their evidence in `history/` (inside its output folder; for `npm test`, in `tools/k0lmena/reports/<suite>/history/`) and every report includes the **Run evolution** section: what's new, what was resolved, what remains and how the indicators evolve, with the link to each run's report. That way you can compare, for example, accessibility before and after a fix, or whether a visual regression was already resolved, without losing the evidence from the previous run.
 
 ---
 
-## 📣 Avisos y monitoreo sintético
+## 📊 Quality dashboard and reports portal
 
-- **Avisos a Slack y Teams**: `npm run avisar -- --titulo "…" --texto "…" --nivel error` publica por webhook (`SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL` en el `.env`); `--desde-cucumber herramientas/k0lmena/reports/web/cucumber-report.json` resume un `npm test`. Lo usan el triador, el tablero y el monitoreo cuando se pide.
-- **Monitoreo sintético**: `npm run monitorear` hace un smoke de **solo lectura** (URLs, textos esperados, tiempos, certificado TLS y, si querés, escenarios `@sintetico` de k0lmena) contra cualquier ambiente, guarda la disponibilidad en `output/monitoreo/<nombre>/` y **avisa solo cuando algo se rompe o se recupera**. Se programa con `.github/workflows/monitoreo.yml`, cron o el Programador de tareas de Windows.
+- **Quality dashboard**: *"Build the dashboard for sprint 12"* gathers what the tools already left (runs, cases, coverage, bugs, flaky tests) and builds a dashboard with the trend and a management summary in `output/dashboard/<name>/` (`npm run dashboard -- --name sprint-12 --from 2026-10-01 --until 2026-10-14`).
+- **Reports portal**: `output/index.html` shows the latest report from every tool, with its date, verdict and the previous run, a search box, filters by tool, story, status and date, and a per-story view (all the reports for a US together). It updates itself every time a report is built and opens with a double-click (`npm run portal -- --open`).
 
 ---
 
-## 🧪 Evals de los agentes
+## 📣 Notifications and synthetic monitoring
 
-Los tests cubren los scripts; los **evals** (`evals/`) miden la calidad de lo que generan los agentes. Cada caso les da una historia, un contrato, una observación o un repositorio con **trampas deliberadas** (ambigüedades, contradicciones, mensajes sin definir, límites, secretos) y verifica con chequeos determinísticos que marquen la Falta información, apliquen valores límite, respeten las plantillas y no inventen. Corren en un workspace aislado con `claude -p` y dejan un informe con el puntaje por agente y las **regresiones** contra la corrida anterior. Usalos antes y después de cambiar un agente o un skill:
+- **Slack and Teams notifications**: `npm run notify -- --title "…" --text "…" --level error` posts through a webhook (`SLACK_WEBHOOK_URL`, `TEAMS_WEBHOOK_URL` in the `.env`); `--from-cucumber tools/k0lmena/reports/web/cucumber-report.json` summarizes an `npm test` run. The triager, the dashboard and the monitoring use it when asked.
+- **Synthetic monitoring**: `npm run monitor` runs a **read-only** smoke check (URLs, expected texts, times, TLS certificate and, if you want, k0lmena `@synthetic` scenarios) against any environment, stores the availability in `output/monitoring/<name>/` and **notifies only when something breaks or recovers**. Schedule it with `.github/workflows/monitoring.yml`, cron or the Windows Task Scheduler.
+
+---
+
+## 🧪 Agent evals
+
+The tests cover the scripts; the **evals** (`evals/`) measure the quality of what the agents generate. Each case gives them a story, a contract, an observation or a repository with **deliberate traps** (ambiguities, contradictions, undefined messages, limits, secrets) and verifies with deterministic checks that they flag the Missing info, apply boundary values, respect the templates and don't make things up. They run in an isolated workspace with `claude -p` and leave a report with the score per agent and the **regressions** against the previous run. Use them before and after changing an agent or a skill:
 
 ```bash
-npm run evals -- --listar
-npm run evals -- --correr --agente generador-casos-manuales
+npm run evals -- --list
+npm run evals -- --run --agent manual-case-generator
 ```
 
-**Gastan tokens**: cada caso es una conversación completa, con un tope por caso (`--presupuesto-usd`). `--solo-verificar` revisa salidas ya generadas sin volver a correr el agente.
+**They spend tokens**: each case is a full conversation, with a cap per case (`--budget-usd`). `--verify-only` checks outputs that were already generated without running the agent again.
 
 ---
 
-## 🪙 Uso de tokens
+## 🪙 Token usage
 
-`npm run metricas` lee las transcripciones de Claude Code de este proyecto (solo los conteos, **nunca el texto**), atribuye el uso a cada agente y arma un informe con el costo estimado por agente, día y modelo, el % leído desde caché y **oportunidades**: los agentes que más gastan y los que se usan muchas veces para lo mismo (candidatos a automatizar en k0lmena, que después corre sin tokens). El tablero de calidad lo suma.
+`npm run metrics` reads this project's Claude Code transcripts (counts only, **never the text**), attributes the usage to each agent and builds a report with the estimated cost per agent, day and model, the % read from cache and **opportunities**: the agents that spend the most and the ones used many times for the same thing (candidates to automate in k0lmena, which then runs with no tokens). The quality dashboard includes it.
 
 ```bash
-npm run metricas -- --nombre octubre --desde 2026-10-01
+npm run metrics -- --name october --from 2026-10-01
 ```
 
 ---
 
 ## 🧭 Onboarding
 
-El **guia-onboarding** arma el plan de incorporación de un QA nuevo: qué es el producto (con la documentación y sus fuentes), cómo está su entorno (el doctor), qué agentes le sirven según su rol con pedidos de ejemplo de este proyecto, las tareas de las primeras semanas con su criterio de "hecho", las preguntas para el equipo y un checklist que se tilda en el navegador.
+The **onboarding-guide** builds the onboarding plan for a new QA: what the product is (with the documentation and its sources), what its environment looks like (the doctor), which agents help them in their role with sample requests from this project, the tasks for the first weeks with their "done" criteria, the questions for the team and a checklist that is ticked off in the browser.
 
-> *"Armá el onboarding de Ana, que entra como QA manual"*
+> *"Build the onboarding for Ana, who's joining as a manual QA"*
 
 ---
 
-## 🛡️ Seguridad web
+## 🛡️ Web security
 
-El **analista-seguridad** revisa la seguridad de tu aplicación con **OWASP ZAP** (libre y gratuito) en modo **pasivo**: recorre el sitio y analiza las respuestas sin enviar ataques ni modificar datos. Encuentra encabezados de seguridad faltantes, cookies inseguras, información expuesta, contenido mixto y otras configuraciones débiles.
+The **security-analyst** reviews your application's security with **OWASP ZAP** (free and open source) in **passive** mode: it crawls the site and analyzes the responses without sending attacks or modifying data. It finds missing security headers, insecure cookies, exposed information, mixed content and other weak configurations.
 
-1. Declará en el `.env` los sitios que podés escanear (propios o con autorización por escrito): `SEGURIDAD_URLS_AUTORIZADAS=https://staging.mi-app.com`
-2. Abrí **Docker Desktop** (ZAP corre en un contenedor).
-3. Pedí: *"Revisá la seguridad de https://staging.mi-app.com para HU-001"*.
+1. Declare in the `.env` the sites you're allowed to scan (your own or with written authorization): `SECURITY_AUTHORIZED_URLS=https://staging.my-app.com`
+2. Open **Docker Desktop** (ZAP runs in a container).
+3. Ask: *"Check the security of https://staging.my-app.com for US-001"*.
 
-El agente te confirma la URL, corre el escaneo, analiza los hallazgos (prioriza, descarta falsos positivos y los explica en español) y genera el **informe de seguridad** en HTML: hallazgos por riesgo, dónde aparece cada uno, evidencia, cómo se corrige y recomendaciones priorizadas. Queda en `output/seguridad/`. Detalle en [`herramientas/zap/README.md`](herramientas/zap/README.md).
+The agent confirms the URL with you, runs the scan, analyzes the findings (prioritizes them, discards false positives and explains them in plain English) and generates the **security report** in HTML: findings by risk, where each one appears, evidence, how to fix it and prioritized recommendations. It ends up in `output/security/`. Details in [`tools/zap/README.md`](tools/zap/README.md).
 
 > [!IMPORTANT]
-> El analista-seguridad solo escanea sitios autorizados en el `.env`, y siempre en modo **pasivo**. Un escaneo pasivo sin hallazgos no garantiza que el sitio sea seguro: no reemplaza una prueba de penetración.
+> The security-analyst only scans sites authorized in the `.env`, and always in **passive** mode. A passive scan without findings doesn't guarantee the site is secure: it doesn't replace a penetration test.
 
-Cuando sí querés una **prueba de penetración autorizada**, está el **pentester-web** (ethical hacking): intenta vulnerar tu plataforma con el escaneo **activo** de OWASP ZAP (envía ataques) más verificación manual del **OWASP Top 10** con Playwright (control de acceso e IDOR, autenticación y sesión, inyección, XSS, configuración, CSRF/SSRF). Confirma cada hallazgo y entrega el informe más un `reporte-pentest.md` con pasos para reproducir y cómo corregir.
+When you do want an **authorized penetration test**, there's the **web-pentester** (ethical hacking): it tries to break into your platform with the OWASP ZAP **active** scan (it sends attacks) plus manual verification of the **OWASP Top 10** with Playwright (access control and IDOR, authentication and session, injection, XSS, configuration, CSRF/SSRF). It confirms each finding and delivers the report plus a `pentest-report.md` with steps to reproduce and how to fix.
 
-- Pedí: *"Intentá hackear https://staging.mi-app.com y pasame lo que encuentres"*.
+- Ask: *"Try to hack https://staging.my-app.com and send me what you find"*.
 
 > [!WARNING]
-> El pentest activo es intrusivo (envía ataques y puede modificar datos). Solo corre sobre URLs de `SEGURIDAD_URLS_AUTORIZADAS`, con `PENTEST_AUTORIZADO=si` en el `.env`, sobre un sitio **propio o con autorización por escrito** y nunca contra producción sin ese permiso. No hace DoS, fuerza bruta masiva ni borra datos.
+> The active pentest is intrusive (it sends attacks and can modify data). It only runs on URLs in `SECURITY_AUTHORIZED_URLS`, with `PENTEST_AUTHORIZED=yes` in the `.env`, on a site that is **your own or with written authorization**, and never against production without that permission. It doesn't do DoS, mass brute force or delete data.
 
 ---
 
-## 🗄️ Verificación en base de datos
+## 🗄️ Database verification
 
-El **verificador-datos** se conecta a las bases configuradas en el `.env` (**PostgreSQL, MySQL / MariaDB, SQL Server y MongoDB**, con varias conexiones con nombre) y verifica lo que necesites: qué guardó un test web o de API, si existe un dato, en qué estado quedó un registro.
+The **data-verifier** connects to the databases configured in the `.env` (**PostgreSQL, MySQL / MariaDB, SQL Server and MongoDB**, with several named connections) and verifies whatever you need: what a web or API test stored, whether a piece of data exists, what status a record ended up in.
 
-- *"Verificá en la base si existe el usuario ana@test.com y en qué estado quedó"*
-- *"Revisá qué guardó en pedidos el test HU-003"*
-- *"Sumá al escenario de registro la verificación en la base de datos"* → steps que después corren con `npm test`, sin tokens:
+- *"Check in the database whether user ana@test.com exists and what status it's in"*
+- *"Check what test US-003 stored in orders"*
+- *"Add the database check to the signup scenario"* → steps that then run with `npm test`, with no tokens:
 
 ```gherkin
-When envío un POST a "/usuarios" con el body: ...
-And guardo el campo "id" de la respuesta como "idUsuario"
-Then el registro de "usuarios" donde "id" es "{idUsuario}" tiene:
-  | campo  | valor  |
-  | estado | ACTIVO |
+When I send a POST to "/users" with the body: ...
+And I save the response field "id" as "userId"
+Then the "users" record where "id" is "{userId}" has:
+  | field  | value  |
+  | status | ACTIVE |
 ```
 
 > [!NOTE]
-> **Las verificaciones de base de datos se agregan a los tests solo cuando lo pedís.** Los mappers (web, API y mobile) no las suman por su cuenta: si un caso menciona datos guardados, lo dejan como sugerencia en el reporte de mapeo. Y el verificador-datos, ante una consulta puntual, responde sin tocar los `.feature`.
+> **Database checks are added to the tests only when you ask for them.** The mappers (web, API and mobile) don't add them on their own: if a case mentions stored data, they leave it as a suggestion in the mapping report. And the data-verifier, when asked a one-off question, answers without touching the `.feature` files.
 
 > [!IMPORTANT]
-> **Solo lectura por defecto**: las consultas corren en transacciones de solo lectura que se descartan, y las columnas sensibles (contraseñas, tokens, tarjetas) se enmascaran. Para preparar o limpiar datos, la conexión necesita `DB_<NOMBRE>_ESCRITURA=si` y el agente pide confirmación antes de cada operación; con `DB_<NOMBRE>_PRODUCCION=si` nunca escribe. Recomendado: un usuario de base de datos con permisos de solo lectura.
+> **Read-only by default**: queries run in read-only transactions that are discarded, and sensitive columns (passwords, tokens, cards) are masked. To prepare or clean up data, the connection needs `DB_<NAME>_WRITE=yes` and the agent asks for confirmation before each operation; with `DB_<NAME>_PRODUCTION=yes` it never writes. Recommended: a database user with read-only permissions.
 
-También se usa sin agente: `npm run bd -- conexiones | esquema | existe | consultar` en `herramientas/k0lmena/`.
-
----
-
-## 🔌 Conectores MCP
-
-| Conector                         | Para qué                                                    | Autenticación                                     |
-| -------------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
-| `playwright`                     | Navegador para el ejecutor E2E y el web-mapper              | Activo por defecto                                |
-| `atlassian`                      | **Jira y Confluence**: historias, criterios y documentación | Activo por defecto: tu cuenta (OAuth) o API token |
-| `figma` · `figma-desktop`        | Diseños desde un link a un frame o archivo                  | Tu cuenta (OAuth)                                 |
-| `appium-mcp`                     | Recorrer la app para el mobile-mapper                       | `ANDROID_HOME`                                    |
-| `qmetry` · `qtm4j` · `aio-tests` | Consultar la herramienta de gestión desde el chat           | API key / token                                   |
-| `azure-devops`                   | **Azure DevOps**: historias, Wiki y casos en Test Plans     | PAT                                               |
-| `k0lmena-tmt`                    | Cargar y consultar casos en k0lmenaTMT                      | Token personal                                    |
-| `github` · `gitlab`              | Repositorio de la app para el documentador-proyecto         | Token de solo lectura (GitLab: también OAuth)     |
-| `linear` · `clickup` · `monday` · `asana` · `trello` · `notion` · `youtrack` · `shortcut` | Historias y documentación si tu equipo no usa Jira ni Azure DevOps | Tu cuenta (OAuth); YouTrack con token; Asana con app propia |
-
-¿Tu equipo no usa Jira? Las historias se leen igual desde Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack o Shortcut con su conector MCP oficial (`npm run conector -- activar linear`), y desde GitHub o GitLab Issues con los conectores del repositorio.
-
-Claude Code arranca directo, sin pedir aprobar conectores: vienen activos Playwright y Atlassian (Jira y Confluence). Los demás los activa cada QA según su equipo, con un comando. Ninguno lleva secretos: las credenciales se leen del `.env`, que trae un bloque comentado por herramienta. Guía completa en [`CONECTORES.md`](CONECTORES.md).
+It can also be used without an agent: `npm run db -- connections | schema | exists | query` in `tools/k0lmena/`.
 
 ---
 
-**Activar un conector** (por ejemplo, Azure DevOps):
+## 🔌 MCP connectors
+
+| Connector                                                                                 | What for                                                                | Authentication                                                       |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `playwright`                                                                              | Browser for the E2E runner and the web-mapper                           | Enabled by default                                                   |
+| `atlassian`                                                                               | **Jira and Confluence**: stories, criteria and documentation            | Enabled by default: your account (OAuth) or API token                |
+| `figma` · `figma-desktop`                                                                 | Designs from a link to a frame or file                                  | Your account (OAuth)                                                 |
+| `appium-mcp`                                                                              | Walk through the app for the mobile-mapper                              | `ANDROID_HOME`                                                       |
+| `qmetry` · `qtm4j` · `aio-tests`                                                          | Query the management tool from the chat                                 | API key / token                                                      |
+| `azure-devops`                                                                            | **Azure DevOps**: stories, Wiki and cases in Test Plans                 | PAT                                                                  |
+| `k0lmena-tmt`                                                                             | Load and query cases in k0lmenaTMT                                      | Personal token                                                       |
+| `github` · `gitlab`                                                                       | App repository for the project-documenter                               | Read-only token (GitLab: also OAuth)                                 |
+| `linear` · `clickup` · `monday` · `asana` · `trello` · `notion` · `youtrack` · `shortcut` | Stories and documentation if your team doesn't use Jira or Azure DevOps | Your account (OAuth); YouTrack with a token; Asana with your own app |
+
+Your team doesn't use Jira? Stories are read the same way from Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack or Shortcut with their official MCP connector (`npm run connector -- activate linear`), and from GitHub or GitLab Issues with the repository connectors.
+
+Claude Code starts right away, without asking you to approve connectors: Playwright and Atlassian (Jira and Confluence) come enabled. Each QA enables the rest according to their team, with one command. None of them carries secrets: credentials are read from the `.env`, which includes a commented block per tool. Full guide in [`CONNECTORS.md`](CONNECTORS.md).
+
+---
+
+**Enable a connector** (for example, Azure DevOps):
 
 ```bash
-npm run conector                            # lista los conectores y cuáles tenés activos
-npm run conector -- activar azure-devops    # queda solo para vos; reiniciá Claude Code
+npm run connector                            # lists the connectors and which ones you have enabled
+npm run connector -- activate azure-devops   # applies only to you; restart Claude Code
 ```
 
-`npm run doctor` te dice qué variables le faltan a cada conector activo. Detalle por herramienta en [`CONECTORES.md`](CONECTORES.md#qué-configurar-según-tu-equipo).
+`npm run doctor` tells you which variables each enabled connector is missing. Per-tool details in [`CONNECTORS.md`](CONNECTORS.md#what-to-configure-for-your-team).
 
 ---
 
-## 📎 Referencia
+## 📎 Reference
 
 <details>
-<summary><b>Un flujo completo, de punta a punta</b></summary>
+<summary><b>An end-to-end flow</b></summary>
 
 ```
-0. "Investigá el contexto de PROJ-12"                  → ficha de contexto + Falta información (FI-XX)
-1. "Analizá HU-001"                                    → preguntas para el PO
-2. "Armá el plan de pruebas de HU-001"                 → plan HTML
-3. "Generá los casos de HU-001"                        → casos-HU-001.xlsx + cobertura
-4. "Subí los casos a Xray y creá el ciclo Sprint 5"    → casos y ciclo en Xray
-5. "Automatizá en k0lmena los casos de HU-001"         → .feature + steps + locators
-6. npm test                                           → reporte con evidencias (sin tokens)
-7. "Subí los resultados al ciclo del Sprint 5"         → estados y evidencias en Xray
-8. "Armá una prueba de carga del login"                → script + reporte de performance
-9. "Hacé pruebas exploratorias del sitio del .env"     → links, imágenes, errores y responsive, con capturas y video
-   "Revisá la accesibilidad del sitio"                 → criterios WCAG incumplidos y cómo corregirlos
-   "Revisá la velocidad del sitio"                     → Core Web Vitals y mejoras con su ahorro
-   "Analizá por qué falló npm test"                    → bugs reales vs. tests a arreglar
-   "¿Qué nos falta probar de HU-001?"                  → matriz de trazabilidad y huecos
-10. "Armá el informe de cierre de HU-001"              → go / no-go
+0. "Research the context of PROJ-12"                   → context sheet + Missing info (MI-XX)
+1. "Analyze US-001"                                    → questions for the PO
+2. "Build the test plan for US-001"                    → HTML plan
+3. "Generate the cases for US-001"                     → cases-US-001.xlsx + coverage
+4. "Upload the cases to Xray and create the Sprint 5 cycle" → cases and cycle in Xray
+5. "Automate the US-001 cases in k0lmena"              → .feature + steps + locators
+6. npm test                                            → report with evidence (no tokens)
+7. "Upload the results to the Sprint 5 cycle"          → statuses and evidence in Xray
+8. "Build a load test of the login"                    → script + performance report
+9. "Run exploratory tests on the site in the .env"     → links, images, errors and responsive, with screenshots and video
+   "Check the accessibility of the site"               → failed WCAG criteria and how to fix them
+   "Check the speed of the site"                       → Core Web Vitals and improvements with their savings
+   "Analyze why npm test failed"                       → real bugs vs. tests to fix
+   "What's left to test in US-001?"                    → traceability matrix and gaps
+10. "Build the closure report for US-001"              → go / no-go
 ```
 </details>
 
 <details>
-<summary><b>Convenciones</b></summary>
+<summary><b>Conventions</b></summary>
 
-| Elemento                | Formato                                                                                           |
-| ----------------------- | ------------------------------------------------------------------------------------------------- |
-| Historias · criterios   | `HU-001` · `CA1`                                                                                  |
-| Casos manuales · de API | `CP-001` · `CP-API-001`                                                                           |
-| Bugs                    | `BUG-001`                                                                                         |
-| Falta información       | `FI-01` (por historia) · tags `@falta-info @FI-01`                                                |
-| Severidad y prioridad   | Crítica · Alta · Media · Baja                                                                     |
-| Estado de un caso       | N/A · Pendiente · En ejecución · Aprobado · Fallido · Bloqueado                                   |
-| Tags en k0lmena         | Feature: `@HU-001 @web` · Scenario: `@CP-001` (`@smoke` si es crítico) · `@bloqueado`             |
-| Automatización          | `<tipo>/features/HU-001-<slug>.feature` · `steps/HU-001.steps.ts` · `locators/HU-001.locators.ts` |
+| Element               | Format                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| Stories · criteria    | `US-001` · `AC1`                                                                                  |
+| Manual · API cases    | `TC-001` · `TC-API-001`                                                                           |
+| Bugs                  | `BUG-001`                                                                                         |
+| Missing info          | `MI-01` (per story) · tags `@missing-info @MI-01`                                                 |
+| Severity and priority | Critical · High · Medium · Low                                                                    |
+| Case status           | N/A · Pending · In progress · Passed · Failed · Blocked                                           |
+| Tags in k0lmena       | Feature: `@US-001 @web` · Scenario: `@TC-001` (`@smoke` if critical) · `@blocked`                 |
+| Automation            | `<type>/features/US-001-<slug>.feature` · `steps/US-001.steps.ts` · `locators/US-001.locators.ts` |
 </details>
 
 <details>
-<summary><b>Estructura del repositorio</b></summary>
+<summary><b>Repository structure</b></summary>
 
 ```
 k0lmenIA/
-├── CLAUDE.md               Contexto y estándares (Claude Code lo lee siempre)
-├── AGENTES.md              Catálogo de agentes: skills, herramientas, conectores y salidas
-├── ARQUITECTURA.md         Cómo crece el repo
-├── CONECTORES.md           Cómo activar los conectores MCP
-├── CHANGELOG.md            Cambios de cada versión
-├── LICENSE                 Licencia MIT
-├── .env.example            Plantilla de variables (copiar a .env)
-├── .mcp.json               Conectores MCP (sin secretos; activos según settings)
-├── package.json            Atajos para correr k0lmena desde la raíz (npm test…)
-├── docs/                   Documentación web, PDF y diagramas
-├── tests/                  Tests de los scripts del repo (pytest y node --test)
-├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
-├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
+├── CLAUDE.md               Context and standards (Claude Code always reads it)
+├── AGENTS.md               Agent catalog: skills, tools, connectors and outputs
+├── ARCHITECTURE.md         How the repo grows
+├── CONNECTORS.md           How to enable the MCP connectors
+├── CHANGELOG.md            Changes in each version
+├── LICENSE                 MIT license
+├── .env.example            Variables template (copy to .env)
+├── .mcp.json               MCP connectors (no secrets; enabled according to settings)
+├── package.json            Shortcuts to run k0lmena from the root (npm test…)
+├── docs/                   Web documentation, PDF and diagrams
+├── tests/                  Tests for the repo scripts (pytest and node --test)
+├── evals/                  Agent evals: cases with traps, inputs and checks
+├── .github/workflows/      CI (tests), synthetic monitoring and evals (manual)
 ├── .claude/
-│   ├── agents/             Los 76 agentes
-│   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
-│   └── settings.json       Conectores habilitados y permisos del proyecto
-├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)
-├── output/                 Lo que generan los agentes (contexto/, casos, reportes, mapeos…)
-├── plantillas/             Bug, planilla de casos, cobertura
-├── scripts/                Casos, reportes HTML, informes, Newman, recolector y doctor
-│   ├── gestion/            Xray, QMetry (QTM4J), AIO Tests y casos para Azure DevOps
-│   └── mcp/                Lanzadores de los conectores MCP (leen el .env)
-└── herramientas/
-    ├── newman/             Colecciones de Postman
-    ├── zap/                OWASP ZAP: seguridad web (escaneo pasivo)
-    ├── mailpit/            Mailpit: buzón de prueba para los correos
+│   ├── agents/             The 76 agents
+│   ├── skills/             Context, design, performance guide, E2E and API execution, k0lmena
+│   └── settings.json       Enabled connectors and project permissions
+├── input/                  stories/ documentation/ api/ bugs/ (see input/README.md)
+├── output/                 What the agents generate (context/, cases, reports, mappings…)
+├── templates/              Bug, case spreadsheet, coverage
+├── scripts/                Cases, HTML reports, Newman, collector and doctor
+│   ├── management/         Xray, QMetry (QTM4J), AIO Tests and cases for Azure DevOps
+│   └── mcp/                MCP connector launchers (they read the .env)
+└── tools/
+    ├── newman/             Postman collections
+    ├── zap/                OWASP ZAP: web security (passive scan)
+    ├── mailpit/            Mailpit: test mailbox for emails
     └── k0lmena/            web/ api/ mobile/ performance/ reports/
 ```
 </details>
 
 <details>
-<summary><b>Problemas frecuentes</b></summary>
+<summary><b>Common issues</b></summary>
 
-| Problema                                                          | Solución                                                                                                                  |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Un agente nuevo no aparece                                        | Reiniciá Claude Code.                                                                                                     |
-| La suite web falla sin URL                                        | Falta el `.env` de la raíz: `cp .env.example .env` y completalo.                                                          |
-| `npm test` corre 0 escenarios                                     | Todavía no automatizaste nada o `TAGS` no coincide.                                                                       |
-| Un escenario nunca se ejecuta                                     | Tiene `@bloqueado`; el motivo está en un comentario arriba.                                                               |
-| "No encuentro k6"                                                 | `npm run bootstrap:k6` en `herramientas/k0lmena/`.                                                                        |
-| "No encuentro JMeter" / "JMeter necesita Java"                    | `npm run bootstrap:jmeter` (o `JMETER_HOME`) e instalá Java 8+ en el PATH (o `JAVA_HOME`).                                |
-| `npm run perf` no corre un perfil con carga desde el agente       | Es a propósito: necesita `--confirmar`, que el agente agrega tras tu confirmación.                                        |
-| Una carpeta de Xray/QMetry/AIO sale como `C:/Program Files/Git/…` | En Git Bash escribí las carpetas sin `/` inicial.                                                                         |
-| ¿Los tests verifican la base de datos siempre?                    | No: las verificaciones de BD se agregan a un `.feature` solo cuando las pedís; sin `DB_CONEXIONES`, la suite corre igual. |
-| Un conector MCP no conecta                                        | Corré `npm run doctor`: dice qué variable falta en el `.env`. Atlassian y Figma se autorizan desde `/mcp`.                |
-| No sé qué me falta instalar                                       | `npm run doctor` revisa Python, Node, k0lmena, Playwright, Newman, Java, Docker, las fuentes, el `.env`, las integraciones, los conectores y git (`--seccion env` para revisar solo una parte). |
-| Un agente devuelve "Necesito que confirmes"                       | Es a propósito: los agentes no pueden preguntar a mitad del trabajo. Respondé y Claude lo continúa.                       |
+| Issue                                                           | Solution                                                                                                                                                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A new agent doesn't show up                                     | Restart Claude Code.                                                                                                                                                                       |
+| The web suite fails with no URL                                 | The root `.env` is missing: `cp .env.example .env` and fill it in.                                                                                                                         |
+| `npm test` runs 0 scenarios                                     | You haven't automated anything yet or `TAGS` doesn't match.                                                                                                                                |
+| A scenario never runs                                           | It has `@blocked`; the reason is in a comment above it.                                                                                                                                    |
+| "k6 not found"                                                  | `npm run bootstrap:k6` in `tools/k0lmena/`.                                                                                                                                                |
+| "JMeter not found" / "JMeter needs Java"                        | `npm run bootstrap:jmeter` (or `JMETER_HOME`) and install Java 8+ on the PATH (or `JAVA_HOME`).                                                                                            |
+| `npm run perf` won't run a load profile from the agent          | That's on purpose: it needs `--confirm`, which the agent adds after your confirmation.                                                                                                     |
+| An Xray/QMetry/AIO folder comes out as `C:/Program Files/Git/…` | In Git Bash, write the folders without a leading `/`.                                                                                                                                      |
+| Do the tests always check the database?                         | No: DB checks are added to a `.feature` only when you ask for them; without `DB_CONNECTIONS`, the suite runs the same.                                                                     |
+| An MCP connector doesn't connect                                | Run `npm run doctor`: it tells you which variable is missing from the `.env`. Atlassian and Figma are authorized from `/mcp`.                                                              |
+| I don't know what I'm missing                                   | `npm run doctor` checks Python, Node, k0lmena, Playwright, Newman, Java, Docker, the fonts, the `.env`, the integrations, the connectors and git (`--section env` to check just one part). |
+| An agent returns "I need you to confirm"                        | That's on purpose: agents can't ask questions mid-task. Answer and Claude continues it.                                                                                                    |
 </details>
 
 <details>
-<summary><b>Cómo extender el proyecto</b></summary>
+<summary><b>How to extend the project</b></summary>
 
-- **Agente**: un `.md` en `.claude/agents/` con `name` y `description` (es lo que usa Claude Code para decidir cuándo invocarlo) y el cuerpo en español: rol, entradas, proceso, salida y reglas.
-- **Skill**: una carpeta en `.claude/skills/` con su `SKILL.md`.
-- **Conector**: una entrada en `.mcp.json`, sin secretos; los tokens se leen del `.env` con un script de `scripts/mcp/`.
-- **Herramienta**: una subcarpeta en `herramientas/` con su README.
-- **Tests del repo**: `python -m pytest tests` y `npm run test:repo` (corren también en CI, en Ubuntu y Windows). Sumá un test cuando cambies un script.
-- **Documentación**: el sitio es [`docs/index.html`](docs/index.html), publicado en https://underc0delabs.github.io/k0lmenIA/ (GitHub Pages desde `docs/`), con su versión en inglés en [`docs/en/index.html`](docs/en/index.html) (mismos `id` de sección; los diagramas en inglés están en `docs/diagramas/en/`). `node docs/generar.js` regenera los diagramas y los dos PDF. Si cambiás la página en español, actualizá también la inglesa.
+- **Agent**: a `.md` in `.claude/agents/` with `name` and `description` (that's what Claude Code uses to decide when to invoke it) and the body in English: role, inputs, process, output and rules.
+- **Skill**: a folder in `.claude/skills/` with its `SKILL.md`.
+- **Connector**: an entry in `.mcp.json`, without secrets; tokens are read from the `.env` with a script in `scripts/mcp/`.
+- **Tool**: a subfolder in `tools/` with its README.
+- **Repo tests**: `python -m pytest tests` and `npm run test:repo` (they also run in CI, on Ubuntu and Windows). Add a test when you change a script.
+- **Documentation**: the site is [`docs/index.html`](docs/index.html), published at https://underc0delabs.github.io/k0lmenIA/ (GitHub Pages from `docs/`); the diagrams are in `docs/diagrams/`. `node docs/generate.js` regenerates the diagrams and the PDF ([`docs/k0lmenIA-documentation.pdf`](docs/k0lmenIA-documentation.pdf)).
 
-Más detalle en [`ARQUITECTURA.md`](ARQUITECTURA.md).
+More details in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 </details>
 
 ---
 
-## Licencia
+## License
 
-**MIT** — © 2026 **QARMY**. Podés usarlo, modificarlo y compartirlo libremente; se entrega sin garantías. k0lmena es un proyecto open source de **Danilo Vezzoni**.
+**MIT** — © 2026 **QARMY**. You can use, modify and share it freely; it is provided without warranty. k0lmena is an open source project by **Danilo Vezzoni**.
 
 <div align="center">
 <br>
-Hecho con 🪖 por la comunidad de <b>Underc0de</b>
+Made with 🪖 by the <b>Underc0de</b> community
 </div>

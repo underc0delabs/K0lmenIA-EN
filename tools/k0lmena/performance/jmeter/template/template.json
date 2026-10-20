@@ -1,0 +1,18 @@
+{
+  "target": "API_BASEURL",
+  "profiles": {
+    "smoke": { "users": 1, "ramp": 1, "duration": 30 },
+    "load": { "users": 50, "ramp": 60, "duration": 300 },
+    "stress": { "users": 150, "ramp": 300, "duration": 600 },
+    "soak": { "users": 30, "ramp": 60, "duration": 7200 },
+    "spike": { "users": 200, "ramp": 5, "duration": 120 }
+  },
+  "thresholds": {
+    "error_pct": 1,
+    "p95": 500,
+    "p99": 1000,
+    "by_sample": {
+      "POST /resource": { "p95": 800 }
+    }
+  }
+}

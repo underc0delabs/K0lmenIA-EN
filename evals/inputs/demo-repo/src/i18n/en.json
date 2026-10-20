@@ -1,0 +1,7 @@
+{
+  "accountCreated": "Account created! Check your email to activate it.",
+  "invalidEmail": "Enter a valid email",
+  "longUser": "Username must be between 4 and 20 characters",
+  "minAge": "You must be over 18 to sign up",
+  "couponAlreadyApplied": "You already applied a coupon to this purchase"
+}

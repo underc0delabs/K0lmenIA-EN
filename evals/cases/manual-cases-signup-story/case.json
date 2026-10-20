@@ -1,0 +1,55 @@
+{
+  "agent": "manual-case-generator",
+  "description": "Manual cases for a story with bounded fields (username 4-20, name 2-50), an undefined message (duplicate email), an ambiguous rule (secure password) and a contradiction (age 16 / 18).",
+  "prompt": "Use the manual-case-generator agent to generate the test cases for the story input/stories/US-901-signup.md. There are no active connectors: the Jira comments are copied into the story itself.",
+  "inputs": [
+    {"from": "inputs/US-901-signup.md", "to": "input/stories/US-901-signup.md"}
+  ],
+  "budget_usd": 3,
+  "threshold": 80,
+  "checks": [
+    {"id": "files", "type": "exists", "description": "Delivers the three artifacts: .xlsx, .md and -coverage.md",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx", "output/test-cases/manual/cases-US-901.md", "output/test-cases/manual/cases-US-901-coverage.md"],
+     "min": 3, "weight": 2},
+    {"id": "columns", "type": "xlsx_columns", "description": "The spreadsheet has the template columns",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"],
+     "columns": ["ID", "Title", "Description", "Preconditions", "Test Data", "Steps", "Expected Result", "Status", "Priority", "Estimated Time (min)", "#Tags", "Comments"]},
+    {"id": "valid-cases", "type": "xlsx_cases", "description": "At least 10 cases with consecutive IDs TC-001…, priorities and statuses from the scale, sorted by priority, with steps and result",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"], "min": 10, "weight": 2},
+    {"id": "types", "type": "xlsx_types", "description": "Coverage by type: positive, negative and boundary",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"], "weight": 3,
+     "types": {
+       "positive": {"pattern": "valid|success|correct|is created|@positiv|happy path|happy", "min": 1},
+       "negative": {"pattern": "invalid|incorrect|empty|blank|reject|not (be )?allowed|is not created|without |already (registered|exists|in use)|duplicat|under(age)?\\b|minor|younger|outside|out of range|weak|does not (meet|comply)|@negativ", "min": 4},
+       "boundary": {"pattern": "limit|boundary|edge|minimum|maximum|\\b(1|2|3|4|5|19|20|21|49|50|51)[- ]?char|exactly|@boundary|@edge|@limit", "min": 3}
+     }},
+    {"id": "user-limits", "type": "contains", "description": "Applies boundary values to the username (3/4 and 20/21 characters)",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"],
+     "patterns": ["\\b(3|4)[- ]?char", "\\b(20|21)[- ]?char"], "weight": 2},
+    {"id": "missing-info", "type": "xlsx_missing_info", "description": "Flags the cases that depend on missing information and builds the Missing information sheet",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"], "min_cases": 2, "min_items": 2, "weight": 2},
+    {"id": "duplicate-not-invented", "type": "xlsx_filter", "description": "The duplicate email case depends on an MI and does not invent the message text",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"],
+     "filter": "e-?mail.{0,60}(already (registered|exists|in use)|duplicat|existing)",
+     "must": "@missing-info|MI-\\d+",
+     "must_not_result": "[\"“][^\"”]*(already|registered|exists|in use)[^\"”]*[\"”]", "weight": 2},
+    {"id": "age-not-decided", "type": "xlsx_filter", "description": "The minimum age cases are flagged as Missing information (they do not choose between 16 and 18)",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"],
+     "filter": "\\bage\\b|older than|younger than|over 1[678]|under 1[678]|\\b1[678][- ]?(years?|yo)\\b", "must": "@missing-info|MI-\\d+", "weight": 2},
+    {"id": "defined-message", "type": "contains", "description": "Uses the exact text that the story does define (AC5)",
+     "files": ["output/test-cases/manual/cases-US-901.xlsx"],
+     "patterns": ["Username must be between 4 and 20 characters"]},
+    {"id": "coverage", "type": "contains", "description": "The coverage report goes through the five criteria and the Missing information",
+     "files": ["output/test-cases/manual/cases-US-901-coverage.md"],
+     "patterns": ["AC1", "AC2", "AC3", "AC4", "AC5", "Missing info(rmation)?"]},
+    {"id": "tables", "type": "normalized_tables", "description": "Runs the coverage report tables through format_tables.py",
+     "files": ["output/test-cases/manual/cases-US-901-coverage.md"]},
+    {"id": "no-temp-json", "type": "not_contains", "description": "Deletes the temporary JSON (--clean)",
+     "files": ["output/test-cases/manual/*"], "patterns": ["\"missing_info\"\\s*:"]}
+  ],
+  "rubric": [
+    "The steps are actionable and the expected result is verifiable.",
+    "There are no redundant cases (two cases that test exactly the same thing).",
+    "The assumptions used to write a case are explained in Comments."
+  ]
+}

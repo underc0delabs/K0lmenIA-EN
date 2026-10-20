@@ -1,52 +1,52 @@
 #!/usr/bin/env node
-// Lanzador del conector MCP azure-devops (ver CONECTORES.md).
-// Lee la configuración de Azure DevOps del entorno o, si no está, del .env de la raíz, y
-// arranca el server oficial de Microsoft (@azure-devops/mcp) por stdio. El PAT se le pasa
-// al server solo por variable de entorno (PERSONAL_ACCESS_TOKEN, en base64 como lo pide);
-// nunca queda en .mcp.json ni se imprime.
+// Launcher for the azure-devops MCP connector (see CONNECTORS.md).
+// Reads the Azure DevOps configuration from the environment or, if it's not there, from the root .env,
+// and starts Microsoft's official server (@azure-devops/mcp) over stdio. The PAT is passed to the
+// server only as an environment variable (PERSONAL_ACCESS_TOKEN, base64-encoded as the server expects);
+// it never ends up in .mcp.json and is never printed.
 //
-// Por stdout solo habla el server MCP: los mensajes de este script van a stderr.
-const { variable } = require('./leer-env');
-const { lanzarNpx } = require('./lanzar');
+// Only the MCP server talks on stdout: this script's messages go to stderr.
+const { variable } = require('./read-env');
+const { launchNpx } = require('./launch');
 
-function salirConError(mensaje) {
-  console.error(`azure-devops: ${mensaje} (ver .env.example y CONECTORES.md).`);
+function exitWithError(message) {
+  console.error(`azure-devops: ${message} (see .env.example and CONNECTORS.md).`);
   process.exit(1);
 }
 
-const organizacion = variable('ADO_ORGANIZACION');
+const organization = variable('ADO_ORGANIZATION');
 const pat = variable('ADO_PAT');
-const autenticacion = variable('ADO_AUTENTICACION') || 'pat';
-const dominios = (variable('ADO_DOMINIOS') || 'core work work-items repositories test-plans wiki search')
+const authentication = variable('ADO_AUTHENTICATION') || 'pat';
+const domains = (variable('ADO_DOMAINS') || 'core work work-items repositories test-plans wiki search')
   .split(/[\s,]+/)
   .filter(Boolean);
 
-if (!organizacion) salirConError('falta ADO_ORGANIZACION en el .env de la raíz');
-if (!/^[A-Za-z0-9][A-Za-z0-9-]*$/.test(organizacion)) {
-  salirConError('ADO_ORGANIZACION debe ser solo el nombre de la organización (ej. "mi-empresa"), no la URL');
+if (!organization) exitWithError('ADO_ORGANIZATION is missing from the root .env');
+if (!/^[A-Za-z0-9][A-Za-z0-9-]*$/.test(organization)) {
+  exitWithError('ADO_ORGANIZATION must be just the organization name (e.g. "my-company"), not the URL');
 }
-if (!['pat', 'interactive', 'azcli', 'env', 'envvar'].includes(autenticacion)) {
-  salirConError(`ADO_AUTENTICACION="${autenticacion}" no es válido; usá pat, interactive, azcli, env o envvar`);
+if (!['pat', 'interactive', 'azcli', 'env', 'envvar'].includes(authentication)) {
+  exitWithError(`ADO_AUTHENTICATION="${authentication}" is not valid; use pat, interactive, azcli, env or envvar`);
 }
-if (autenticacion === 'pat' && !pat) salirConError('falta ADO_PAT en el .env de la raíz');
-const dominioInvalido = dominios.find((d) => !/^[a-z-]+$/.test(d));
-if (dominioInvalido) salirConError(`ADO_DOMINIOS tiene un valor inválido: "${dominioInvalido}"`);
+if (authentication === 'pat' && !pat) exitWithError('ADO_PAT is missing from the root .env');
+const invalidDomain = domains.find((d) => !/^[a-z-]+$/.test(d));
+if (invalidDomain) exitWithError(`ADO_DOMAINS has an invalid value: "${invalidDomain}"`);
 
 const env = { ...process.env };
-if (autenticacion === 'pat') {
-  // El server pide base64 de "<email>:<pat>"; el email puede ser cualquier valor no vacío.
+if (authentication === 'pat') {
+  // The server expects base64 of "<email>:<pat>"; the email can be any non-empty value.
   env.PERSONAL_ACCESS_TOKEN = Buffer.from(`k0lmenia:${pat}`).toString('base64');
 }
-const proyecto = variable('ADO_PROYECTO');
-const equipo = variable('ADO_EQUIPO');
-if (proyecto) env.ado_mcp_project = proyecto;
-if (equipo) env.ado_mcp_team = equipo;
+const project = variable('ADO_PROJECT');
+const team = variable('ADO_TEAM');
+if (project) env.ado_mcp_project = project;
+if (team) env.ado_mcp_team = team;
 
-const args = [organizacion, '-a', autenticacion, '-d', ...dominios];
+const args = [organization, '-a', authentication, '-d', ...domains];
 const tenant = variable('ADO_TENANT');
 if (tenant) {
-  if (!/^[A-Za-z0-9.-]+$/.test(tenant)) salirConError('ADO_TENANT debe ser el ID (GUID) o el dominio del tenant');
+  if (!/^[A-Za-z0-9.-]+$/.test(tenant)) exitWithError('ADO_TENANT must be the tenant ID (GUID) or domain');
   args.push('-t', tenant);
 }
 
-lanzarNpx('azure-devops', '@azure-devops/mcp', args, env);
+launchNpx('azure-devops', '@azure-devops/mcp', args, env);

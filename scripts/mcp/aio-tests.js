@@ -1,24 +1,25 @@
 #!/usr/bin/env node
-// Lanzador del conector MCP aio-tests (ver CONECTORES.md).
-// El server de AIO Tests es remoto y su URL es propia de cada tenant, así que no puede ir fija
-// en .mcp.json. Este script toma AIO_MCP_URL y AIO_API_TOKEN del entorno o, si no están, del
-// .env de la raíz, y lo conecta por stdio con mcp-remote. El token viaja solo por variable de
-// entorno (mcp-remote la expande en el header); nunca queda en .mcp.json ni en los argumentos.
+// Launcher for the aio-tests MCP connector (see CONNECTORS.md).
+// The AIO Tests server is remote and its URL is specific to each tenant, so it can't be hardcoded
+// in .mcp.json. This script takes AIO_MCP_URL and AIO_API_TOKEN from the environment or, if they're
+// not there, from the root .env, and connects it over stdio with mcp-remote. The token travels only as
+// an environment variable (mcp-remote expands it into the header); it never ends up in .mcp.json or in
+// the arguments.
 //
-// Por stdout solo habla el server MCP: los mensajes de este script van a stderr.
-const { variable } = require('./leer-env');
-const { lanzarNpx } = require('./lanzar');
+// Only the MCP server talks on stdout: this script's messages go to stderr.
+const { variable } = require('./read-env');
+const { launchNpx } = require('./launch');
 
-function salirConError(mensaje) {
-  console.error(`aio-tests: ${mensaje} (ver .env.example y CONECTORES.md).`);
+function exitWithError(message) {
+  console.error(`aio-tests: ${message} (see .env.example and CONNECTORS.md).`);
   process.exit(1);
 }
 
 const url = variable('AIO_MCP_URL');
 const token = variable('AIO_API_TOKEN');
-if (!url) salirConError('falta AIO_MCP_URL en el .env de la raíz');
-if (!/^https:\/\/[A-Za-z0-9.\-/_:]+$/.test(url)) salirConError('AIO_MCP_URL no es una URL https válida');
-if (!token) salirConError('falta AIO_API_TOKEN en el .env de la raíz');
+if (!url) exitWithError('AIO_MCP_URL is missing from the root .env');
+if (!/^https:\/\/[A-Za-z0-9.\-/_:]+$/.test(url)) exitWithError('AIO_MCP_URL is not a valid https URL');
+if (!token) exitWithError('AIO_API_TOKEN is missing from the root .env');
 
 const env = { ...process.env, AIO_AUTH_HEADER: `Bearer ${token}` };
-lanzarNpx('aio-tests', 'mcp-remote', [url, '--header', 'Authorization:${AIO_AUTH_HEADER}'], env);
+launchNpx('aio-tests', 'mcp-remote', [url, '--header', 'Authorization:${AIO_AUTH_HEADER}'], env);

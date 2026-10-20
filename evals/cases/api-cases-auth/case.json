@@ -1,0 +1,28 @@
+{
+  "agent": "api-case-generator",
+  "description": "API cases from the repo's authentication contract (input/api/auth-endpoints.md): every documented response code, bodies in JSON and format negatives.",
+  "prompt": "Use the api-case-generator agent to generate the API cases for input/api/auth-endpoints.md.",
+  "inputs": [
+    {"from": "repo:input/api/auth-endpoints.md", "to": "input/api/auth-endpoints.md"}
+  ],
+  "budget_usd": 2,
+  "threshold": 80,
+  "checks": [
+    {"id": "file", "type": "exists", "description": "Saves the cases in output/api-cases/api-cases-<topic>.md",
+     "files": ["output/api-cases/api-cases-*.md"], "weight": 2},
+    {"id": "ids", "type": "count", "description": "At least 8 cases with ID TC-API-XXX",
+     "files": ["output/api-cases/api-cases-*.md"], "pattern": "TC-API-\\d{3}", "min": 8, "distinct": true, "weight": 2},
+    {"id": "endpoints", "type": "contains", "description": "Covers the endpoints of the contract",
+     "files": ["output/api-cases/api-cases-*.md"], "patterns": ["/auth/login", "/auth/forgot-password"]},
+    {"id": "codes", "type": "contains", "description": "Covers every documented response code (200, 400, 401, 423)",
+     "files": ["output/api-cases/api-cases-*.md"], "patterns": ["\\b200\\b", "\\b400\\b", "\\b401\\b", "\\b423\\b"], "weight": 3},
+    {"id": "lockout", "type": "contains", "description": "Tests the lockout after 3 failed attempts",
+     "files": ["output/api-cases/api-cases-*.md"], "patterns": ["(3|three)\\s*(failed\\s*)?(attempts|tries)|lock"]},
+    {"id": "no-reveal", "type": "contains", "description": "Tests that forgot-password does not reveal whether the email exists",
+     "files": ["output/api-cases/api-cases-*.md"], "patterns": ["((does not|doesn't|without) (reveal|disclos|indicat)|same (response|message)|nonexistent|non-existent|unregistered|not registered)"]},
+    {"id": "json", "type": "count", "description": "The bodies go in ```json blocks",
+     "files": ["output/api-cases/api-cases-*.md"], "pattern": "```json", "min": 3},
+    {"id": "tables", "type": "normalized_tables", "description": "Runs the tables through format_tables.py",
+     "files": ["output/api-cases/api-cases-*.md"]}
+  ]
+}

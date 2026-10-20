@@ -1,0 +1,15 @@
+# Test mailbox for the email-verifier agent and the k0lmena email steps.
+#   docker compose -f tools/mailpit/docker-compose.yml up -d
+# Web and API: http://localhost:8025 · SMTP for the app: localhost:1025 (no user and no TLS)
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: k0lmenia-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    environment:
+      MP_MAX_MESSAGES: 2000
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1

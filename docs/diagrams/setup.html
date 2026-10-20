@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>k0lmenIA · Getting started</title>
+<link rel="stylesheet" href="diagrams.css">
+<style>
+  .canvas { width: 1800px; }
+  .cols { display: grid; grid-template-columns: 1fr 1.08fr 1.12fr; gap: 22px; }
+  .col { background: rgba(249,176,6,0.025); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .col > h2 { margin: 0 0 4px; font-size: 24px; display: flex; align-items: center; gap: 12px; }
+  .col > p { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+  .num { width: 38px; height: 38px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 20px; font-weight: 800; color: var(--night); }
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; margin-bottom: 10px; }
+  .n { width: 30px; height: 30px; border-radius: 50%; background: var(--panel2); border: 1px solid var(--line); display: grid; place-items: center; font-weight: 800; font-size: 15px; }
+  .step b { font-size: 16px; display: block; margin-bottom: 4px; }
+  .step span { color: var(--muted); font-size: 13.5px; line-height: 1.4; display: block; }
+  .term { background: var(--terminal); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; margin-top: 6px; font-family: var(--mono); font-size: 14px; line-height: 1.65; color: var(--green); }
+  .term .c { color: var(--muted); }
+  .group { background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
+  .group .t { font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .group .t i { font-style: normal; font-size: 12.5px; color: var(--muted); font-weight: 400; }
+  .env { font-family: var(--mono); font-size: 13.5px; line-height: 1.6; margin-top: 6px; color: var(--text2); }
+  .env .k { color: var(--cyan); }
+  .env .v { color: var(--muted); }
+  .alert { border: 1px dashed var(--orange); border-radius: 12px; padding: 10px 14px; color: var(--honey); font-size: 14px; line-height: 1.45; margin-top: 4px; }
+  .prompt { background: var(--panel); border: 1px solid var(--line); border-radius: 14px 14px 14px 4px; padding: 10px 14px; margin-bottom: 10px; }
+  .prompt .q { font-size: 15.5px; font-style: italic; color: var(--text); }
+  .prompt .a { font-size: 13px; color: var(--muted); margin-top: 4px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .ag { font-family: var(--mono); font-size: 12.5px; padding: 1px 8px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--line); color: var(--text); }
+  .new { font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: rgba(201,166,107,0.16); color: var(--cyan); text-transform: uppercase; letter-spacing: .5px; }
+  .fam { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); font-weight: 700; margin: 12px 0 8px 2px; }
+  .fam:first-of-type { margin-top: 0; }
+  .footer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 22px; }
+</style></head>
+<body><div class="canvas" id="capture">
+  <div class="title">
+    <div><h1>k0lmenIA <span class="muted">· Getting started</span></h1>
+      <p class="sub">Install, set your tokens in the <code>.env</code> and start asking the agents for things</p></div>
+    <div class="brand">QARMY · Underc0de</div>
+  </div>
+
+  <div class="cols">
+    <!-- 1 · STEPS -->
+    <div class="col">
+      <h2><span class="num" style="background:var(--green)">1</span>Get it running</h2>
+      <p>A few minutes, only once</p>
+      <div class="step"><div class="n">1</div><div><b>Requirements</b><span>Python 3.10+ · Node.js 20+ (22 LTS recommended) · VS Code + Claude Code (Claude account or Anthropic API). Optional: Java 8+ (JMeter), Docker (security), JDK + Android SDK or Xcode (mobile).</span></div></div>
+      <div class="step"><div class="n">2</div><div><b>Clone the repository</b>
+        <div class="term">git clone https://github.com/underc0delabs/k0lmenIA.git<br>cd k0lmenIA</div></div></div>
+      <div class="step"><div class="n">3</div><div><b>Install the dependencies</b>
+        <div class="term">pip install -r requirements.txt <span class="c"># Mac/Linux: pip3</span><br>npm install <span class="c">                   # installs k0lmena</span></div></div></div>
+      <div class="step"><div class="n">4</div><div><b>Create your <code>.env</code></b>
+        <div class="term">cp .env.example .env <span class="c">          # PowerShell: copy</span></div>
+        <span>Fill in only what you'll use (column 2).</span></div></div>
+      <div class="step"><div class="n">5</div><div><b>Check that everything is ready</b>
+        <div class="term">npm run doctor <span class="c">               # says what's missing and how</span></div></div></div>
+      <div class="step"><div class="n">6</div><div><b>Open Claude Code</b>
+        <div class="term">code .<br>claude <span class="c">                       # asks you to sign in the 1st time</span></div>
+        <span>For extra browsers: <code>cd tools/k0lmena</code> · <code>npx playwright install chromium firefox webkit</code></span></div></div>
+    </div>
+
+    <!-- 2 · TOKENS -->
+    <div class="col">
+      <h2><span class="num" style="background:var(--blue)">2</span>Set tokens in the <code>.env</code></h2>
+      <p>A single file, at the root · never versioned · the agents never ask for tokens in the chat</p>
+      <div class="group"><div class="t">App under test <i>E2E, mappers, exploratory, visual</i></div>
+        <div class="env"><span class="k">APP_URL</span>=<span class="v">https://staging.your-app.com</span><br><span class="k">APP_USER</span>=<span class="v">…</span> · <span class="k">APP_PASSWORD</span>=<span class="v">…</span><br><span class="k">BASEURL</span>=<span class="v">(if empty, uses APP_URL)</span></div></div>
+      <div class="group" style="border-left-color:var(--violet)"><div class="t">API <i>Newman, API suite, k6</i></div>
+        <div class="env"><span class="k">API_BASEURL</span>=<span class="v">https://api.your-app.com</span> · <span class="k">API_TOKEN</span>=<span class="v">&lt;your-token&gt;</span></div></div>
+      <div class="group" style="border-left-color:var(--cyan)"><div class="t">Jira and Confluence <i>atlassian connector (active)</i></div>
+        <div class="env"><span class="v">OAuth from /mcp, or with a token:</span><br><span class="k">ATLASSIAN_MCP_AUTHENTICATION</span>=<span class="v">token</span><br><span class="k">JIRA_BASE_URL</span> · <span class="k">JIRA_EMAIL</span> · <span class="k">JIRA_API_TOKEN</span></div></div>
+      <div class="group" style="border-left-color:var(--green)"><div class="t">Test management <i>scripts/management</i></div>
+        <div class="env"><span class="k">MANAGEMENT_TOOL</span>=<span class="v">xray-cloud | xray-dc | qtm4j | aio</span><br><span class="k">MANAGEMENT_PROJECT</span>=<span class="v">PROJ</span><br><span class="v">Xray Cloud:</span> <span class="k">XRAY_CLOUD_CLIENT_ID</span> · <span class="k">XRAY_CLOUD_CLIENT_SECRET</span><br><span class="v">Xray DC:</span> <span class="k">XRAY_DC_URL</span> · <span class="k">XRAY_DC_TOKEN</span><br><span class="v">QMetry:</span> <span class="k">QTM4J_API_KEY</span> · <span class="v">AIO:</span> <span class="k">AIO_API_TOKEN</span><br><span class="v">Optional:</span> <span class="k">ESTIMATION_FACTOR</span>=<span class="v">1.3 (estimated time × 1.3)</span></div></div>
+      <div class="group" style="border-left-color:var(--violet)"><div class="t">App repository <i>project-documenter</i></div>
+        <div class="env"><span class="k">REPO_PROVIDER</span>=<span class="v">github | gitlab | azure-repos | bitbucket</span><br><span class="k">REPO_NAME</span>=<span class="v">my-company/my-app</span> · <span class="k">GITHUB_TOKEN</span> · <span class="k">GITLAB_TOKEN</span></div></div>
+      <div class="group" style="border-left-color:var(--orange)"><div class="t">Azure DevOps <i>azure-devops connector</i></div>
+        <div class="env"><span class="k">ADO_ORGANIZATION</span> · <span class="k">ADO_PAT</span> · <span class="k">ADO_PROJECT</span></div></div>
+      <div class="group" style="border-left-color:var(--gray)"><div class="t">Databases and security</div>
+        <div class="env"><span class="k">DB_CONNECTIONS</span>=<span class="v">main</span> + <span class="k">DB_MAIN_ENGINE</span> · <span class="k">_HOST</span> · <span class="k">_DATABASE</span> · <span class="k">_USER</span> · <span class="k">_PASSWORD</span><br><span class="k">SECURITY_AUTHORIZED_URLS</span>=<span class="v">https://staging.your-app.com</span></div></div>
+      <div class="group" style="border-left-color:var(--cyan)"><div class="t">Email, languages, roles and notifications <i>email, translator, permissions, Slack/Teams</i></div>
+        <div class="env"><span class="k">MAILPIT_URL</span>=<span class="v">http://localhost:8025</span><br><span class="k">TRANSLATOR_LANGUAGES</span>=<span class="v">en-US,es-AR,pt-BR</span><br><span class="k">PERMISSIONS_ROLES</span>=<span class="v">admin,operator</span> + <span class="k">PERMISSIONS_&lt;ROLE&gt;_USER</span> · <span class="k">_PASSWORD</span><br><span class="k">SLACK_WEBHOOK_URL</span> · <span class="k">TEAMS_WEBHOOK_URL</span> · <span class="k">MONITORING_URLS</span><br><span class="v">Mailpit: docker compose -f tools/mailpit/docker-compose.yml up -d</span></div></div>
+      <div class="alert"><b>Optional connectors</b> (Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday, Asana, Trello, Notion, YouTrack, Shortcut, QMetry, AIO Tests, k0lmenaTMT, Appium): <code>npm run connector -- activate &lt;name&gt;</code>, restart Claude Code and check with <code>/mcp</code>. Use test credentials, never production ones.</div>
+    </div>
+
+    <!-- 3 · PROMPTS -->
+    <div class="col">
+      <h2><span class="num" style="background:var(--violet)">3</span>Ask the agents</h2>
+      <p>In natural language: Claude Code picks the agent (or you name it)</p>
+      <div class="fam">Analysis and design</div>
+      <div class="prompt"><div class="q">"Document the project"</div><div class="a"><span class="ag">project-documenter</span><span class="new">new</span> repository, stories, links and web app</div></div>
+      <div class="prompt"><div class="q">"Analyze story US-001 and tell me what's left to define"</div><div class="a"><span class="ag">story-analyst</span></div></div>
+      <div class="prompt"><div class="q">"Generate the test cases for PROJ-12"</div><div class="a"><span class="ag">manual-case-generator</span> Excel with estimated time + coverage</div></div>
+      <div class="prompt"><div class="q">"Review the US-001 test cases and tell me how long they take"</div><div class="a"><span class="ag">case-reviewer</span> score, duplicates and minutes</div></div>
+      <div class="prompt"><div class="q">"Which test cases should I run for PR #42?"</div><div class="a"><span class="ag">test-case-selector</span>  risk-based selection + command</div></div>
+      <div class="prompt"><div class="q">"Is this bug already filed in Jira?"</div><div class="a"><span class="ag">bug-triager</span><span class="new">new</span> duplicates and regressions</div></div>
+      <div class="prompt"><div class="q">"What happens if a blocked user tries to pay?"</div><div class="a"><span class="ag">project-consultant</span><span class="new">new</span> answers with the source</div></div>
+      <div class="prompt"><div class="q">"Build the onboarding for Ana, our new manual QA"</div><div class="a"><span class="ag">onboarding-guide</span><span class="new">new</span> plan and checklist</div></div>
+      <div class="fam">Live execution</div>
+      <div class="prompt"><div class="q">"Run a visual regression of qarmy.ar"</div><div class="a"><span class="ag">pixel-perfect</span>  what shifted and by how many px</div></div>
+      <div class="prompt"><div class="q">"Evaluate the checkout's usability"</div><div class="a"><span class="ag">ux-evaluator</span> Nielsen's heuristics</div></div>
+      <div class="prompt"><div class="q">"Test the sign-up form's validations"</div><div class="a"><span class="ag">form-tester</span> field by field, without submitting</div></div>
+      <div class="prompt"><div class="q">"Test the admin, operator and guest permissions"</div><div class="a"><span class="ag">permissions-tester</span><span class="new">new</span> role × route matrix</div></div>
+      <div class="prompt"><div class="q">"What does the user see if the API goes down?"</div><div class="a"><span class="ag">resilience-tester</span><span class="new">new</span> simulated failures</div></div>
+      <div class="prompt"><div class="q">"Check that the welcome email reaches ana@test.com"</div><div class="a"><span class="ag">email-verifier</span> with Mailpit</div></div>
+      <div class="prompt"><div class="q">"Run exploratory tests on the site in the .env"</div><div class="a"><span class="ag">web-explorer</span> · also accessibility and speed</div></div>
+      <div class="fam">Automation with k0lmena</div>
+      <div class="prompt"><div class="q">"Automate the US-001 test cases in k0lmena"</div><div class="a"><span class="ag">web-mapper</span> then <code>npm test</code>, no tokens</div></div>
+      <div class="prompt"><div class="q">"Repair the tests that failed because of locators"</div><div class="a"><span class="ag">automation-repairer</span>  proposes, applies and verifies</div></div>
+      <div class="fam">Management and closing</div>
+      <div class="prompt"><div class="q">"Upload the US-001 test cases to Xray and create the Sprint 5 cycle"</div><div class="a"><span class="ag">test-manager</span></div></div>
+      <div class="prompt"><div class="q">"Build the closing report for US-001"</div><div class="a"><span class="ag">closure-report-generator</span> go / no-go</div></div>
+      <div class="prompt"><div class="q">"Build the sprint 12 quality dashboard"</div><div class="a"><span class="ag">quality-dashboard</span><span class="new">new</span> management summary</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="box accent-blue"><div class="et">If a fact is missing</div><p>The agent doesn't make it up: it returns <b>"I need you to confirm"</b> and Claude asks you.</p></div>
+    <div class="box accent-orange"><div class="et">Actions with side effects</div><p>Writing to a database, creating data in Jira/Xray or running load: always with your ok.</p></div>
+    <div class="box accent-green"><div class="et">Saves tokens</div><p>What's automated runs with <code>npm test</code>, with no agents.</p></div>
+    <div class="box accent-violet"><div class="et">Everything ends up in</div><p><code>output/</code> (HTML reports, with the last 5 runs in <code>history/</code>) and <code>tools/k0lmena/</code> (automation).</p></div>
+  </div>
+</div></body></html>

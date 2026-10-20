@@ -1,4 +1,4 @@
-# API — Autenticación
+# API — Authentication
 
 **Base URL:** `https://api.qarmy-demo.ar/v1`
 
@@ -6,33 +6,33 @@
 
 ## POST /auth/login
 
-Inicia sesión y devuelve un token.
+Logs in and returns a token.
 
 **Request body** (JSON):
 
 ```json
 {
-  "email": "string (formato email)",
+  "email": "string (email format)",
   "password": "string"
 }
 ```
 
-**Respuestas:**
+**Responses:**
 
 ```
 +--------------------+-----------------------------------------------+-----------------------------+
-| Status             | Cuerpo                                        | Cuándo                      |
+| Status             | Body                                          | When                        |
 +====================+===============================================+=============================+
-| `200 OK`           | `{ "token": "string (JWT)", "expiresIn": 1800 | Credenciales válidas        |
+| `200 OK`           | `{ "token": "string (JWT)", "expiresIn": 1800 | Valid credentials           |
 |                    | }`                                            |                             |
 +--------------------+-----------------------------------------------+-----------------------------+
-| `400 Bad Request`  | `{ "error": "Email o contraseña con formato   | Body mal formado            |
-|                    | inválido" }`                                  |                             |
+| `400 Bad Request`  | `{ "error": "Email or password with an        | Malformed body              |
+|                    | invalid format" }`                            |                             |
 +--------------------+-----------------------------------------------+-----------------------------+
-| `401 Unauthorized` | `{ "error": "Credenciales incorrectas" }`     | Email/password no coinciden |
+| `401 Unauthorized` | `{ "error": "Invalid credentials" }`          | Email/password do not match |
 +--------------------+-----------------------------------------------+-----------------------------+
-| `423 Locked`       | `{ "error": "Cuenta bloqueada por intentos    | 3 intentos fallidos         |
-|                    | fallidos" }`                                  |                             |
+| `423 Locked`       | `{ "error": "Account locked due to failed     | 3 failed attempts           |
+|                    | attempts" }`                                  |                             |
 +--------------------+-----------------------------------------------+-----------------------------+
 ```
 
@@ -40,7 +40,7 @@ Inicia sesión y devuelve un token.
 
 ## POST /auth/forgot-password
 
-Solicita el envío de un enlace de recuperación.
+Requests that a recovery link be sent.
 
 **Request body** (JSON):
 
@@ -48,15 +48,15 @@ Solicita el envío de un enlace de recuperación.
 { "email": "string" }
 ```
 
-**Respuestas:**
+**Responses:**
 
 ```
 +-------------------+------------------------------------------------+----------------------------------------+
-| Status            | Cuerpo                                         | Cuándo                                 |
+| Status            | Body                                           | When                                   |
 +===================+================================================+========================================+
-| `200 OK`          | `{ "message": "Si el email existe, se envió un | Siempre (no revela si el email existe) |
-|                   | enlace" }`                                     |                                        |
+| `200 OK`          | `{ "message": "If the email exists, a link was | Always (it does not reveal whether the |
+|                   | sent" }`                                       | email exists)                          |
 +-------------------+------------------------------------------------+----------------------------------------+
-| `400 Bad Request` | `{ "error": "Email con formato inválido" }`    | Email mal formado                      |
+| `400 Bad Request` | `{ "error": "Email with an invalid format" }`  | Malformed email                        |
 +-------------------+------------------------------------------------+----------------------------------------+
 ```

@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-Revisa que el entorno de k0lmenIA esté listo y dice qué falta y cómo resolverlo.
+Checks that the k0lmenIA environment is ready and tells you what is missing and how to fix it.
 
-Uso (desde la raíz del repo):
-    python scripts/doctor.py [--seccion <nombre>] [--rapido] [--json]     (en Mac/Linux: python3)
+Usage (from the repo root):
+    python scripts/doctor.py [--section <name>] [--quick] [--json]     (on Mac/Linux: python3)
     npm run doctor
 
-Secciones: python, node, herramientas, fuentes, env, integraciones, conectores, repo y extras.
-  --seccion   revisa solo una (o varias, separadas por coma): --seccion env,integraciones
-  --rapido    saltea los chequeos lentos (red, Docker, Mailpit)
-  --json      salida para máquinas: [{"seccion", "estado": ok|aviso|falta, "texto", "ayuda"}]
+Sections: python, node, tools, fonts, env, integrations, connectors, repo and extras.
+  --section   checks only one (or several, comma-separated): --section env,integrations
+  --quick     skips the slow checks (network, Docker, Mailpit)
+  --json      machine-readable output: [{"section", "status": ok|warning|missing, "text", "help"}]
 
-Revisa Python y sus librerías, Node/npm, k0lmena y los navegadores de Playwright, Newman, k6, JMeter,
-Java, Docker, Mailpit, las fuentes de los informes y de la web, el .env (y que cada bloque que uses
-esté completo y coherente), los conectores MCP habilitados, git y lo que necesitan el portal, el
-monitoreo y los evals. Nunca muestra valores del .env: solo si cada variable está, falta o es inválida.
-Sale con código 1 si falta algo obligatorio.
+Checks Python and its libraries, Node/npm, k0lmena and the Playwright browsers, Newman, k6, JMeter,
+Java, Docker, Mailpit, the fonts for the reports and the website, the .env (and that every block you use
+is complete and consistent), the enabled MCP connectors, git and what the portal, monitoring and the
+evals need. It never shows .env values: only whether each variable is present, missing or invalid.
+Exits with code 1 if something required is missing.
 """
 import argparse
 import json
@@ -27,20 +27,20 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
-RAIZ = Path(__file__).resolve().parents[1]
-K0 = RAIZ / "herramientas" / "k0lmena"
-sys.path.insert(0, str(RAIZ / "scripts"))
-from _env import leer_env, archivo_env  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+K0 = ROOT / "tools" / "k0lmena"
+sys.path.insert(0, str(ROOT / "scripts"))
+from _env import read_env, env_file  # noqa: E402
 
-OK, AVISO, FALTA = "OK  ", "!   ", "X   "
-resumen = {"ok": 0, "aviso": 0, "falta": 0}
-RESULTADOS = []
-_SALIDA = {"json": False, "seccion": ""}
+OK, WARNING, MISSING = "OK  ", "!   ", "X   "
+summary = {"ok": 0, "warning": 0, "missing": 0}
+RESULTS = []
+_OUTPUT = {"json": False, "section": ""}
 
-# Variables que necesita cada conector MCP para funcionar (las de OAuth no necesitan nada).
-# "A|B+C" = A, o bien B y C juntas. ADO_PAT solo hace falta si la autenticación es por PAT.
-VARIABLES_CONECTOR = {
-    "azure-devops": ["ADO_ORGANIZACION", "ADO_PAT"],
+# Variables each MCP connector needs to work (the OAuth ones need nothing).
+# "A|B+C" = A, or else B and C together. ADO_PAT is only needed if authentication is by PAT.
+CONNECTOR_VARIABLES = {
+    "azure-devops": ["ADO_ORGANIZATION", "ADO_PAT"],
     "qtm4j": ["QTM4J_API_KEY"],
     "qmetry": ["QMETRY_API_KEY"],
     "aio-tests": ["AIO_MCP_URL", "AIO_API_TOKEN"],
@@ -49,45 +49,45 @@ VARIABLES_CONECTOR = {
     "asana": ["ASANA_CLIENT_ID", "ASANA_CLIENT_SECRET"],
     "youtrack": ["YOUTRACK_URL", "YOUTRACK_TOKEN"],
 }
-# Se autorizan con tu cuenta (OAuth) desde /mcp; los de token opcional, solo si ese token está vacío.
-CONECTORES_OAUTH = ("atlassian", "figma", "figma-desktop", "clickup", "trello", "notion", "shortcut", "asana")
-CONECTORES_TOKEN_OPCIONAL = {"gitlab": "GITLAB_TOKEN", "linear": "LINEAR_API_KEY", "monday": "MONDAY_API_TOKEN"}
-VARIABLES_GESTION = {
-    "xray-cloud": ["GESTION_PROYECTO", "XRAY_CLOUD_CLIENT_ID", "XRAY_CLOUD_CLIENT_SECRET", "JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"],
-    "xray-dc": ["GESTION_PROYECTO", "XRAY_DC_URL", "XRAY_DC_TOKEN|XRAY_DC_USER+XRAY_DC_PASSWORD"],
-    "qtm4j": ["GESTION_PROYECTO", "QTM4J_API_KEY"],
-    "aio": ["GESTION_PROYECTO", "AIO_API_TOKEN"],
+# Authorized with your account (OAuth) from /mcp; the optional-token ones, only if that token is empty.
+OAUTH_CONNECTORS = ("atlassian", "figma", "figma-desktop", "clickup", "trello", "notion", "shortcut", "asana")
+OPTIONAL_TOKEN_CONNECTORS = {"gitlab": "GITLAB_TOKEN", "linear": "LINEAR_API_KEY", "monday": "MONDAY_API_TOKEN"}
+MANAGEMENT_VARIABLES = {
+    "xray-cloud": ["MANAGEMENT_PROJECT", "XRAY_CLOUD_CLIENT_ID", "XRAY_CLOUD_CLIENT_SECRET", "JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"],
+    "xray-dc": ["MANAGEMENT_PROJECT", "XRAY_DC_URL", "XRAY_DC_TOKEN|XRAY_DC_USER+XRAY_DC_PASSWORD"],
+    "qtm4j": ["MANAGEMENT_PROJECT", "QTM4J_API_KEY"],
+    "aio": ["MANAGEMENT_PROJECT", "AIO_API_TOKEN"],
 }
-# Conector que necesita cada proveedor del repositorio de la app (documentador-proyecto).
-CONECTOR_REPO = {"github": "github", "gitlab": "gitlab", "azure-repos": "azure-devops", "bitbucket": "atlassian"}
-MOTORES_DB = ("postgres", "mysql", "mariadb", "sqlserver", "mongodb")
-FUENTES_INFORMES = ("saira.woff2", "inter.woff2", "jetbrains-mono.woff2")
+# Connector each app repository provider needs (project-documenter).
+REPO_CONNECTOR = {"github": "github", "gitlab": "gitlab", "azure-repos": "azure-devops", "bitbucket": "atlassian"}
+DB_ENGINES = ("postgres", "mysql", "mariadb", "sqlserver", "mongodb")
+REPORT_SOURCES = ("saira.woff2", "inter.woff2", "jetbrains-mono.woff2")
 
 
-def faltantes(nombres, env):
-    """Las variables que faltan; "A|B+C" se cumple con A o con B y C."""
-    salida = []
-    for nombre in nombres:
-        opciones = [o.split("+") for o in nombre.split("|")]
-        if not any(all(env.get(v) for v in grupo) for grupo in opciones):
-            salida.append(" o ".join("+".join(g) for g in opciones))
-    return salida
+def missing(names, env):
+    """The variables that are missing; "A|B+C" is satisfied by A or by B and C."""
+    output = []
+    for name in names:
+        options = [o.split("+") for o in name.split("|")]
+        if not any(all(env.get(v) for v in group) for group in options):
+            output.append(" or ".join("+".join(g) for g in options))
+    return output
 
 
-def linea(estado, texto, ayuda=""):
-    clave = {OK: "ok", AVISO: "aviso", FALTA: "falta"}[estado]
-    resumen[clave] += 1
-    RESULTADOS.append({"seccion": _SALIDA["seccion"], "estado": clave, "texto": texto, "ayuda": ayuda})
-    if not _SALIDA["json"]:
-        print(f"  {estado}{texto}" + (f"\n        → {ayuda}" if ayuda else ""))
+def line(status, text, help=""):
+    key = {OK: "ok", WARNING: "warning", MISSING: "missing"}[status]
+    summary[key] += 1
+    RESULTS.append({"section": _OUTPUT["section"], "status": key, "text": text, "help": help})
+    if not _OUTPUT["json"]:
+        print(f"  {status}{text}" + (f"\n        → {help}" if help else ""))
 
 
-def nota(texto):
-    if not _SALIDA["json"]:
-        print(f"        → {texto}")
+def note(text):
+    if not _OUTPUT["json"]:
+        print(f"        → {text}")
 
 
-def comando(*args, timeout=30):
+def command(*args, timeout=30):
     try:
         r = subprocess.run(list(args), capture_output=True, text=True, timeout=timeout,
                            shell=(os.name == "nt" and args[0] in ("npm", "npx", "newman", "claude")))
@@ -96,412 +96,412 @@ def comando(*args, timeout=30):
         return None
 
 
-def version_mayor(texto):
-    m = re.search(r"(\d+)\.(\d+)", texto or "")
+def major_version(text):
+    m = re.search(r"(\d+)\.(\d+)", text or "")
     return (int(m.group(1)), int(m.group(2))) if m else None
 
 
-def es_url(valor):
-    u = urlparse((valor or "").strip())
+def is_url(value):
+    u = urlparse((value or "").strip())
     return u.scheme in ("http", "https") and bool(u.netloc)
 
 
-def seccion(clave, titulo):
-    _SALIDA["seccion"] = clave
-    if not _SALIDA["json"]:
-        print(f"\n{titulo}")
+def section(key, title):
+    _OUTPUT["section"] = key
+    if not _OUTPUT["json"]:
+        print(f"\n{title}")
 
 
-def leer_entorno():
-    archivo = archivo_env()
-    return archivo, {**leer_env(archivo), **{k: v for k, v in os.environ.items()}}
+def read_environment():
+    file = env_file()
+    return file, {**read_env(file), **{k: v for k, v in os.environ.items()}}
 
 
-# ------------------------------------------------------------------ secciones
-def revisar_python(ctx):
-    seccion("python", "Python")
+# ------------------------------------------------------------------ sections
+def check_python(ctx):
+    section("python", "Python")
     py = ctx["py"]
     v = sys.version_info
     if (v.major, v.minor) >= (3, 10):
-        linea(OK, f"Python {v.major}.{v.minor}.{v.micro}")
+        line(OK, f"Python {v.major}.{v.minor}.{v.micro}")
     else:
-        linea(FALTA, f"Python {v.major}.{v.minor} (se necesita 3.10 o superior)", "Instalá Python 3.10+ desde https://www.python.org/downloads/")
-    faltan = [m for m in ("openpyxl", "tabulate", "requests") if not _importable(m)]
-    if faltan:
-        linea(AVISO, f"Faltan librerías: {', '.join(faltan)} (los scripts las instalan solos la primera vez)",
-              f"{py} -m pip install -r requirements.txt")
+        line(MISSING, f"Python {v.major}.{v.minor} (3.10 or later is required)", "Install Python 3.10+ from https://www.python.org/downloads/")
+    lacking = [m for m in ("openpyxl", "tabulate", "requests") if not _importable(m)]
+    if lacking:
+        line(WARNING, f"Missing libraries: {', '.join(lacking)} (the scripts install them on their own the first time)",
+             f"{py} -m pip install -r requirements.txt")
     else:
-        linea(OK, "Librerías de Python (openpyxl, tabulate, requests)")
-    for modulo, para, paquete in (("yaml", "colecciones de Insomnia v5 (.yaml)", "pyyaml"),
-                                  ("pypdf", "la portada sin pie del PDF de la documentación (node docs/generar.js)", "pypdf")):
-        if _importable(modulo):
-            linea(OK, f"{paquete} ({para})")
+        line(OK, "Python libraries (openpyxl, tabulate, requests)")
+    for module, purpose, package in (("yaml", "Insomnia v5 collections (.yaml)", "pyyaml"),
+                                     ("pypdf", "the cover page without footer in the documentation PDF (node docs/generate.js)", "pypdf")):
+        if _importable(module):
+            line(OK, f"{package} ({purpose})")
         else:
-            linea(AVISO, f"{paquete} no está instalado (opcional: {para})", f"{py} -m pip install {paquete}")
+            line(WARNING, f"{package} is not installed (optional: {purpose})", f"{py} -m pip install {package}")
 
 
-def revisar_node(ctx):
-    seccion("node", "Node.js y k0lmena")
-    node = comando("node", "--version")
+def check_node(ctx):
+    section("node", "Node.js and k0lmena")
+    node = command("node", "--version")
     if not node:
-        linea(FALTA, "Node.js no está instalado", "Instalá Node.js 22 LTS desde https://nodejs.org")
-    elif version_mayor(node) and version_mayor(node)[0] >= 20:
-        linea(OK, f"Node.js {node}" + ("" if version_mayor(node)[0] >= 22 else " (mobile necesita 22+)"))
+        line(MISSING, "Node.js is not installed", "Install Node.js 22 LTS from https://nodejs.org")
+    elif major_version(node) and major_version(node)[0] >= 20:
+        line(OK, f"Node.js {node}" + ("" if major_version(node)[0] >= 22 else " (mobile needs 22+)"))
     else:
-        linea(FALTA, f"Node.js {node} (se necesita 20 o superior; 22 LTS recomendado)", "Actualizá Node.js desde https://nodejs.org")
+        line(MISSING, f"Node.js {node} (20 or later is required; 22 LTS recommended)", "Update Node.js from https://nodejs.org")
     if (K0 / "node_modules").exists():
-        linea(OK, "k0lmena instalado (herramientas/k0lmena/node_modules)")
+        line(OK, "k0lmena installed (tools/k0lmena/node_modules)")
         if not (K0 / "node_modules" / "playwright").exists():
-            linea(FALTA, "Falta Playwright dentro de k0lmena", "npm install   (desde la raíz del repo)")
+            line(MISSING, "Playwright is missing inside k0lmena", "npm install   (from the repo root)")
     else:
-        linea(FALTA, "k0lmena no está instalado", "npm install   (desde la raíz del repo)")
-    navegadores = _carpeta_playwright()
-    if navegadores and any(navegadores.glob("chromium*")):
-        linea(OK, "Navegadores de Playwright")
+        line(MISSING, "k0lmena is not installed", "npm install   (from the repo root)")
+    browsers = _playwright_folder()
+    if browsers and any(browsers.glob("chromium*")):
+        line(OK, "Playwright browsers")
     else:
-        linea(AVISO, "No encuentro los navegadores de Playwright (web y ejecución E2E)", "cd herramientas/k0lmena && npx playwright install chromium")
-    faltan = [n for n in ("firefox", "webkit") if not (navegadores and any(navegadores.glob(f"{n}-*")))]
-    if faltan:
-        linea(AVISO, f"Sin {' ni '.join(faltan)} (opcionales: solo para el agente cross-browser)",
-              f"cd herramientas/k0lmena && npx playwright install {' '.join(faltan)}")
+        line(WARNING, "Can't find the Playwright browsers (web and E2E runs)", "cd tools/k0lmena && npx playwright install chromium")
+    lacking = [n for n in ("firefox", "webkit") if not (browsers and any(browsers.glob(f"{n}-*")))]
+    if lacking:
+        line(WARNING, f"No {' or '.join(lacking)} (optional: only for the cross-browser agent)",
+             f"cd tools/k0lmena && npx playwright install {' '.join(lacking)}")
     else:
-        linea(OK, "Firefox y WebKit (cross-browser)")
-    if ctx["rapido"]:
-        linea(AVISO, "Newman no revisado (--rapido)")
-    elif comando("newman", "--version", timeout=15):
-        linea(OK, "Newman (colecciones de Postman, Bruno e Insomnia)")
+        line(OK, "Firefox and WebKit (cross-browser)")
+    if ctx["quick"]:
+        line(WARNING, "Newman not checked (--quick)")
+    elif command("newman", "--version", timeout=15):
+        line(OK, "Newman (Postman, Bruno and Insomnia collections)")
     else:
-        linea(AVISO, "Newman no está instalado (solo para ejecutor-api)", "npm install -g newman")
+        line(WARNING, "Newman is not installed (only for api-runner)", "npm install -g newman")
 
 
-def revisar_herramientas(ctx):
-    seccion("herramientas", "Performance, seguridad y correos (opcionales)")
+def check_tools(ctx):
+    section("tools", "Performance, security and emails (optional)")
     k6 = K0 / "tools" / "k6" / ("k6.exe" if os.name == "nt" else "k6")
-    linea(OK, "k6") if k6.exists() or shutil.which("k6") else linea(AVISO, "k6 no está instalado", "npm run bootstrap:k6")
+    line(OK, "k6") if k6.exists() or shutil.which("k6") else line(WARNING, "k6 is not installed", "npm run bootstrap:k6")
     jmeter = list((K0 / "tools" / "jmeter").glob("apache-jmeter-*/bin/ApacheJMeter.jar")) if (K0 / "tools" / "jmeter").exists() else []
-    linea(OK, "JMeter") if jmeter or os.environ.get("JMETER_HOME") else linea(AVISO, "JMeter no está instalado", "npm run bootstrap:jmeter")
-    java = comando("java", "-version", timeout=10)
+    line(OK, "JMeter") if jmeter or os.environ.get("JMETER_HOME") else line(WARNING, "JMeter is not installed", "npm run bootstrap:jmeter")
+    java = command("java", "-version", timeout=10)
     if java:
-        linea(OK, f"Java ({java.splitlines()[0]})")
+        line(OK, f"Java ({java.splitlines()[0]})")
     else:
-        linea(AVISO, "Java no está instalado (lo necesita JMeter)", "Instalá Java 8+ (por ejemplo, Temurin 21: https://adoptium.net)")
+        line(WARNING, "Java is not installed (JMeter needs it)", "Install Java 8+ (for example, Temurin 21: https://adoptium.net)")
     if shutil.which("ffmpeg") and shutil.which("ffprobe"):
-        linea(OK, "ffmpeg y ffprobe (streaming, playback y calidad de imagen)")
+        line(OK, "ffmpeg and ffprobe (streaming, playback and image quality)")
     else:
-        linea(AVISO, "ffmpeg/ffprobe no están instalados (para probador-streaming y calidad-imagen)",
-              "Instalá ffmpeg: winget install Gyan.FFmpeg · brew install ffmpeg · apt install ffmpeg")
+        line(WARNING, "ffmpeg/ffprobe are not installed (for streaming-tester and image-quality-analyst)",
+             "Install ffmpeg: winget install Gyan.FFmpeg · brew install ffmpeg · apt install ffmpeg")
     if shutil.which("sf"):
-        linea(OK, "Salesforce CLI (sf) instalada (para probador-salesforce)")
+        line(OK, "Salesforce CLI (sf) installed (for salesforce-tester)")
     else:
-        linea(AVISO, "Salesforce CLI (sf) no está instalada (solo para probador-salesforce)",
-              "Instalala si vas a probar Salesforce: npm install --global @salesforce/cli")
+        line(WARNING, "Salesforce CLI (sf) is not installed (only for salesforce-tester)",
+             "Install it if you are going to test Salesforce: npm install --global @salesforce/cli")
     if shutil.which("shopify"):
-        linea(OK, "Shopify CLI instalada (Theme Check del probador-shopify)")
+        line(OK, "Shopify CLI installed (shopify-tester Theme Check)")
     else:
-        linea(AVISO, "Shopify CLI no está instalada (solo para Theme Check del probador-shopify)",
-              "Instalala si vas a revisar el código de un tema: npm install --global @shopify/cli")
+        line(WARNING, "Shopify CLI is not installed (only for the shopify-tester Theme Check)",
+             "Install it if you are going to review a theme's code: npm install --global @shopify/cli")
     if shutil.which("wp"):
-        linea(OK, "WP-CLI instalada (para probador-wordpress --wp-cli)")
+        line(OK, "WP-CLI installed (for wordpress-tester --wp-cli)")
     else:
-        linea(AVISO, "WP-CLI no está instalada (opcional para probador-wordpress)",
-              "Instalala si tenés el sitio local: https://wp-cli.org (o poné WORDPRESS_WP_CLI en el .env si corre en Docker)")
-    for cmd, nombre, para, como in (
-            ("pip-audit", "pip-audit", "SCA de Python del analista-dependencias", "pip install pip-audit"),
-            ("osv-scanner", "osv-scanner", "SCA multi-ecosistema del analista-dependencias", "https://google.github.io/osv-scanner/"),
-            ("semgrep", "semgrep", "SAST del analista-codigo-seguro", "pip install semgrep")):
+        line(WARNING, "WP-CLI is not installed (optional for wordpress-tester)",
+             "Install it if you have the site locally: https://wp-cli.org (or set WORDPRESS_WP_CLI in the .env if it runs in Docker)")
+    for cmd, name, purpose, how in (
+            ("pip-audit", "pip-audit", "dependency-analyst Python SCA", "pip install pip-audit"),
+            ("osv-scanner", "osv-scanner", "dependency-analyst multi-ecosystem SCA", "https://google.github.io/osv-scanner/"),
+            ("semgrep", "semgrep", "secure-code-analyst SAST", "pip install semgrep")):
         if shutil.which(cmd):
-            linea(OK, f"{nombre} instalado ({para})")
+            line(OK, f"{name} installed ({purpose})")
         else:
-            linea(AVISO, f"{nombre} no está instalado (opcional, para el {para})", f"Instalalo si vas a usarlo: {como}")
-    # Librerías de Python para SAP (pywin32) y escritorio (pywinauto) — solo Windows
+            line(WARNING, f"{name} is not installed (optional, for the {purpose})", f"Install it if you are going to use it: {how}")
+    # Python libraries for SAP (pywin32) and desktop (pywinauto) — Windows only
     import importlib.util
-    for modulo, nombre, para, como in (
-            ("win32com", "pywin32", "SAP GUI Scripting del probador-sap", "pip install pywin32"),
-            ("pywinauto", "pywinauto", "árbol de controles del probador-desktop", "pip install pywinauto")):
-        if importlib.util.find_spec(modulo):
-            linea(OK, f"{nombre} instalado ({para})")
+    for module, name, purpose, how in (
+            ("win32com", "pywin32", "sap-tester SAP GUI Scripting", "pip install pywin32"),
+            ("pywinauto", "pywinauto", "desktop-tester control tree", "pip install pywinauto")):
+        if importlib.util.find_spec(module):
+            line(OK, f"{name} installed ({purpose})")
         elif sys.platform == "win32":
-            linea(AVISO, f"{nombre} no está instalado (opcional, para el {para})", f"Instalalo si vas a usarlo: {como}")
+            line(WARNING, f"{name} is not installed (optional, for the {purpose})", f"Install it if you are going to use it: {how}")
         else:
-            linea(OK, f"{nombre} no aplica (solo Windows, para el {para})")
+            line(OK, f"{name} does not apply (Windows only, for the {purpose})")
     if shutil.which("appium"):
-        linea(OK, "Appium instalado (probador-mobile y, con WinAppDriver, probador-desktop)")
+        line(OK, "Appium installed (mobile-tester and, with WinAppDriver, desktop-tester)")
     else:
-        linea(AVISO, "Appium no está instalado (opcional, para probador-mobile / WinAppDriver en escritorio)",
-              "Instalalo si vas a automatizar mobile o escritorio con Appium: npm install -g appium (y activá el conector con npm run conector -- activar appium)")
+        line(WARNING, "Appium is not installed (optional, for mobile-tester / WinAppDriver on desktop)",
+             "Install it if you are going to automate mobile or desktop with Appium: npm install -g appium (and enable the connector with npm run connector -- activate appium)")
     if not shutil.which("docker"):
-        linea(AVISO, "Docker no está instalado (lo necesitan el escaneo de seguridad con ZAP y Mailpit)",
-              "Instalá Docker Desktop: https://www.docker.com/products/docker-desktop/")
-    elif ctx["rapido"]:
-        linea(OK, "Docker instalado (no se revisó si está corriendo: --rapido)")
-    elif comando("docker", "info", "--format", "{{.ServerVersion}}", timeout=8):
-        linea(OK, "Docker en ejecución")
+        line(WARNING, "Docker is not installed (the ZAP security scan and Mailpit need it)",
+             "Install Docker Desktop: https://www.docker.com/products/docker-desktop/")
+    elif ctx["quick"]:
+        line(OK, "Docker installed (didn't check whether it is running: --quick)")
+    elif command("docker", "info", "--format", "{{.ServerVersion}}", timeout=8):
+        line(OK, "Docker running")
     else:
-        linea(AVISO, "Docker está instalado pero no está corriendo", "Abrí Docker Desktop antes de un escaneo de seguridad o de usar Mailpit")
+        line(WARNING, "Docker is installed but not running", "Open Docker Desktop before a security scan or before using Mailpit")
     mailpit = ctx["env"].get("MAILPIT_URL", "")
-    if mailpit and not ctx["rapido"]:
-        if _responde(mailpit.rstrip("/") + "/api/v1/info"):
-            linea(OK, "Mailpit responde en MAILPIT_URL")
+    if mailpit and not ctx["quick"]:
+        if _responds(mailpit.rstrip("/") + "/api/v1/info"):
+            line(OK, "Mailpit responds at MAILPIT_URL")
         else:
-            linea(AVISO, "Mailpit no responde en MAILPIT_URL (solo para verificador-correos)",
-                  "docker compose -f herramientas/mailpit/docker-compose.yml up -d")
+            line(WARNING, "Mailpit does not respond at MAILPIT_URL (only for email-verifier)",
+                 "docker compose -f tools/mailpit/docker-compose.yml up -d")
 
 
-def revisar_fuentes(ctx):
-    seccion("fuentes", "Fuentes de los informes y de la web")
-    for carpeta, para in ((RAIZ / "scripts" / "fuentes", "los informes HTML"), (RAIZ / "docs" / "assets" / "fuentes", "la web y el PDF")):
-        faltan = [f for f in FUENTES_INFORMES if not (carpeta / f).exists()]
-        rel = carpeta.relative_to(RAIZ).as_posix()
-        if faltan:
-            linea(AVISO, f"Faltan fuentes en {rel}: {', '.join(faltan)} ({para} usan las del sistema)",
-                  "Restaurá la carpeta desde el repositorio (git checkout -- " + rel + ")")
+def check_sources(ctx):
+    section("fonts", "Fonts for the reports and the website")
+    for folder, purpose in ((ROOT / "scripts" / "fonts", "the HTML reports"), (ROOT / "docs" / "assets" / "fonts", "the website and the PDF")):
+        lacking = [f for f in REPORT_SOURCES if not (folder / f).exists()]
+        rel = folder.relative_to(ROOT).as_posix()
+        if lacking:
+            line(WARNING, f"Fonts missing in {rel}: {', '.join(lacking)} ({purpose} use the system fonts)",
+                 "Restore the folder from the repository (git checkout -- " + rel + ")")
         else:
-            linea(OK, f"Saira, Inter y JetBrains Mono para {para}")
+            line(OK, f"Saira, Inter and JetBrains Mono for {purpose}")
 
 
-def revisar_env(ctx):
-    seccion("env", "Configuración (.env)")
-    archivo, env = ctx["archivo"], ctx["env"]
-    if not archivo.exists():
-        linea(FALTA, f"No existe {archivo.name}", "Corré npm run configurar: te hace unas preguntas y crea el .env")
+def check_env(ctx):
+    section("env", "Configuration (.env)")
+    file, env = ctx["file"], ctx["env"]
+    if not file.exists():
+        line(MISSING, f"{file.name} does not exist", "Run npm run configure: it asks you a few questions and creates the .env")
         return
-    linea(OK, f"{archivo.name} encontrado")
-    # La URL de la app va solo en APP_URL; k0lmena arma BASEURL desde ahí (herramientas/k0lmena/env.js).
+    line(OK, f"{file.name} found")
+    # The app URL goes only in APP_URL; k0lmena builds BASEURL from it (tools/k0lmena/env.js).
     app_url, baseurl = env.get("APP_URL", ""), env.get("BASEURL", "")
     if not app_url and not baseurl:
-        linea(AVISO, "APP_URL vacía: la app a probar (agentes, herramientas y automatización web)", f"Completala en {archivo.name}")
-    elif app_url and not es_url(app_url):
-        linea(FALTA, "APP_URL no es una URL válida (tiene que empezar con http:// o https://)", f"Corregila en {archivo.name}")
+        line(WARNING, "APP_URL is empty: the app under test (agents, tools and web automation)", f"Fill it in {file.name}")
+    elif app_url and not is_url(app_url):
+        line(MISSING, "APP_URL is not a valid URL (it must start with http:// or https://)", f"Fix it in {file.name}")
     elif app_url:
-        linea(OK, "APP_URL definida")
+        line(OK, "APP_URL defined")
     if baseurl:
-        if not es_url(baseurl):
-            linea(FALTA, "BASEURL no es una URL válida (tiene que empezar con http:// o https://)", f"Mejor borrala y dejá solo APP_URL en {archivo.name}")
+        if not is_url(baseurl):
+            line(MISSING, "BASEURL is not a valid URL (it must start with http:// or https://)", f"Better delete it and keep only APP_URL in {file.name}")
         elif not app_url:
-            linea(AVISO, "La URL está en BASEURL (nombre viejo): se usa igual", f"Pasala a APP_URL y borrá BASEURL de {archivo.name}")
+            line(WARNING, "The URL is in BASEURL (old name): it is used anyway", f"Move it to APP_URL and delete BASEURL from {file.name}")
         elif baseurl.rstrip("/") != app_url.rstrip("/"):
-            linea(AVISO, "BASEURL y APP_URL son distintas: se usa APP_URL", f"Borrá BASEURL de {archivo.name}: la URL va solo en APP_URL")
+            line(WARNING, "BASEURL and APP_URL are different: APP_URL is used", f"Delete BASEURL from {file.name}: the URL goes only in APP_URL")
         else:
-            linea(AVISO, "BASEURL repite APP_URL: no hace falta", f"Borrá BASEURL de {archivo.name}")
-    if env.get("API_BASEURL") and not es_url(env["API_BASEURL"]):
-        linea(FALTA, "API_BASEURL no es una URL válida", f"Corregila en {archivo.name}")
-    herramienta = env.get("GESTION_HERRAMIENTA", "")
-    if herramienta:
-        if herramienta not in VARIABLES_GESTION:
-            linea(FALTA, f"GESTION_HERRAMIENTA={herramienta} no es válida", "Usá xray-cloud, xray-dc, qtm4j o aio")
+            line(WARNING, "BASEURL repeats APP_URL: it is not needed", f"Delete BASEURL from {file.name}")
+    if env.get("API_BASEURL") and not is_url(env["API_BASEURL"]):
+        line(MISSING, "API_BASEURL is not a valid URL", f"Fix it in {file.name}")
+    tool = env.get("MANAGEMENT_TOOL", "")
+    if tool:
+        if tool not in MANAGEMENT_VARIABLES:
+            line(MISSING, f"MANAGEMENT_TOOL={tool} is not valid", "Use xray-cloud, xray-dc, qtm4j or aio")
         else:
-            faltan = faltantes(VARIABLES_GESTION[herramienta], env)
-            if faltan:
-                linea(FALTA, f"Gestión ({herramienta}): faltan {', '.join(faltan)}", "Completalas en el .env (ver .env.example)")
+            lacking = missing(MANAGEMENT_VARIABLES[tool], env)
+            if lacking:
+                line(MISSING, f"Management ({tool}): missing {', '.join(lacking)}", "Fill them in the .env (see .env.example)")
             else:
-                linea(OK, f"Gestión de pruebas: {herramienta}")
-    conexiones = [c.strip() for c in (env.get("DB_CONEXIONES") or "").split(",") if c.strip()]
-    for c in conexiones:
+                line(OK, f"Test management: {tool}")
+    connections = [c.strip() for c in (env.get("DB_CONNECTIONS") or "").split(",") if c.strip()]
+    for c in connections:
         pref = f"DB_{c.upper()}_"
-        motor = env.get(pref + "MOTOR", "")
-        if motor not in MOTORES_DB:
-            linea(FALTA, f"Base {c}: {pref}MOTOR {'vacío' if not motor else 'inválido'}", f"Usá {', '.join(MOTORES_DB)}")
+        engine = env.get(pref + "ENGINE", "")
+        if engine not in DB_ENGINES:
+            line(MISSING, f"Database {c}: {pref}ENGINE {'empty' if not engine else 'invalid'}", f"Use {', '.join(DB_ENGINES)}")
             continue
-        faltan = [] if env.get(pref + "URL") else faltantes([pref + "HOST", pref + "BASE"], env)
-        if faltan:
-            linea(FALTA, f"Base {c} ({motor}): faltan {', '.join(faltan)} (o {pref}URL)", "Completalas en el .env (ver .env.example)")
+        lacking = [] if env.get(pref + "URL") else missing([pref + "HOST", pref + "DATABASE"], env)
+        if lacking:
+            line(MISSING, f"Database {c} ({engine}): missing {', '.join(lacking)} (or {pref}URL)", "Fill them in the .env (see .env.example)")
         else:
-            linea(OK, f"Base de datos {c} ({motor})")
-    autorizadas = [u.strip() for u in (env.get("SEGURIDAD_URLS_AUTORIZADAS") or "").split(",") if u.strip()]
-    malas = [u for u in autorizadas if not es_url(u)]
-    if malas:
-        linea(FALTA, f"SEGURIDAD_URLS_AUTORIZADAS tiene {len(malas)} URL(s) inválida(s)", "Separadas por coma, con http:// o https://")
-    elif autorizadas:
-        linea(OK, f"Seguridad web: {len(autorizadas)} URL(s) autorizada(s)")
+            line(OK, f"Database {c} ({engine})")
+    authorized = [u.strip() for u in (env.get("SECURITY_AUTHORIZED_URLS") or "").split(",") if u.strip()]
+    bad = [u for u in authorized if not is_url(u)]
+    if bad:
+        line(MISSING, f"SECURITY_AUTHORIZED_URLS has {len(bad)} invalid URL(s)", "Comma-separated, with http:// or https://")
+    elif authorized:
+        line(OK, f"Web security: {len(authorized)} authorized URL(s)")
 
 
-def revisar_integraciones(ctx):
-    seccion("integraciones", "Repositorio, roles, avisos y monitoreo")
-    antes = len(RESULTADOS)
-    _integraciones(ctx)
-    if len(RESULTADOS) == antes:
-        nota("Ninguna configurada (son opcionales: REPO_*, PERMISOS_*, SLACK/TEAMS_WEBHOOK_URL, MONITOREO_URLS en .env.example)")
+def check_integrations(ctx):
+    section("integrations", "Repository, roles, notifications and monitoring")
+    before = len(RESULTS)
+    _integrations(ctx)
+    if len(RESULTS) == before:
+        note("None configured (they are optional: REPO_*, PERMISSIONS_*, SLACK/TEAMS_WEBHOOK_URL, MONITORING_URLS in .env.example)")
 
 
-def _integraciones(ctx):
-    env, activos = ctx["env"], ctx["conectores"]
-    proveedor = env.get("REPO_PROVEEDOR", "")
-    if proveedor:
-        if proveedor not in CONECTOR_REPO:
-            linea(FALTA, f"REPO_PROVEEDOR={proveedor} no es válido", "Usá github, gitlab, azure-repos o bitbucket")
+def _integrations(ctx):
+    env, active = ctx["env"], ctx["connectors"]
+    provider = env.get("REPO_PROVIDER", "")
+    if provider:
+        if provider not in REPO_CONNECTOR:
+            line(MISSING, f"REPO_PROVIDER={provider} is not valid", "Use github, gitlab, azure-repos or bitbucket")
         else:
-            conector = CONECTOR_REPO[proveedor]
-            if not env.get("REPO_NOMBRE"):
-                linea(FALTA, f"Repositorio ({proveedor}): falta REPO_NOMBRE", "Ej.: mi-empresa/mi-app (ver .env.example)")
-            elif conector not in activos:
-                linea(AVISO, f"Repositorio ({proveedor}): el conector {conector} no está activo",
-                      f"npm run conector -- activar {conector}" if conector not in ("atlassian",) else "atlassian viene activo: revisá .claude/settings.json")
+            connector = REPO_CONNECTOR[provider]
+            if not env.get("REPO_NAME"):
+                line(MISSING, f"Repository ({provider}): REPO_NAME is missing", "E.g.: my-company/my-app (see .env.example)")
+            elif connector not in active:
+                line(WARNING, f"Repository ({provider}): the {connector} connector is not active",
+                     f"npm run connector -- activate {connector}" if connector not in ("atlassian",) else "atlassian comes active: check .claude/settings.json")
             else:
-                linea(OK, f"Repositorio de la app: {proveedor} ({env['REPO_NOMBRE'].count(',') + 1} repositorio(s))")
-            if proveedor == "bitbucket" and (env.get("ATLASSIAN_MCP_AUTENTICACION") or "oauth") != "token":
-                linea(FALTA, "Bitbucket necesita ATLASSIAN_MCP_AUTENTICACION=token", "Ver CONECTORES.md, sección Atlassian")
-        ruta = env.get("REPO_RUTA_LOCAL", "")
-        if ruta and not (Path(ruta) / ".git").exists():
-            linea(AVISO, "REPO_RUTA_LOCAL no apunta a un clon de git", "Revisá la ruta o dejala vacía")
-    roles = [r.strip() for r in (env.get("PERMISOS_ROLES") or "").split(",") if r.strip()]
+                line(OK, f"App repository: {provider} ({env['REPO_NAME'].count(',') + 1} repository(ies))")
+            if provider == "bitbucket" and (env.get("ATLASSIAN_MCP_AUTHENTICATION") or "oauth") != "token":
+                line(MISSING, "Bitbucket needs ATLASSIAN_MCP_AUTHENTICATION=token", "See CONNECTORS.md, Atlassian section")
+        path = env.get("REPO_LOCAL_PATH", "")
+        if path and not (Path(path) / ".git").exists():
+            line(WARNING, "REPO_LOCAL_PATH does not point to a git clone", "Check the path or leave it empty")
+    roles = [r.strip() for r in (env.get("PERMISSIONS_ROLES") or "").split(",") if r.strip()]
     for r in roles:
-        clave = re.sub(r"[^A-Z0-9]+", "_", r.upper().translate(str.maketrans("ÁÉÍÓÚÑÜ", "AEIOUNU"))).strip("_")
-        faltan = faltantes([f"PERMISOS_{clave}_USUARIO", f"PERMISOS_{clave}_CLAVE"], env)
-        if faltan and not env.get(f"PERMISOS_{clave}_TOKEN"):
-            linea(FALTA, f"Rol {r}: faltan {', '.join(faltan)}", "Completalas en el .env (bloque Permisos por rol)")
+        key = re.sub(r"[^A-Z0-9]+", "_", r.upper().translate(str.maketrans("ÁÉÍÓÚÑÜ", "AEIOUNU"))).strip("_")
+        lacking = missing([f"PERMISSIONS_{key}_USER", f"PERMISSIONS_{key}_PASSWORD"], env)
+        if lacking and not env.get(f"PERMISSIONS_{key}_TOKEN"):
+            line(MISSING, f"Role {r}: missing {', '.join(lacking)}", "Fill them in the .env (Permissions by role block)")
     if roles:
-        linea(OK, f"Permisos: {len(roles)} rol(es) configurado(s)")
-    for nombre, patron, donde in (("SLACK_WEBHOOK_URL", r"^https://hooks\.slack\.com/", "Slack (Incoming Webhook)"),
-                                  ("TEAMS_WEBHOOK_URL", r"^https://", "Teams (Workflows)")):
-        valor = env.get(nombre, "")
-        if not valor:
+        line(OK, f"Permissions: {len(roles)} role(s) configured")
+    for name, pattern, where in (("SLACK_WEBHOOK_URL", r"^https://hooks\.slack\.com/", "Slack (Incoming Webhook)"),
+                                 ("TEAMS_WEBHOOK_URL", r"^https://", "Teams (Workflows)")):
+        value = env.get(name, "")
+        if not value:
             continue
-        if re.match(patron, valor):
-            linea(OK, f"Avisos a {donde}")
+        if re.match(pattern, value):
+            line(OK, f"Notifications to {where}")
         else:
-            linea(FALTA, f"{nombre} no tiene el formato esperado de {donde}", "Copiá la URL del webhook tal cual (ver .env.example)")
-    urls = [u.strip() for u in (env.get("MONITOREO_URLS") or "").split(",") if u.strip()]
-    malas = [u for u in urls if not es_url(u)]
-    if malas:
-        linea(FALTA, f"MONITOREO_URLS tiene {len(malas)} URL(s) inválida(s)", "Separadas por coma, con http:// o https://")
-    elif urls or (RAIZ / "input" / "monitoreo.json").exists():
-        linea(OK, "Monitoreo sintético configurado")
+            line(MISSING, f"{name} does not have the expected {where} format", "Copy the webhook URL as is (see .env.example)")
+    urls = [u.strip() for u in (env.get("MONITORING_URLS") or "").split(",") if u.strip()]
+    bad = [u for u in urls if not is_url(u)]
+    if bad:
+        line(MISSING, f"MONITORING_URLS has {len(bad)} invalid URL(s)", "Comma-separated, with http:// or https://")
+    elif urls or (ROOT / "input" / "monitoring.json").exists():
+        line(OK, "Synthetic monitoring configured")
 
 
-def revisar_conectores(ctx):
-    seccion("conectores", "Conectores MCP")
-    env, habilitados, locales = ctx["env"], ctx["habilitados"], ctx["locales"]
-    for nombre in dict.fromkeys(habilitados + locales):
-        requeridas = VARIABLES_CONECTOR.get(nombre, [])
-        if nombre == "azure-devops" and (env.get("ADO_AUTENTICACION") or "pat").lower() != "pat":
-            requeridas = ["ADO_ORGANIZACION"]  # interactive / azcli / env: sin PAT
-        faltan = faltantes(requeridas, env)
-        origen = " (activado con npm run conector)" if nombre in locales else ""
-        if faltan:
-            linea(FALTA, f"{nombre}{origen}: faltan {', '.join(faltan)}", "Completalas en el .env (ver CONECTORES.md)")
-        elif nombre in CONECTORES_OAUTH or (nombre in CONECTORES_TOKEN_OPCIONAL and not env.get(CONECTORES_TOKEN_OPCIONAL[nombre])):
-            linea(OK, f"{nombre}{origen} (se autoriza con tu cuenta desde /mcp la primera vez)")
+def check_connectors(ctx):
+    section("connectors", "MCP connectors")
+    env, enabled, local = ctx["env"], ctx["enabled"], ctx["local"]
+    for name in dict.fromkeys(enabled + local):
+        required = CONNECTOR_VARIABLES.get(name, [])
+        if name == "azure-devops" and (env.get("ADO_AUTHENTICATION") or "pat").lower() != "pat":
+            required = ["ADO_ORGANIZATION"]  # interactive / azcli / env: no PAT
+        lacking = missing(required, env)
+        origin = " (enabled with npm run connector)" if name in local else ""
+        if lacking:
+            line(MISSING, f"{name}{origin}: missing {', '.join(lacking)}", "Fill them in the .env (see CONNECTORS.md)")
+        elif name in OAUTH_CONNECTORS or (name in OPTIONAL_TOKEN_CONNECTORS and not env.get(OPTIONAL_TOKEN_CONNECTORS[name])):
+            line(OK, f"{name}{origin} (authorized with your account from /mcp the first time)")
         else:
-            linea(OK, nombre + origen)
-    nota("Para sumar Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, "
-         "Shortcut, QMetry, AIO Tests, k0lmenaTMT o Appium: npm run conector")
+            line(OK, name + origin)
+    note("To add Azure DevOps, Figma, GitHub, GitLab, Linear, ClickUp, monday.com, Asana, Trello, Notion, YouTrack, "
+         "Shortcut, QMetry, AIO Tests, k0lmenaTMT or Appium: npm run connector")
 
 
-def revisar_repo(ctx):
-    seccion("repo", "Repositorio de k0lmenIA (git)")
+def check_repo(ctx):
+    section("repo", "k0lmenIA repository (git)")
     if not shutil.which("git"):
-        linea(AVISO, "git no está instalado", "Instalá git: https://git-scm.com/downloads")
+        line(WARNING, "git is not installed", "Install git: https://git-scm.com/downloads")
         return
-    linea(OK, "git instalado")
-    ignorado = (RAIZ / ".gitignore").read_text(encoding="utf-8") if (RAIZ / ".gitignore").exists() else ""
-    for patron, que in ((".env", "el .env (secretos)"), ("/input/documentacion/", "la documentación del proyecto")):
-        if patron in ignorado:
-            linea(OK, f".gitignore cubre {que}")
+    line(OK, "git installed")
+    ignored = (ROOT / ".gitignore").read_text(encoding="utf-8") if (ROOT / ".gitignore").exists() else ""
+    for pattern, what in ((".env", "the .env (secrets)"), ("/input/documentation/", "the project documentation")):
+        if pattern in ignored:
+            line(OK, f".gitignore covers {what}")
         else:
-            linea(FALTA, f".gitignore no cubre {que}", f"Agregá {patron} al .gitignore")
-    if comando("git", "-C", str(RAIZ), "config", "user.email", timeout=5):
-        linea(OK, "Identidad de git configurada (para los commits)")
+            line(MISSING, f".gitignore does not cover {what}", f"Add {pattern} to .gitignore")
+    if command("git", "-C", str(ROOT), "config", "user.email", timeout=5):
+        line(OK, "git identity configured (for commits)")
     else:
-        linea(AVISO, "git sin user.email (no vas a poder hacer commits)", 'git config user.email "tu@mail" && git config user.name "Tu nombre"')
+        line(WARNING, "git without user.email (you won't be able to commit)", 'git config user.email "you@mail" && git config user.name "Your name"')
 
 
-def revisar_extras(ctx):
-    seccion("extras", "Portal, monitoreo y evals")
-    if (RAIZ / "output").is_dir():
-        linea(OK, "output/ existe (el portal output/index.html se regenera solo)")
+def check_extras(ctx):
+    section("extras", "Portal, monitoring and evals")
+    if (ROOT / "output").is_dir():
+        line(OK, "output/ exists (the output/index.html portal regenerates on its own)")
     else:
-        linea(AVISO, "No existe output/", "Se crea solo con el primer informe; o mkdir output")
-    for wf, que in (("monitoreo.yml", "monitoreo sintético programado"), ("evals.yml", "evals manuales en CI")):
-        if (RAIZ / ".github" / "workflows" / wf).exists():
-            linea(OK, f"Workflow {wf} ({que})")
+        line(WARNING, "output/ does not exist", "It is created on its own with the first report; or mkdir output")
+    for wf, what in (("monitoring.yml", "scheduled synthetic monitoring"), ("evals.yml", "manual evals in CI")):
+        if (ROOT / ".github" / "workflows" / wf).exists():
+            line(OK, f"Workflow {wf} ({what})")
         else:
-            linea(AVISO, f"Falta .github/workflows/{wf} ({que})", "Restauralo desde el repositorio")
+            line(WARNING, f".github/workflows/{wf} is missing ({what})", "Restore it from the repository")
     if shutil.which("claude"):
-        linea(OK, "Claude Code CLI disponible (para correr los evals: npm run evals)")
+        line(OK, "Claude Code CLI available (to run the evals: npm run evals)")
     else:
-        linea(AVISO, "No encuentro el comando claude (solo hace falta para correr los evals)", "Instalá Claude Code (ver README)")
+        line(WARNING, "Can't find the claude command (only needed to run the evals)", "Install Claude Code (see README)")
 
 
-SECCIONES = {
-    "python": revisar_python, "node": revisar_node, "herramientas": revisar_herramientas, "fuentes": revisar_fuentes,
-    "env": revisar_env, "integraciones": revisar_integraciones, "conectores": revisar_conectores,
-    "repo": revisar_repo, "extras": revisar_extras,
+SECTIONS = {
+    "python": check_python, "node": check_node, "tools": check_tools, "fonts": check_sources,
+    "env": check_env, "integrations": check_integrations, "connectors": check_connectors,
+    "repo": check_repo, "extras": check_extras,
 }
 
 
-def contexto(rapido=False):
-    archivo, env = leer_entorno()
-    habilitados = []
-    for f in (RAIZ / ".claude" / "settings.json", RAIZ / ".claude" / "settings.local.json"):
+def context(quick=False):
+    file, env = read_environment()
+    enabled = []
+    for f in (ROOT / ".claude" / "settings.json", ROOT / ".claude" / "settings.local.json"):
         try:
-            habilitados += json.loads(f.read_text(encoding="utf-8")).get("enabledMcpjsonServers", [])
+            enabled += json.loads(f.read_text(encoding="utf-8")).get("enabledMcpjsonServers", [])
         except (OSError, ValueError):
             pass
-    locales = _conectores_locales()
-    return {"py": "python" if os.name == "nt" else "python3", "rapido": rapido, "archivo": archivo, "env": env,
-            "habilitados": habilitados, "locales": locales, "conectores": set(habilitados) | set(locales)}
+    local = _local_connectors()
+    return {"py": "python" if os.name == "nt" else "python3", "quick": quick, "file": file, "env": env,
+            "enabled": enabled, "local": local, "connectors": set(enabled) | set(local)}
 
 
 def main(argv=None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    ap = argparse.ArgumentParser(description="Revisa el entorno de k0lmenIA")
-    ap.add_argument("--seccion", help=f"una o varias, separadas por coma: {', '.join(SECCIONES)}")
-    ap.add_argument("--rapido", action="store_true", help="saltea los chequeos lentos (red, Docker, Mailpit)")
-    ap.add_argument("--json", action="store_true", help="salida en JSON")
+    ap = argparse.ArgumentParser(description="Checks the k0lmenIA environment")
+    ap.add_argument("--section", help=f"one or several, comma-separated: {', '.join(SECTIONS)}")
+    ap.add_argument("--quick", action="store_true", help="skips the slow checks (network, Docker, Mailpit)")
+    ap.add_argument("--json", action="store_true", help="JSON output")
     a = ap.parse_args(argv)
-    elegidas = [x.strip() for x in a.seccion.split(",")] if a.seccion else list(SECCIONES)
-    invalidas = [x for x in elegidas if x not in SECCIONES]
-    if invalidas:
-        ap.error(f"sección desconocida: {', '.join(invalidas)} (opciones: {', '.join(SECCIONES)})")
-    _SALIDA["json"] = a.json
-    resumen.update(ok=0, aviso=0, falta=0)
-    RESULTADOS.clear()
+    chosen = [x.strip() for x in a.section.split(",")] if a.section else list(SECTIONS)
+    invalid = [x for x in chosen if x not in SECTIONS]
+    if invalid:
+        ap.error(f"unknown section: {', '.join(invalid)} (options: {', '.join(SECTIONS)})")
+    _OUTPUT["json"] = a.json
+    summary.update(ok=0, warning=0, missing=0)
+    RESULTS.clear()
     if not a.json:
-        print("k0lmenIA · revisión del entorno" + (" (rápida)" if a.rapido else ""))
-    ctx = contexto(a.rapido)
-    for nombre in elegidas:
-        SECCIONES[nombre](ctx)
+        print("k0lmenIA · environment check" + (" (quick)" if a.quick else ""))
+    ctx = context(a.quick)
+    for name in chosen:
+        SECTIONS[name](ctx)
     if a.json:
-        print(json.dumps({"resumen": resumen, "resultados": RESULTADOS}, ensure_ascii=False, indent=2))
+        print(json.dumps({"summary": summary, "results": RESULTS}, ensure_ascii=False, indent=2))
     else:
-        print(f"\nResultado: {resumen['ok']} OK · {resumen['aviso']} avisos · {resumen['falta']} faltantes")
-        if resumen["falta"]:
-            print("Resolvé lo marcado con X y volvé a correr el doctor.")
-    return 1 if resumen["falta"] else 0
+        print(f"\nResult: {summary['ok']} OK · {summary['warning']} warnings · {summary['missing']} missing")
+        if summary["missing"]:
+            print("Fix what is marked with X and run the doctor again.")
+    return 1 if summary["missing"] else 0
 
 
-def _responde(url, timeout=3):
+def _responds(url, timeout=3):
     try:
         import urllib.request
-        with urllib.request.urlopen(url, timeout=timeout) as r:  # noqa: S310 (URL del .env de la persona)
+        with urllib.request.urlopen(url, timeout=timeout) as r:  # noqa: S310 (URL from the person's .env)
             return 200 <= r.status < 500
     except Exception:
         return False
 
 
-def _conectores_locales():
-    """Conectores activados con `npm run conector` (alcance local de Claude Code); solo nombres."""
+def _local_connectors():
+    """Connectors enabled with `npm run connector` (Claude Code local scope); names only."""
     try:
-        datos = json.loads((Path.home() / ".claude.json").read_text(encoding="utf-8"))
+        data = json.loads((Path.home() / ".claude.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return []
-    clave = str(RAIZ).replace("\\", "/").lower()
-    for ruta, proyecto in (datos.get("projects") or {}).items():
-        if ruta.replace("\\", "/").lower() == clave:
-            return list((proyecto.get("mcpServers") or {}).keys())
+    key = str(ROOT).replace("\\", "/").lower()
+    for path, project in (data.get("projects") or {}).items():
+        if path.replace("\\", "/").lower() == key:
+            return list((project.get("mcpServers") or {}).keys())
     return []
 
 
-def _importable(modulo):
+def _importable(module):
     try:
-        __import__(modulo)
+        __import__(module)
         return True
     except ImportError:
         return False
 
 
-def _carpeta_playwright():
+def _playwright_folder():
     if os.environ.get("PLAYWRIGHT_BROWSERS_PATH"):
         return Path(os.environ["PLAYWRIGHT_BROWSERS_PATH"])
     if os.name == "nt":

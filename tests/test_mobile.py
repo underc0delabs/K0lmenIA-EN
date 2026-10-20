@@ -1,51 +1,51 @@
-"""Probador de apps móviles: informe HTML (agente probador-mobile)."""
+"""Mobile app tester: HTML report (mobile-tester agent)."""
 import json
 import sys
 from pathlib import Path
 
 import pytest
 
-RAIZ = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(RAIZ / "scripts"))
-import generar_informe_mobile as gi  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+import generate_mobile_report as gm  # noqa: E402
 
-ANALISIS = {
-    "titulo": "MiApp — HU-010", "historia": "HU-010", "ambiente": "QA", "generado": "2026-10-19T12:00:00",
-    "app": {"nombre": "MiApp", "version": "4.1.0", "plataforma": "Android", "tipo": "Nativa", "os": "Android 14", "dispositivo": "Pixel 7 (emulador)"},
-    "veredicto": "Funciona; 1 hallazgo alto al denegar permisos", "veredicto_tono": "warn", "resumen": "Probé login, permisos y offline.",
-    "pruebas": [{"id": "CP-001", "area": "Login", "caso": "Login válido", "dispositivo": "Pixel 7 / Android 14", "resultado": "Aprobado",
-                 "esperado": "entra", "obtenido": "entra"},
-                {"id": "CP-002", "area": "Permisos", "caso": "Denegar ubicación", "dispositivo": "Pixel 7 / Android 14", "resultado": "Fallido",
-                 "esperado": "degrada con aviso", "obtenido": "crash"}],
-    "compatibilidad": [{"dispositivo": "iPhone SE / iOS 16 / fuente grande", "resultado": "Fallido", "detalle": "texto cortado"}],
-    "hallazgos": [{"id": "H-01", "severidad": "Alta", "area": "Permisos", "texto": "Crash al denegar ubicación",
-                   "impacto": "no se puede usar sin GPS", "como_reproducir": "negar el permiso en el primer uso", "recomendacion": "manejar el deny"}],
-    "recomendaciones": [{"prioridad": "Alta", "accion": "Manejar permiso denegado", "motivo": "evita el crash"}],
-    "falta_informacion": [{"id": "FI-01", "que_falta": "OS mínima", "pregunta": "¿desde qué Android?"}],
+ANALYSIS = {
+    "title": "MyApp — US-010", "story": "US-010", "environment": "QA", "generated": "2026-10-19T12:00:00",
+    "app": {"name": "MyApp", "version": "4.1.0", "platform": "Android", "type": "Native", "os": "Android 14", "device": "Pixel 7 (emulator)"},
+    "verdict": "It works; 1 high finding when denying permissions", "verdict_tone": "warn", "summary": "I tested login, permissions and offline.",
+    "tests": [{"id": "TC-001", "area": "Login", "case": "Valid login", "device": "Pixel 7 / Android 14", "result": "Passed",
+               "expected": "signs in", "actual": "signs in"},
+              {"id": "TC-002", "area": "Permissions", "case": "Deny location", "device": "Pixel 7 / Android 14", "result": "Failed",
+               "expected": "degrades with a warning", "actual": "crash"}],
+    "compatibility": [{"device": "iPhone SE / iOS 16 / large font", "result": "Failed", "detail": "truncated text"}],
+    "findings": [{"id": "H-01", "severity": "High", "area": "Permissions", "text": "Crash when denying location",
+                  "impact": "it cannot be used without GPS", "how_to_reproduce": "deny the permission on first use", "recommendation": "handle the deny"}],
+    "recommendations": [{"priority": "High", "action": "Handle a denied permission", "reason": "prevents the crash"}],
+    "missing_info": [{"id": "MI-01", "what_is_missing": "Minimum OS", "question": "From which Android version?"}],
 }
 
 
-def _gen(tmp_path, datos, monkeypatch):
+def _gen(tmp_path, data, monkeypatch):
     monkeypatch.setenv("K0LMENIA_PORTAL", "0")
-    (tmp_path / "analisis.json").write_text(json.dumps(datos, ensure_ascii=False), encoding="utf-8")
-    gi.generar(tmp_path / "analisis.json", tmp_path / "informe.html")
-    return (tmp_path / "informe.html").read_text(encoding="utf-8")
+    (tmp_path / "analysis.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    gm.generate(tmp_path / "analysis.json", tmp_path / "report.html")
+    return (tmp_path / "report.html").read_text(encoding="utf-8")
 
 
-def test_informe_completo(tmp_path, monkeypatch):
-    html = _gen(tmp_path, ANALISIS, monkeypatch)
-    assert "MiApp" in html and "Android" in html
-    assert "Crash al denegar ubicación" in html and "CP-002" in html and "FI-01" in html
-    assert "Compatibilidad" in html and "texto cortado" in html
-    assert "negar el permiso en el primer uso" in html  # sección "Cómo reproducir"
+def test_full_report(tmp_path, monkeypatch):
+    html = _gen(tmp_path, ANALYSIS, monkeypatch)
+    assert "MyApp" in html and "Android" in html
+    assert "Crash when denying location" in html and "TC-002" in html and "MI-01" in html
+    assert "Compatibility" in html and "truncated text" in html
+    assert "deny the permission on first use" in html  # "How to reproduce" section
 
 
-def test_sin_pruebas_ni_hallazgos(tmp_path, monkeypatch):
-    html = _gen(tmp_path, {"titulo": "Vacío"}, monkeypatch)
-    assert "Sin hallazgos." in html and "Vacío" in html
+def test_without_tests_or_findings(tmp_path, monkeypatch):
+    html = _gen(tmp_path, {"title": "Empty"}, monkeypatch)
+    assert "No findings." in html and "Empty" in html
 
 
-def test_json_invalido_falla(tmp_path):
+def test_invalid_json_fails(tmp_path):
     (tmp_path / "x.json").write_text("{", encoding="utf-8")
     with pytest.raises(json.JSONDecodeError):
-        gi.generar(tmp_path / "x.json", tmp_path / "i.html")
+        gm.generate(tmp_path / "x.json", tmp_path / "i.html")

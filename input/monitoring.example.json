@@ -1,0 +1,10 @@
+{
+  "_info": "Sample synthetic monitoring configuration (npm run monitor). Copy it to input/monitoring.json and adapt it. Only GET or HEAD: monitoring never changes data. See tools/k0lmena/tools/monitoring/README.md.",
+  "name": "production",
+  "checks": [
+    { "name": "Home", "url": "https://qarmy.ar/practica/automation", "text": "Crear cuenta", "max_ms": 3000 },
+    { "name": "Page that does not exist", "url": "https://qarmy.ar/practica/no-existe", "status": 404, "max_ms": 3000 },
+    { "name": "API health", "url": "https://jsonplaceholder.typicode.com/posts/1", "text": "\"id\": 1", "no_text": "error", "max_ms": 2000 }
+  ],
+  "scenarios": { "run": false, "tags": "@synthetic" }
+}

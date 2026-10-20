@@ -1,5 +1,5 @@
-# Verificación del propio repo de k0lmenIA: los scripts de Python y Node que usan los agentes.
-# No corre las suites de k0lmena (esas necesitan la app bajo prueba): para eso, npm test.
+# Checks for the k0lmenIA repo itself: the Python and Node scripts the agents use.
+# Does not run the k0lmena suites (those need the app under test): use npm test for that.
 name: CI
 
 on:
@@ -29,15 +29,15 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Dependencias de Python
+      - name: Python dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Tests de Python (pytest)
+      - name: Python tests (pytest)
         run: python -m pytest tests -q
 
-      - name: Tests de Node
+      - name: Node tests
         run: npm run test:repo
 
-      - name: JSON de configuración válidos
+      - name: Valid configuration JSON
         run: |
-          node -e "for (const f of ['.mcp.json', '.claude/settings.json', 'package.json', 'herramientas/k0lmena/package.json']) JSON.parse(require('fs').readFileSync(f, 'utf8'))"
+          node -e "for (const f of ['.mcp.json', '.claude/settings.json', 'package.json', 'tools/k0lmena/package.json']) JSON.parse(require('fs').readFileSync(f, 'utf8'))"

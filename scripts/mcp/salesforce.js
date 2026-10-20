@@ -1,31 +1,31 @@
 #!/usr/bin/env node
-// Lanzador del conector MCP salesforce (ver CONECTORES.md).
-// Arranca el server oficial de Salesforce DX (@salesforce/mcp) por stdio contra UNA org: la de
-// SALESFORCE_ORG, que tiene que estar en SALESFORCE_ORGS_AUTORIZADAS (nunca ALLOW_ALL_ORGS).
-// La org se autoriza antes con la CLI (sf org login web --alias <alias>); el server usa esa
-// autorización local, así que acá no viaja ningún token.
+// Launcher for the salesforce MCP connector (see CONNECTORS.md).
+// Starts the official Salesforce DX server (@salesforce/mcp) over stdio against ONE org: the one in
+// SALESFORCE_ORG, which has to be in SALESFORCE_AUTHORIZED_ORGS (never ALLOW_ALL_ORGS).
+// The org is authorized beforehand with the CLI (sf org login web --alias <alias>); the server uses that
+// local authorization, so no token travels through here.
 //
-// Solo se habilitan herramientas de lectura y prueba: la consulta SOQL (toolset data) y los tests
-// de Apex (run_apex_test). Nada de metadata (deploy/retrieve) ni de usuarios (asignar permisos).
-// Sin telemetría hacia Salesforce.
+// Only read and test tools are enabled: the SOQL query (data toolset) and Apex tests
+// (run_apex_test). No metadata (deploy/retrieve) and no users (assigning permissions).
+// No telemetry to Salesforce.
 //
-// Por stdout solo habla el server MCP: los mensajes de este script van a stderr.
-const { variable } = require('./leer-env');
-const { lanzarNpx } = require('./lanzar');
+// Only the MCP server talks on stdout: this script's messages go to stderr.
+const { variable } = require('./read-env');
+const { launchNpx } = require('./launch');
 
-function salirConError(mensaje) {
-  console.error(`salesforce: ${mensaje} (ver .env.example y CONECTORES.md).`);
+function exitWithError(message) {
+  console.error(`salesforce: ${message} (see .env.example and CONNECTORS.md).`);
   process.exit(1);
 }
 
 const org = variable('SALESFORCE_ORG');
-const autorizadas = variable('SALESFORCE_ORGS_AUTORIZADAS').split(/[\s,]+/).filter(Boolean);
+const authorized = variable('SALESFORCE_AUTHORIZED_ORGS').split(/[\s,]+/).filter(Boolean);
 
-if (!org) salirConError('falta SALESFORCE_ORG (el alias de la org) en el .env de la raíz');
-if (!/^[\w.@+-]+$/.test(org)) salirConError(`SALESFORCE_ORG="${org}" no es un alias válido`);
+if (!org) exitWithError('SALESFORCE_ORG (the org alias) is missing from the root .env');
+if (!/^[\w.@+-]+$/.test(org)) exitWithError(`SALESFORCE_ORG="${org}" is not a valid alias`);
 if (/^(ALLOW_ALL_ORGS|DEFAULT_TARGET_ORG|DEFAULT_TARGET_DEV_HUB)$/.test(org)) {
-  salirConError('SALESFORCE_ORG tiene que ser el alias de una org concreta, no un comodín');
+  exitWithError('SALESFORCE_ORG has to be the alias of a specific org, not a wildcard');
 }
-if (!autorizadas.includes(org)) salirConError(`${org} no está en SALESFORCE_ORGS_AUTORIZADAS`);
+if (!authorized.includes(org)) exitWithError(`${org} is not in SALESFORCE_AUTHORIZED_ORGS`);
 
-lanzarNpx('salesforce', '@salesforce/mcp', ['--orgs', org, '--toolsets', 'data', '--tools', 'run_apex_test', '--no-telemetry']);
+launchNpx('salesforce', '@salesforce/mcp', ['--orgs', org, '--toolsets', 'data', '--tools', 'run_apex_test', '--no-telemetry']);

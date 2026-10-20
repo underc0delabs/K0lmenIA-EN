@@ -1,38 +1,38 @@
-# Seguridad
+# Security
 
-## Alcance
+## Scope
 
-k0lmenIA es un conjunto de herramientas de **QA que corren en local o en CI** (Playwright, Cucumber, WebdriverIO, Appium, k6/Artillery/JMeter, OWASP ZAP). **No es un servicio expuesto a internet** que procese entradas de terceros: los insumos (historias, URLs a probar, colecciones, configs) son del propio equipo.
+k0lmenIA is a set of **QA tools that run locally or in CI** (Playwright, Cucumber, WebdriverIO, Appium, k6/Artillery/JMeter, OWASP ZAP). **It is not an internet-facing service** that processes third-party input: the inputs (stories, URLs to test, collections, configs) belong to your own team.
 
-Secretos (tokens, credenciales, cadenas de conexión) van **solo** en el `.env` local (gitignored) o en variables de entorno, nunca commiteados. Hay una plantilla en `.env.example`.
+Secrets (tokens, credentials, connection strings) go **only** in the local `.env` (gitignored) or in environment variables, never committed. There is a template in `.env.example`.
 
-El agente `analista-seguridad` escanea **solo** las URLs de `SEGURIDAD_URLS_AUTORIZADAS` y en modo pasivo; el `pentester-web` hace escaneo activo solo con `PENTEST_AUTORIZADO=si`, sobre un sitio propio o con autorización escrita, y nunca contra producción sin permiso.
+The `security-analyst` agent scans **only** the URLs in `SECURITY_AUTHORIZED_URLS`, in passive mode; the `web-pentester` runs active scans only with `PENTEST_AUTHORIZED=yes`, against your own site or with written authorization, and never against production without permission.
 
-## Vulnerabilidades conocidas en dependencias (riesgo aceptado)
+## Known vulnerabilities in dependencies (accepted risk)
 
-`npm audit` sobre `herramientas/k0lmena` reporta, al **2026-10-18**, 39 vulnerabilidades **transitivas** en dependencias de **herramientas de desarrollo/test** (artillery, appium, webdriverio, lighthouse, percy, puppeteer). Se aplicó el `npm audit fix` seguro (sin `--force`); el resto **no se corrige** porque el "arreglo" que propone npm rompe el framework:
+As of **2026-10-18**, `npm audit` on `tools/k0lmena` reports 39 **transitive** vulnerabilities in dependencies of **development/test tools** (artillery, appium, webdriverio, lighthouse, percy, puppeteer). The safe `npm audit fix` (without `--force`) was applied; the rest **is not fixed** because the "fix" npm proposes breaks the framework:
 
-| Advisory (paquete) | Severidad | "Fix" de npm | Por qué no se aplica |
+| Advisory (package) | Severity | npm "fix" | Why it is not applied |
 |---|---|---|---|
-| `shell-quote` | crítica | `appium@3.4.2` | Downgrade de appium → rompe la suite mobile |
-| `braces`, `csv-parse`, `sprintf-js` | alta / moderada | `artillery@0.0.2` | Downgrade a un stub vacío → rompe performance |
-| `basic-ftp`, `extract-zip` | alta | `webdriverio@10.0.2` | Salto a WebdriverIO 10 (ver abajo) |
+| `shell-quote` | critical | `appium@3.4.2` | Downgrades appium → breaks the mobile suite |
+| `braces`, `csv-parse`, `sprintf-js` | high / moderate | `artillery@0.0.2` | Downgrades to an empty stub → breaks performance |
+| `basic-ftp`, `extract-zip` | high | `webdriverio@10.0.2` | Jump to WebdriverIO 10 (see below) |
 
-**Por qué el riesgo es bajo en este contexto:** son casi todas DoS por entrada maliciosa (ReDoS en el parser FTP de `basic-ftp`, patrones anidados en `braces`, `csv-parse`, `sprintf-js`) o inyección en `shell-quote`. Explotarlas requiere que un atacante controle esa entrada específica (un listado FTP, un patrón glob, un CSV, un token de shell); en el uso normal de k0lmena esas entradas son del equipo, no de terceros, y nada corre como servicio público.
+**Why the risk is low in this context:** almost all of them are DoS via malicious input (ReDoS in the `basic-ftp` FTP parser, nested patterns in `braces`, `csv-parse`, `sprintf-js`) or injection in `shell-quote`. Exploiting them requires an attacker to control that specific input (an FTP listing, a glob pattern, a CSV, a shell token); in normal k0lmena use those inputs come from the team, not from third parties, and nothing runs as a public service.
 
-**No usar `npm audit fix --force`:** degrada artillery y appium a versiones inservibles.
+**Do not use `npm audit fix --force`:** it downgrades artillery and appium to unusable versions.
 
-## Cómo se resolverán (sin romper nada)
+## How they will be resolved (without breaking anything)
 
-Cuando el ecosistema upstream publique los parches:
+When the upstream ecosystem publishes the patches:
 
-- **WebdriverIO 10** — cuando `@wdio/browserstack-service` publique su versión 10 (hoy no existe), se sube todo el stack `@wdio/*` + `webdriverio` a 10: limpia `basic-ftp` y `extract-zip`.
-- **artillery** con release parcheada → limpia `braces`, `csv-parse`, `sprintf-js`.
-- **appium** con `shell-quote` parcheado → limpia la crítica.
-- **TypeScript 7** — se sube cuando `ts-node` lo soporte (hoy TS 7, la reescritura nativa, rompe `ts-node`, del que depende todo el framework).
+- **WebdriverIO 10** — when `@wdio/browserstack-service` publishes its version 10 (it does not exist yet), the whole `@wdio/*` + `webdriverio` stack moves to 10: this clears `basic-ftp` and `extract-zip`.
+- **artillery** with a patched release → clears `braces`, `csv-parse`, `sprintf-js`.
+- **appium** with a patched `shell-quote` → clears the critical one.
+- **TypeScript 7** — upgraded once `ts-node` supports it (today TS 7, the native rewrite, breaks `ts-node`, which the whole framework depends on).
 
-**Próxima revisión: 2026-11-18.** Volver a correr `cd herramientas/k0lmena && npm audit` y aplicar lo que ya tenga parche compatible; subir los majors (WDIO 10, TS 7) solo cuando sus dependencias acompañen.
+**Next review: 2026-11-18.** Run `cd tools/k0lmena && npm audit` again and apply whatever already has a compatible patch; upgrade the majors (WDIO 10, TS 7) only when their dependencies catch up.
 
-## Reportar un problema
+## Reporting an issue
 
-Si encontrás un problema de seguridad en este repositorio, escribí a **info@underc0de.org** en vez de abrir un issue público.
+If you find a security issue in this repository, email **info@underc0de.org** instead of opening a public issue.

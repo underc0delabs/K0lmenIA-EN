@@ -1,12 +1,12 @@
 {
   "info": {
     "name": "Demo API k0lmenIA (JSONPlaceholder)",
-    "description": "Colección de ejemplo para probar la ejecución de pruebas de API con Newman. Apunta a https://jsonplaceholder.typicode.com (API pública de demo, sin login). Reemplazala por tu propia colección exportada de Postman y cambiá base_url por tu API. El id (API-00x) y la prioridad (entre paréntesis) van en el nombre de cada request: el conversor los usa para el reporte.",
+    "description": "Sample collection to try running API tests with Newman. It points to https://jsonplaceholder.typicode.com (public demo API, no login). Replace it with your own collection exported from Postman and change base_url to your API. The id (API-00x) and the priority (in parentheses) go in the name of each request: the converter uses them for the report.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "API-001 — Obtener un post existente (Alta)",
+      "name": "API-001 — Get an existing post (High)",
       "request": {
         "method": "GET",
         "header": [],
@@ -22,10 +22,10 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('El status es 200', function () {",
+              "pm.test('Status is 200', function () {",
               "    pm.response.to.have.status(200);",
               "});",
-              "pm.test('Devuelve id y title', function () {",
+              "pm.test('Returns id and title', function () {",
               "    var data = pm.response.json();",
               "    pm.expect(data).to.have.property('id');",
               "    pm.expect(data).to.have.property('title');",
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "name": "API-002 — Crear un post (Media)",
+      "name": "API-002 — Create a post (Medium)",
       "request": {
         "method": "POST",
         "header": [
@@ -44,7 +44,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"k0lmenIA\",\n  \"body\": \"prueba de creación\",\n  \"userId\": 1\n}"
+          "raw": "{\n  \"title\": \"k0lmenIA\",\n  \"body\": \"creation test\",\n  \"userId\": 1\n}"
         },
         "url": {
           "raw": "{{base_url}}/posts",
@@ -58,10 +58,10 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('El status es 201 (creado)', function () {",
+              "pm.test('Status is 201 (created)', function () {",
               "    pm.response.to.have.status(201);",
               "});",
-              "pm.test('Devuelve el id del nuevo post', function () {",
+              "pm.test('Returns the id of the new post', function () {",
               "    pm.expect(pm.response.json()).to.have.property('id');",
               "});"
             ]
@@ -70,7 +70,7 @@
       ]
     },
     {
-      "name": "API-003 — Post inexistente devuelve 404 (Media)",
+      "name": "API-003 — Nonexistent post returns 404 (Medium)",
       "request": {
         "method": "GET",
         "header": [],
@@ -86,7 +86,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('El status es 404', function () {",
+              "pm.test('Status is 404', function () {",
               "    pm.response.to.have.status(404);",
               "});"
             ]

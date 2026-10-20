@@ -1,20 +1,20 @@
 #!/usr/bin/env node
-// headersHelper del conector MCP github (server remoto oficial de GitHub; ver CONECTORES.md).
-// Toma GITHUB_TOKEN del entorno o, si no está, del .env de la raíz, y devuelve por stdout los
-// headers en JSON: el token como Bearer, solo lectura (X-MCP-Readonly) y los toolsets que usa
-// el documentador-proyecto (GITHUB_TOOLSETS para cambiarlos). El token nunca se muestra.
-const { variable } = require('./leer-env');
+// headersHelper for the github MCP connector (GitHub's official remote server; see CONNECTORS.md).
+// Takes GITHUB_TOKEN from the environment or, if it's not there, from the root .env, and prints the
+// headers as JSON to stdout: the token as Bearer, read-only mode (X-MCP-Readonly) and the toolsets the
+// project-documenter uses (GITHUB_TOOLSETS to change them). The token is never shown.
+const { variable } = require('./read-env');
 
-function salirConError(mensaje) {
-  console.error(`github: ${mensaje} (ver .env.example y CONECTORES.md).`);
+function exitWithError(message) {
+  console.error(`github: ${message} (see .env.example and CONNECTORS.md).`);
   process.exit(1);
 }
 
 const token = variable('GITHUB_TOKEN');
 const toolsets = variable('GITHUB_TOOLSETS') || 'context,repos,issues,pull_requests';
 
-if (!token) salirConError('falta GITHUB_TOKEN en el .env de la raíz');
-if (!/^[a-z_,\s]+$/.test(toolsets)) salirConError(`GITHUB_TOOLSETS tiene un valor inválido: "${toolsets}"`);
+if (!token) exitWithError('GITHUB_TOKEN is missing from the root .env');
+if (!/^[a-z_,\s]+$/.test(toolsets)) exitWithError(`GITHUB_TOOLSETS has an invalid value: "${toolsets}"`);
 
 process.stdout.write(JSON.stringify({
   Authorization: `Bearer ${token}`,

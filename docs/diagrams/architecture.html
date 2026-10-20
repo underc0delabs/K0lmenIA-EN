@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>k0lmenIA · Architecture</title>
+<link rel="stylesheet" href="diagrams.css">
+<style>
+  .canvas { width: 1800px; }
+  .row { display: grid; gap: 16px; }
+  .f-agents { grid-template-columns: 1.25fr 1fr 1.1fr 0.9fr; }
+  .f-support { grid-template-columns: 1fr 1.15fr 1.1fr; }
+  .f-exec { grid-template-columns: 1fr 1.6fr; }
+  .f-ext { grid-template-columns: repeat(10, 1fr); }
+  .center { display: grid; grid-template-columns: 260px 1fr 260px; gap: 18px; align-items: stretch; }
+  .sidebar { display: flex; flex-direction: column; gap: 10px; }
+  .sidebar .box { flex: 1; }
+  .k0 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+  .k0 .mini { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  .k0 .mini b { display: block; font-size: 15px; margin-bottom: 4px; }
+  .k0 .mini span { color: var(--muted); font-size: 13px; line-height: 1.35; display: block; }
+  .runners { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+</style></head>
+<body><div class="canvas" id="capture">
+  <div class="title">
+    <div><h1>k0lmenIA <span class="muted">· Architecture</span></h1>
+      <p class="sub">QA agents for Claude Code + automation with k0lmena + integration with test management tools</p></div>
+    <div class="brand">QARMY · Underc0de</div>
+  </div>
+
+  <!-- Person and Claude Code -->
+  <div class="row" style="grid-template-columns: 1fr 2fr 1fr; align-items:center">
+    <div class="box accent-gray centered"><div class="et">Person</div><h3>QA</h3><p>Asks in natural language, from VS Code</p></div>
+    <div class="box accent-blue centered large"><div class="et">Orchestrator</div><h3>Claude Code</h3>
+      <p><code>CLAUDE.md</code>: project standards (don't make things up, traceability, formats, IDs) · picks the agent for each request</p></div>
+    <div class="box accent-gray centered"><div class="et">Single configuration</div><h3>Root <code>.env</code></h3><p>URLs, credentials, k0lmena, test management (gitignored)</p></div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <div class="center">
+    <!-- input -->
+    <div class="sidebar">
+      <div class="box accent-gray"><div class="et">Input</div><h3><code>input/</code></h3>
+        <ul><li>stories/ (stories)</li><li>documentation/ (project-documenter)</li><li>api/ (Postman, contracts)</li><li>bugs/</li><li>emails/ · logs/</li></ul></div>
+      <div class="box accent-gray"><div class="et">Or through MCP</div><h3>Live sources</h3>
+        <ul><li>Jira / Confluence</li><li>Azure DevOps</li><li>Figma</li><li>Repository: GitHub · GitLab · Azure Repos · Bitbucket</li><li>Linear · ClickUp · monday · Asana · Trello · Notion · YouTrack · Shortcut</li><li>Swagger by URL</li></ul></div>
+    </div>
+
+    <div>
+      <!-- Agents -->
+      <div class="block"><div class="block-title">Agents <span class="muted">· <code>.claude/agents/</code> · the "who"</span></div>
+        <div class="row f-agents">
+          <div class="box accent-violet"><div class="et">Analysis and design</div>
+            <ul><li>project-documenter</li><li>story-analyst</li><li>test-strategist</li><li>manual-case-generator</li><li>bdd-case-generator</li><li>api-case-generator</li><li>test-data-generator</li><li>bug-report-generator</li><li>bug-triager</li><li>project-consultant</li><li>onboarding-guide</li><li>project-researcher</li><li>test-case-selector</li><li>case-reviewer</li><li>charter-generator</li></ul></div>
+          <div class="box accent-orange"><div class="et">Live execution <span class="pill token">uses tokens</span></div>
+            <ul><li>e2e-runner</li><li>api-runner</li><li>web-explorer</li><li>accessibility-analyst</li><li>web-performance-auditor</li><li>security-analyst (ZAP)</li><li>web-pentester (pentest)</li><li>pixel-perfect</li><li>cross-browser</li><li>email-verifier (Mailpit)</li><li>translation-analyst</li><li>ux-evaluator</li><li>form-tester</li><li>permissions-tester</li><li>resilience-tester</li><li>salesforce-tester</li><li>wallet-tester</li><li>streaming-tester</li><li>onvif-tester</li><li>image-quality-analyst</li><li>recording-verifier</li><li>camera-security-analyst</li><li>html-report-generator</li><li>closure-report-generator</li><li>coverage-analyst</li><li>quality-dashboard</li></ul></div>
+          <div class="box accent-green"><div class="et">Automation (mappers)</div>
+            <ul><li>web-mapper</li><li>api-mapper</li><li>mobile-mapper</li><li>performance-mapper</li><li>data-verifier (DB)</li><li>failure-analyst</li><li>log-analyst</li><li>automation-repairer</li></ul>
+            <p class="note">They write the code only once</p></div>
+          <div class="box accent-cyan"><div class="et">Test management</div>
+            <ul><li>test-manager</li><li>results-publisher</li></ul></div>
+        </div>
+      </div>
+      <div class="arrow">▼</div>
+
+      <!-- Support -->
+      <div class="block"><div class="block-title">Support <span class="muted">· the "how" and the format</span></div>
+        <div class="row f-support">
+          <div class="box accent-violet"><div class="et">Skills · <code>.claude/skills/</code></div>
+            <ul><li>context-research</li><li>design-techniques</li><li>e2e-execution · api-execution</li><li>k0lmena-automation</li><li>performance-guide</li><li>streaming-verification · onvif-control</li><li>image-quality · camera-security</li><li>project-survey</li><li>salesforce-testing · token-testing · wallet-testing</li></ul></div>
+          <div class="box accent-gray"><div class="et">Templates + Python scripts</div>
+            <ul><li>generate_cases.py → .xlsx + .md (with estimated time)</li><li>estimation.py: manual execution minutes per test case</li><li>format_tables.py</li><li>generate_plan / generate_report / generate_closure_report</li><li>generate_performance_report / generate_security_report</li><li>generate_exploratory_report / accessibility / web performance</li><li>analyze_failures / analyze_coverage</li><li>select_cases + pixel-perfect / cross-browser / repair / selection reports</li><li>email and translation reports · _history (last 5 runs)</li><li>review_cases · generate_charters · analyze_logs + UX and forms reports</li><li>documentation_index.py · documentation_changes.py · newman_to_results.py</li><li>permissions and resilience reports · find_duplicates · quality_dashboard</li><li>reports_portal (output/index.html) · notify (Slack and Teams) · evaluate_agents (evals)</li><li>token_metrics (token usage) · generate_onboarding · doctor</li><li>convert_collection (Bruno, Insomnia) · summarize_graphql</li><li>streaming · ONVIF · image quality · recordings · camera security reports</li><li>Salesforce inventory and report · wallets report · project survey report (maps, summary, deck)</li></ul></div>
+          <div class="box accent-cyan"><div class="et">Test management integration · <code>scripts/management/</code></div>
+            <ul><li>management.py: folders, test cases (with estimated time), links, cycles, results</li><li>Adapters: Xray Cloud · Xray DC · QTM4J · AIO</li><li>Traceability TC-XXX → remote key</li><li>Azure DevOps: through its MCP + to_azure_devops.py</li></ul></div>
+        </div>
+      </div>
+      <div class="arrow">▼</div>
+
+      <!-- MCP + tools -->
+      <div class="row f-exec">
+        <div class="block"><div class="block-title">MCP connectors <span class="muted">· <code>.mcp.json</code></span></div>
+          <div class="box accent-blue">
+            <ul><li><b>Playwright</b> headed / headless <span class="pill ok">active</span></li><li><b>atlassian</b>: Jira and Confluence <span class="pill ok">active</span></li><li><b>figma</b> / figma-desktop</li><li><b>appium-mcp</b> (mobile-mapper)</li><li><b>qmetry · qtm4j · aio-tests</b></li><li><b>azure-devops</b> · k0lmena-tmt</li><li><b>github · gitlab</b> (repository, read-only)</li><li><b>linear · clickup · monday · asana · trello · notion · youtrack · shortcut</b></li></ul>
+            <p class="note">No secrets (tokens in the .env) · enabled in settings · guide in CONNECTORS.md</p></div>
+        </div>
+        <div class="block"><div class="block-title">Tools <span class="muted">· <code>tools/</code></span></div>
+          <div class="box accent-green">
+            <div style="display:flex; justify-content:space-between; align-items:baseline"><h3>k0lmena <span class="pill ok">no tokens</span></h3><span class="muted">+ Newman (Postman) · OWASP ZAP (security) · Mailpit (email) · streaming (ffmpeg/ONVIF, cameras) · Salesforce (sf CLI)</span></div>
+            <div class="k0">
+              <div class="mini"><b>web/</b><span>Playwright + Cucumber · auto-healing · video, trace, GIF, DOM on failure · Chromium, Firefox and WebKit</span></div>
+              <div class="mini"><b>api/</b><span>axios + Cucumber · generic steps in plain language</span></div>
+              <div class="mini"><b>mobile/</b><span>WebdriverIO + Appium · device, emulator or BrowserStack</span></div>
+              <div class="mini"><b>performance/</b><span>k6 (APIs) · Artillery + Playwright (web) · JMeter</span></div>
+            </div>
+            <div class="runners"><span class="cmd">npm test</span><span class="cmd">npm run report:web|api|mobile</span><span class="cmd">npm run perf -- &lt;script&gt; &lt;profile&gt;</span><span class="cmd">npm run explore</span><span class="cmd">npm run accessibility</span><span class="cmd">npm run web-performance</span><span class="cmd">npm run pixel-perfect</span><span class="cmd">npm run cross-browser</span><span class="cmd">npm run repair</span><span class="cmd">npm run emails</span><span class="cmd">npm run translator</span><span class="cmd">npm run ux</span><span class="cmd">npm run forms</span><span class="cmd">npm run functional-map</span><span class="cmd">npm run permissions</span><span class="cmd">npm run resilience</span><span class="cmd">npm run monitor</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- output -->
+    <div class="sidebar">
+      <div class="box accent-gray"><div class="et">Output</div><h3><code>output/</code></h3>
+        <ul><li>story-analysis/</li><li>test-plans/</li><li>test-cases/</li><li>api-cases/</li><li>test-data/</li><li>bug-reports/</li><li>runs/</li><li>closure-reports/</li><li>mappings/</li><li>management/</li><li>performance/</li><li>security/</li><li>exploratory/</li><li>accessibility/</li><li>web-performance/</li><li>failures/</li><li>coverage/</li><li>pixel-perfect/</li><li>cross-browser/</li><li>repairs/</li><li>case-selection/</li><li>emails/</li><li>translator/</li><li>case-review/</li><li>charters/</li><li>ux/</li><li>forms/</li><li>logs/</li><li>context/</li><li>permissions/ · resilience/</li><li>triage/ · consultations/</li><li>dashboard/ · monitoring/</li><li>token-metrics/ · onboarding/</li><li>research/ · salesforce/ · wallets/</li><li>index.html (portal)</li></ul><p class="note">each tool keeps its last 5 runs in history/</p></div>
+      <div class="box accent-gray"><div class="et">k0lmena reports</div><h3><code>reports/</code></h3>
+        <ul><li>web, api, mobile: HTML with evidence</li><li>performance: HTML and summary</li><li>history/: the last 5 npm test runs</li></ul></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <div class="block"><div class="block-title">External systems</div>
+    <div class="row f-ext">
+      <div class="box accent-gray centered"><h3>Web app</h3><p>under test</p></div>
+      <div class="box accent-gray centered"><h3>APIs</h3><p>REST · Swagger</p></div>
+      <div class="box accent-gray centered"><h3>Mobile app</h3><p>Android · iOS · BrowserStack</p></div>
+      <div class="box accent-gray centered"><h3>Jira · Confluence</h3><p>stories and documentation</p></div>
+      <div class="box accent-gray centered"><h3>Figma</h3><p>designs</p></div>
+      <div class="box accent-gray centered"><h3>Repository</h3><p>GitHub · GitLab · Azure Repos · Bitbucket</p></div>
+      <div class="box accent-gray centered"><h3>Mailpit</h3><p>test mailbox for emails</p></div>
+      <div class="box accent-gray centered"><h3>Slack · Teams</h3><p>notifications by webhook</p></div>
+      <div class="box accent-gray centered"><h3>Databases</h3><p>PostgreSQL · MySQL · SQL Server · MongoDB</p></div>
+      <div class="box accent-cyan centered"><h3>Xray · QMetry · AIO · Azure DevOps</h3><p>test cases, cycles and results</p></div>
+    </div>
+  </div>
+</div></body></html>

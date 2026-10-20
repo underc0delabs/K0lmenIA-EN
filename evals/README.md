@@ -1,158 +1,158 @@
-# Evals de los agentes
+# Agent evals
 
-Los tests del repo (`tests/`) verifican los **scripts**. Los evals miden otra cosa: la **calidad de lo que generan los agentes**. Sirven para saber si un cambio en un agente, en un skill o en `CLAUDE.md` lo mejora o lo empeora, antes de subirlo.
+The repo tests (`tests/`) verify the **scripts**. The evals measure something else: the **quality of what the agents generate**. They tell you whether a change to an agent, a skill or `CLAUDE.md` makes it better or worse, before you push it.
 
-Cada caso le da a un agente un insumo con **trampas deliberadas** (una ambigüedad, una contradicción entre la descripción y un criterio, un mensaje que no está definido, un campo con límites, una clave en un archivo de configuración) y revisa con **chequeos determinísticos** que haya hecho lo correcto: que marque la Falta información en vez de inventar, que aplique valores límite, que respete la plantilla, que no copie secretos.
+Each case gives an agent an input with **deliberate traps** (an ambiguity, a contradiction between the description and a criterion, a message that is not defined, a bounded field, a secret in a configuration file) and uses **deterministic checks** to confirm it did the right thing: that it flags the Missing information instead of inventing, applies boundary values, follows the template, and does not copy secrets.
 
-## Casos
+## Cases
 
 ```
 +--------------------------------+----------------------------+------------------------------------------+
-| Caso                           | Agente                     | Qué mide                                 |
+| Case                           | Agent                      | What it measures                         |
 +================================+============================+==========================================+
-| `analista-hu-registro`         | `analista-historias`       | Detecta la contradicción 16/18 años, la  |
-|                                |                            | contraseña "segura" sin reglas, el       |
-|                                |                            | mensaje sin definir y la pregunta        |
-|                                |                            | abierta; arma FI-XX                      |
+| `story-analyst-signup-story`   | `story-analyst`            | Detects the 16/18 years contradiction,   |
+|                                |                            | the "secure" password with no rules, the |
+|                                |                            | undefined message and the open question; |
+|                                |                            | records MI-XX                            |
 +--------------------------------+----------------------------+------------------------------------------+
-| `casos-manuales-hu-registro`   | `generador-casos-manuales` | Planilla válida (columnas, IDs,          |
-|                                |                            | prioridades y orden),                    |
-|                                |                            | positivos/negativos/borde, valores       |
-|                                |                            | límite, `@falta-info`, no inventa        |
-|                                |                            | mensajes                                 |
+| `manual-cases-signup-story`    | `manual-case-generator`    | Valid spreadsheet (columns, IDs,         |
+|                                |                            | priorities and order),                   |
+|                                |                            | positive/negative/boundary, boundary     |
+|                                |                            | values, `@missing-info`, does not invent |
+|                                |                            | messages                                 |
 +--------------------------------+----------------------------+------------------------------------------+
-| `bdd-hu-registro`              | `generador-casos-bdd`      | Gherkin válido, keywords en inglés y     |
-|                                |                            | contenido en español, `@HU`/`@CP`,       |
-|                                |                            | Scenario Outline, `@falta-info @FI-XX`   |
+| `bdd-signup-story`             | `bdd-case-generator`       | Valid Gherkin, English keywords and      |
+|                                |                            | content, `@US`/`@TC`, Scenario Outline,  |
+|                                |                            | `@missing-info @MI-XX`                   |
 +--------------------------------+----------------------------+------------------------------------------+
-| `casos-api-auth`               | `generador-casos-api`      | Cada endpoint y código de respuesta del  |
-|                                |                            | contrato, bloqueo, no revelar si el      |
-|                                |                            | email existe, bodies en JSON             |
+| `api-cases-auth`               | `api-case-generator`       | Every endpoint and response code of the  |
+|                                |                            | contract, lockout, not revealing whether |
+|                                |                            | the email exists, bodies in JSON         |
 +--------------------------------+----------------------------+------------------------------------------+
-| `reporte-bug-cupon`            | `generador-reportes-bug`   | Todos los campos de la plantilla en      |
-|                                |                            | orden, datos de la observación,          |
-|                                |                            | Información faltante, no inventa         |
-|                                |                            | contraseña ni versión                    |
+| `bug-report-coupon`            | `bug-report-generator`     | Every template field in order, data from |
+|                                |                            | the observation, Missing information,    |
+|                                |                            | does not invent a password or version    |
 +--------------------------------+----------------------------+------------------------------------------+
-| `consultor-proyecto-preguntas` | `consultor-proyecto`       | Responde con la fuente y dice "no está   |
-|                                |                            | documentado" cuando corresponde (se      |
-|                                |                            | omite si el agente no existe)            |
+| `project-consultant-questions` | `project-consultant`       | Answers with the source and says "it is  |
+|                                |                            | not documented" when appropriate         |
+|                                |                            | (skipped if the agent does not exist)    |
 +--------------------------------+----------------------------+------------------------------------------+
-| `documentador-repo-local`      | `documentador-proyecto`    | Reglas con `archivo:línea`, mensajes del |
-|                                |                            | i18n, encabezado para el índice y **no   |
-|                                |                            | copia secretos**                         |
+| `project-documenter-local-repo`| `project-documenter`       | Rules with `file:line`, i18n messages,   |
+|                                |                            | header for the index and **does not copy |
+|                                |                            | secrets**                                |
 +--------------------------------+----------------------------+------------------------------------------+
 ```
 
-## Cómo se corren
+## How to run them
 
 ```bash
-python scripts/evaluar_agentes.py --listar                         # los casos y sus chequeos
-python scripts/evaluar_agentes.py --correr                         # todos (gasta tokens)
-python scripts/evaluar_agentes.py --correr --agente generador-casos-manuales
-python scripts/evaluar_agentes.py --correr --caso analista-hu-registro --modelo claude-sonnet-5-5
+python scripts/evaluate_agents.py --list                         # the cases and their checks
+python scripts/evaluate_agents.py --run                          # all of them (spends tokens)
+python scripts/evaluate_agents.py --run --agent manual-case-generator
+python scripts/evaluate_agents.py --run --case story-analyst-signup-story --model claude-sonnet-5-5
 ```
 
-`--correr` hace tres cosas por caso:
+`--run` does three things per case:
 
-1. **Prepara un workspace aislado**, fuera del repo (en la carpeta temporal del sistema, o en `--trabajo`): una copia de `CLAUDE.md`, `AGENTES.md`, `.claude/`, `plantillas/` y `scripts/`, con `input/` y `output/` vacíos, los insumos del caso y un `.env` propio. Tu `input/` y tu `output/` nunca se tocan.
-2. **Corre el agente** con Claude Code en modo headless, dentro del workspace:
-   `claude -p "<pedido>" --output-format json --permission-mode acceptEdits --allowedTools "Read,Write,Edit,Glob,Grep,Agent,…,Bash(python:*)" --max-budget-usd <tope> --strict-mcp-config --setting-sources project`.
-   Solo puede leer y escribir archivos y correr los scripts de Python; no usa conectores MCP ni tu configuración personal, y cada caso tiene un tope de gasto (`presupuesto_usd` del caso, o `--presupuesto-usd`).
-3. **Verifica** lo que dejó y arma el informe.
+1. **Prepares an isolated workspace**, outside the repo (in the system temp folder, or in `--workdir`): a copy of `CLAUDE.md`, `AGENTS.md`, `.claude/`, `templates/` and `scripts/`, with empty `input/` and `output/`, the case inputs and its own `.env`. Your `input/` and your `output/` are never touched.
+2. **Runs the agent** with Claude Code in headless mode, inside the workspace:
+   `claude -p "<prompt>" --output-format json --permission-mode acceptEdits --allowedTools "Read,Write,Edit,Glob,Grep,Agent,…,Bash(python:*)" --max-budget-usd <cap> --strict-mcp-config --setting-sources project`.
+   It can only read and write files and run the Python scripts; it does not use MCP connectors or your personal configuration, and each case has a spending cap (the case `budget_usd`, or `--budget-usd`).
+3. **Verifies** what it left and builds the report.
 
-**Costo**: cada caso es una conversación completa con un agente (los generadores de casos son los más caros). Correr todos ronda unos pocos dólares con un modelo grande; los topes de cada caso son el máximo, no lo habitual. Para iterar, corré un solo caso o un solo agente.
+**Cost**: each case is a full conversation with an agent (the case generators are the most expensive). Running all of them costs a few dollars with a large model; the caps of each case are the maximum, not the usual. To iterate, run a single case or a single agent.
 
-### Sin gastar tokens del script
+### Without spending the script's tokens
 
-- **Preparar y correr a mano**: `--preparar` arma los workspaces e imprime el comando de cada uno; los corrés vos (o los abrís en Claude Code y pedís el pedido del caso) y después `--verificar --trabajo <carpeta>`.
-- **Verificar algo que ya generaste**: si le pediste al agente el caso en tu repo, `python scripts/evaluar_agentes.py --solo-verificar . --caso casos-manuales-hu-registro` revisa lo que hay en `output/`. Lo que el agente responde en el chat (el `consultor-proyecto`) va en `_eval/respuesta.txt` de esa carpeta.
+- **Prepare and run by hand**: `--prepare` builds the workspaces and prints the command for each one; you run them (or open them in Claude Code and send the case prompt) and then `--verify --workdir <folder>`.
+- **Verify something you already generated**: if you asked the agent for the case in your repo, `python scripts/evaluate_agents.py --verify-only . --case manual-cases-signup-story` checks what is in `output/`. What the agent answers in the chat (the `project-consultant`) goes in `_eval/response.txt` in that folder.
 
-### Juez (opcional)
+### Judge (optional)
 
-Con `--juez`, además de los chequeos, Claude puntúa la **rúbrica** del caso (claridad de los pasos, redundancia, supuestos aclarados…). Es **informativo**: no cambia el puntaje, que sale solo de los chequeos determinísticos. Gasta tokens extra.
+With `--judge`, in addition to the checks, Claude scores the case **rubric** (clarity of the steps, redundancy, explained assumptions…). It is **informational**: it does not change the score, which comes only from the deterministic checks. It spends extra tokens.
 
-## Resultados
+## Results
 
-Quedan en `evals/resultados/<fecha-hora>/` (no se versiona):
+They are saved in `evals/results/<date-time>/` (not versioned):
 
-- `resultados.json`: cada caso con su puntaje (0-100, ponderado por el `peso` de cada chequeo), su estado (*Aprobado* si llega al `umbral`, 80 por defecto), cada chequeo con el detalle de por qué falló, y el costo, los turnos y la duración de la corrida.
-- `informe-evals.html`: el informe (modo oscuro, como los demás de k0lmenIA), con el puntaje por agente y por caso y la **comparación con la corrida anterior**: qué chequeos dejaron de pasar (**regresiones**) y cuáles empezaron a pasar.
+- `results.json`: each case with its score (0-100, weighted by the `weight` of each check), its status (*Passed* if it reaches the `threshold`, 80 by default), each check with the detail of why it failed, and the cost, turns and duration of the run.
+- `evals-report.html`: the report (dark mode, like the other k0lmenIA reports), with the score per agent and per case and the **comparison with the previous run**: which checks stopped passing (**regressions**) and which started to pass.
 
-Flujo recomendado al cambiar un agente: correr sus casos antes y después del cambio y mirar las regresiones.
+Recommended flow when changing an agent: run its cases before and after the change and look at the regressions.
 
-## Cómo sumar un caso
+## How to add a case
 
-Una carpeta `evals/casos/<id>/` con un `caso.json`:
+A folder `evals/cases/<id>/` with a `case.json`:
 
 ```json
 {
-  "agente": "generador-casos-manuales",
-  "descripcion": "Qué trampas tiene y qué se espera",
-  "pedido": "Usá el agente … para …",
-  "requiere": [".claude/agents/otro-agente.md"],
-  "insumos": [{"desde": "insumos/HU-901-registro.md", "hacia": "input/historias/HU-901-registro.md"},
-              {"desde": "repo:input/api/auth-endpoints.md", "hacia": "input/api/auth-endpoints.md"}],
-  "env": {"REPO_RUTA_LOCAL": "{workspace}/repo-demo"},
-  "presupuesto_usd": 2,
-  "umbral": 80,
-  "chequeos": [{"id": "archivo", "tipo": "existe", "descripcion": "…", "archivos": ["output/…/*.md"], "peso": 2}],
-  "rubrica": ["Criterio para el juez (opcional)"]
+  "agent": "manual-case-generator",
+  "description": "What traps it has and what is expected",
+  "prompt": "Use the … agent to …",
+  "requires": [".claude/agents/other-agent.md"],
+  "inputs": [{"from": "inputs/US-901-signup.md", "to": "input/stories/US-901-signup.md"},
+             {"from": "repo:input/api/auth-endpoints.md", "to": "input/api/auth-endpoints.md"}],
+  "env": {"REPO_LOCAL_PATH": "{workspace}/demo-repo"},
+  "budget_usd": 2,
+  "threshold": 80,
+  "checks": [{"id": "file", "type": "exists", "description": "…", "files": ["output/…/*.md"], "weight": 2}],
+  "rubric": ["Criterion for the judge (optional)"]
 }
 ```
 
-- `insumos`: `desde` es relativo a `evals/` (o a la carpeta del caso); con `repo:` se toma del repo. Puede ser un archivo o una carpeta.
-- `requiere`: si falta algo de la lista, el caso se omite (*N/A*) en vez de fallar.
-- `env`: el `.env` del workspace; `{workspace}` se reemplaza por su ruta.
+- `inputs`: `from` is relative to `evals/` (or to the case folder); with `repo:` it is taken from the repo. It can be a file or a folder.
+- `requires`: if anything in the list is missing, the case is skipped (*N/A*) instead of failing.
+- `env`: the workspace `.env`; `{workspace}` is replaced with its path.
 
-Tipos de chequeo (los `archivos` son globs relativos al workspace; los patrones son regex, sin distinguir mayúsculas):
+Check types (the `files` are globs relative to the workspace; the patterns are case-insensitive regexes):
 
 ```
 +-----------------------+------------------------------------------+
-| Tipo                  | Qué revisa                               |
+| Type                  | What it checks                           |
 +=======================+==========================================+
-| `existe`              | Que haya al menos `min` archivos         |
+| `exists`              | That there are at least `min` files      |
 +-----------------------+------------------------------------------+
-| `contiene`            | Que aparezcan todos los `patrones` (o    |
-|                       | alguno, con `"modo": "alguno"`)          |
+| `contains`            | That all the `patterns` appear (or any   |
+|                       | of them, with `"mode": "any"`)           |
 +-----------------------+------------------------------------------+
-| `no_contiene`         | Que no aparezca ninguno (lo inventado,   |
-|                       | un secreto)                              |
+| `not_contains`        | That none of them appears (something     |
+|                       | invented, a secret)                      |
 +-----------------------+------------------------------------------+
-| `conteo`              | Que `patron` aparezca al menos `min`     |
-|                       | veces (`distintos` para contar valores   |
-|                       | distintos, por ejemplo IDs FI-XX)        |
+| `count`               | That `pattern` appears at least `min`    |
+|                       | times (`distinct` to count distinct      |
+|                       | values, for example MI-XX IDs)           |
 +-----------------------+------------------------------------------+
-| `orden`               | Que los `patrones` aparezcan en ese      |
-|                       | orden (secciones, campos de una          |
-|                       | plantilla)                               |
+| `order`               | That the `patterns` appear in that order |
+|                       | (sections, fields of a template)         |
 +-----------------------+------------------------------------------+
-| `tablas_normalizadas` | Que no queden tablas en Markdown crudo   |
-|                       | (falta `formatear_tablas.py`)            |
+| `normalized_tables`   | That no tables are left in raw Markdown  |
+|                       | (`format_tables.py` missing)             |
 +-----------------------+------------------------------------------+
-| `xlsx_columnas`       | Las columnas de la planilla de casos     |
+| `xlsx_columns`        | The columns of the test cases            |
+|                       | spreadsheet                              |
 +-----------------------+------------------------------------------+
-| `xlsx_casos`          | Mínimo de casos, IDs `CP-XXX`            |
-|                       | consecutivos, prioridades y estados de   |
-|                       | la escala, orden por prioridad, pasos y  |
-|                       | resultado                                |
+| `xlsx_cases`          | Minimum number of cases, consecutive     |
+|                       | `TC-XXX` IDs, priorities and statuses    |
+|                       | from the scale, sorted by priority,      |
+|                       | steps and result                         |
 +-----------------------+------------------------------------------+
-| `xlsx_tipos`          | Mínimo de casos por tipo (positivos,     |
-|                       | negativos, borde…), cada uno con su      |
-|                       | regex sobre título, descripción, datos y |
-|                       | etiquetas                                |
+| `xlsx_types`          | Minimum number of cases per type         |
+|                       | (positive, negative, boundary…), each    |
+|                       | with its regex over title, description,  |
+|                       | data and tags                            |
 +-----------------------+------------------------------------------+
-| `xlsx_falta_info`     | Casos marcados `@falta-info` y la hoja   |
-|                       | *Falta información*                      |
+| `xlsx_missing_info`   | Cases marked `@missing-info` and the     |
+|                       | *Missing information* sheet              |
 +-----------------------+------------------------------------------+
-| `xlsx_filtro`         | Los casos que tratan un tema (`filtro`)  |
-|                       | tienen que tener `debe` (por ejemplo     |
-|                       | `@falta-info`) y no `no_debe_resultado`  |
+| `xlsx_filter`         | The cases that cover a topic (`filter`)  |
+|                       | must have `must` (for example            |
+|                       | `@missing-info`) and not                 |
+|                       | `must_not_result`                        |
 +-----------------------+------------------------------------------+
-| `gherkin`             | `.feature` válido: tags de Feature y     |
-|                       | escenario, Given/When/Then, Examples,    |
-|                       | `@falta-info @FI-XX` con su comentario   |
+| `gherkin`             | Valid `.feature`: Feature and scenario   |
+|                       | tags, Given/When/Then, Examples,         |
+|                       | `@missing-info @MI-XX` with its comment  |
 +-----------------------+------------------------------------------+
 ```
 
-Los insumos compartidos están en `evals/insumos/`. Todo es ficticio: el `config/produccion.env` de `repo-demo` tiene valores falsos a propósito, como trampa para el `documentador-proyecto`.
+The shared inputs are in `evals/inputs/`. Everything is fictional: the `config/production.env` in `demo-repo` has fake values on purpose, as a trap for the `project-documenter`.

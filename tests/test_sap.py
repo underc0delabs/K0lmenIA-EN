@@ -1,73 +1,73 @@
-"""Probador de SAP: informe HTML (agente probador-sap) y el relevamiento de solo lectura del SAP GUI."""
+"""SAP tester: HTML report (sap-tester agent) and the read-only SAP GUI survey."""
 import json
 import sys
 from pathlib import Path
 
 import pytest
 
-RAIZ = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(RAIZ / "scripts"))
-sys.path.insert(0, str(RAIZ / "herramientas" / "sap"))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tools" / "sap"))
 
-import generar_informe_sap as gi  # noqa: E402
+import generate_sap_report as gi  # noqa: E402
 import sap_gui  # noqa: E402
 
-ANALISIS = {
-    "titulo": "SAP — HU-010 (Order to Cash)", "historia": "HU-010", "ambiente": "QA (no productivo)",
-    "generado": "2026-10-19T12:00:00",
-    "sistema": {"sid": "DQ1", "mandante": "100", "tipo": "S/4HANA", "version": "2023", "gui_scripting": True, "fiori": True},
-    "veredicto": "El flujo O2C cierra; 1 hallazgo alto de autorización", "veredicto_tono": "warn",
-    "resumen": "Probé O2C de punta a punta y los roles de ventas.",
-    "pruebas": [{"id": "CP-001", "area": "SAP GUI", "transaccion": "VA01", "caso": "Crear pedido de ventas",
-                 "resultado": "Aprobado", "esperado": "pedido creado", "obtenido": "pedido 12345"},
-                {"id": "CP-002", "area": "Fiori", "transaccion": "Manage Sales Orders", "caso": "Ver pedido",
-                 "resultado": "Fallido", "esperado": "muestra el pedido", "obtenido": "error 500 del OData"}],
-    "autorizaciones": [{"rol": "Z_VENTAS", "usuario": "QA_TEST", "objeto": "V_VBAK_VKO", "actividad": "01 Crear",
-                        "resultado": "Fallido", "detalle": "SU53 muestra falta de autorización"}],
-    "procesos": [{"proceso": "Order to Cash", "paso": "VA01 → VL01N → VF01", "estado": "Aprobado", "detalle": "documentos ok"}],
-    "hallazgos": [{"id": "H-01", "severidad": "Alta", "area": "Autorizaciones", "texto": "Al rol Z_VENTAS le falta crear entregas",
-                   "impacto": "no puede completar O2C", "como_reproducir": "VL01N con QA_TEST", "recomendacion": "agregar el objeto a PFCG"}],
-    "recomendaciones": [{"prioridad": "Alta", "accion": "Ajustar el rol en PFCG", "motivo": "completar O2C"}],
-    "falta_informacion": [{"id": "FI-01", "que_falta": "precio esperado", "pregunta": "¿qué lista de precios?"}],
+ANALYSIS = {
+    "title": "SAP — US-010 (Order to Cash)", "story": "US-010", "environment": "QA (non-production)",
+    "generated": "2026-10-19T12:00:00",
+    "system": {"sid": "DQ1", "client": "100", "type": "S/4HANA", "version": "2023", "gui_scripting": True, "fiori": True},
+    "verdict": "The O2C flow closes; 1 high authorization finding", "verdict_tone": "warn",
+    "summary": "I tested O2C end to end and the sales roles.",
+    "tests": [{"id": "TC-001", "area": "SAP GUI", "transaction": "VA01", "case": "Create sales order",
+               "result": "Passed", "expected": "order created", "actual": "order 12345"},
+              {"id": "TC-002", "area": "Fiori", "transaction": "Manage Sales Orders", "case": "View order",
+               "result": "Failed", "expected": "shows the order", "actual": "OData error 500"}],
+    "authorizations": [{"role": "Z_SALES", "user": "QA_TEST", "object": "V_VBAK_VKO", "activity": "01 Create",
+                        "result": "Failed", "detail": "SU53 shows a missing authorization"}],
+    "processes": [{"process": "Order to Cash", "step": "VA01 → VL01N → VF01", "status": "Passed", "detail": "documents ok"}],
+    "findings": [{"id": "F-01", "severity": "High", "area": "Authorizations", "text": "The Z_SALES role cannot create deliveries",
+                  "impact": "cannot complete O2C", "how_to_reproduce": "VL01N with QA_TEST", "recommendation": "add the object in PFCG"}],
+    "recommendations": [{"priority": "High", "action": "Adjust the role in PFCG", "reason": "complete O2C"}],
+    "missing_info": [{"id": "MI-01", "what_is_missing": "expected price", "question": "which price list?"}],
 }
 
 
-def _gen(tmp_path, datos, monkeypatch):
+def _gen(tmp_path, data, monkeypatch):
     monkeypatch.setenv("K0LMENIA_PORTAL", "0")
-    (tmp_path / "analisis.json").write_text(json.dumps(datos, ensure_ascii=False), encoding="utf-8")
-    gi.generar(tmp_path / "analisis.json", tmp_path / "informe.html")
-    return (tmp_path / "informe.html").read_text(encoding="utf-8")
+    (tmp_path / "analysis.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    gi.generate(tmp_path / "analysis.json", tmp_path / "report.html")
+    return (tmp_path / "report.html").read_text(encoding="utf-8")
 
 
-def test_informe_completo(tmp_path, monkeypatch):
-    html = _gen(tmp_path, ANALISIS, monkeypatch)
+def test_full_report(tmp_path, monkeypatch):
+    html = _gen(tmp_path, ANALYSIS, monkeypatch)
     assert "Order to Cash" in html and "DQ1" in html
-    assert "V_VBAK_VKO" in html and "CP-002" in html and "FI-01" in html
-    assert "Autorizaciones y roles" in html and "Procesos de negocio" in html
-    assert "VL01N con QA_TEST" in html  # sección "Cómo reproducir"
-    assert "no productivo" in html  # banner de ambiente de QA
+    assert "V_VBAK_VKO" in html and "TC-002" in html and "MI-01" in html
+    assert "Authorizations and roles" in html and "Business processes" in html
+    assert "VL01N with QA_TEST" in html  # "How to reproduce" section
+    assert "Non-production" in html  # QA environment banner
 
 
-def test_scripting_deshabilitado_avisa(tmp_path, monkeypatch):
-    datos = dict(ANALISIS, sistema={"sid": "DQ1", "mandante": "100", "gui_scripting": False})
-    html = _gen(tmp_path, datos, monkeypatch)
-    assert "Scripting está deshabilitado" in html
+def test_disabled_scripting_warns(tmp_path, monkeypatch):
+    data = dict(ANALYSIS, system={"sid": "DQ1", "client": "100", "gui_scripting": False})
+    html = _gen(tmp_path, data, monkeypatch)
+    assert "Scripting is disabled" in html
 
 
-def test_sin_pruebas_ni_hallazgos(tmp_path, monkeypatch):
-    html = _gen(tmp_path, {"titulo": "Vacío"}, monkeypatch)
-    assert "Sin hallazgos." in html and "Vacío" in html
+def test_without_tests_or_findings(tmp_path, monkeypatch):
+    html = _gen(tmp_path, {"title": "Empty"}, monkeypatch)
+    assert "No findings." in html and "Empty" in html
 
 
-def test_json_invalido_falla(tmp_path):
+def test_invalid_json_fails(tmp_path):
     (tmp_path / "x.json").write_text("{", encoding="utf-8")
     with pytest.raises(json.JSONDecodeError):
-        gi.generar(tmp_path / "x.json", tmp_path / "i.html")
+        gi.generate(tmp_path / "x.json", tmp_path / "i.html")
 
 
-def test_resumen_sesiones():
-    conexiones = [{"descripcion": "QAS", "sesiones": [{"sistema": "DQ1", "mandante": "100", "usuario": "QA_TEST"},
-                                                      {"sistema": "DQ1", "mandante": "100", "usuario": "QA2"}]},
-                  {"descripcion": "otra", "sesiones": [{"error": "no se pudo leer"}]}]
-    r = sap_gui.resumen_sesiones(conexiones)
-    assert r == {"conexiones": 2, "sesiones": 2, "sistemas": ["DQ1/100"]}
+def test_sessions_summary():
+    connections = [{"description": "QAS", "sessions": [{"system": "DQ1", "client": "100", "user": "QA_TEST"},
+                                                       {"system": "DQ1", "client": "100", "user": "QA2"}]},
+                   {"description": "other", "sessions": [{"error": "could not be read"}]}]
+    r = sap_gui.sessions_summary(connections)
+    assert r == {"connections": 2, "sessions": 2, "systems": ["DQ1/100"]}

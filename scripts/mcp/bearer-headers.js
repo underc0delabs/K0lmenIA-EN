@@ -1,28 +1,28 @@
 #!/usr/bin/env node
-// headersHelper genérico para conectores MCP remotos que aceptan un token como Bearer (ver CONECTORES.md).
+// Generic headersHelper for remote MCP connectors that accept a token as Bearer (see CONNECTORS.md).
 //
-// Uso (en catalogo.json):
-//   "headersHelper": "node scripts/mcp/bearer-headers.js <conector> <VARIABLE> [--opcional]"
+// Usage (in catalog.json):
+//   "headersHelper": "node scripts/mcp/bearer-headers.js <connector> <VARIABLE> [--optional]"
 //
-// Toma <VARIABLE> del entorno o, si no está, del .env de la raíz, y devuelve por stdout
-// {"Authorization": "Bearer <token>"}. Con --opcional, si la variable está vacía devuelve {} y el
-// conector se autoriza con tu cuenta (OAuth) desde /mcp. Sin --opcional, si falta corta con un
-// mensaje claro. El token nunca se muestra.
-const { variable } = require('./leer-env');
+// Takes <VARIABLE> from the environment or, if it's not there, from the root .env, and prints
+// {"Authorization": "Bearer <token>"} to stdout. With --optional, if the variable is empty it prints {}
+// and the connector is authorized with your account (OAuth) from /mcp. Without --optional, if it's
+// missing it stops with a clear message. The token is never shown.
+const { variable } = require('./read-env');
 
-const [conector, nombre, ...resto] = process.argv.slice(2);
-if (!conector || !/^[A-Z_][A-Z0-9_]*$/.test(nombre || '')) {
-  console.error('bearer-headers: uso: node scripts/mcp/bearer-headers.js <conector> <VARIABLE> [--opcional]');
+const [connector, name, ...rest] = process.argv.slice(2);
+if (!connector || !/^[A-Z_][A-Z0-9_]*$/.test(name || '')) {
+  console.error('bearer-headers: usage: node scripts/mcp/bearer-headers.js <connector> <VARIABLE> [--optional]');
   process.exit(1);
 }
-const opcional = resto.includes('--opcional');
-const token = variable(nombre);
+const optional = rest.includes('--optional');
+const token = variable(name);
 
 if (token) {
   process.stdout.write(JSON.stringify({ Authorization: `Bearer ${token}` }));
-} else if (opcional) {
+} else if (optional) {
   process.stdout.write('{}');
 } else {
-  console.error(`${conector}: falta ${nombre} en el .env de la raíz (ver .env.example y CONECTORES.md).`);
+  console.error(`${connector}: ${name} is missing from the root .env (see .env.example and CONNECTORS.md).`);
   process.exit(1);
 }

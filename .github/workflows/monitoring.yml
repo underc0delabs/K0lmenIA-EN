@@ -1,0 +1,85 @@
+# Scheduled synthetic monitoring (tools/k0lmena/tools/monitoring/README.md).
+#
+# Runs a READ-ONLY smoke against the environment (for example, production) and notifies Slack and Teams only
+# when something breaks or recovers. The run history is kept between runs with the GitHub Actions
+# cache (so it knows what changed) and the HTML report is kept as an artifact of each run.
+#
+# To enable it:
+#   1. Settings > Secrets and variables > Actions, and add:
+#        MONITORING_URLS    comma-separated URLs (or commit input/monitoring.json and you don't need it)
+#        SLACK_WEBHOOK_URL  (optional) Slack webhook
+#        TEAMS_WEBHOOK_URL  (optional) webhook of a Teams Workflows flow
+#   2. Uncomment the "schedule" block below (it ships disabled so nobody monitors by accident).
+#   Meanwhile you can run it manually: Actions > Synthetic monitoring > Run workflow.
+name: Synthetic monitoring
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenarios:
+        description: "Also run the k0lmena @synthetic scenarios (they must be read-only)"
+        type: boolean
+        default: false
+  # schedule:
+  #   - cron: "*/30 * * * *"   # every 30 minutes (UTC). GitHub may delay or skip runs at peak hours.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monitoring
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MONITORING_URLS: ${{ secrets.MONITORING_URLS }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      MONITORING_LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      SCENARIOS: ${{ inputs.scenarios && '--scenarios' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Previous run history
+        uses: actions/cache/restore@v4
+        with:
+          path: output/monitoring
+          key: monitoring-${{ github.run_id }}
+          restore-keys: monitoring-
+
+      - name: Dependencies
+        run: |
+          npm ci --prefix tools/k0lmena --no-audit --no-fund
+          if [ -n "$SCENARIOS" ]; then npx --prefix tools/k0lmena playwright install --with-deps chromium; fi
+
+      - name: Monitor
+        id: monitor
+        working-directory: tools/k0lmena
+        run: node -r ./env.js tools/monitoring/monitor.js $SCENARIOS
+
+      - name: Save history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: output/monitoring
+          key: monitoring-${{ github.run_id }}
+
+      - name: Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-report
+          path: output/monitoring/*/monitoring-report.html
+          retention-days: 14
+          if-no-files-found: ignore

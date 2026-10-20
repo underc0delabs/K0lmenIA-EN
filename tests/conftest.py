@@ -1,13 +1,13 @@
-"""Configuración común de los tests de k0lmenIA: los scripts se importan desde scripts/ y scripts/gestion/."""
+"""Common setup for the k0lmenIA tests: the scripts are imported from scripts/ and scripts/management/."""
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[1]
-for ruta in (RAIZ / "scripts", RAIZ / "scripts" / "gestion"):
-    if str(ruta) not in sys.path:
-        sys.path.insert(0, str(ruta))
+ROOT = Path(__file__).resolve().parents[1]
+for path in (ROOT / "scripts", ROOT / "scripts" / "management"):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
-# Los informes que arman los tests (también en subprocesos) no tocan el portal output/index.html.
+# The reports built by the tests (also in subprocesses) do not touch the output/index.html portal.
 import os  # noqa: E402
 
 os.environ["K0LMENIA_PORTAL"] = "0"

@@ -1,13 +1,13 @@
-# Dependencias de los scripts del repo (instalá con: pip install -r requirements.txt)
+# Dependencies of the repo scripts (install with: pip install -r requirements.txt)
 openpyxl>=3.1
 tabulate>=0.9
 requests>=2.31
-# Specs OpenAPI / Swagger en YAML (scripts/resumir_openapi.py)
+# OpenAPI / Swagger specs in YAML (scripts/summarize_openapi.py)
 pyyaml>=6
-# Solo para regenerar la documentación (node docs/generar.js): quita el pie de la portada del PDF
+# Only to regenerate the documentation (node docs/generate.js): removes the footer from the PDF cover
 pypdf>=4.0
-# Solo para el control ONVIF de cámaras (onvif.py, grabaciones.py); se instala sola si falta
+# Only for ONVIF camera control (onvif.py, recordings.py); installed automatically if missing
 onvif-zeep>=0.2.12
-# Solo para la calidad de imagen de cámaras (calidad_imagen.py); se instala sola si falta
+# Only for camera image quality (image_quality.py); installed automatically if missing
 opencv-python-headless>=4.8
 numpy>=1.24

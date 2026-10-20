@@ -1,48 +1,48 @@
 #!/usr/bin/env python3
 """
-Lectura del .env de la raíz de k0lmenIA, con las mismas reglas que k0lmena (dotenv) y que
-scripts/mcp/leer-env.js:
+Reads the .env at the k0lmenIA root, with the same rules as k0lmena (dotenv) and
+scripts/mcp/read-env.js:
 
-- `CLAVE=valor`, con `export` opcional adelante; espacios alrededor ignorados.
-- Valor entre comillas simples o dobles: se toma literal (un `#` adentro no es comentario).
-- Valor sin comillas: ` # comentario` al final se descarta.
-- Líneas vacías y comentarios (`#`) se ignoran. Tolera BOM (archivos guardados desde Windows).
-- K0LMENA_ENV_FILE apunta a otro archivo (por ejemplo, en CI).
+- `KEY=value`, with an optional leading `export`; surrounding spaces are ignored.
+- Value in single or double quotes: taken literally (a `#` inside is not a comment).
+- Unquoted value: a trailing ` # comment` is discarded.
+- Empty lines and comments (`#`) are ignored. Tolerates a BOM (files saved on Windows).
+- K0LMENA_ENV_FILE points to another file (for example, in CI).
 
-Las variables ya definidas en el entorno tienen prioridad sobre el archivo.
+Variables already defined in the environment take precedence over the file.
 """
 import os
 import re
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[1]
-_LINEA = re.compile(r"^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$")
+ROOT = Path(__file__).resolve().parents[1]
+_LINE = re.compile(r"^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$")
 
 
-def archivo_env():
-    return Path(os.environ.get("K0LMENA_ENV_FILE") or RAIZ / ".env")
+def env_file():
+    return Path(os.environ.get("K0LMENA_ENV_FILE") or ROOT / ".env")
 
 
-def leer_env(archivo=None):
-    """Devuelve {clave: valor} del archivo (sin tocar os.environ)."""
-    archivo = Path(archivo) if archivo else archivo_env()
-    valores = {}
-    if not archivo.exists():
-        return valores
-    for linea in archivo.read_text(encoding="utf-8-sig").splitlines():
-        m = _LINEA.match(linea)
-        if not m or linea.lstrip().startswith("#"):
+def read_env(file=None):
+    """Returns {key: value} from the file (without touching os.environ)."""
+    file = Path(file) if file else env_file()
+    values = {}
+    if not file.exists():
+        return values
+    for line in file.read_text(encoding="utf-8-sig").splitlines():
+        m = _LINE.match(line)
+        if not m or line.lstrip().startswith("#"):
             continue
-        valor = m.group(2)
-        if len(valor) >= 2 and valor[0] == valor[-1] and valor[0] in "\"'":
-            valor = valor[1:-1]
+        value = m.group(2)
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
         else:
-            valor = re.sub(r"\s+#.*$", "", valor)
-        valores[m.group(1)] = valor
-    return valores
+            value = re.sub(r"\s+#.*$", "", value)
+        values[m.group(1)] = value
+    return values
 
 
-def cargar_env(archivo=None):
-    """Carga el .env en os.environ sin pisar lo que ya está definido en el entorno."""
-    for clave, valor in leer_env(archivo).items():
-        os.environ.setdefault(clave, valor)
+def load_env(file=None):
+    """Loads the .env into os.environ without overriding what's already defined in the environment."""
+    for key, value in read_env(file).items():
+        os.environ.setdefault(key, value)

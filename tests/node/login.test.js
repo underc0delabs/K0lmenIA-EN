@@ -1,55 +1,55 @@
-// Tests de la sesión guardada (k0lmena tools/login): argumentos de npm run login y qué archivo usa SESION.
+// Tests for the saved session (k0lmena tools/login): npm run login arguments and which file SESSION uses.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const k0 = path.resolve(__dirname, '..', '..', 'herramientas/k0lmena/tools/login');
-const s = require(path.join(k0, 'sesion.js'));
-const { argumentos } = require(path.join(k0, 'login.js'));
+const k0 = path.resolve(__dirname, '..', '..', 'tools/k0lmena/tools/login');
+const s = require(path.join(k0, 'session.js'));
+const { parseArgs } = require(path.join(k0, 'login.js'));
 
-test('login: archivo de sesión por defecto y por nombre, dentro de .auth/', () => {
-  assert.equal(s.archivoSesion(''), path.join(s.CARPETA, 'sesion.json'));
-  assert.equal(s.archivoSesion('admin'), path.join(s.CARPETA, 'sesion-admin.json'));
-  assert.equal(path.basename(s.CARPETA), '.auth');
-  assert.ok(fs.existsSync(path.join(s.RAIZ, 'package.json')), 'RAIZ es la raíz del repo');
-  for (const malo of ['../x', 'a b', 'a/b', 'a&b']) assert.throws(() => s.archivoSesion(malo), /inválido/);
+test('login: default and named session file, inside .auth/', () => {
+  assert.equal(s.sessionFile(''), path.join(s.FOLDER, 'session.json'));
+  assert.equal(s.sessionFile('admin'), path.join(s.FOLDER, 'session-admin.json'));
+  assert.equal(path.basename(s.FOLDER), '.auth');
+  assert.ok(fs.existsSync(path.join(s.ROOT, 'package.json')), 'ROOT is the repo root');
+  for (const bad of ['../x', 'a b', 'a/b', 'a&b']) assert.throws(() => s.sessionFile(bad), /invalid/);
 });
 
-test('login: SESION apagada, por defecto o con nombre', () => {
-  for (const v of [undefined, '', ' ', '0', 'no', 'OFF', 'false']) assert.equal(s.sesionPedida(v), null);
-  for (const v of ['si', 'sí', 'on', '1', 'true', 'SI']) assert.equal(s.sesionPedida(v).nombre, '');
-  assert.equal(s.sesionPedida('operador').archivo, path.join(s.CARPETA, 'sesion-operador.json'));
+test('login: SESSION off, default or named', () => {
+  for (const v of [undefined, '', ' ', '0', 'no', 'OFF', 'false']) assert.equal(s.requestedSession(v), null);
+  for (const v of ['yes', 'y', 'on', '1', 'true', 'YES']) assert.equal(s.requestedSession(v).name, '');
+  assert.equal(s.requestedSession('operator').file, path.join(s.FOLDER, 'session-operator.json'));
 });
 
-test('login: sesionActiva avisa y sigue sin sesión si falta el archivo', () => {
-  const avisos = [];
-  assert.equal(s.sesionActiva('rol-que-no-existe-xyz', (m) => avisos.push(m)), null);
-  assert.equal(avisos.length, 1);
-  assert.match(avisos[0], /npm run login -- --nombre rol-que-no-existe-xyz/);
-  assert.equal(s.sesionActiva('', () => assert.fail('no avisa si está apagada')), null);
+test('login: activeSession warns and continues without a session if the file is missing', () => {
+  const warnings = [];
+  assert.equal(s.activeSession('nonexistent-role-xyz', (m) => warnings.push(m)), null);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /npm run login -- --name nonexistent-role-xyz/);
+  assert.equal(s.activeSession('', () => assert.fail('does not warn if it is off')), null);
 });
 
-test('login: sesionActiva devuelve el archivo si existe', () => {
-  const nombre = `test-${process.pid}`;
-  const archivo = s.archivoSesion(nombre);
-  const creoCarpeta = !fs.existsSync(s.CARPETA);
-  fs.mkdirSync(s.CARPETA, { recursive: true });
-  fs.writeFileSync(archivo, '{"cookies":[],"origins":[]}');
+test('login: activeSession returns the file if it exists', () => {
+  const name = `test-${process.pid}`;
+  const file = s.sessionFile(name);
+  const createdFolder = !fs.existsSync(s.FOLDER);
+  fs.mkdirSync(s.FOLDER, { recursive: true });
+  fs.writeFileSync(file, '{"cookies":[],"origins":[]}');
   try {
-    assert.equal(s.sesionActiva(nombre), archivo);
+    assert.equal(s.activeSession(name), file);
   } finally {
-    fs.rmSync(archivo, { force: true });
-    if (creoCarpeta) fs.rmSync(s.CARPETA, { recursive: true, force: true });
+    fs.rmSync(file, { force: true });
+    if (createdFolder) fs.rmSync(s.FOLDER, { recursive: true, force: true });
   }
 });
 
-test('login: argumentos de npm run login', () => {
-  assert.deepEqual(argumentos([]), { url: '', nombre: '' });
-  assert.deepEqual(argumentos(['--nombre', 'admin', '--url', 'https://a.com/login']), { url: 'https://a.com/login', nombre: 'admin' });
-  assert.throws(() => argumentos(['--url', 'ftp://a.com']), /URL inválida/);
-  assert.throws(() => argumentos(['--nombre']), /falta el valor/);
-  assert.throws(() => argumentos(['--nombre', 'a b']), /inválido/);
-  assert.throws(() => argumentos(['--otra']), /desconocida/);
+test('login: npm run login arguments', () => {
+  assert.deepEqual(parseArgs([]), { url: '', name: '' });
+  assert.deepEqual(parseArgs(['--name', 'admin', '--url', 'https://a.com/login']), { url: 'https://a.com/login', name: 'admin' });
+  assert.throws(() => parseArgs(['--url', 'ftp://a.com']), /invalid URL/);
+  assert.throws(() => parseArgs(['--name']), /missing value/);
+  assert.throws(() => parseArgs(['--name', 'a b']), /invalid/);
+  assert.throws(() => parseArgs(['--other']), /unknown/);
 });

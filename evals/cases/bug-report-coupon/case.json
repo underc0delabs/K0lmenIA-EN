@@ -1,0 +1,34 @@
+{
+  "agent": "bug-report-generator",
+  "description": "Messy observation of a bug (a coupon that is applied several times). The password, the evidence and the version are missing: the report has to follow the template and flag them, without inventing them.",
+  "prompt": "Use the bug-report-generator agent to write the bug report for input/bugs/coupon-observation.md.",
+  "inputs": [
+    {"from": "inputs/coupon-observation.md", "to": "input/bugs/coupon-observation.md"}
+  ],
+  "budget_usd": 1,
+  "threshold": 80,
+  "checks": [
+    {"id": "file", "type": "exists", "description": "Saves the report in output/bug-reports/BUG-XXX.md",
+     "files": ["output/bug-reports/BUG-*.md"], "weight": 2},
+    {"id": "fields", "type": "order", "description": "Has every field of the template, in order",
+     "files": ["output/bug-reports/BUG-*.md"], "weight": 3,
+     "patterns": ["\\*\\*ID:\\*\\*", "\\*\\*Title:\\*\\*", "\\*\\*(User )?Story:\\*\\*", "\\*\\*Status:\\*\\*", "\\*\\*Description:\\*\\*",
+                  "\\*\\*Preconditions:\\*\\*", "\\*\\*Test Data:\\*\\*", "\\*\\*Steps to Reproduce:\\*\\*", "\\*\\*Actual Result:\\*\\*",
+                  "\\*\\*Expected Result:\\*\\*", "\\*\\*Evidence:\\*\\*", "\\*\\*(Criticality / )?Severity:\\*\\*", "\\*\\*Priority:\\*\\*",
+                  "\\*\\*Browser:\\*\\*", "\\*\\*Environment:\\*\\*"]},
+    {"id": "data", "type": "contains", "description": "Uses the data from the observation (coupon, environment, browser, amounts)",
+     "files": ["output/bug-reports/BUG-*.md"], "patterns": ["SAVE10", "staging", "chrome", "\\$\\s?100(\\.00)?\\b", "\\$\\s?70(\\.00)?\\b|30\\s*%"]},
+    {"id": "status", "type": "contains", "description": "A new bug starts as Open",
+     "files": ["output/bug-reports/BUG-*.md"], "patterns": ["\\*\\*Status:\\*\\*\\s*`?Open"]},
+    {"id": "expected", "type": "contains", "description": "The expected result says the coupon is applied only once",
+     "files": ["output/bug-reports/BUG-*.md"], "patterns": ["Expected Result:\\*\\*.{0,400}(only once|just once|a single time|one time|only (the )?10\\s*%|(is|are) not (applied|deducted) again|(does|do) not (stack|accumulate|apply again)|no(t)? stack)"], "weight": 2},
+    {"id": "missing", "type": "contains", "description": "Flags the missing information (version, evidence or password) instead of inventing it",
+     "files": ["output/bug-reports/BUG-*.md"], "patterns": ["Missing info(rmation)?"], "weight": 2},
+    {"id": "no-invented-password", "type": "not_contains", "description": "Does not invent a password",
+     "files": ["output/bug-reports/BUG-*.md"],
+     "patterns": ["Password:\\s*`?(?!\\s*$)(?![^\\n]*(missing|not (provided|given|specified|stated|indicated|reported|included)|no data|n/a|unknown|to be confirmed|tbd|pending|—|-\\s*$|\\[|\\(|_))[^\\n]{3,}"], "weight": 2},
+    {"id": "no-invented-version", "type": "not_contains", "description": "Does not invent an app or browser version",
+     "files": ["output/bug-reports/BUG-*.md"],
+     "patterns": ["(Version:\\*\\*|Chrome)\\s*v?\\d+\\.\\d+"]}
+  ]
+}

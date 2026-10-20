@@ -1,46 +1,46 @@
-# input/ — los insumos para los agentes
+# input/ — the inputs for the agents
 
 ```
 +------------------+------------------------------------------+---------------------------------------+
-| Carpeta          | Qué va                                   | Nombre sugerido                       |
+| Folder           | What goes in it                          | Suggested name                        |
 +==================+==========================================+=======================================+
-| `historias/`     | Historias de usuario con sus criterios   | `HU-001-registro.md`                  |
-|                  | de aceptación (`HU-XXX-<tema>.md`)       |                                       |
+| `stories/`       | User stories with their acceptance       | `US-001-signup.md`                    |
+|                  | criteria (`US-XXX-<topic>.md`)           |                                       |
 +------------------+------------------------------------------+---------------------------------------+
-| `documentacion/` | Documentación del proyecto: la que arma  | `INDICE.md`, `proyecto/`, `api/`,     |
-|                  | el documentador-proyecto (repositorio,   | `historias/<HU o key>/dossier.md` (no |
-|                  | historias, links, mapa funcional) y la   | se versiona)                          |
-|                  | que agregues a mano (manuales, actas)    |                                       |
+| `documentation/` | Project documentation: the one the       | `INDEX.md`, `project/`, `api/`,       |
+|                  | project-documenter builds (repository,   | `stories/<US or key>/dossier.md` (not |
+|                  | stories, links, functional map) and the  | versioned)                            |
+|                  | one you add by hand (manuals, minutes)   |                                       |
 +------------------+------------------------------------------+---------------------------------------+
-| `api/`           | Contratos de API, colecciones y          | incluye `auth-endpoints.md` y         |
-|                  | environments de Postman, Bruno (carpeta  | `demo.postman_collection.json`,       |
-|                  | con `bruno.json`) o Insomnia (export     | `demo-bruno/` y `demo.insomnia.json`  |
-|                  | `.json`/`.yaml`), Swagger/OpenAPI y      | (JSONPlaceholder), y una demo GraphQL |
-|                  | schemas GraphQL (`.graphql`)             | (`demo-graphql.postman_collection`)   |
+| `api/`           | API contracts, Postman collections and   | includes `auth-endpoints.md` and      |
+|                  | environments, Bruno (folder with         | `demo.postman_collection.json`,       |
+|                  | `bruno.json`) or Insomnia (`.json`/      | `demo-bruno/` and `demo.insomnia.json`|
+|                  | `.yaml` export), Swagger/OpenAPI and     | (JSONPlaceholder), and a GraphQL demo |
+|                  | GraphQL schemas (`.graphql`)             | (`demo-graphql.postman_collection`)   |
 +------------------+------------------------------------------+---------------------------------------+
-| `bugs/`          | Observaciones sueltas de errores para    | `observacion-<tema>.md`               |
-|                  | convertir en reportes                    |                                       |
+| `bugs/`          | Loose error observations to turn into    | `<topic>-observation.md`              |
+|                  | reports                                  |                                       |
 +------------------+------------------------------------------+---------------------------------------+
-| `correos/`       | Lo que tiene que llegar por mail en cada | `espera-HU-001.json`                  |
-|                  | caso (verificador-correos)               |                                       |
+| `emails/`        | What has to arrive by email in each case | `expect-US-001.json`                  |
+|                  | (email-verifier)                         |                                       |
 +------------------+------------------------------------------+---------------------------------------+
-| `logs/`          | Logs de la aplicación para el            | `app.log`, `access.log` (no se        |
-|                  | analista-logs (no se versionan)          | versionan)                            |
+| `logs/`          | Application logs for the log-analyst     | `app.log`, `access.log` (not          |
+|                  | (not versioned)                          | versioned)                            |
 +------------------+------------------------------------------+---------------------------------------+
 ```
 
-Si tu equipo usa Jira o Azure DevOps, no hace falta copiar las historias acá: pasale a los agentes
-la key (`PROJ-12`) o el ID del work item (`1234`) con el conector activo (ver `CONECTORES.md`).
+If your team uses Jira or Azure DevOps, you don't need to copy the stories here: give the agents
+the key (`PROJ-12`) or the work item ID (`1234`) with the connector active (see `CONNECTORS.md`).
 
-## Primer uso en cinco minutos
+## First use in five minutes
 
-0. (Opcional, recomendado) Pedí *"Documentá el proyecto"*: el `documentador-proyecto` lee el repositorio de la app, las historias y la web, y deja el contexto en `documentacion/` para los demás agentes (ver el bloque *Repositorio de la aplicación* del `.env`).
-1. Guardá una historia en `input/historias/HU-001-<tema>.md`: título, "Como / Quiero / Para" y los criterios de aceptación numerados (`CA1`, `CA2`, …). Para practicar podés usar el formulario "Crear cuenta" del sitio de práctica https://qarmy.ar/practica/automation (el `BASEURL` de `.env.example`).
-2. En Claude Code, pedí en orden:
-   - *"Analizá la historia HU-001"* → ambigüedades y preguntas para el PO en `output/analisis-historias/`.
-   - *"Generá los casos de prueba de HU-001"* → planilla Excel, Markdown y cobertura en `output/casos-de-prueba/manuales/`.
-   - *"Pasá HU-001 a BDD"* → `.feature` y cobertura en `output/casos-de-prueba/bdd/`.
-   - *"Ejecutá CP-001 de HU-001 contra <URL> en headless"* → reporte HTML con evidencia en `output/ejecuciones/`.
-3. Para un bug, guardá tu observación (aunque esté desordenada) en `input/bugs/` y pedí *"Armá el reporte de bug de input/bugs/<archivo>"* → `output/reportes-bug/BUG-001.md`.
+0. (Optional, recommended) Ask *"Document the project"*: the `project-documenter` reads the app repository, the stories and the website, and leaves the context in `documentation/` for the other agents (see the *Application repository* block of the `.env`).
+1. Save a story in `input/stories/US-001-<topic>.md`: title, "As a / I want / So that" and the numbered acceptance criteria (`AC1`, `AC2`, …). To practice, you can use the "Crear cuenta" (create account) form of the practice site https://qarmy.ar/practica/automation (the `BASEURL` of `.env.example`).
+2. In Claude Code, ask in order:
+   - *"Analyze story US-001"* → ambiguities and questions for the PO in `output/story-analysis/`.
+   - *"Generate the test cases for US-001"* → Excel spreadsheet, Markdown and coverage in `output/test-cases/manual/`.
+   - *"Turn US-001 into BDD"* → `.feature` and coverage in `output/test-cases/bdd/`.
+   - *"Run TC-001 of US-001 against <URL> in headless mode"* → HTML report with evidence in `output/runs/`.
+3. For a bug, save your observation (even if it is messy) in `input/bugs/` and ask *"Write the bug report for input/bugs/<file>"* → `output/bug-reports/BUG-001.md`.
 
-La colección `api/demo.postman_collection.json` apunta a JSONPlaceholder (una API pública de prueba): *"Corré la colección demo de input/api"* la ejecuta con Newman y deja su reporte.
+The `api/demo.postman_collection.json` collection points to JSONPlaceholder (a public test API): *"Run the demo collection from input/api"* runs it with Newman and leaves its report.

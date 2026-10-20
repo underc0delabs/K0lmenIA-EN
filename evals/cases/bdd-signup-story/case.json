@@ -1,0 +1,37 @@
+{
+  "agent": "bdd-case-generator",
+  "description": "Gherkin scenarios for US-901: English keywords and English content, @US/@TC tags, Scenario Outline for the boundaries and @missing-info on whatever depends on missing data.",
+  "prompt": "Use the bdd-case-generator agent to turn the story input/stories/US-901-signup.md into BDD. There are no active connectors: the Jira comments are copied into the story itself.",
+  "inputs": [
+    {"from": "inputs/US-901-signup.md", "to": "input/stories/US-901-signup.md"}
+  ],
+  "budget_usd": 2,
+  "threshold": 80,
+  "checks": [
+    {"id": "files", "type": "exists", "description": "Delivers the .feature and its coverage",
+     "files": ["output/test-cases/bdd/US-901*.feature", "output/test-cases/bdd/US-901*coverage*.md"], "min": 2, "weight": 2},
+    {"id": "gherkin", "type": "gherkin", "description": "Valid Gherkin: Feature with @US-901, each scenario with its unique @TC-XXX, Given/When/Then, Examples in the Outlines, and at least 2 scenarios with @missing-info @MI-XX and their comment",
+     "files": ["output/test-cases/bdd/US-901*.feature"],
+     "tag_feature": "@US-901", "tag_scenario": "@TC-\\d{3}", "min_scenarios": 6, "missing_info_min": 2, "weight": 4},
+    {"id": "keywords-english", "type": "not_contains", "description": "The keywords are in English (not Dado/Cuando/Entonces)",
+     "files": ["output/test-cases/bdd/US-901*.feature"],
+     "patterns": ["^\\s*(Característica|Escenario|Esquema del escenario|Dado|Cuando|Entonces|Ejemplos)\\b", "^\\s*#\\s*language:\\s*es"]},
+    {"id": "content-english", "type": "contains", "description": "The step content is in English",
+     "files": ["output/test-cases/bdd/US-901*.feature"],
+     "patterns": ["^\\s*(Given|When|Then|And)\\s+(the|a|an|I|they|he|she|it|that|user|person|visitor|enters|fills|completes|submits|sees|signs|is|are|no)\\b"]},
+    {"id": "outline-boundaries", "type": "contains", "description": "Uses a Scenario Outline with Examples for the username boundaries",
+     "files": ["output/test-cases/bdd/US-901*.feature"],
+     "patterns": ["Scenario (Outline|Template):", "Examples:"]},
+    {"id": "defined-message", "type": "contains", "description": "Uses the exact text that AC5 defines",
+     "files": ["output/test-cases/bdd/US-901*.feature"], "patterns": ["Username must be between 4 and 20 characters"]},
+    {"id": "coverage", "type": "contains", "description": "The coverage goes through the five criteria",
+     "files": ["output/test-cases/bdd/US-901*coverage*.md"], "patterns": ["AC1", "AC2", "AC3", "AC4", "AC5"]},
+    {"id": "tables", "type": "normalized_tables", "description": "Runs the coverage tables through format_tables.py",
+     "files": ["output/test-cases/bdd/US-901*coverage*.md"]}
+  ],
+  "rubric": [
+    "The scenarios are declarative (what the person does, not clicks on elements).",
+    "Each scenario tests a single rule.",
+    "The Thens are verifiable."
+  ]
+}

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>k0lmenIA · How to use it</title>
+<link rel="stylesheet" href="diagrams.css">
+<style>
+  .canvas { width: 1800px; }
+  .stages { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 22px; }
+  .stage { background: rgba(249,176,6,0.025); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .stage > h2 { margin: 0 0 4px; font-size: 24px; display: flex; align-items: center; gap: 12px; }
+  .stage > p { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+  .stage-num { width: 38px; height: 38px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 20px; font-weight: 800; color: var(--night); }
+  .step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .step + .step { margin-top: 0; }
+  .n { width: 30px; height: 30px; border-radius: 50%; background: var(--panel2); border: 1px solid var(--line); display: grid; place-items: center; font-weight: 800; font-size: 15px; }
+  .step .request { font-size: 16px; font-style: italic; color: var(--text); }
+  .step .who { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .step .out { font-size: 14px; margin-top: 6px; }
+  .step .out::before { content: "→ "; color: var(--muted); }
+  .lead { text-align: center; color: var(--muted); font-size: 16px; line-height: 1; margin: 6px 0; }
+  .terminal { background: var(--terminal); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-family: var(--mono); font-size: 14.5px; line-height: 1.7; color: var(--green); }
+  .terminal .c { color: var(--muted); }
+  .footer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+  .loop { margin-top: 14px; border: 1px dashed var(--green); border-radius: 12px; padding: 10px 14px; color: var(--green); font-size: 14px; text-align: center; }
+</style></head>
+<body><div class="canvas" id="capture">
+  <div class="title">
+    <div><h1>k0lmenIA <span class="muted">· How to use it</span></h1>
+      <p class="sub">You ask Claude Code for what you need in natural language; the right agent does the work and leaves the result</p></div>
+    <div class="brand">QARMY · Underc0de</div>
+  </div>
+
+  <div class="stages">
+    <!-- 1 -->
+    <div class="stage">
+      <h2><span class="stage-num" style="background:var(--violet)">1</span>Design</h2>
+      <p>From the story to the test cases</p>
+      <div class="step"><div class="n">0</div><div><div class="request">"Document the project" · put the story in <code>input/stories/</code></div>
+        <div class="who">or pass a Jira, Azure DevOps, Linear, ClickUp, monday, Asana, Trello, Notion, YouTrack or Shortcut key: the agents research the project documentation (project-documenter: repository, PRs, web app), comments, subtasks, epic, Confluence and Figma, build the context sheet and mark what's missing (MI-01)</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">1</div><div><div class="request">"Analyze story US-001"</div><div class="who">story-analyst</div>
+        <div class="out">ambiguities and questions for the PO</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">2</div><div><div class="request">"Build the test plan for US-001"</div><div class="who">test-strategist</div>
+        <div class="out">HTML plan: scope, risks, criteria</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">3</div><div><div class="request">"Generate the test cases for US-001" · "Turn it into BDD"</div><div class="who">manual-case-generator · bdd-case-generator · api-case-generator</div>
+        <div class="out">cases-US-001.xlsx + .md + coverage · .feature, each case with its estimated manual execution time</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n" style="font-size:12px">3a</div><div><div class="request">"Review the US-001 test cases and tell me how long they take" · "Build charters to explore the checkout"</div><div class="who">case-reviewer · charter-generator</div>
+        <div class="out">score, duplicates, improvements and minutes · exploratory session sheets + report</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n" style="font-size:12px">3b</div><div><div class="request">"Which test cases should I run for this change?"</div><div class="who">test-case-selector</div>
+        <div class="out">risk-based selection + npm test command with tags</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">4</div><div><div class="request">"Generate test data" · "Write the report for this bug" · "Is it already filed?" · "What happens if…?"</div><div class="who">test-data-generator · bug-report-generator · bug-triager · project-consultant</div>
+        <div class="out">CSV/MD data · BUG-001.md · duplicates and regressions · answers with their source</div></div></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="stage">
+      <h2><span class="stage-num" style="background:var(--green)">2</span>Execution and automation</h2>
+      <p>Once with agents, then with no tokens</p>
+      <div class="step"><div class="n">5</div><div><div class="request">"Automate the US-001 test cases in k0lmena against https://your-app.com"</div>
+        <div class="who">web-mapper · api-mapper (Postman, Bruno, Insomnia, Swagger, GraphQL) · mobile-mapper (Appium) · data-verifier (database)</div>
+        <div class="out">walks the app, adjusts the steps and writes .feature + steps + locators <span class="pill token">once</span></div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">6</div><div><div class="request">You run the suite whenever you want <span class="pill ok">no tokens</span></div>
+        <div class="terminal">cd tools/k0lmena<br>npm test <span class="c">           # web + api (TAGS=@US-001)</span><br>npm run test:mobile<br>npm run report:web <span class="c"> # HTML with evidence</span></div>
+        <div class="out">something failed? "Analyze why npm test failed" · failure-analyst: real bugs vs. tests to fix · "Repair the broken locators" · automation-repairer · "Which server error was there?" · log-analyst</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">7</div><div><div class="request">"Build a load test of the login for 50 users"</div>
+        <div class="who">step-by-step guide (test type, tool, users, thresholds) · performance-mapper with k6, Artillery or JMeter</div>
+        <div class="terminal">npm run perf -- US-001-login smoke<br>npm run perf -- US-001-login load <span class="c"> # asks for confirmation</span></div>
+        <div class="out">performance report with metrics, charts and recommendations</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">8</div><div><div class="request">"Review the security of https://staging.your-app.com"</div>
+        <div class="who">security-analyst: OWASP ZAP in passive mode, authorized URLs only</div>
+        <div class="who">web-pentester: authorized pentest (active ZAP + OWASP Top 10), with permission only</div>
+        <div class="out">security report: findings by risk, evidence and how to fix them</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">9</div><div><div class="request">"Run exploratory tests" · "Review accessibility" · "Check the speed" · "Did anything shift?" · "Try it in Safari" · "Did the email arrive?" · "Review the translations" · "Evaluate usability" · "Test the form validations" · "Test role permissions" · "What if the API goes down?"</div>
+        <div class="who">web-explorer · accessibility-analyst (WCAG 2.2) · web-performance-auditor (Lighthouse) · pixel-perfect (visual regression) · cross-browser (Chromium, Firefox, WebKit) · email-verifier (Mailpit) · translation-analyst (languages) · ux-evaluator (Nielsen) · form-tester · permissions-tester · resilience-tester</div>
+        <div class="terminal">npm run explore · npm run accessibility<br>npm run web-performance · npm run pixel-perfect<br>npm run cross-browser · npm run emails<br>npm run translator · npm run ux<br>npm run forms · npm run permissions<br>npm run resilience <span class="c">         # also with no agents or tokens</span></div>
+        <div class="out">links, images, errors, responsive, WCAG, email, translations, usability, forms, permissions and resilience, with screenshots; each report compares against previous runs (last 5)</div></div></div>
+      <div class="loop">A one-off test not worth automating? → "Run scenario X against https://…" (e2e-runner / api-runner, live)</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="stage">
+      <h2><span class="stage-num" style="background:var(--cyan)">3</span>Management and closing</h2>
+      <p>Xray · QMetry (QTM4J) · AIO Tests · Azure DevOps</p>
+      <div class="step"><div class="n">10</div><div><div class="request">"Upload the US-001 test cases to Xray in 'US-001 Sign-up', linked to PROJ-12"</div>
+        <div class="who">test-manager</div><div class="out">folder + test cases linked to the story, with their estimated time (Original Estimate, estimatedTime, estimatedEffort)</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">11</div><div><div class="request">"Create the Sprint 5 cycle with those test cases"</div>
+        <div class="who">test-manager</div><div class="out">cycle (Test Execution) linked to PROJ-12</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">12</div><div><div class="request">"Upload the results of the last run to cycle PROJ-60"</div>
+        <div class="who">results-publisher</div><div class="out">status + error + screenshot, GIF and video (if it failed) per test case</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">13</div><div><div class="request">"Build the closing report for US-001"</div>
+        <div class="who">coverage-analyst (what's left to test) · closure-report-generator</div><div class="out">coverage gaps, results, bugs, risks and go / no-go</div></div></div>
+      <div class="lead">▼</div>
+      <div class="step"><div class="n">14</div><div><div class="request">"Build the sprint 12 dashboard" · "Post it to Slack" · production monitoring</div>
+        <div class="who">quality-dashboard · notify (Slack and Teams) · npm run monitor · npm run metrics</div><div class="out">trend and management summary · <code>output/index.html</code> portal with filters · notification when something breaks or recovers · token cost per agent</div></div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="box accent-blue"><div class="et">A single configuration</div><p>The root <code>.env</code>: URLs, credentials, k0lmena and test management. Never committed.</p></div>
+    <div class="box accent-violet"><div class="et">Doesn't make things up</div><p>Searches Jira, Confluence and Figma; what it can't find is recorded as <b>Missing information</b> (MI-01) in every report.</p></div>
+    <div class="box accent-green"><div class="et">Saves tokens</div><p>What repeats is automated once and runs with <code>npm</code>, with no agents.</p></div>
+    <div class="box accent-cyan"><div class="et">Traceability</div><p>US-001 → TC-001 → <code>@TC-001</code> → key in Xray/QMetry/AIO → result.</p></div>
+  </div>
+</div></body></html>

@@ -1,0 +1,46 @@
+{
+  "agent": "story-analyst",
+  "description": "Story with traps: ambiguous AC3 (secure password), contradiction between the description (18 years) and AC4 (16), undefined duplicate email message and an unanswered dev question.",
+  "prompt": "Use the story-analyst agent to analyze the story input/stories/US-901-signup.md. There are no active connectors: the Jira comments are copied into the story itself.",
+  "inputs": [
+    {"from": "inputs/US-901-signup.md", "to": "input/stories/US-901-signup.md"}
+  ],
+  "budget_usd": 1.5,
+  "threshold": 80,
+  "checks": [
+    {"id": "file", "type": "exists", "description": "Saves the analysis in output/story-analysis/analysis-US-901.md",
+     "files": ["output/story-analysis/analysis-US-901*.md"], "weight": 2},
+    {"id": "sections", "type": "order", "description": "Follows the analysis sections, in order",
+     "files": ["output/story-analysis/analysis-US-901*.md"],
+     "patterns": ["^#+\\s*Summary", "^#+[^\\n]*Evaluation", "^#+[^\\n]*Ambiguit", "^#+[^\\n]*(Scenarios not (covered|considered)|Uncovered scenarios|Unconsidered scenarios|Missing scenarios)", "^#+[^\\n]*Risks", "^#+[^\\n]*Questions", "^#+[^\\n]*Recommendations"]},
+    {"id": "age-contradiction", "type": "contains", "description": "Detects the minimum age contradiction (18 in the description, 16 in AC4)",
+     "files": ["output/story-analysis/analysis-US-901*.md"],
+     "patterns": ["(16|sixteen).{0,300}(18|eighteen)|(18|eighteen).{0,300}(16|sixteen)"], "weight": 3},
+    {"id": "ambiguous-password", "type": "contains", "description": "Flags as ambiguous that the password must be 'secure' (no rules)",
+     "files": ["output/story-analysis/analysis-US-901*.md"],
+     "patterns": ["password.{0,200}(secure|rules|criteria|requirements|defined|specified)"], "weight": 2},
+    {"id": "duplicate-message", "type": "contains", "description": "Asks for the text of the duplicate email error (AC2 does not define it)",
+     "files": ["output/story-analysis/analysis-US-901*.md"], "mode": "any",
+     "patterns": ["e-?mail.{0,160}(registered|existing|duplicat).{0,250}(message|text|wording)", "(message|text|wording).{0,250}e-?mail.{0,160}(registered|existing|duplicat)",
+                  "(registered|existing|duplicat)[^\\n]{0,40}e-?mail.{0,250}(message|text|wording)", "(message|text|wording).{0,250}(registered|existing|duplicat)[^\\n]{0,40}e-?mail"], "weight": 2},
+    {"id": "uppercase", "type": "contains", "description": "Picks up the dev's open question (uppercase in the email)",
+     "files": ["output/story-analysis/analysis-US-901*.md", "output/context/*.md"],
+     "patterns": ["upper[- ]?case|case[- ]sensitiv|case[- ]insensitiv|capital"]},
+    {"id": "missing-info", "type": "count", "description": "Records at least 3 Missing information items (MI-XX)",
+     "files": ["output/story-analysis/analysis-US-901*.md", "output/context/*.md"],
+     "pattern": "MI-\\d{2}", "min": 3, "distinct": true, "weight": 2},
+    {"id": "questions", "type": "count", "description": "Writes at least 4 refinement questions",
+     "files": ["output/story-analysis/analysis-US-901*.md"], "pattern": "\\?", "min": 4},
+    {"id": "no-invented-message", "type": "not_contains", "description": "Does not invent the text of the duplicate email error as if it were a fact",
+     "files": ["output/story-analysis/analysis-US-901*.md"],
+     "patterns": ["(shows|displays|will (show|display)|appears|must (show|display)|should (show|display))\\s+(the message\\s+)?[\"“](The|This|That)\\s+e-?mail[^\"”]{0,60}already[^\"”]{0,40}[\"”]",
+                  "message\\s+[\"“](The|This|That)\\s+e-?mail[^\"”]{0,60}already[^\"”]{0,40}[\"”]\\s+(is|will be|should be|must be) (shown|displayed)"]},
+    {"id": "tables", "type": "normalized_tables", "description": "Runs the tables through format_tables.py",
+     "files": ["output/story-analysis/analysis-US-901*.md"]}
+  ],
+  "rubric": [
+    "The ambiguities pointed out are real and concrete (not generic).",
+    "The questions for the PO can be answered with a concrete fact.",
+    "It does not present as fact anything that is not in the story."
+  ]
+}

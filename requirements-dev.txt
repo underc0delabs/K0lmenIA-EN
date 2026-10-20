@@ -1,4 +1,4 @@
-# Dependencias para desarrollar y testear el repo (además de requirements.txt)
+# Dependencies to develop and test the repo (in addition to requirements.txt)
 -r requirements.txt
 pytest>=8
 pyyaml>=6

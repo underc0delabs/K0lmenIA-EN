@@ -1,0 +1,15 @@
+meta {
+  name: API-003 — Nonexistent post returns 404 (Medium)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/posts/99999
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

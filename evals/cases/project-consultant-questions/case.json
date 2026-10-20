@@ -1,0 +1,23 @@
+{
+  "agent": "project-consultant",
+  "description": "Product questions against input/documentation/: one documented (username length, with its source) and one that is not (a locked user who tries to pay). It has to cite the source and say 'it is not documented' instead of inventing.",
+  "prompt": "Use the project-consultant agent to answer: 1) How many characters can the username have? 2) How many coupons can be used in a purchase? 3) What happens if a locked user tries to pay?",
+  "requires": [".claude/agents/project-consultant.md"],
+  "inputs": [
+    {"from": "inputs/demo-documentation", "to": "input/documentation"}
+  ],
+  "budget_usd": 1,
+  "threshold": 80,
+  "checks": [
+    {"id": "username", "type": "contains", "description": "Answers the username length (4 to 20)",
+     "files": ["_eval/response.txt", "output/consultations/**/*.md"], "patterns": ["\\b4\\b.{0,40}\\b20\\b"], "weight": 2},
+    {"id": "coupons", "type": "contains", "description": "Answers that only one coupon is allowed",
+     "files": ["_eval/response.txt", "output/consultations/**/*.md"], "patterns": ["(one|1|a single)\\s+(single\\s+)?coupon|MAX_COUPONS_PER_PURCHASE"], "weight": 2},
+    {"id": "cites-source", "type": "contains", "description": "Cites the source (code file, document or PROJ-40)",
+     "files": ["_eval/response.txt", "output/consultations/**/*.md"], "mode": "any",
+     "patterns": ["validations\\.ts", "coupons\\.ts", "business-rules", "PROJ-40"], "weight": 2},
+    {"id": "undocumented", "type": "contains", "description": "Says that the locked user question is not documented",
+     "files": ["_eval/response.txt", "output/consultations/**/*.md"],
+     "patterns": ["((is not|isn't|are not|aren't|does not|doesn't|did not|didn't|could not|couldn't|no|nothing)[^.\\n]{0,80}(document|informati|mention|defin)|undocumented|not documented)"], "weight": 3}
+  ]
+}
