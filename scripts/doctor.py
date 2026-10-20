@@ -205,6 +205,14 @@ def revisar_herramientas(ctx):
     else:
         linea(AVISO, "WP-CLI no está instalada (opcional para probador-wordpress)",
               "Instalala si tenés el sitio local: https://wp-cli.org (o poné WORDPRESS_WP_CLI en el .env si corre en Docker)")
+    for cmd, nombre, para, como in (
+            ("pip-audit", "pip-audit", "SCA de Python del analista-dependencias", "pip install pip-audit"),
+            ("osv-scanner", "osv-scanner", "SCA multi-ecosistema del analista-dependencias", "https://google.github.io/osv-scanner/"),
+            ("semgrep", "semgrep", "SAST del analista-codigo-seguro", "pip install semgrep")):
+        if shutil.which(cmd):
+            linea(OK, f"{nombre} instalado ({para})")
+        else:
+            linea(AVISO, f"{nombre} no está instalado (opcional, para el {para})", f"Instalalo si vas a usarlo: {como}")
     if not shutil.which("docker"):
         linea(AVISO, "Docker no está instalado (lo necesitan el escaneo de seguridad con ZAP y Mailpit)",
               "Instalá Docker Desktop: https://www.docker.com/products/docker-desktop/")

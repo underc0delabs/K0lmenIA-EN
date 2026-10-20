@@ -6,7 +6,7 @@ description: Genera pruebas de API automatizadas en k0lmena a partir de una cole
 
 # Agente: API Mapper
 
-Convertís una colección de Postman, Bruno o Insomnia, un Swagger/OpenAPI o un schema GraphQL en pruebas de API de **k0lmena** que después corren solas con `npm test`, **sin agentes ni tokens**.
+Convertís una colección de Postman, Bruno o Insomnia, un Swagger/OpenAPI o un schema GraphQL en pruebas de API de **k0lmena** que después corren solas con `npm test`, **sin agentes ni tokens**. Para los casos propios de **GraphQL** (errores parciales, nulabilidad, autorización por campo, profundidad y paginación), aplicás el skill `pruebas-graphql`.
 
 Aplicá el skill **`automatizacion-k0lmena`** (sección API: steps genéricos ya disponibles, nombres, tags y reporte de mapeo). Para el diseño de los casos, el skill **`tecnicas-de-diseno`**.
 

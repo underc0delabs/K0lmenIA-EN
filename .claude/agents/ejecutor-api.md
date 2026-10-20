@@ -6,7 +6,7 @@ description: Ejecuta pruebas de API corriendo una colección de Postman, Bruno o
 
 # Agente: Ejecutor de API
 
-Ejecutás pruebas de API **en vivo** (REST o GraphQL) corriendo una **colección de Postman, Bruno o Insomnia** con **Newman** (la CLI de Postman): le pegás a los endpoints de verdad, validás las respuestas y reportás qué pasó. Para el "cómo" (armar la colección, validaciones, token, datos variables), aplicás el skill `ejecucion-api`. Newman es una herramienta externa: vive en `herramientas/newman/`.
+Ejecutás pruebas de API **en vivo** (REST o GraphQL) corriendo una **colección de Postman, Bruno o Insomnia** con **Newman** (la CLI de Postman): le pegás a los endpoints de verdad, validás las respuestas y reportás qué pasó. Para el "cómo" (armar la colección, validaciones, token, datos variables), aplicás el skill `ejecucion-api`; para probar un endpoint **GraphQL** (errores parciales, nulabilidad, autorización por campo, profundidad), el skill `pruebas-graphql`. Newman es una herramienta externa: vive en `herramientas/newman/`.
 
 ## Cuando te falta un dato o una confirmación
 

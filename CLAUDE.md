@@ -403,6 +403,43 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | regresión, rendimiento y seguridad;      |                                       |
 |                            | informe HTML                             |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `probador-mobile`          | Prueba apps móviles (Android/iOS;        | `output/mobile/`                      |
+|                            | nativa/híbrida/web) en vivo con Appium:  |                                       |
+|                            | funcional, permisos, interrupciones,     |                                       |
+|                            | offline, deep links y push, ciclo de     |                                       |
+|                            | vida, compatibilidad de OS/pantallas,    |                                       |
+|                            | rendimiento y seguridad móvil (MASVS);   |                                       |
+|                            | informe HTML                             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `analista-dependencias`    | SCA de dependencias: corre npm audit /   | `output/dependencias/`                |
+|                            | pip-audit / osv-scanner, agrega los CVE  |                                       |
+|                            | por severidad, directas vs. transitivas, |                                       |
+|                            | fix disponible y licencias; informe HTML |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `analista-codigo-seguro`   | SAST y secretos: escáner de secretos     | `output/sast/`                        |
+|                            | integrado + semgrep, triage de falsos    |                                       |
+|                            | positivos, mapeo a OWASP/CWE; secretos   |                                       |
+|                            | redactados a rotar; informe HTML         |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-ia`              | Prueba funciones de IA/LLM (chatbot,     | `output/ia/`                          |
+|                            | RAG, agente): golden set y evals,        |                                       |
+|                            | alucinaciones y grounding, seguridad de  |                                       |
+|                            | prompt (injection/jailbreak), formato,   |                                       |
+|                            | robustez, latencia y costo; informe HTML |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-mensajeria`      | Prueba mensajería/eventos (Kafka,        | `output/mensajeria/`                  |
+|                            | RabbitMQ, SQS/SNS, MQTT, WebSocket,      |                                       |
+|                            | SSE): entrega, orden, idempotencia,      |                                       |
+|                            | DLQ y reintentos, esquemas, consumer     |                                       |
+|                            | lag y outbox; publica/consume con la     |                                       |
+|                            | herramienta; informe HTML                |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
+| `probador-soap`            | Prueba servicios SOAP desde el WSDL:     | `output/soap/`                        |
+|                            | operaciones, validación XSD, SOAP        |                                       |
+|                            | Faults, namespaces/SOAPAction, WS-       |                                       |
+|                            | Security e idempotencia; envía los       |                                       |
+|                            | sobres con ejecutor-api; informe HTML    |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 ```
 
 ---
@@ -485,6 +522,13 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `herramientas/ecommerce/shopify.py` (`npm run shopify`), `herramientas/ecommerce/wordpress.py` (`npm run wordpress`), `herramientas/ecommerce/prestashop.py` (`npm run prestashop`), `herramientas/ecommerce/vtex.py` (`npm run vtex`) y `scripts/generar_informe_ecommerce.py` → relevamiento funcional de solo lectura de tiendas Shopify (vidriera, Admin API de lectura, Theme Check), WordPress / WooCommerce (vidriera, REST API de lectura, WP-CLI), PrestaShop (vidriera, Webservice API de lectura, versión y modo dev de la instalación local) y VTEX (vidriera, Catalog System público, y canales de venta, envíos y promociones con app de lectura), con hallazgos, sugerencias de prueba e informe HTML (`probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`). Solo `ECOMMERCE_URLS_AUTORIZADAS`.
 - `herramientas/sap/sap_gui.py` (`npm run sap`) y `scripts/generar_informe_sap.py` → relevamiento de solo lectura de una sesión de SAP GUI for Windows por la Scripting API (sistema, mandante, usuario, transacción) e informe HTML del probador de SAP (GUI y Fiori): hallazgos, pruebas, autorizaciones y procesos de negocio (`probador-sap`). Requiere `pywin32` (opcional, solo Windows).
 - `herramientas/desktop/controles.py` (`npm run desktop`) y `scripts/generar_informe_desktop.py` → relevamiento de solo lectura del árbol de controles de una app de escritorio de Windows (pywinauto, UI Automation) e informe HTML del probador de escritorio: hallazgos, pruebas y compatibilidad (`probador-desktop`). Requiere `pywinauto` (opcional, solo Windows).
+- `scripts/generar_informe_mobile.py` → informe HTML del probador de apps móviles (Android/iOS): hallazgos, pruebas por dispositivo y compatibilidad, desde el `analisis.json` que arma el agente con Appium (`probador-mobile`, conector `appium`).
+- `herramientas/seguridad/dependencias.py` (`npm run dependencias`) y `scripts/generar_informe_dependencias.py` → SCA de dependencias de solo lectura (npm audit / pip-audit / osv-scanner), CVEs por severidad e informe HTML (`analista-dependencias`).
+- `herramientas/seguridad/sast.py` (`npm run sast`) y `scripts/generar_informe_sast.py` → SAST y búsqueda de secretos de solo lectura (escáner de secretos integrado + semgrep si está) e informe HTML (`analista-codigo-seguro`). Complementan el análisis dinámico de `herramientas/zap` (DAST).
+- `scripts/generar_informe_ia.py` → informe HTML del probador de funciones de IA/LLM (golden set/evals, alucinaciones y grounding, seguridad de prompt, métricas), desde el `analisis.json` que arma el agente (`probador-ia`).
+- `herramientas/mensajeria/mensajeria.py` (`npm run mensajeria`) y `scripts/generar_informe_mensajeria.py` → pruebas de mensajería/eventos (Kafka, RabbitMQ, MQTT, WebSocket, SSE): publicar/consumir/inspeccionar y verificar orden, duplicados y esquema, con informe HTML (`probador-mensajeria`). Librerías de broker opcionales (import perezoso).
+- `herramientas/soap/wsdl.py` (`npm run soap`) y `scripts/generar_informe_soap.py` → relevamiento de un servicio SOAP por su WSDL (operaciones, endpoint, versión, sobre de ejemplo; solo `xml` de la stdlib) e informe HTML del probador de SOAP (`probador-soap`).
+- `scripts/resumir_graphql.py` y el skill `pruebas-graphql` → soporte de **GraphQL** de la familia de API (`ejecutor-api`, `api-mapper`, `generador-casos-api`): introspección/resumen del schema, errores parciales, nulabilidad, autorización por campo, profundidad/complejidad y paginación.
 - `scripts/generar_informe_investigacion.py` → el paquete del relevamiento de un proyecto completo: web HTML con **mapas conceptuales** (arquitectura y cómo funciona) y el árbol de épicas/historias/tareas, `resumen.md` breve y `presentacion-investigacion.html` (imprime a PDF), con comparación contra el relevamiento anterior (`investigador-proyecto`).
 - `scripts/buscar_duplicados.py` → similitud entre bugs para el `triador-bugs` (duplicados, regresiones, relacionados).
 - `scripts/metricas_tokens.py` → **uso de tokens** de los agentes: lee las transcripciones de Claude Code del proyecto (solo conteos, nunca el texto), atribuye el uso a cada agente y estima el costo por agente, día y modelo con oportunidades (qué conviene automatizar en k0lmena); lo suma el tablero de calidad.
@@ -550,15 +594,15 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 ## Arquitectura (cómo crece el repo)
 
-El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting) y **desktop** (pywinauto)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
+El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting), **desktop** (pywinauto), **seguridad** (SCA/SAST: dependencias y código), **mensajeria** (Kafka/RabbitMQ/MQTT/WebSocket/SSE) y **soap** (WSDL)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
 ### Modelo por agente (costo de tokens)
 
 Cada agente fija su modelo en el frontmatter (`model:`) para no gastar de más. Criterio por niveles:
 
 - **`haiku`** — trabajo mecánico que sobre todo corre un script y arma el JSON/HTML (tablero-calidad, analista-cobertura, analista-logs, generador-reporte-html, selector-casos-de-prueba, publicador-resultados, generador-charters, guia-onboarding).
-- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce`, `probador-billeteras`, `probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`, `probador-sap` y `probador-desktop`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
-- **`opus`** — lo que más razona o es sensible: `analista-historias`, `analista-seguridad`, `pentester-web`, `analista-seguridad-camaras`.
+- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce`, `probador-billeteras`, `probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`, `probador-sap`, `probador-desktop`, `probador-mobile`, `probador-ia`, `probador-mensajeria`, `probador-soap` y `analista-dependencias`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
+- **`opus`** — lo que más razona o es sensible: `analista-historias`, `analista-seguridad`, `pentester-web`, `analista-seguridad-camaras`, `analista-codigo-seguro`.
 
 Un agente nuevo lleva su `model:` según este criterio. El costo real por agente lo mide `scripts/metricas_tokens.py` (lo resume el tablero de calidad): si uno queda flojo en Haiku/Sonnet, se sube; si otro no necesita Opus, se baja.
 
