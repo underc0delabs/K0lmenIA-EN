@@ -27,6 +27,7 @@ Los agentes corren como subagentes y **no pueden hacerle preguntas a la persona 
 - **Si un agente termina devolviendo "Necesito que confirmes"**, la conversación principal le hace esas preguntas a la persona (con opciones, la recomendada primero) y **continúa al mismo agente** con las respuestas; no empieza uno nuevo.
 - Las acciones con efecto (escribir en una base, crear o modificar datos en Jira/Xray/QMetry/AIO/Azure DevOps, correr carga, métodos con efecto) se confirman **con la persona** y se le pasan al agente explícitamente; nunca se asumen.
 - **Performance**: la planificación guiada la hace la conversación principal con el skill `guia-performance`; el `performance-mapper` trabaja con el plan confirmado.
+- **No sabés qué probar o con qué agente/skill**: la conversación principal usa el skill `guia-pruebas` para preguntarte paso a paso y recomendar o ejecutar el agente/skill que corresponde (también es un skill de la conversación principal, porque los subagentes no pueden preguntar).
 - **Correr pruebas ya automatizadas**: es `npm test` en k0lmena (sin agentes ni tokens). Los ejecutores en vivo (`ejecutor-e2e`, `ejecutor-api`) son para casos sueltos que no vale la pena automatizar.
 
 ---
@@ -502,6 +503,12 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | la vista, duplicados y consistencia de   |                                       |
 |                            | microcopy; informe HTML                  |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
+| `analista-mutacion`        | Mutation testing: mide la calidad real   | `output/mutacion/`                    |
+|                            | de la suite (Stryker/mutmut/PITest),     |                                       |
+|                            | mutation score por archivo, mutantes     |                                       |
+|                            | sobrevivientes vs. equivalentes y el     |                                       |
+|                            | test que falta; informe HTML             |                                       |
++----------------------------+------------------------------------------+---------------------------------------+
 ```
 
 ---
@@ -593,6 +600,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `herramientas/soap/wsdl.py` (`npm run soap`) y `scripts/generar_informe_soap.py` → relevamiento de un servicio SOAP por su WSDL (operaciones, endpoint, versión, sobre de ejemplo; solo `xml` de la stdlib) e informe HTML del probador de SOAP (`probador-soap`).
 - `scripts/resumir_graphql.py` y los skills `pruebas-graphql` y `pruebas-grpc` → soporte de **GraphQL y gRPC** de la familia de API (`ejecutor-api`, `api-mapper`, `generador-casos-api`): introspección/schema, errores parciales, autorización por campo y, en gRPC, Protobuf, modos de RPC, status codes y compatibilidad; WebSocket se cubre en `pruebas-async` (`probador-mensajeria`).
 - `scripts/generar_informe_generico.py` → informe HTML genérico (mismo estilo de la casa) para los probadores sin informe propio: lo usan `probador-contratos`, `analista-seo`, `probador-datos`, `probador-dynamics`, `probador-blockchain`, `probador-ivr`, `probador-juegos` y `probador-pos`, a partir de su `analisis.json`.
+- `herramientas/mutacion/mutacion.py` (`npm run mutacion`) → lee el reporte de mutation testing (Stryker JSON): mutation score global y por archivo, mutantes sobrevivientes y archivos bajo el umbral (`analista-mutacion`); el informe, con `generar_informe_generico.py`.
 - `herramientas/observabilidad/observabilidad.py` (`npm run observabilidad`) → healthchecks y métricas (Prometheus) de un servicio, solo lectura (`analista-observabilidad`); el informe, con `generar_informe_generico.py`.
 - `herramientas/documentos/documentos.py` (`npm run documentos`) → extrae texto/metadata de un PDF (pypdf) y hojas/celdas de un Excel (openpyxl) y detecta placeholders sin reemplazar (`probador-documentos`).
 - `herramientas/contenido/contenido.py` (`npm run contenido`) → revisión de contenido/typos por heurística (placeholders, duplicados, claves i18n a la vista, Lorem ipsum) y LanguageTool opcional (`revisor-contenido`).
@@ -662,14 +670,14 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 ## Arquitectura (cómo crece el repo)
 
-El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting), **desktop** (pywinauto), **seguridad** (SCA/SAST: dependencias y código), **mensajeria** (Kafka/RabbitMQ/MQTT/WebSocket/SSE), **soap** (WSDL), **seo** (SEO/GEO), **resiliencia** (caos server-side con Toxiproxy), **observabilidad**, **documentos** (PDF/Excel) y **contenido** (typos)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
+El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting), **desktop** (pywinauto), **seguridad** (SCA/SAST: dependencias y código), **mensajeria** (Kafka/RabbitMQ/MQTT/WebSocket/SSE), **soap** (WSDL), **seo** (SEO/GEO), **resiliencia** (caos server-side con Toxiproxy), **observabilidad**, **documentos** (PDF/Excel), **contenido** (typos) y **mutacion** (mutation testing)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
 ### Modelo por agente (costo de tokens)
 
 Cada agente fija su modelo en el frontmatter (`model:`) para no gastar de más. Criterio por niveles:
 
 - **`haiku`** — trabajo mecánico que sobre todo corre un script y arma el JSON/HTML (tablero-calidad, analista-cobertura, analista-logs, generador-reporte-html, selector-casos-de-prueba, publicador-resultados, generador-charters, guia-onboarding).
-- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce`, `probador-billeteras`, `probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`, `probador-sap`, `probador-desktop`, `probador-mobile`, `probador-ia`, `probador-mensajeria`, `probador-soap`, `analista-dependencias`, `probador-contratos`, `analista-seo`, `probador-datos`, `probador-dynamics`, `probador-ivr`, `probador-juegos`, `probador-pos`, `analista-observabilidad`, `probador-busqueda`, `probador-documentos` y `revisor-contenido`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
+- **`sonnet`** — la mayoría del trabajo de QA (mappers, ejecutores, generadores de casos y datos, probadores —incluidos `probador-salesforce`, `probador-billeteras`, `probador-shopify`, `probador-wordpress`, `probador-prestashop`, `probador-vtex`, `probador-sap`, `probador-desktop`, `probador-mobile`, `probador-ia`, `probador-mensajeria`, `probador-soap`, `analista-dependencias`, `probador-contratos`, `analista-seo`, `probador-datos`, `probador-dynamics`, `probador-ivr`, `probador-juegos`, `probador-pos`, `analista-observabilidad`, `probador-busqueda`, `probador-documentos`, `revisor-contenido` y `analista-mutacion`—, auditores, documentador, `investigador-proyecto`, triador, análisis de fallos, reparador, gestor, consultor, reportes de bug y de cierre…).
 - **`opus`** — lo que más razona o es sensible: `analista-historias`, `analista-seguridad`, `pentester-web`, `analista-seguridad-camaras`, `analista-codigo-seguro`, `probador-blockchain`.
 
 Un agente nuevo lleva su `model:` según este criterio. El costo real por agente lo mide `scripts/metricas_tokens.py` (lo resume el tablero de calidad): si uno queda flojo en Haiku/Sonnet, se sube; si otro no necesita Opus, se baja.

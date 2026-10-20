@@ -47,7 +47,7 @@ NOMBRES = {
     "seo": "SEO y GEO", "datos": "Datos y pipelines", "dynamics": "Dynamics / CRM-ERP", "blockchain": "Blockchain / Web3",
     "ivr": "Voz / IVR", "juegos": "Videojuegos", "pos": "Punto de venta (POS)", "streaming": "Streaming y cámaras",
     "observabilidad": "Observabilidad", "busqueda": "Búsqueda y relevancia", "documentos": "Documentos generados",
-    "contenido": "Contenido y typos",
+    "contenido": "Contenido y typos", "mutacion": "Mutation testing",
 }
 # Orden de las tarjetas: primero lo que más se mira.
 ORDEN = ["tablero", "informes-cierre", "ejecuciones", "k0lmena", "fallos", "cobertura", "monitoreo", "planes-de-prueba",
@@ -57,7 +57,7 @@ ORDEN = ["tablero", "informes-cierre", "ejecuciones", "k0lmena", "fallos", "cobe
          "mobile", "shopify", "wordpress", "prestashop", "vtex", "dynamics", "salesforce", "sap",
          "desktop", "ia", "mensajeria", "soap", "contratos", "datos", "seo", "dependencias", "sast",
          "blockchain", "billeteras", "pos", "ivr", "juegos", "streaming",
-         "observabilidad", "busqueda", "documentos", "contenido"]
+         "observabilidad", "busqueda", "documentos", "contenido", "mutacion"]
 IGNORAR = {"historial", "evidencia", "capturas", "videos", "recortes", "diferencias", "lighthouse", "referencia",
            "actual", "respaldo", "suite", "eml", "sesiones", "node_modules"}
 _SELLO = re.compile(r"[-_]?\d{4}-?\d{2}-?\d{2}([-_T]?\d{2}-?\d{2}(-?\d{2})?)?$")

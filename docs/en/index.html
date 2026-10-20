@@ -116,7 +116,7 @@
     <div class="k">Project documentation</div>
     <h1><span>k0lmenIA</span></h1>
     <div class="l">QA agents for Claude Code: test design, automation with k0lmena and integration with Xray, QMetry, AIO Tests and Azure DevOps. The agents work in Spanish.</div>
-    <div class="chips"><span>75 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
+    <div class="chips"><span>76 agents</span><span>Web · API · Mobile · Performance</span><span>Playwright · Cucumber · Appium · k6 · Artillery · JMeter</span><span>Xray · QMetry · AIO Tests · Azure DevOps</span><span>Jira · Confluence · Figma</span><span>GitHub · GitLab · Bitbucket</span><span>Linear · ClickUp · monday · Asana · Trello · Notion</span><span>Slack · Teams</span><span>PostgreSQL · MySQL · SQL Server · MongoDB</span><span>Token-free suites</span></div>
   </div>
   <div class="p"><span>QARMY · Underc0de</span><span>github.com/underc0delabs/k0lmenIA</span><span>MIT License</span></div>
 </section>
@@ -165,7 +165,7 @@
     <span class="tec"><i style="background:#47a248"></i>MongoDB</span>
   </div>
   <div class="metricas">
-    <div class="metrica"><div class="n">75</div><div class="t">specialized agents</div></div>
+    <div class="metrica"><div class="n">76</div><div class="t">specialized agents</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">types of automation</div></div>
     <div class="metrica"><div class="n">4</div><div class="t">test management tools</div></div>
     <div class="metrica"><div class="n">0</div><div class="t">tokens to run the suites</div></div>
@@ -341,6 +341,7 @@
     <div class="tarjeta c-naranja"><h4>probador-busqueda</h4><p>Tests search and relevance (Elasticsearch/Algolia/Solr/DB): ranking and boosting, typos and synonyms, facets, zero-results, indexing and security, with a golden set and metrics (precision@k, nDCG).</p><div class="usa"><b>Skills</b> pruebas-busqueda, ejecucion-api, ejecucion-e2e, investigacion-contexto<br><b>Uses</b> generar_informe_generico.py<br><b>Connectors</b> playwright</div><div class="salida"><code>output/busqueda/</code></div></div>
     <div class="tarjeta c-naranja"><h4>probador-documentos</h4><p>Tests generated documents (PDF/Excel/CSV): correct data and totals, unreplaced placeholders, format/locale, layout, metadata and security; extracts content with pypdf/openpyxl.</p><div class="usa"><b>Skills</b> pruebas-documentos, investigacion-contexto<br><b>Uses</b> npm run documentos, generar_informe_generico.py</div><div class="salida"><code>output/documentos/</code></div></div>
     <div class="tarjeta c-naranja"><h4>revisor-contenido</h4><p>Reviews content and typos in the main language: spelling, visible placeholders and i18n keys, duplicate words, Lorem ipsum and microcopy consistency (distinct from analista-traductor).</p><div class="usa"><b>Skills</b> pruebas-contenido, ejecucion-e2e, investigacion-contexto<br><b>Uses</b> npm run contenido, generar_informe_generico.py<br><b>Connectors</b> playwright</div><div class="salida"><code>output/contenido/</code></div></div>
+    <div class="tarjeta c-naranja"><h4>analista-mutacion</h4><p>Mutation testing: measures the real quality of the test suite (Stryker/mutmut/PITest), computes the mutation score per file, tells surviving mutants from equivalent ones and points out the missing test. A better signal than line coverage.</p><div class="usa"><b>Skills</b> pruebas-mutacion, investigacion-contexto<br><b>Uses</b> npm run mutacion, generar_informe_generico.py</div><div class="salida"><code>output/mutacion/</code></div></div>
   </div>
 
   <div class="subtitulo-grupo"><h3>Automation with k0lmena</h3><span class="etiqueta sin">then runs with no tokens</span></div>
@@ -371,6 +372,7 @@
     <tr><td><code>ejecucion-api</code></td><td>Running collections with Newman: base_url, token, assertions and results</td><td>ejecutor-api</td></tr>
     <tr><td><code>automatizacion-k0lmena</code></td><td>k0lmena conventions: features, steps, locators, tags, database steps and performance scripts</td><td>the mappers, verificador-datos, reparador-automatizacion and verificador-correos</td></tr>
     <tr><td><code>guia-performance</code></td><td>Plan a performance test step by step with the person</td><td>the main conversation and performance-mapper</td></tr>
+    <tr><td><code>guia-pruebas</code></td><td>Interactive assistant to choose what to test and with which agent/skill: asks step by step and recommends or runs; platform and test-type map</td><td>the main conversation</td></tr>
     <tr><td><code>verificacion-streaming</code></td><td>Verify streaming and playback with ffprobe/ffmpeg: protocols, properties, continuity, stability and load</td><td>probador-streaming</td></tr>
     <tr><td><code>control-onvif</code></td><td>ONVIF camera control: services, profiles, snapshot, safe PTZ, clock/NTP, events and recordings</td><td>probador-onvif, verificador-grabaciones</td></tr>
     <tr><td><code>calidad-de-imagen</code></td><td>Assess image quality: OpenCV (black, blur, freeze) and judgment with vision</td><td>calidad-imagen</td></tr>
@@ -406,6 +408,7 @@
     <tr><td><code>pruebas-busqueda</code></td><td>Test search and relevance: ranking, typos/fuzzy, synonyms, facets, zero-results, indexing and golden set (precision@k, nDCG)</td><td>probador-busqueda</td></tr>
     <tr><td><code>pruebas-documentos</code></td><td>Test generated documents (PDF/Excel/CSV): data and calculations, placeholders, format/locale, layout, metadata, security and PDF a11y</td><td>probador-documentos</td></tr>
     <tr><td><code>pruebas-contenido</code></td><td>Review content and typos: spelling/grammar, placeholders, visible i18n keys, duplicate words, microcopy and consistency</td><td>revisor-contenido</td></tr>
+    <tr><td><code>pruebas-mutacion</code></td><td>Mutation testing: mutants and states (killed/survived/no-coverage), mutation score, survivors vs. equivalents, bounded cost (diff/module) and per-language tools</td><td>analista-mutacion</td></tr>
     <tr><td><code>pruebas-accesibilidad</code></td><td>Accessibility (a11y) on web (WCAG 2.2, axe-core), mobile (TalkBack/VoiceOver, labels) and desktop (UI Automation, accessible names)</td><td>analista-accesibilidad, probador-mobile, probador-desktop</td></tr>
   </table></div>
 </section>
@@ -1397,7 +1400,7 @@ npm run metricas -- --nombre octubre --desde 2026-10-01   <span class="c"># one 
 ├── evals/                  <span class="c">Agent evals: cases with traps and checks</span>
 ├── .github/workflows/      <span class="c">CI (tests), synthetic monitoring and evals (manual)</span>
 ├── .claude/
-│   ├── agents/             <span class="c">The 75 agents</span>
+│   ├── agents/             <span class="c">The 76 agents</span>
 │   ├── skills/             <span class="c">Context, design, performance guide, execution, k0lmena</span>
 │   └── settings.json       <span class="c">Enabled connectors and permissions</span>
 ├── input/                  <span class="c">historias/ documentacion/ api/ bugs/ correos/ logs/</span>

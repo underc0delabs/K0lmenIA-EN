@@ -194,6 +194,7 @@ Claude Code elige el agente según lo que pidas; también podés nombrarlo (*"us
 <tr><td><code>probador-busqueda</code></td><td>Prueba la búsqueda y la relevancia (Elasticsearch/Algolia/Solr/DB): ranking, typos, sinónimos, facetas, indexación y un golden set con métricas (precision@k, nDCG); contra ambientes de QA</td></tr>
 <tr><td><code>probador-documentos</code></td><td>Prueba documentos generados (PDF/Excel/CSV): datos y totales, placeholders sin reemplazar, formato/locale, layout, metadata y seguridad; extrae el contenido con pypdf/openpyxl</td></tr>
 <tr><td><code>revisor-contenido</code></td><td>Revisa el contenido y los typos en el idioma principal: ortografía, placeholders, claves de i18n a la vista, palabras duplicadas y consistencia de microcopy</td></tr>
+<tr><td><code>analista-mutacion</code></td><td>Mide la calidad real de la suite de tests con mutation testing (Stryker/mutmut/PITest): mutation score por archivo, mutantes sobrevivientes vs. equivalentes y qué test falta. Mejor señal que el coverage</td></tr>
 <tr><td><code>verificador-correos</code></td><td>Correos de la app con un buzón de prueba (Mailpit): que llegue lo esperado, variables sin reemplazar, links, compatibilidad con Outlook y Gmail, vista desktop y mobile</td></tr>
 <tr><td><code>analista-traductor</code></td><td>Cada página en cada idioma: textos sin traducir, claves a la vista, caracteres rotos, textos cortados y formatos de otra región, con la traducción propuesta</td></tr>
 <tr><td><code>cross-browser</code></td><td>Chromium (Chrome, Edge), Firefox y WebKit (Safari): la suite por navegador o las páginas comparadas, con lo que falla o se ve distinto en cada uno</td></tr>
@@ -916,7 +917,7 @@ k0lmenIA/
 ├── evals/                  Evals de los agentes: casos con trampas, insumos y chequeos
 ├── .github/workflows/      CI (tests), monitoreo sintético y evals (manuales)
 ├── .claude/
-│   ├── agents/             Los 75 agentes
+│   ├── agents/             Los 76 agentes
 │   ├── skills/             Contexto, diseño, guía de performance, ejecución E2E y API, k0lmena
 │   └── settings.json       Conectores habilitados y permisos del proyecto
 ├── input/                  historias/ documentacion/ api/ bugs/ (ver input/README.md)

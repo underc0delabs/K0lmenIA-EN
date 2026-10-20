@@ -2,6 +2,11 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-20 — Mutation testing y asistente para elegir agente/skill
+- **`analista-mutacion`** (sonnet) + skill `pruebas-mutacion`: **mutation testing** — mide la calidad real de la suite de tests introduciendo mutantes y viendo si los tests los matan (mejor señal que el coverage de líneas). Corre la herramienta del stack (Stryker, mutmut/cosmic-ray, PITest, Infection), lee el reporte con `herramientas/mutacion/mutacion.py` (`npm run mutacion`, parser del formato estándar de Stryker), calcula el mutation score global y por archivo, lista los mutantes sobrevivientes y distingue los equivalentes. Informe con `generar_informe_generico.py`.
+- **Skill `guia-pruebas`**: asistente interactivo que **la conversación principal** usa para guiar a la persona (pregunta paso a paso y, según las respuestas, recomienda o ejecuta el agente/skill que corresponde); incluye el mapa de plataforma y tipo de prueba hacia el agente/skill. Es un skill (no un subagente) porque los subagentes no pueden preguntar, igual que `guia-performance`.
+- Documentación al día a **76 agentes / 44 skills**: README, AGENTES.md, CLAUDE.md, README de skills, sitio web (ES/EN) con tarjeta y skills, PDF e imágenes regenerados, y el dashboard (`portal_informes.py`). Tests: nuevo `test_mutacion.py`; el `test_integridad.py` cubre los agregados.
+
 ## 2026-10-19 — Observabilidad, búsqueda, documentos y revisor de contenido/typos
 - **Test de integridad** (`tests/test_integridad.py`): verifica que cada `npm run`, script y herramienta que menciona un agente exista, que cada skill tenga su carpeta con el name correcto, que todos los agentes tengan tarjeta en el sitio y que el conteo de agentes sea coherente en README, AGENTES.md y la web (ES/EN). Auditoría completa del proyecto: 0 inconsistencias.
 
