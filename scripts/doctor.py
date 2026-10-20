@@ -213,6 +213,22 @@ def revisar_herramientas(ctx):
             linea(OK, f"{nombre} instalado ({para})")
         else:
             linea(AVISO, f"{nombre} no está instalado (opcional, para el {para})", f"Instalalo si vas a usarlo: {como}")
+    # Librerías de Python para SAP (pywin32) y escritorio (pywinauto) — solo Windows
+    import importlib.util
+    for modulo, nombre, para, como in (
+            ("win32com", "pywin32", "SAP GUI Scripting del probador-sap", "pip install pywin32"),
+            ("pywinauto", "pywinauto", "árbol de controles del probador-desktop", "pip install pywinauto")):
+        if importlib.util.find_spec(modulo):
+            linea(OK, f"{nombre} instalado ({para})")
+        elif sys.platform == "win32":
+            linea(AVISO, f"{nombre} no está instalado (opcional, para el {para})", f"Instalalo si vas a usarlo: {como}")
+        else:
+            linea(OK, f"{nombre} no aplica (solo Windows, para el {para})")
+    if shutil.which("appium"):
+        linea(OK, "Appium instalado (probador-mobile y, con WinAppDriver, probador-desktop)")
+    else:
+        linea(AVISO, "Appium no está instalado (opcional, para probador-mobile / WinAppDriver en escritorio)",
+              "Instalalo si vas a automatizar mobile o escritorio con Appium: npm install -g appium (y activá el conector con npm run conector -- activar appium)")
     if not shutil.which("docker"):
         linea(AVISO, "Docker no está instalado (lo necesitan el escaneo de seguridad con ZAP y Mailpit)",
               "Instalá Docker Desktop: https://www.docker.com/products/docker-desktop/")

@@ -2,6 +2,13 @@
 
 Los cambios más relevantes, del más nuevo al más viejo. El detalle de cada uno está en el historial de git.
 
+## 2026-10-19 — Accesibilidad multiplataforma, caos server-side y doctor
+Mejoras sobre agentes existentes:
+- **Accesibilidad mobile/desktop**: nuevo skill `pruebas-accesibilidad` (a11y en web, mobile y desktop con el mapeo de WCAG a cada plataforma) y el `analista-accesibilidad` ahora audita **web** (axe-core + Playwright), **mobile** (Appium: etiquetas accesibles, objetivos táctiles, TalkBack/VoiceOver) y **desktop** (UI Automation con `controles.py`: controles sin nombre accesible, teclado, alto contraste). El `probador-mobile` deriva la a11y mobile al `analista-accesibilidad`.
+- **Caos server-side**: el `probador-resiliencia` suma, además del caos del lado del navegador, **caos real de dependencias con Toxiproxy** — nueva herramienta `herramientas/resiliencia/toxiproxy.py` (`npm run toxiproxy`, API REST de Toxiproxy por `urllib`, sin dependencias): inyecta latencia, caída y lentitud en una base/API/cache y las restablece. Solo en QA, confirmado y con `reset` al terminar.
+- **doctor.py**: chequea `pywin32` (SAP GUI Scripting del `probador-sap`), `pywinauto` (árbol de controles del `probador-desktop`) y `appium` (mobile y WinAppDriver en escritorio), además de los SCA/SAST ya incluidos.
+- Documentación al día a **38 skills** (README de skills, AGENTES.md, CLAUDE.md, README de `herramientas/resiliencia`, `package.json`). Tests: nuevo `test_toxiproxy.py`.
+
 ## 2026-10-19 — Contratos, SEO/GEO, datos, gRPC, Dynamics/CRM-ERP, blockchain, IVR, juegos y POS
 Gran ampliación de dominios para "testear todo tipo de proyecto":
 - **`probador-contratos`** (sonnet) + skill `pruebas-contratos`: contract testing (Pact) consumer-driven y bi-direccional para REST, GraphQL, gRPC y eventos; verificación de proveedor, `can-i-deploy` y compatibilidad.

@@ -164,13 +164,14 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | explora a mano con Playwright MCP; arma  |                                       |
 |                            | el informe HTML con hallazgos y capturas |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
-| `analista-accesibilidad`   | Audita la accesibilidad contra WCAG 2.2  | `output/accesibilidad/`               |
-|                            | (AA por defecto): axe-core en cada       |                                       |
-|                            | página, navegación con teclado y reflow  |                                       |
-|                            | a 320px, más revisión manual con         |                                       |
-|                            | Playwright MCP; arma el informe HTML con |                                       |
-|                            | criterios incumplidos, capturas y cómo   |                                       |
-|                            | corregir cada problema                   |                                       |
+| `analista-accesibilidad`   | Audita la accesibilidad (WCAG 2.2, AA)   | `output/accesibilidad/`               |
+|                            | en web (axe-core, teclado, reflow,       |                                       |
+|                            | revisión manual con Playwright), mobile  |                                       |
+|                            | (Appium: etiquetas, objetivos táctiles,  |                                       |
+|                            | TalkBack/VoiceOver) y desktop (UI        |                                       |
+|                            | Automation: controles sin nombre,        |                                       |
+|                            | teclado); informe HTML con criterios y   |                                       |
+|                            | cómo corregir                            |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
 | `auditor-rendimiento-web`  | Velocidad de carga con Lighthouse en     | `output/rendimiento/`                 |
 |                            | mobile y desktop: puntajes, Core Web     |                                       |
@@ -262,10 +263,11 @@ El detalle de cada agente (skills, scripts, herramientas, conectores, entradas, 
 |                            | acceso por URL directa; compara con la   |                                       |
 |                            | regla esperada; informe HTML             |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
-| `probador-resiliencia`     | Simula fallas desde el navegador (API    | `output/resiliencia/`                 |
-|                            | caída o lenta, sin conexión, respuestas  |                                       |
-|                            | rotas, estáticos que no cargan) y revisa |                                       |
-|                            | cómo reacciona la interfaz; informe HTML |                                       |
+| `probador-resiliencia`     | Caos del navegador (API caída o lenta,   | `output/resiliencia/`                 |
+|                            | sin conexión, respuestas rotas) y caos   |                                       |
+|                            | server-side con Toxiproxy (latencia/     |                                       |
+|                            | caída de dependencias reales); revisa    |                                       |
+|                            | cómo degrada el sistema; informe HTML    |                                       |
 +----------------------------+------------------------------------------+---------------------------------------+
 | `analista-logs`            | Analiza los logs de la app: agrupa       | `output/logs/`                        |
 |                            | errores, arma la línea de tiempo y los   |                                       |
@@ -555,6 +557,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 - `scripts/indice_documentacion.py` → arma `input/documentacion/INDICE.md` (qué documentación hay, sus fuentes y si está vigente); `npm run mapa-funcional`, el mapa funcional de la web (`documentador-proyecto`).
 - `scripts/cambios_documentacion.py` → documentación incremental: guarda en `input/documentacion/.estado.json` qué se documentó (commit por repositorio, fuentes de cada documento, fecha de cada historia) y, con los archivos que cambiaron, dice qué documentos rehacer y qué casos revisar (`cambios.md`).
 - `scripts/generar_informe_permisos.py` y `generar_informe_resiliencia.py` → los informes de `npm run permisos` y `npm run resiliencia` (`probador-permisos`, `probador-resiliencia`).
+- `herramientas/resiliencia/toxiproxy.py` (`npm run toxiproxy`) → caos server-side con Toxiproxy (latencia, caída y lentitud de dependencias reales por su API REST; solo stdlib) para el `probador-resiliencia`; complementa el caos del lado del navegador. Solo QA, con `reset` al terminar.
 - `scripts/generar_informe_streaming.py` y `generar_informe_onvif.py` → los informes de `npm run streaming` (ffprobe/ffmpeg: propiedades, continuidad, estabilidad y carga) y `npm run onvif` (control ONVIF: perfiles, snapshot, PTZ, eventos) (`probador-streaming`, `probador-onvif`).
 - `scripts/generar_informe_calidad.py`, `generar_informe_grabaciones.py` y `generar_informe_seguridad_camaras.py` → los informes de `npm run calidad-imagen` (OpenCV + visión), `npm run grabaciones` (ONVIF Recording) y `npm run seguridad-camaras` (escaneo pasivo) (`calidad-imagen`, `verificador-grabaciones`, `analista-seguridad-camaras`).
 - `herramientas/salesforce/inventario.py` (`npm run salesforce`) y `scripts/generar_informe_salesforce.py` → inventario de QA de una org de Salesforce (sandbox) en solo lectura con la CLI `sf` (perfiles, validaciones, flows, triggers, cobertura de Apex, sharing, límites) e informe HTML (`probador-salesforce`).
@@ -636,7 +639,7 @@ Reglas (valen para **todos** los agentes y cualquier sección, incluidas las que
 
 ## Arquitectura (cómo crece el repo)
 
-El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting), **desktop** (pywinauto), **seguridad** (SCA/SAST: dependencias y código), **mensajeria** (Kafka/RabbitMQ/MQTT/WebSocket/SSE), **soap** (WSDL) y **seo** (SEO/GEO)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
+El repo se apoya en estas piezas: **agentes** (`.claude/agents/`, el quién), **skills** (`.claude/skills/`, el cómo, cargados on-demand), **MCP** (`.mcp.json`, conexiones a sistemas externos — un solo archivo que escala a muchas conexiones: Jira, Xray, Playwright…), **herramientas** (`herramientas/`, herramientas externas de testing, una subcarpeta por herramienta: Newman, **k0lmena**, OWASP ZAP, **streaming** (ffmpeg/ONVIF), **salesforce** (CLI `sf`), **ecommerce** (Shopify/WooCommerce/PrestaShop/VTEX), **sap** (SAP GUI Scripting), **desktop** (pywinauto), **seguridad** (SCA/SAST: dependencias y código), **mensajeria** (Kafka/RabbitMQ/MQTT/WebSocket/SSE), **soap** (WSDL), **seo** (SEO/GEO) y **resiliencia** (caos server-side con Toxiproxy)) y **scripts** (`scripts/`, utilidades internas determinísticas). El detalle y cómo extender cada una está en `ARQUITECTURA.md`.
 
 ### Modelo por agente (costo de tokens)
 
