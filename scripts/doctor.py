@@ -208,7 +208,8 @@ def check_tools(ctx):
     for cmd, name, purpose, how in (
             ("pip-audit", "pip-audit", "dependency-analyst Python SCA", "pip install pip-audit"),
             ("osv-scanner", "osv-scanner", "dependency-analyst multi-ecosystem SCA", "https://google.github.io/osv-scanner/"),
-            ("semgrep", "semgrep", "secure-code-analyst SAST", "pip install semgrep")):
+            ("semgrep", "semgrep", "secure-code-analyst SAST", "pip install semgrep"),
+            ("ruff", "ruff", "code-quality-analyst Python linter", "pip install ruff")):
         if shutil.which(cmd):
             line(OK, f"{name} installed ({purpose})")
         else:
@@ -224,6 +225,11 @@ def check_tools(ctx):
             line(WARNING, f"{name} is not installed (optional, for the {purpose})", f"Install it if you are going to use it: {how}")
         else:
             line(OK, f"{name} does not apply (Windows only, for the {purpose})")
+    if importlib.util.find_spec("lizard"):
+        line(OK, "lizard installed (code-quality-analyst complexity)")
+    else:
+        line(WARNING, "lizard is not installed (optional, for the code-quality-analyst complexity)",
+             "Install it if you are going to use it: pip install lizard")
     if shutil.which("appium"):
         line(OK, "Appium installed (mobile-tester and, with WinAppDriver, desktop-tester)")
     else:

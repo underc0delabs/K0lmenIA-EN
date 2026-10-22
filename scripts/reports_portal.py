@@ -43,7 +43,7 @@ NAMES = {
     "shopify": "Shopify", "wordpress": "WordPress / WooCommerce", "salesforce": "Salesforce", "wallets": "Wallets and payments",
     "prestashop": "PrestaShop", "vtex": "VTEX", "sap": "SAP (GUI and Fiori)", "desktop": "Desktop apps",
     "mobile": "Mobile apps", "ai": "AI / LLM", "messaging": "Messaging and events", "soap": "SOAP",
-    "dependencies": "Dependencies (SCA)", "sast": "Secure code (SAST)", "contracts": "Contract testing",
+    "dependencies": "Dependencies (SCA)", "sast": "Secure code (SAST)", "code-quality": "Code quality", "contracts": "Contract testing",
     "seo": "SEO and GEO", "data": "Data and pipelines", "dynamics": "Dynamics / CRM-ERP", "blockchain": "Blockchain / Web3",
     "ivr": "Voice / IVR", "games": "Video games", "pos": "Point of sale (POS)", "streaming": "Streaming and cameras",
     "observability": "Observability", "search": "Search and relevance", "documents": "Generated documents",
@@ -55,7 +55,7 @@ ORDER = ["dashboard", "closure-reports", "runs", "k0lmena", "failures", "coverag
          "resilience", "pixel-perfect", "cross-browser", "forms", "ux", "emails", "translator", "logs",
          "repairs", "case-review", "charters", "triage", "evals",
          "mobile", "shopify", "wordpress", "prestashop", "vtex", "dynamics", "salesforce", "sap",
-         "desktop", "ai", "messaging", "soap", "contracts", "data", "seo", "dependencies", "sast",
+         "desktop", "ai", "messaging", "soap", "contracts", "data", "seo", "dependencies", "sast", "code-quality",
          "blockchain", "wallets", "pos", "ivr", "games", "streaming",
          "observability", "search", "documents", "content", "mutation"]
 IGNORE = {"history", "evidence", "screenshots", "videos", "crops", "diffs", "lighthouse", "reference",

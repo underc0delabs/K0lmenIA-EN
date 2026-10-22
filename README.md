@@ -179,6 +179,7 @@ Claude Code picks the agent based on what you ask for; you can also name it (*"u
 <tr><td><code>mobile-tester</code></td><td>Tests mobile apps (Android/iOS; native/hybrid/web) live with Appium: permissions, interruptions, offline, deep links and push, lifecycle, OS and screen compatibility, performance and mobile security (MASVS).</td></tr>
 <tr><td><code>dependency-analyst</code></td><td>Dependency SCA (read-only): runs npm audit / pip-audit / osv-scanner, aggregates CVEs by severity, tells direct from transitive and vulnerable from outdated, and flags licenses to review.</td></tr>
 <tr><td><code>secure-code-analyst</code></td><td>SAST and secrets (read-only): built-in secret scanner (redacts the value) + semgrep if available, false-positive triage and mapping to OWASP/CWE; complements dynamic analysis (ZAP).</td></tr>
+<tr><td><code>code-quality-analyst</code></td><td>Code quality (read-only): clones the repo from GitHub/GitLab (or uses a local path) and measures complexity, duplication, large files and debt markers, runs the project's linters without fixing and looks for best-practice and performance patterns (N+1, await in a loop, sync I/O); confirms each one by reading the code.</td></tr>
 <tr><td><code>ai-tester</code></td><td>Tests AI/LLM features (chatbot, RAG, classifier, agent): golden set and evals, hallucinations and grounding, prompt security (injection/jailbreak), format, robustness, latency and cost.</td></tr>
 <tr><td><code>messaging-tester</code></td><td>Tests messaging/events (Kafka/RabbitMQ/SQS/MQTT/WebSocket/SSE): delivery, ordering, idempotency, DLQ and retries, schemas, consumer lag and outbox; publishes/consumes with the tool.</td></tr>
 <tr><td><code>soap-tester</code></td><td>Tests SOAP services from the WSDL: operations, XSD validation, SOAP Faults, namespaces/SOAPAction, WS-Security and idempotency; sends the envelopes with api-runner.</td></tr>
@@ -917,7 +918,7 @@ k0lmenIA/
 ├── evals/                  Agent evals: cases with traps, inputs and checks
 ├── .github/workflows/      CI (tests), synthetic monitoring and evals (manual)
 ├── .claude/
-│   ├── agents/             The 76 agents
+│   ├── agents/             The 77 agents
 │   ├── skills/             Context, design, performance guide, E2E and API execution, k0lmena
 │   └── settings.json       Enabled connectors and project permissions
 ├── input/                  stories/ documentation/ api/ bugs/ (see input/README.md)

@@ -90,6 +90,8 @@ This skill is used by **the main conversation** (not a subagent: subagents can't
 +--------------------------------+------------------------------------------------------------+
 | Static security                | dependency-analyst (SCA) · secure-code-analyst (SAST)      |
 +--------------------------------+------------------------------------------------------------+
+| Code quality / best practices  | code-quality-analyst                                       |
++--------------------------------+------------------------------------------------------------+
 | Logs / failures                | log-analyst · failure-analyst                              |
 +--------------------------------+------------------------------------------------------------+
 | Coverage / traceability        | coverage-analyst                                           |
